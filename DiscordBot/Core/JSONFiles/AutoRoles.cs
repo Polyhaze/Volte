@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DiscordBot.Core.JSONFiles
+namespace DiscordBot.Core.UserAccounts
 {
     public class AutoRoles
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot.Core.JSONFiles
+namespace DiscordBot.Core.UserAccounts
 {
     public class UserAccount
     {

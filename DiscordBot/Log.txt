@@ -35,3 +35,15 @@ Connected to SIVA-dev
 Ready
 POST channels/412702744059576320/messages: 172.19 ms
 $say test
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 795.25 ms
+Connecting
+GET gateway: 1135.92 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to Chaotic
+Connected to SIVA-dev
+Connected to mutually depressed teens
+Connected to Discord-BOT-tutorial
+Ready

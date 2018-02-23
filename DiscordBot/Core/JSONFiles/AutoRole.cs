@@ -1,4 +1,4 @@
-﻿namespace DiscordBot.Core.JSONFiles
+﻿namespace DiscordBot.Core.UserAccounts
 {
     public class AutoRole
     {

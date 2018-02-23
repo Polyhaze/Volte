@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using DiscordBot;
 
-namespace DiscordBot.Core
+namespace DiscordBot.Core.UserAccounts
 {
     public static class DataStorage
     {
