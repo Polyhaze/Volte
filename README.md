@@ -1,6 +1,6 @@
-# SIVA
+# SIVA - Bot for Discord
 
-![SIVA logo](/Images/SIVA.png)
+![SIVA logo](/Images/SIVA.png =500x500)
 
 ## What is the SIVA rewrite?
 `The SIVA rewrite is a simple term for creating the bot in an entirely new programming language.`
