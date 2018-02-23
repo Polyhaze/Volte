@@ -1,0 +1,140 @@
+[
+  {
+    "ID": 168548441939509248,
+    "Points": 10,
+    "XP": 2205,
+    "LevelNumber": 6,
+    "Warns": [
+      "test warn lol",
+      "test"
+    ],
+    "WarnCount": 2,
+    "Money": 76
+  },
+  {
+    "ID": 410547925597421571,
+    "Points": 10,
+    "XP": 0,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 0
+  },
+  {
+    "ID": 320942091049893888,
+    "Points": 10,
+    "XP": 0,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 0
+  },
+  {
+    "ID": 315687211704123393,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  },
+  {
+    "ID": 329153903557869569,
+    "Points": 10,
+    "XP": 60,
+    "LevelNumber": 1,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 2
+  },
+  {
+    "ID": 182941761801420802,
+    "Points": 10,
+    "XP": 25,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 5
+  },
+  {
+    "ID": 360493978371751937,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  },
+  {
+    "ID": 145765405271523328,
+    "Points": 10,
+    "XP": 10,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 2
+  },
+  {
+    "ID": 385899728283500546,
+    "Points": 10,
+    "XP": 20,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 4
+  },
+  {
+    "ID": 370034554565689344,
+    "Points": 10,
+    "XP": 10,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 2
+  },
+  {
+    "ID": 199969241531678720,
+    "Points": 10,
+    "XP": 15,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 3
+  },
+  {
+    "ID": 191602681280724992,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  },
+  {
+    "ID": 388845396467777539,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  },
+  {
+    "ID": 313101186444296202,
+    "Points": 10,
+    "XP": 10,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 2
+  },
+  {
+    "ID": 322199688680046594,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  }
+]
