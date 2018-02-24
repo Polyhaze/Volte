@@ -1,8 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using DiscordBot;
-using DiscordBot.Core.UserAccounts;
-using System.Threading;
 
 namespace DiscordBot.Core.LevelingSystem
 {
@@ -23,7 +21,7 @@ namespace DiscordBot.Core.LevelingSystem
                 {
                     var embed = new EmbedBuilder();
                     embed.WithDescription(Utilities.GetFormattedAlert("LeveledUpMessage", user.Username, newLevel));
-                    embed.WithColor(Config.bot.defaultEmbedColour);
+                    embed.WithColor(DiscordBot.Config.bot.defaultEmbedColour);
                     embed.WithTitle("Level up!");
                     embed.AddField("XP Amount", userAccount.XP);
 

@@ -12,12 +12,6 @@ namespace DiscordBot.Core.UserAccounts
             File.WriteAllText(filePath, json);
         }
 
-        /*public static SaveAutoroleJson(IEnumerable<AutoRole> autoroles, string filePath)
-        {
-            string json = JsonConvert.SerializeObject(autoroles, Formatting.Indented);
-            File.WriteAllText(filePath, json);
-        }*/
-
         public static IEnumerable<UserAccount> LoadUserAccounts(string filePath)
         {
             if (!File.Exists(filePath)) return null;

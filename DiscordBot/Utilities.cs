@@ -12,7 +12,7 @@ namespace DiscordBot
 
         static Utilities()
         {
-            string json = File.ReadAllText("Info/alerts.json");
+            string json = File.ReadAllText("Resources/alerts.json");
             var data = JsonConvert.DeserializeObject<dynamic>(json);
             alerts = data.ToObject<Dictionary<string, string>>();
         }

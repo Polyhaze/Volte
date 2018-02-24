@@ -1,8 +1,6 @@
-﻿using Discord;
-
-namespace DiscordBot.Core
+﻿namespace DiscordBot.Core.Config
 {
-    public class Support
+    public class Guild
     {
         public ulong ServerId { get; set; }
         public bool CanCloseOwnTicket { get; set; }
@@ -11,5 +9,9 @@ namespace DiscordBot.Core
         public string SupportChannelName { get; set; }
         public ulong SupportCategoryId { get; set; }
         public string SupportRole { get; set; }
+        public string RoleToApply { get; set; }
+        public ulong ChannelId { get; set; }
+
+
     }
 }

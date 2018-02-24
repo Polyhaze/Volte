@@ -1,28 +1,21 @@
 ﻿using Discord.Commands;
-using DiscordBot.Core;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using DiscordBot;
+using DiscordBot.Core.Config;
 using System.Linq;
 
 namespace DiscordBot.Modules
 {
     public class Support : ModuleBase<SocketCommandContext>
     {
-        DiscordSocketClient _client;
 
         [Command("SupportReactionEmoji"), Alias("SRE")]
         [RequireUserPermission(Discord.GuildPermission.Administrator)]
         public async Task AddReactToJson(string emoji)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
-            if (config == null)
-            {
-                config = SupportSystem.CreateSupportConfig(Context.Guild.Id, emoji, true, Context.Channel.Id);
-
-            }
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.ReactionEmoji = emoji;
-            SupportSystem.SaveSupportConfig();
+            GuildConfig.SaveGuildConfig();
             await Context.Channel.SendMessageAsync($":{emoji}: set as the Support Ticket close emoji for this Guild.");
         }
 
@@ -30,27 +23,19 @@ namespace DiscordBot.Modules
         [RequireUserPermission(Discord.GuildPermission.Administrator)]
         public async Task AddBooleanToJson(bool arg)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
-            if (config == null)
-            {
-                config = SupportSystem.CreateSupportConfig(Context.Guild.Id, "ballot_box_with_check", arg, Context.Channel.Id);
-            }
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.CanCloseOwnTicket = arg;
-            SupportSystem.SaveSupportConfig();
-            await Context.Channel.SendMessageAsync($"{arg.ToString()} set as the Support Ticket `CanCloseOwnTicket` option.");
+            GuildConfig.SaveGuildConfig();
+            await Context.Channel.SendMessageAsync($"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
         }
 
         [Command("SupportChannelName"), Alias("SCN")]
         [RequireUserPermission(Discord.GuildPermission.Administrator)]
         public async Task AddChannelToConfig(string arg)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
-            if (config == null)
-            {
-                config = SupportSystem.CreateSupportConfig(Context.Guild.Id, "ballot_box_with_check", true, Context.Channel.Id);
-            }
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportChannelName = arg;
-            SupportSystem.SaveSupportConfig();
+            GuildConfig.SaveGuildConfig();
             await Context.Channel.SendMessageAsync($"{arg} set as the Support channel name.");
         }
 
@@ -58,13 +43,9 @@ namespace DiscordBot.Modules
         [RequireUserPermission(Discord.GuildPermission.Administrator)]
         public async Task SetIdIntoConfig(ulong id)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
-            if (config == null)
-            {
-                config = SupportSystem.CreateSupportConfig(Context.Guild.Id, "ballot_box_with_check", true, Context.Channel.Id);
-            }
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportCategoryId = id;
-            SupportSystem.SaveSupportConfig();
+            GuildConfig.SaveGuildConfig();
             await Context.Channel.SendMessageAsync($"{id.ToString()} set as the support channel category ID.");
         }
 
@@ -72,20 +53,18 @@ namespace DiscordBot.Modules
         [RequireUserPermission(Discord.GuildPermission.Administrator)]
         public async Task SetRoleInConfig(string role)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
-            if (config == null)
-            {
-                config = SupportSystem.CreateSupportConfig(Context.Guild.Id, "ballot_box_with_check", true, Context.Channel.Id);
-            }
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportRole = role;
-            SupportSystem.SaveSupportConfig();
+            GuildConfig.SaveGuildConfig();
             await Context.Channel.SendMessageAsync($"`{role}` set as the role to manage tickets.");
         }
 
-        [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(0), RequireUserPermission(Discord.GuildPermission.ManageChannels)]
+        [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(0)] 
+        [RequireUserPermission(Discord.GuildPermission.ManageChannels)]
         public async Task CloseTicket()
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+            if (config == null) return;
             var supportChannel = Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{Context.User.Id}");
 
             if (config.CanCloseOwnTicket == false)
@@ -109,7 +88,8 @@ namespace DiscordBot.Modules
         [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(1), RequireUserPermission(Discord.GuildPermission.ManageChannels)]
         public async Task CloseTicket(SocketGuildUser user)
         {
-            var config = SupportSystem.GetSupportConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+            if (config == null) return;
             var supportChannel = Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{user.Id}");
 
             if (config.CanCloseOwnTicket == false)

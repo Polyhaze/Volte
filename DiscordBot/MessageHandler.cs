@@ -7,8 +7,7 @@ using DiscordBot.Core.LevelingSystem;
 using DiscordBot.Core.UserAccounts;
 using System.Linq;
 using Discord;
-using DiscordBot.Core;
-using System.IO;
+using DiscordBot.Core.Config;
 
 namespace DiscordBot
 {
@@ -42,9 +41,12 @@ namespace DiscordBot
 
         private async Task Autorole(SocketGuildUser user)
         {
-            var ar = AutoRoles.GetAutoroleConfig(user.Guild.Id);
-            var targetRole = user.Guild.Roles.Where(r => r.Name == ar.roleToApply).FirstOrDefault();
-            await user.AddRoleAsync(targetRole);
+            var config = GuildConfig.GetGuildConfig(user.Guild.Id);
+            if (config.RoleToApply != null || config.RoleToApply != "")
+            {
+                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == config.RoleToApply);
+                await user.AddRoleAsync(targetRole);
+            }
         }
 
 
@@ -59,7 +61,7 @@ namespace DiscordBot
 
             if (msg.Content == "SetupSupport")
             {
-                var config = SupportSystem.GetSupportConfig(context.Guild.Id);
+                var config = GuildConfig.GetGuildConfig(context.Guild.Id);
                 if (config == null)
                 {
                     await context.Channel.SendMessageAsync("In order to use SIVA's Support Feature, you need to make a Support config!\nDo so with the Support config commands, `$h Support`.");
@@ -109,16 +111,34 @@ namespace DiscordBot
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
 
+            if (msg.Content == "SetupSupport")
+            {
+                var config = GuildConfig.GetGuildConfig(context.Guild.Id);
+                if (config == null)
+                {
+                    await context.Channel.SendMessageAsync("In order to use SIVA's Support Feature, you need to make a Support config!\nDo so with the Support config commands, `$h Support`.");
+                    return;
+                }
+
+                var embed = new EmbedBuilder();
+                embed.WithColor(Config.bot.defaultEmbedColour);
+                embed.WithDescription(Utilities.GetAlert("SupportEmbedText"));
+                embed.WithAuthor(context.Guild.Owner);
+                await context.Channel.SendMessageAsync("", false, embed);
+                config.SupportChannelId = context.Channel.Id;
+
+            }
+
             if (msg.Content != "SetupSupport")
             {
-                var supportConfig = SupportSystem.GetSupportConfig(context.Guild.Id);
+                var supportConfig = GuildConfig.GetGuildConfig(context.Guild.Id);
                 var supportStartChannel = context.Guild.Channels.FirstOrDefault(c => c.Name == supportConfig.SupportChannelName);
 
                 if (msg.Channel == supportStartChannel)
                 {
-                    var categoryId = supportConfig.SupportCategoryId;
+                    //var categoryId = supportConfig.SupportCategoryId;
                     var supportChannelExists = context.Guild.Channels.FirstOrDefault(c => c.Name == $"{supportConfig.SupportChannelName}-{context.User.Id}");
-                    var roleThatCanCloseTicket = context.Guild.Roles.FirstOrDefault(r => r.Name == supportConfig.SupportRole);
+                    var role = context.Guild.Roles.FirstOrDefault(r => r.Name == supportConfig.SupportRole);
 
                     if (supportChannelExists == null)
                     {
@@ -126,7 +146,7 @@ namespace DiscordBot
                         var channel = await context.Guild.CreateTextChannelAsync($"{supportConfig.SupportChannelName}-{context.User.Id}");
                         await channel.AddPermissionOverwriteAsync(context.User, OverwritePermissions.AllowAll(channel));
                         await channel.AddPermissionOverwriteAsync(context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
-                        await channel.AddPermissionOverwriteAsync(roleThatCanCloseTicket, OverwritePermissions.AllowAll(channel));
+                        await channel.AddPermissionOverwriteAsync(role, OverwritePermissions.AllowAll(channel));
                         var embed = new EmbedBuilder();
                         embed.WithAuthor(context.User);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());

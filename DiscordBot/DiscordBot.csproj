@@ -15,18 +15,20 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>Discord_CS_bot</RootNamespace>
+    <RootNamespace>DiscordBot</RootNamespace>
+    <ApplicationIcon>SIVA.ico</ApplicationIcon>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Core" Version="1.0.2" />
     <PackageReference Include="FortniteApi" Version="1.1.0" />
-    <PackageReference Include="Google.Apis" Version="1.32.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Ofl.Twitch" Version="2.0.8" />
     <PackageReference Include="Overwatch.Net" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="SystemLang\alerts.json">
+    <None Update="Info\alerts.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

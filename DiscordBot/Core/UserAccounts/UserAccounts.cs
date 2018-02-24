@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 
 namespace DiscordBot.Core.UserAccounts
 {
@@ -9,7 +8,7 @@ namespace DiscordBot.Core.UserAccounts
     {
         private static List<UserAccount> accounts;
 
-        private static string accountsFile = "Info/accounts.json";
+        private static string accountsFile = "Resources/accounts.json";
 
         static UserAccounts()
         {

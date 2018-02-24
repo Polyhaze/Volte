@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using DiscordBot.Core.UserAccounts;
 using System.Linq;
+using DiscordBot.Core.Config;
 
 namespace DiscordBot.Modules
 {
@@ -71,7 +72,7 @@ namespace DiscordBot.Modules
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task GiveUserSpecifiedRole(SocketGuildUser user, [Remainder]string role)
         {
-            var targetRole = user.Guild.Roles.Where(r => r.Name == role).FirstOrDefault();
+            var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
@@ -87,7 +88,7 @@ namespace DiscordBot.Modules
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task TakeAwaySpecifiedRole(SocketGuildUser user, [Remainder]string role)
         {
-            var targetRole = user.Guild.Roles.Where(r => r.Name == role).FirstOrDefault();
+            var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
@@ -102,13 +103,10 @@ namespace DiscordBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AutoRoleRoleAdd([Remainder]string arg = "")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
 
-            var config = AutoRoles.GetOrCreateAutoroleConfig(Context.Guild.Id, arg);
-            config.roleToApply = arg;
-            AutoRoles.SaveAutoroleConfig();
+            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
+            config.RoleToApply = arg;
+            GuildConfig.SaveGuildConfig();
 
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("AutoroleCommandText", arg));
@@ -153,7 +151,23 @@ namespace DiscordBot.Modules
 
         }
 
-        [Command("Warns")]
+        [Command("ClearWarns"), Alias("CW")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ClearUsersWarns(SocketGuildUser user)
+        {
+            var ua = UserAccounts.GetAccount(user);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"{ua.WarnCount} warn(s) cleared for {user.Mention}");
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            ua.WarnCount = 0;
+            ua.Warns.Clear();
+            UserAccounts.SaveAccounts();
+
+            await SendMessage("", false, embed);
+        }
+
+        [Command("Warns"), Priority(0)]
         public async Task WarnsAmountForGivenUser()
         {
             var embed = new EmbedBuilder();
@@ -173,7 +187,7 @@ namespace DiscordBot.Modules
             await SendMessage("", false, embed);
         }
 
-        [Command("Warns")]
+        [Command("Warns"), Priority(1)]
         public async Task WarnsAmountForGivenUser(SocketGuildUser user)
         {
             var embed = new EmbedBuilder();
@@ -193,9 +207,9 @@ namespace DiscordBot.Modules
             await SendMessage("", false, embed);
         }
 
-        public async Task SendMessage(string text, bool IsTTS, Embed embed)
+        public async Task SendMessage(string text, bool isTts, Embed embed)
         {
-            await Context.Channel.SendMessageAsync(text, IsTTS, embed);
+            await Context.Channel.SendMessageAsync(text, isTts, embed);
         }
 
         

@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot;
 using DiscordBot.Core.UserAccounts;
 using System.Threading.Tasks;
 using System;
@@ -10,7 +9,7 @@ namespace DiscordBot.Modules
 {
     public class Utils : ModuleBase<SocketCommandContext>
     {
-        DiscordSocketClient _client;
+        private DiscordSocketClient _client;
 
         [Command("UserInfo"), Alias("uinfo", "useri", "ui"), Priority(0)]
         public async Task UserInformationCommand()

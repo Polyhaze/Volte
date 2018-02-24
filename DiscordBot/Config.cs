@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 namespace DiscordBot
 {
-    class Config
+    public class Config
     {
-        private const string configFolder = "Info";
+        private const string configFolder = "Resources";
         private const string configFile = "config.json";
         public static BotConfig bot;
 
