@@ -31,10 +31,11 @@ namespace DiscordBot
 
     public struct BotConfig
     {
-        public string token;
-        public string cmdPrefix;
+        public string Token;
+        public string prefix;
         public bool debug;
         public string botGameToSet;
+        public string twitchStreamer;
         public ulong botOwner;
         public uint defaultEmbedColour;
         public bool isSelfbot;

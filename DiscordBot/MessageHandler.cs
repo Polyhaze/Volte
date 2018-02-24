@@ -11,7 +11,7 @@ using DiscordBot.Core.Config;
 
 namespace DiscordBot
 {
-    class MessageHandler
+    internal class MessageHandler
     {
         DiscordSocketClient _client;
         CommandService _service;
@@ -78,7 +78,7 @@ namespace DiscordBot
             }
 
             int argPos = 0;
-            if (msg.HasStringPrefix(Config.bot.cmdPrefix, ref argPos)
+            if (msg.HasStringPrefix(Config.bot.prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _service.ExecuteAsync(context, argPos);
@@ -87,7 +87,14 @@ namespace DiscordBot
                 Console.WriteLine($"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})");
                 Console.WriteLine($"\\|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})");
                 Console.WriteLine($"\\|      -Time Issued: {DateTime.Now}");
-                Console.WriteLine($"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+                if (result.IsSuccess)
+                {
+                    Console.WriteLine($"\\|         -Executed: {result.IsSuccess}");
+                }
+                else
+                {
+                    Console.WriteLine($"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+                }
             }
         }
 

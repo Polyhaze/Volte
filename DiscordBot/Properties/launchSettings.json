@@ -1,7 +1,7 @@
 {
   "profiles": {
     "DiscordBot": {
-      "commandName": "Executable"
+      "commandName": "Project"
     }
   }
 }

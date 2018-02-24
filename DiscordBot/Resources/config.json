@@ -3,6 +3,7 @@
   "cmdPrefix": "$",
   "debug": true,
   "botGameToSet": "$h - @SIVA-dev h",
+  "twitchStreamer": "joltzdude139", 
   "botOwner": 168548441939509248,
   "defaultEmbedColour": 0x7000FB,
   "isSelfbot": false,

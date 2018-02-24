@@ -11,27 +11,21 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private MessageHandler _handler;
 
-        private static void Main()
-        {
-            new Program().StartAsync().GetAwaiter().GetResult();
-        }
+        private static void Main() => new Program().StartAsync().GetAwaiter().GetResult();
 
         public async Task StartAsync()
         {
-            if (String.IsNullOrEmpty(Config.bot.token))
+            if (String.IsNullOrEmpty(Config.bot.Token))
             {
                 Console.WriteLine("Token not specified.");
                 return;
             }
-            _client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                LogLevel = LogSeverity.Verbose
-            });
+            _client = new DiscordSocketClient(new DiscordSocketConfig{LogLevel = LogSeverity.Verbose});
             _client.Log += Log;
-            await _client.LoginAsync(TokenType.Bot, Config.bot.token);
+            await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
             Console.Title = "SIVA Discord bot";
-            await _client.SetGameAsync(Config.bot.botGameToSet);
+            await _client.SetGameAsync(Config.bot.botGameToSet, $"https://twitch.tv/{Config.bot.twitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
             Console.WriteLine("Use this to invite the bot into your server: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             _handler = new MessageHandler();

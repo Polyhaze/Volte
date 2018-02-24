@@ -24,11 +24,10 @@
     <PackageReference Include="Discord.Net.Core" Version="1.0.2" />
     <PackageReference Include="FortniteApi" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="Ofl.Twitch" Version="2.0.8" />
     <PackageReference Include="Overwatch.Net" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Info\alerts.json">
+    <None Update="Resources\alerts.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
