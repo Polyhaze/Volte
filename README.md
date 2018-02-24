@@ -7,10 +7,7 @@
 `Discord.py was getting rewritten, and it was becoming obsolete, so I decided to completely remake the entire bot.`
 `It's taken 40+ hours, but it's nearly done. :)`
 
-## Found an issue with the Public SIVA?
-`Create an issue.`
-
-## Want to invite the bots?
+## Want to invite the bot(s)?
 
 ### Invite SIVA
 > [SIVA-dev](https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8) **By default, this has the Administrator permission checked. Keep this if you're using the support system. If you're not, feel free to uncheck. It's still advised to keep it checked.**
