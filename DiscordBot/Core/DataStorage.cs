@@ -1,8 +1,6 @@
-﻿using DiscordBot.Core.UserAccounts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
-using DiscordBot;
 
 namespace DiscordBot.Core.UserAccounts
 {

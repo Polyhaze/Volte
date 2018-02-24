@@ -24,6 +24,7 @@ namespace DiscordBot
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
             _client.MessageReceived += SupportChannelUtils;
+            _client.MessageReceived += MassPengChecks;
             _client.UserJoined += Autorole;
             //_client.ChannelUpdated
             //_client.GuildMemberUpdated
@@ -79,12 +80,25 @@ namespace DiscordBot
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _service.ExecuteAsync(context, argPos);
-                Console.WriteLine($"|-Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})");
-                Console.WriteLine($"|   -Command Issued: {msg.ToString()} ({msg.Id})");
-                Console.WriteLine($"|         -In Guild: {context.Guild.Name} ({context.Guild.Id})");
-                Console.WriteLine($"|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})");
-                Console.WriteLine($"|      -Time Issued: {DateTime.Now}");
-                Console.WriteLine($"|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+                Console.WriteLine($"\\|-Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})");
+                Console.WriteLine($"\\|   -Command Issued: {msg.Content} ({msg.Id})");
+                Console.WriteLine($"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})");
+                Console.WriteLine($"\\|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})");
+                Console.WriteLine($"\\|      -Time Issued: {DateTime.Now}");
+                Console.WriteLine($"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+            }
+        }
+
+        public async Task MassPengChecks(SocketMessage s)
+        {
+            var msg = s as SocketUserMessage;
+            var context = new SocketCommandContext(_client, msg);
+            if (context.User.IsBot) return;
+
+            if (msg.Content.Contains("@everyone") || msg.Content.Contains("@here") && context.User != context.Guild.Owner)
+            {
+                await msg.DeleteAsync();
+                await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
             }
         }
 

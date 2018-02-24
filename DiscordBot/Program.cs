@@ -6,16 +6,19 @@ using System.IO;
 
 namespace DiscordBot
 {
-    class Program
+    internal class Program
     {
-        DiscordSocketClient _client;
-        MessageHandler _handler;
+        private DiscordSocketClient _client;
+        private MessageHandler _handler;
 
-        static void Main(string[] args)
-        => new Program().StartAsync().GetAwaiter().GetResult();
+        private static void Main()
+        {
+            new Program().StartAsync().GetAwaiter().GetResult();
+        }
+
         public async Task StartAsync()
         {
-            if (Config.bot.token == "" || Config.bot.token == null)
+            if (String.IsNullOrEmpty(Config.bot.token))
             {
                 Console.WriteLine("Token not specified.");
                 return;
@@ -36,11 +39,11 @@ namespace DiscordBot
             await Task.Delay(-1);
         }
 
-        private async Task Log(LogMessage msg)
+        private async static Task Log(LogMessage msg)
         {
-            if (Config.bot.debug == true)
+            if (Config.bot.debug)
             {
-                Console.WriteLine("DEBUG: " + msg.Message);
+                Console.WriteLine("debug: " + msg.Message);
                 try
                 {
                     File.AppendAllText("Log.txt", $"{msg.Message}\n");
