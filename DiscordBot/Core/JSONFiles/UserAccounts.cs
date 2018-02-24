@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace DiscordBot.Core.UserAccounts
 {
