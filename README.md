@@ -1,6 +1,6 @@
 # SIVA-Issues
 
-![SIVA logo](/Images/SIVA.png)
+![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA.png =300x300)
 
 ## What is the SIVA rewrite?
 `The SIVA rewrite is a simple term for creating the bot in an entirely new programming language. Discord.py was getting rewritten, and it was becoming obsolete, so I decided to completely remake the entire bot. It's taken 40+ hours, but it's nearly done.`
