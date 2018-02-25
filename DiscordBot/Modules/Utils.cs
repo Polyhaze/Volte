@@ -56,32 +56,32 @@ namespace DiscordBot.Modules
                 if (oper == "add")
                 {
                     var result = val1 + val2;
-                    embed.WithDescription($"The answer is `{result.ToString()}`");
+                    embed.WithDescription($"The answer is `{result}`");
                 }
                 if (oper == "sub")
                 {
                     var result = val1 - val2;
-                    embed.WithDescription($"The answer is `{result.ToString()}`");
+                    embed.WithDescription($"The answer is `{result}`");
                 }
                 if (oper == "mult")
                 {
                     var result = Math.BigMul(val1, val2);
-                    embed.WithDescription($"The answer is `{result.ToString()}`");
+                    embed.WithDescription($"The answer is `{result}`");
                 }
                 if (oper == "div")
                 {
-                    var result = Math.DivRem(val1, val2, out int b);
-                    embed.WithDescription($"The answer is `{b.ToString()}`");
+                    var result = Math.DivRem(val1, val2, out var b);
+                    embed.WithDescription($"The answer is `{b}`");
                 }
                 if (oper == "sqrt")
                 {
                     var result = Math.Sqrt(val1);
-                    embed.WithDescription($"The answer is `{result.ToString()}`");
+                    embed.WithDescription($"The answer is `{result}`");
                 }
                 if (oper == "power")
                 {
                     var result = Math.Pow(val1, val2);
-                    embed.WithDescription($"The answer is `{result.ToString()}`");
+                    embed.WithDescription($"The answer is `{result}`");
                 }
 
                 await Context.Channel.SendMessageAsync("", false, embed);
@@ -143,38 +143,26 @@ namespace DiscordBot.Modules
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
-        
-        [Command("LeaveServer"), Alias("ls")]
-        public async Task LeaveTheServerOnDemand()
+
+        /*[Command("Poll")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task ReactionPoll(string pollBody)
         {
-            if (Context.User.Id != Config.bot.botOwner) {
-                //we don't want random users making the bot leave now do we?
-                var embed = new EmbedBuilder();
-                embed.WithDescription(Utilities.GetFormattedAlert("NotEnoughPermission", Context.User.Mention));
-                embed.WithColor(new Color(Config.bot.defaultEmbedColour));
-                embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-                Console.WriteLine($"User {Context.User.Username}#{Context.User.Discriminator} tried to get the bot to leave the server {Context.Guild.Name}, but failed.");
-                await Context.Channel.SendMessageAsync("", false, embed);
-
-            }
-            else
+            var choices = pollBody.Split(';');
+            var numbers = choices.Length;
+            switch (numbers)
             {
-                var embed = new EmbedBuilder();
-                embed.WithDescription(Utilities.GetAlert("BotLeftServer"));
-                embed.WithColor(Config.bot.defaultEmbedColour);
-                embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-                await Context.Channel.SendMessageAsync("", false, embed);
-                await Context.Guild.LeaveAsync();
-
+                case 1:
+                    await Context.Message.AddReactionAsync("");
             }
-        }
+        }*/
 
         [Command("Ping")]
         public async Task PingTheFuckingBot()
         {
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithDescription(Utilities.GetFormattedAlert("PingCommandText", (Context.Client as DiscordSocketClient).Latency));
+            embed.WithDescription(Utilities.GetFormattedAlert("PingCommandText", Context.Client.Latency));
             embed.WithColor(new Color(Config.bot.defaultEmbedColour));
 
             await Context.Channel.SendMessageAsync("", false, embed);

@@ -59,24 +59,6 @@ namespace DiscordBot
 
             Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
 
-            if (msg.Content == "SetupSupport")
-            {
-                var config = GuildConfig.GetGuildConfig(context.Guild.Id);
-                if (config == null)
-                {
-                    await context.Channel.SendMessageAsync("In order to use SIVA's Support Feature, you need to make a Support config!\nDo so with the Support config commands, `$h Support`.");
-                    return;
-                }
-
-                var embed = new EmbedBuilder();
-                embed.WithColor(Config.bot.defaultEmbedColour);
-                embed.WithDescription(Utilities.GetAlert("SupportEmbedText"));
-                embed.WithAuthor(context.Guild.Owner);
-                await context.Channel.SendMessageAsync("", false, embed);
-                var channel = _client.GetChannel(config.SupportChannelId);
-                
-            }
-
             int argPos = 0;
             if (msg.HasStringPrefix(Config.bot.prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -133,6 +115,7 @@ namespace DiscordBot
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed);
                 config.SupportChannelId = context.Channel.Id;
+                config.SupportChannelName = context.Channel.Name;
 
             }
 

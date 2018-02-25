@@ -234,3 +234,88 @@ Connected to mutually depressed teens
 Connected to Greem Community
 Connected to Chaotic
 Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 573.31 ms
+Connecting
+GET gateway: 86.99 ms
+Connected
+Connected to LG's Legendary Server
+Connected to Greem Community
+Connected to Discord-BOT-tutorial
+Connected to mutually depressed teens
+Connected to Chaotic
+Connected to SIVA-dev
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 303.15 ms
+Connecting
+GET gateway: 76.03 ms
+Connected
+Connected to Greem Community
+Connected to Chaotic
+Connected to SIVA-dev
+Connected to Discord-BOT-tutorial
+Connected to LG's Legendary Server
+Connected to mutually depressed teens
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 389.1 ms
+Connecting
+GET gateway: 41.84 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to Discord-BOT-tutorial
+Connected to Chaotic
+Connected to mutually depressed teens
+Connected to SIVA-dev
+Ready
+POST channels/371060426315923456/messages: 1265.41 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 731.55 ms
+Connecting
+GET gateway: 66.45 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to mutually depressed teens
+Connected to Discord-BOT-tutorial
+Connected to Chaotic
+Connected to SIVA-dev
+Ready
+GET oauth2/applications/@me: 178.94 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 396.16 ms
+Connecting
+GET gateway: 50.26 ms
+Connected
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 577.39 ms
+Connecting
+GET gateway: 59.46 ms
+Connected
+Connected to LG's Legendary Server
+Connected to Greem Community
+Connected to Chaotic
+Connected to mutually depressed teens
+Connected to Discord-BOT-tutorial
+Connected to SIVA-dev
+Ready
+GET oauth2/applications/@me: 82.3 ms
+POST channels/371060426315923456/messages: 137.84 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 297.92 ms
+Connecting
+GET gateway: 58.57 ms
+Connected
+Connected to Greem Community
+Connected to Chaotic
+Connected to LG's Legendary Server
+Connected to Discord-BOT-tutorial
+Connected to SIVA-dev
+Connected to mutually depressed teens
+Ready
+POST channels/371060426315923456/messages: 90.31 ms
+GET oauth2/applications/@me: 147.95 ms
+POST channels/371060426315923456/messages: 81.19 ms
+POST channels/371060426315923456/messages: 387.34 ms

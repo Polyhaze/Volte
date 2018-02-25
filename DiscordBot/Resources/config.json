@@ -1,6 +1,6 @@
 {
   "token": "NDEwNTQ3OTI1NTk3NDIxNTcx.DXNGpA.gAv7YnLXj_4wG9vfBZ3Lxx0slIg",
-  "cmdPrefix": "$",
+  "prefix": "$",
   "debug": true,
   "botGameToSet": "$h - @SIVA-dev h",
   "twitchStreamer": "joltzdude139", 

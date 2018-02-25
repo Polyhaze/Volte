@@ -211,33 +211,5 @@ namespace DiscordBot.Modules
         {
             await Context.Channel.SendMessageAsync(text, isTts, embed);
         }
-
-        
-        //[Command("Mute")]
-
-        [Command("Shutdown")]
-        public async Task Shutdown()
-        {
-            if (Context.User.Id == Config.bot.botOwner)
-            { 
-                var embed = new EmbedBuilder();
-                embed.WithDescription(Utilities.GetFormattedAlert("LoggingOutMsg", Context.User.Mention));
-                embed.WithColor(Config.bot.defaultEmbedColour);
-                embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-                await Context.Channel.SendMessageAsync("", false, embed);
-                await Context.Client.LogoutAsync();
-                await Context.Client.StopAsync();
-
-            }
-            else
-            {
-                var embed = new EmbedBuilder();
-                embed.WithDescription(Utilities.GetFormattedAlert("NotEnoughPermission", Context.User.Mention));
-                embed.WithColor(new Color(Config.bot.defaultEmbedColour));
-                embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-                await Context.Channel.SendMessageAsync("", false, embed);
-            }
-        }
-        
     }
 }
