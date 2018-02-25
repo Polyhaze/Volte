@@ -1,4 +1,4 @@
-﻿namespace DiscordBot.Core.Config
+﻿namespace SIVA.Core.Config
 {
     public class Guild
     {

@@ -6,7 +6,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Owner : ModuleBase<SocketCommandContext>
     {
@@ -47,7 +47,7 @@ namespace DiscordBot.Modules
         public async Task SetBotStatus(string status)
         {
             var embed = new EmbedBuilder();
-            embed.WithDescription($"Set the status to {status}");
+            embed.WithDescription($"Set the status to {status}.");
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.defaultEmbedColour);
 
@@ -84,11 +84,19 @@ namespace DiscordBot.Modules
             await Context.Guild.LeaveAsync();
         }
 
-        /*[Command("Image")]
+        [Command("ServerCount"), Alias("Sc")]
         [RequireOwner]
-        public async Task SetBotImage(string url)
+        public async Task ServerCountStream()
         {
-            
-        }*/
+            var client = new DiscordSocketClient();
+            var guilds = Context.Client.Guilds.Count;
+            var embed = new EmbedBuilder();
+            embed.WithDescription("Done.");
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            await Context.Channel.SendMessageAsync("", false, embed);
+            await client.SetGameAsync($"in {(Context.Client as DiscordSocketClient).Guilds.Count} servers!", $"https://twitch.tv/{Config.bot.twitchStreamer}", StreamType.Twitch);
+
+        }
     }
 }

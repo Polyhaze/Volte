@@ -1,10 +1,10 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using DiscordBot.Core.Config;
+using SIVA.Core.Config;
 using System.Linq;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Support : ModuleBase<SocketCommandContext>
     {

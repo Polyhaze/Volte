@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot.Core.UserAccounts;
+using SIVA.Core.UserAccounts;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
@@ -65,7 +65,7 @@ namespace DiscordBot.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("PickCommandText", selection));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.defaultEmbedColour));
+            embed.WithColor(Config.bot.defaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }

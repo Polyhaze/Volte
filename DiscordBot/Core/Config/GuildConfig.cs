@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DiscordBot.Core.Config
+namespace SIVA.Core.Config
 {
     public class GuildConfig
     {

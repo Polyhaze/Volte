@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using DiscordBot;
+using SIVA;
 
-namespace DiscordBot.Core.LevelingSystem
+namespace SIVA.Core.LevelingSystem
 {
     internal static class Leveling
     {
@@ -21,7 +21,7 @@ namespace DiscordBot.Core.LevelingSystem
                 {
                     var embed = new EmbedBuilder();
                     embed.WithDescription(Utilities.GetFormattedAlert("LeveledUpMessage", user.Username, newLevel));
-                    embed.WithColor(DiscordBot.Config.bot.defaultEmbedColour);
+                    embed.WithColor(SIVA.Config.bot.defaultEmbedColour);
                     embed.WithTitle("Level up!");
                     embed.AddField("XP Amount", userAccount.XP);
 

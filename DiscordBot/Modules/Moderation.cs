@@ -2,11 +2,11 @@
 using Discord;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using DiscordBot.Core.UserAccounts;
+using SIVA.Core.UserAccounts;
 using System.Linq;
-using DiscordBot.Core.Config;
+using SIVA.Core.Config;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Moderation : ModuleBase<SocketCommandContext>
     {

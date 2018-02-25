@@ -2,11 +2,11 @@
   {
     "ID": 168548441939509248,
     "Points": 10,
-    "XP": 2455,
+    "XP": 2540,
     "LevelNumber": 7,
     "Warns": [],
     "WarnCount": 2,
-    "Money": 126
+    "Money": 143
   },
   {
     "ID": 410547925597421571,
@@ -133,5 +133,14 @@
     "Warns": [],
     "WarnCount": 0,
     "Money": 3
+  },
+  {
+    "ID": 216608905025814528,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
   }
 ]

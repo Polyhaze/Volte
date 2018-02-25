@@ -3,11 +3,11 @@
     "ServerId": 405806471578648588,
     "CanCloseOwnTicket": true,
     "ReactionEmoji": "",
-    "SupportChannelId": 0,
-    "SupportChannelName": "",
+    "SupportChannelId": 405806471578648588,
+    "SupportChannelName": "support",
     "SupportCategoryId": 0,
-    "SupportRole": "",
-    "RoleToApply": "",
+    "SupportRole": "Support",
+    "RoleToApply": "Member",
     "ChannelId": 0
   }
 ]

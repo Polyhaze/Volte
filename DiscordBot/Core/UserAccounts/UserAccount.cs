@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot.Core.UserAccounts
+namespace SIVA.Core.UserAccounts
 {
     public class UserAccount
     {

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace DiscordBot
+namespace SIVA
 {
     public class Config
     {
@@ -24,7 +24,6 @@ namespace DiscordBot
             {
                 string json = File.ReadAllText(configFolder + "/" + configFile);
                 bot = JsonConvert.DeserializeObject<BotConfig>(json);
-
             }
         }
     }

@@ -3,18 +3,17 @@ using Discord.WebSocket;
 using Discord.Commands;
 using System.Threading.Tasks;
 using System.Reflection;
-using DiscordBot.Core.LevelingSystem;
-using DiscordBot.Core.UserAccounts;
+using SIVA.Core.LevelingSystem;
 using System.Linq;
 using Discord;
-using DiscordBot.Core.Config;
+using SIVA.Core.Config;
 
-namespace DiscordBot
+namespace SIVA
 {
     internal class MessageHandler
     {
-        DiscordSocketClient _client;
-        CommandService _service;
+        private DiscordSocketClient _client;
+        private CommandService _service;
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
@@ -23,7 +22,6 @@ namespace DiscordBot
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
             _client.MessageReceived += SupportChannelUtils;
-            _client.MessageReceived += MassPengChecks;
             _client.UserJoined += Autorole;
             //_client.ChannelUpdated
             //_client.GuildMemberUpdated
@@ -69,14 +67,9 @@ namespace DiscordBot
                 Console.WriteLine($"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})");
                 Console.WriteLine($"\\|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})");
                 Console.WriteLine($"\\|      -Time Issued: {DateTime.Now}");
-                if (result.IsSuccess)
-                {
-                    Console.WriteLine($"\\|         -Executed: {result.IsSuccess}");
-                }
-                else
-                {
-                    Console.WriteLine($"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
-                }
+                Console.WriteLine(result.IsSuccess
+                    ? $"\\|         -Executed: {result.IsSuccess}"
+                    : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
             }
         }
 
@@ -118,7 +111,7 @@ namespace DiscordBot
                 config.SupportChannelName = context.Channel.Name;
 
             }
-
+            
             if (msg.Content != "SetupSupport")
             {
                 var supportConfig = GuildConfig.GetGuildConfig(context.Guild.Id);
@@ -138,12 +131,13 @@ namespace DiscordBot
                         await channel.AddPermissionOverwriteAsync(context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
                         await channel.AddPermissionOverwriteAsync(role, OverwritePermissions.AllowAll(channel));
                         var embed = new EmbedBuilder();
-                        embed.WithAuthor(context.User);
+                        embed.WithAuthor(msg.Author);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());
                         embed.AddInlineField("What do you need help with?", $"{msg.Content}");
                         embed.WithColor(Config.bot.defaultEmbedColour);
                         embed.WithFooter($"Time Created: {DateTime.Now}");
-                        await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`", false, embed);
+                        await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");
+                        await channel.SendMessageAsync("", false, embed);
 
                     }
                     else

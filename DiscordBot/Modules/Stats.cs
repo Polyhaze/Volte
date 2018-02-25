@@ -4,7 +4,7 @@ using Discord.Commands;
 using System.Threading.Tasks;
 using FortniteApi;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Stats : ModuleBase<SocketCommandContext>
     {

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot;
-using DiscordBot.Core.UserAccounts;
+using SIVA;
+using SIVA.Core.UserAccounts;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Leveling : ModuleBase<SocketCommandContext>
     {

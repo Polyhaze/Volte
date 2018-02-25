@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.IO;
 
-namespace DiscordBot.Core.UserAccounts
+namespace SIVA.Core.UserAccounts
 {
     public static class DataStorage
     {

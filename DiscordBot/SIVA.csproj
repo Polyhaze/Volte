@@ -15,7 +15,7 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>DiscordBot</RootNamespace>
+    <RootNamespace>SIVA</RootNamespace>
     <ApplicationIcon>SIVA.ico</ApplicationIcon>
     <StartupObject />
   </PropertyGroup>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using System.IO;
 
-namespace DiscordBot
+namespace SIVA
 {
     internal class Program
     {
@@ -20,11 +20,10 @@ namespace DiscordBot
 
         public async Task StartAsync()
         {
-            Console.Title = "SIVA";
-            Console.CursorVisible = false;
-            if (String.IsNullOrEmpty(Config.bot.Token))
+            if (string.IsNullOrEmpty(Config.bot.Token))
             {
                 Console.WriteLine("Token not specified.");
+                Console.ReadLine();
                 return;
             }
             _client = new DiscordSocketClient(new DiscordSocketConfig{LogLevel = LogSeverity.Verbose});
@@ -41,17 +40,15 @@ namespace DiscordBot
 
         private async static Task Log(LogMessage msg)
         {
-            if (Config.bot.debug)
+            if (!Config.bot.debug) return;
+            Console.WriteLine("debug: " + msg.Message);
+            try
             {
-                Console.WriteLine("debug: " + msg.Message);
-                try
-                {
-                    File.AppendAllText("Log.txt", $"{msg.Message}\n");
-                }
-                catch (FileNotFoundException)
-                {
-                    File.WriteAllText("Log.txt", msg.Message);
-                }
+                File.AppendAllText("Log.txt", $"{msg.Message}\n");
+            }
+            catch (FileNotFoundException)
+            {
+                File.WriteAllText("Log.txt", msg.Message);
             }
         }
     }

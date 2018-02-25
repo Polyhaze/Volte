@@ -1,11 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot.Core.UserAccounts;
+using SIVA.Core.UserAccounts;
 using System.Threading.Tasks;
 using System;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Utils : ModuleBase<SocketCommandContext>
     {

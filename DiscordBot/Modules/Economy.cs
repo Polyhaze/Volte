@@ -1,10 +1,10 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
-using DiscordBot.Core.UserAccounts;
+using SIVA.Core.UserAccounts;
 using Discord;
-using DiscordBot;
+using SIVA;
 
-namespace DiscordBot.Modules
+namespace SIVA.Modules
 {
     public class Economy : ModuleBase<SocketCommandContext>
     {

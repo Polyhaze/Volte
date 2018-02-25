@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Discord.Commands;
 
-namespace DiscordBot
+namespace SIVA
 {
     class Utilities : ModuleBase<SocketCommandContext>
     {
