@@ -4,10 +4,7 @@
     "Points": 10,
     "XP": 2315,
     "LevelNumber": 6,
-    "Warns": [
-      "test warn lol",
-      "test"
-    ],
+    "Warns": [],
     "WarnCount": 2,
     "Money": 98
   },
@@ -59,11 +56,11 @@
   {
     "ID": 360493978371751937,
     "Points": 10,
-    "XP": 5,
+    "XP": 10,
     "LevelNumber": 0,
     "Warns": [],
     "WarnCount": 0,
-    "Money": 1
+    "Money": 2
   },
   {
     "ID": 145765405271523328,

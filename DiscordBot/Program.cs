@@ -11,10 +11,17 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private MessageHandler _handler;
 
-        private static void Main() => new Program().StartAsync().GetAwaiter().GetResult();
+        private static void Main()
+        {
+            Console.Title = "SIVA";
+            Console.CursorVisible = false;
+            new Program().StartAsync().GetAwaiter().GetResult();
+        }
 
         public async Task StartAsync()
         {
+            Console.Title = "SIVA";
+            Console.CursorVisible = false;
             if (String.IsNullOrEmpty(Config.bot.Token))
             {
                 Console.WriteLine("Token not specified.");
@@ -24,12 +31,11 @@ namespace DiscordBot
             _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
-            Console.Title = "SIVA Discord bot";
             await _client.SetGameAsync(Config.bot.botGameToSet, $"https://twitch.tv/{Config.bot.twitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
-            Console.WriteLine("Use this to invite the bot into your server: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             _handler = new MessageHandler();
             await _handler.InitializeAsync(_client);
+            Console.WriteLine("Use this to invite the bot into your server: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             await Task.Delay(-1);
         }
 
