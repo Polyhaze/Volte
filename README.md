@@ -1,5 +1,6 @@
 # SIVA-Issues
 Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions/a8e3cd4d-6001-43ff-ae22-5a7d66420da7/3/badge)
+Discord Server: [![Discord](https://img.shields.io/discord/102860784329052160.svg?style=social)](https://discord.gg/ubXaT6u)
 
 ![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA.png)
 
