@@ -14,4 +14,4 @@ Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions
 ### Invite SIVA
 > [SIVA-dev](https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8) **By default, this has the Administrator permission checked. Keep this if you're using the support system. If you're not, feel free to uncheck. It's still advised to keep it checked.**
 
-> [SIVA-public](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) **By default, this has the Administrator permission checked. Keep this if you're using moderation, you should keep it checked.**
+> [SIVA-public](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) **By default, this has the Administrator permission checked. If you're using moderation, you should keep it checked.**
