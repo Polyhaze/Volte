@@ -202,16 +202,5 @@ namespace SIVA.Modules
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
-
-        /*[Command("Uptime")]
-        public async Task UptimeCommand()
-        {
-            var now = DateTime.UtcNow;
-            var delta = now - 
-            var embed = new EmbedBuilder();
-            embed.WithDescription($"Bot Uptime: {uptime}");
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-        }*/
-
     }
 }

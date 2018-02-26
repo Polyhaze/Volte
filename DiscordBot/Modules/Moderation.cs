@@ -77,7 +77,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.defaultEmbedColour);
-            embed.WithDescription(Utilities.GetFormattedAlert("AddRoleCommandText", role, user.Username + "#" + user.Discriminator.ToString()));
+            embed.WithDescription(Utilities.GetFormattedAlert("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -93,9 +93,38 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.defaultEmbedColour);
-            embed.WithDescription(Utilities.GetFormattedAlert("RemRoleCommandText", role, user.Username + "#" + user.Discriminator.ToString()));
+            embed.WithDescription(Utilities.GetFormattedAlert("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
+        [Command("Levels"), Alias("L")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task Leveling(bool arg)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var embed = new EmbedBuilder();
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithDescription(arg ? "Enabled leveling for this server." : "Disabled leveling for this server.");
+            config.Leveling = arg;
+            GuildConfig.SaveGuildConfig();
+
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
+        [Command("ServerPrefix")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SetGuildPrefix([Remainder]string prefix)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            GuildConfig.SaveGuildConfig();
+            var embed = new EmbedBuilder();
+            embed.WithDescription("Done.");
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            config.CommandPrefix = prefix;
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 

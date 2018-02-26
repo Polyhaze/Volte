@@ -8,6 +8,34 @@
     "SupportCategoryId": 0,
     "SupportRole": "Support",
     "RoleToApply": "Member",
-    "ChannelId": 0
+    "ChannelId": 0,
+    "CommandPrefix": null,
+    "Leveling": true
+  },
+  {
+    "ServerId": 385902350432206849,
+    "CanCloseOwnTicket": true,
+    "ReactionEmoji": "",
+    "SupportChannelId": 0,
+    "SupportChannelName": "",
+    "SupportCategoryId": 0,
+    "SupportRole": "",
+    "RoleToApply": "",
+    "ChannelId": 0,
+    "CommandPrefix": "$",
+    "Leveling": true
+  },
+  {
+    "ServerId": 345733752749817857,
+    "CanCloseOwnTicket": true,
+    "ReactionEmoji": "",
+    "SupportChannelId": 0,
+    "SupportChannelName": "",
+    "SupportCategoryId": 0,
+    "SupportRole": "",
+    "RoleToApply": "",
+    "ChannelId": 0,
+    "CommandPrefix": "$",
+    "Leveling": false
   }
 ]

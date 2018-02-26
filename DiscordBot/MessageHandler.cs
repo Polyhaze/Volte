@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using SIVA.Core.LevelingSystem;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Discord;
 using SIVA.Core.Config;
 
@@ -23,6 +24,7 @@ namespace SIVA
             _client.MessageReceived += HandleCommandAsync;
             _client.MessageReceived += SupportChannelUtils;
             _client.UserJoined += Autorole;
+            _client.JoinedGuild += GuildUtils;
             //_client.ChannelUpdated
             //_client.GuildMemberUpdated
             //_client.MessageDeleted
@@ -55,10 +57,27 @@ namespace SIVA
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
 
-            Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(context.Guild.Id);
+
+            if (config.Leveling)
+            {
+                Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
+            }
+
+            string prefix = " ";
+            switch (config)
+            {
+                case null:
+                    prefix = Config.bot.prefix;
+                    break;
+                default:
+                    prefix = config.CommandPrefix;
+                    break;
+            }
 
             int argPos = 0;
-            if (msg.HasStringPrefix(Config.bot.prefix, ref argPos)
+            if (msg.HasStringPrefix(prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _service.ExecuteAsync(context, argPos);
@@ -71,6 +90,20 @@ namespace SIVA
                     ? $"\\|         -Executed: {result.IsSuccess}"
                     : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
             }
+        }
+
+        public async Task GuildUtils(SocketGuild s)
+        {
+
+            if (s.Owner.Id == 396003871434211339)
+            {
+                await s.LeaveAsync();
+            }
+
+            var config = GuildConfig.GetGuildConfig(s.Id) ?? GuildConfig.CreateGuildConfig(s.Id);
+            config.GuildOwnerId = s.Owner.Id;
+            GuildConfig.SaveGuildConfig();
+
         }
 
         public async Task MassPengChecks(SocketMessage s)
@@ -93,15 +126,11 @@ namespace SIVA
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
 
-            if (msg.Content == "SetupSupport")
-            {
-                var config = GuildConfig.GetGuildConfig(context.Guild.Id);
-                if (config == null)
-                {
-                    await context.Channel.SendMessageAsync("In order to use SIVA's Support Feature, you need to make a Support config!\nDo so with the Support config commands, `$h Support`.");
-                    return;
-                }
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(context.Guild.Id);
 
+            if (msg.Content == "SetupSupport" && msg.Author.Id == config.GuildOwnerId)
+            {
                 var embed = new EmbedBuilder();
                 embed.WithColor(Config.bot.defaultEmbedColour);
                 embed.WithDescription(Utilities.GetAlert("SupportEmbedText"));
@@ -109,6 +138,8 @@ namespace SIVA
                 await context.Channel.SendMessageAsync("", false, embed);
                 config.SupportChannelId = context.Channel.Id;
                 config.SupportChannelName = context.Channel.Name;
+                config.CanCloseOwnTicket = true;
+                config.SupportRole = "Support";
 
             }
             

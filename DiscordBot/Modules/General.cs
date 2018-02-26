@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using SIVA.Core.Config;
 using SIVA.Core.UserAccounts;
 
 namespace SIVA.Modules
@@ -24,8 +25,30 @@ namespace SIVA.Modules
             else
             {
                 var account = UserAccounts.GetAccount(target);
-                await Context.Channel.SendMessageAsync($"**{target.Username}** has {account.XP} XP and {account.Points} points.");
+                await Context.Channel.SendMessageAsync($"**{target.Username}** is level {account.LevelNumber}, and has {account.XP} XP and {account.Points} points.");
             }
+        }
+
+        [Command("Prefix")]
+        public async Task GetPrefixForServer()
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+            var prefix = "";
+            var embed = new EmbedBuilder();
+            switch (config)
+            {
+                case null:
+                    prefix = Config.bot.prefix;
+                    break;
+                default:
+                    prefix = config.CommandPrefix;
+                    break;
+            }
+
+            embed.WithDescription($"The prefix for this server is {prefix}");
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
 
         [Command("Lenny")]

@@ -2,11 +2,11 @@
   {
     "ID": 168548441939509248,
     "Points": 10,
-    "XP": 2540,
+    "XP": 2630,
     "LevelNumber": 7,
     "Warns": [],
     "WarnCount": 2,
-    "Money": 143
+    "Money": 161
   },
   {
     "ID": 410547925597421571,
@@ -56,11 +56,11 @@
   {
     "ID": 360493978371751937,
     "Points": 10,
-    "XP": 10,
+    "XP": 20,
     "LevelNumber": 0,
     "Warns": [],
     "WarnCount": 0,
-    "Money": 2
+    "Money": 4
   },
   {
     "ID": 145765405271523328,
@@ -128,11 +128,11 @@
   {
     "ID": 322199688680046594,
     "Points": 10,
-    "XP": 15,
+    "XP": 25,
     "LevelNumber": 0,
     "Warns": [],
     "WarnCount": 0,
-    "Money": 3
+    "Money": 5
   },
   {
     "ID": 216608905025814528,
@@ -142,5 +142,23 @@
     "Warns": [],
     "WarnCount": 0,
     "Money": 1
+  },
+  {
+    "ID": 407657297007869966,
+    "Points": 10,
+    "XP": 5,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 1
+  },
+  {
+    "ID": 216987162598572032,
+    "Points": 10,
+    "XP": 10,
+    "LevelNumber": 0,
+    "Warns": [],
+    "WarnCount": 0,
+    "Money": 2
   }
 ]

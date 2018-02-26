@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace SIVA
@@ -26,19 +27,20 @@ namespace SIVA
                 bot = JsonConvert.DeserializeObject<BotConfig>(json);
             }
         }
-    }
 
-    public struct BotConfig
-    {
-        public string Token;
-        public string prefix;
-        public bool debug;
-        public string botGameToSet;
-        public string twitchStreamer;
-        public ulong botOwner;
-        public uint defaultEmbedColour;
-        public bool isSelfbot;
-        public string currencySymbol;
-        public ulong feedbackChannelId;
+        public struct BotConfig
+        {
+            public string Token;
+            public string prefix;
+            public bool debug;
+            public string botGameToSet;
+            public string twitchStreamer;
+            public ulong botOwner;
+            public uint defaultEmbedColour;
+            public bool isSelfbot;
+            public string currencySymbol;
+            public ulong feedbackChannelId;
+        }
     }
 }
+

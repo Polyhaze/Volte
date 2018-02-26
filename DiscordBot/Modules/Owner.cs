@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -27,6 +28,20 @@ namespace SIVA.Modules
             await _client.StopAsync();
 
         }
+
+        /*[Command("Blacklist"), Alias("Bl")]
+        [RequireOwner]
+        public async Task AddUserToBlacklist(SocketUser user)
+        {
+            var config = Config.bot.BlacklistedUsers;
+            config.Append(user);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Successfully added {user.Mention} to the blacklist.");
+            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }*/
 
         [Command("Game")]
         [RequireOwner]

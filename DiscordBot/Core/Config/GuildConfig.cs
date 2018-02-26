@@ -26,11 +26,9 @@ namespace SIVA.Core.Config
 
         public static Guild GetGuildConfig(ulong id)
         {
-            var result = from a in Config
-                where a.ServerId == id
-                select a;
+            var result = Config.FirstOrDefault(x => x.ServerId == id);
 
-            var config = result.FirstOrDefault();
+            var config = result;
             return config;
         }
 
@@ -55,6 +53,7 @@ namespace SIVA.Core.Config
             var newConfig = new Guild()
             {
                 ServerId = id,
+                GuildOwnerId = 000000000000,
                 RoleToApply = "",
                 SupportCategoryId = 000000000000000,
                 SupportChannelName = "",
@@ -62,7 +61,8 @@ namespace SIVA.Core.Config
                 CanCloseOwnTicket = true,
                 ReactionEmoji = "",
                 ChannelId = 0000000000000,
-                SupportChannelId = 00000000000000
+                SupportChannelId = 00000000000000,
+                CommandPrefix = "$"
                 
             };
             Config.Add(newConfig);
