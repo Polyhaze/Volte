@@ -31,15 +31,16 @@ namespace SIVA
         public struct BotConfig
         {
             public string Token;
-            public string prefix;
-            public bool debug;
-            public string botGameToSet;
-            public string twitchStreamer;
-            public ulong botOwner;
-            public uint defaultEmbedColour;
-            public bool isSelfbot;
-            public string currencySymbol;
-            public ulong feedbackChannelId;
+            public string Prefix;
+            public bool Debug;
+            public string BotGameToSet;
+            public string TwitchStreamer;
+            public ulong BotOwner;
+            public uint DefaultEmbedColour;
+            public bool IsSelfbot;
+            public string CurrencySymbol;
+            public ulong FeedbackChannelId;
+            public string GoogleApiKey;
         }
     }
 }

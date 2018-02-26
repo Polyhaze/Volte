@@ -21,7 +21,7 @@ namespace SIVA.Modules
             embed.AddField("Achievements", player.Achievements.Count);
             embed.WithThumbnailUrl(player.CompetitiveRankImageUrl);
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -36,7 +36,7 @@ namespace SIVA.Modules
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.AddField("Account ID", profile.AccountId);
             embed.AddField("Platform", profile.PlatformName);
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("https://cdn.atr.cloud/monthly_2017_10/FortniteClient-Win64-Shipping_123.ico_256x256.png.9db57869789ecc4d9c5f72c5a9ba9e30.thumb.png.d8d082ccd47b246fc3773e854b1b2ead.png");
 
             await Context.Channel.SendMessageAsync("", false, embed);

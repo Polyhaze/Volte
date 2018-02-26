@@ -12,7 +12,7 @@ namespace SIVA.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetAlert("HelpCommandNoArgs"));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
@@ -23,7 +23,7 @@ namespace SIVA.Modules
         public async Task HelpCommandWithArgs(string module)
         {
             var embed = new EmbedBuilder();
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 

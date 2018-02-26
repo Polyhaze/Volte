@@ -20,7 +20,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("BanText", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.defaultEmbedColour));
+            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
@@ -30,10 +30,40 @@ namespace SIVA.Modules
         {
             await Context.Guild.AddBanAsync(userid);
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetFormattedAlert("BanText", $"<@{userid}>", $"<@{Context.User.Id}"));
+            embed.WithDescription(Utilities.GetFormattedAlert("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.defaultEmbedColour));
+            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
             await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
+        [Command("WelcomeChannel"), Alias("Wc")]
+        [RequireUserPermission(GuildPermission.ManageGuild)]
+        public async Task SetIdIntoConfig(SocketGuildChannel chnl)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Set this guild's welcome channel to #{chnl}.");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            config.WelcomeChannel = chnl.Id;
+            GuildConfig.SaveGuildConfig();
+            await SendMessage("", false, embed);
+        }
+
+        [Command("WelcomeMessage"), Alias("Wmsg")]
+        [RequireUserPermission(GuildPermission.ManageGuild)]
+        public async Task SetTextIntoConfig([Remainder]string msg)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Set this guild's welcome message to:\n\n ```{msg}```");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            config.WelcomeMessage = msg;
+            GuildConfig.SaveGuildConfig();
+            await SendMessage("", false, embed);
         }
 
         [Command("Kick")]
@@ -44,7 +74,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("KickUserMsg", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.defaultEmbedColour));
+            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
 
             await Context.Channel.SendMessageAsync("", false, embed);
 
@@ -76,7 +106,7 @@ namespace SIVA.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedAlert("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
@@ -92,7 +122,7 @@ namespace SIVA.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedAlert("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
@@ -106,7 +136,7 @@ namespace SIVA.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(arg ? "Enabled leveling for this server." : "Disabled leveling for this server.");
             config.Leveling = arg;
             GuildConfig.SaveGuildConfig();
@@ -123,7 +153,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             config.CommandPrefix = prefix;
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -140,7 +170,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("AutoroleCommandText", arg));
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
 
@@ -170,7 +200,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("WarnCommandText", user.Mention, reason));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             var ua = UserAccounts.GetAccount(user);
             ua.Warns.Add(reason);
             ua.WarnCount = (uint)ua.Warns.Count;
@@ -188,7 +218,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription($"{ua.WarnCount} warn(s) cleared for {user.Mention}");
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             ua.WarnCount = 0;
             ua.Warns.Clear();
             UserAccounts.SaveAccounts();
@@ -210,7 +240,7 @@ namespace SIVA.Modules
                 Count = "WarnsPluralText";
             }
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedAlert(Count, Context.User.Mention, ua.WarnCount.ToString()));
 
             await SendMessage("", false, embed);
@@ -230,7 +260,7 @@ namespace SIVA.Modules
                 Count = "WarnsPluralText";
             }
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedAlert(Count, user.Mention, ua.WarnCount.ToString()));
 
             await SendMessage("", false, embed);

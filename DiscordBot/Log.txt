@@ -836,3 +836,150 @@ Connected to Chaotic
 Connected to Discord-BOT-tutorial
 Connected to SIVA-dev
 Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 685.06 ms
+Connecting
+GET gateway: 60.39 ms
+Connected
+Connected to LG's Legendary Server
+Connected to Chaotic
+Connected to Greem Community
+Connected to Discord-BOT-tutorial
+Connected to mutually depressed teens
+Connected to SIVA-dev
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 481.86 ms
+Connecting
+GET gateway: 73.4 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to Chaotic
+Connected to Discord-BOT-tutorial
+Connected to mutually depressed teens
+Connected to SIVA-dev
+Ready
+POST channels/412702744059576320/messages: 194.19 ms
+POST channels/412702744059576320/messages: 138.33 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 554.94 ms
+Connecting
+GET gateway: 48.57 ms
+Connected
+Connected to Greem Community
+Connected to Chaotic
+Connected to Discord-BOT-tutorial
+Connected to LG's Legendary Server
+Connected to mutually depressed teens
+Connected to SIVA-dev
+Ready
+POST channels/412702744059576320/messages: 240.35 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 511.08 ms
+Connecting
+GET gateway: 48.41 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to Chaotic
+Connected to SIVA-dev
+Connected to Discord-BOT-tutorial
+Connected to mutually depressed teens
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 490.22 ms
+Connecting
+GET gateway: 99.5 ms
+Connected
+Connected to Greem Community
+Connected to LG's Legendary Server
+Connected to mutually depressed teens
+Connected to Discord-BOT-tutorial
+Connected to Chaotic
+Connected to SIVA-dev
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 470.5 ms
+Connecting
+GET gateway: 40.1 ms
+Connected
+Connected to Greem Community
+Connected to Discord-BOT-tutorial
+Connected to Chaotic
+Connected to mutually depressed teens
+Connected to LG's Legendary Server
+Connected to SIVA-dev
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 791.06 ms
+Connecting
+GET gateway: 59.17 ms
+Connected
+Connected to Chaotic
+Connected to LG's Legendary Server
+Connected to Discord-BOT-tutorial
+Connected to Greem Community
+Connected to mutually depressed teens
+Connected to SIVA-dev
+Ready
+Joined eat my ass
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 428.44 ms
+Connecting
+GET gateway: 49.43 ms
+Connected
+Connected to Greem Community
+Connected to eat my ass
+Connected to LG's Legendary Server
+Connected to Discord-BOT-tutorial
+Connected to mutually depressed teens
+Connected to Chaotic
+Connected to SIVA-dev
+Ready
+POST channels/351675272917155840/messages: 92.78 ms
+POST channels/351675272917155840/messages: 103.73 ms
+POST channels/351675272917155840/messages: 82.41 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 621.86 ms
+Connecting
+GET gateway: 139.9 ms
+Connected
+Connected to Greem Community
+Connected to Chaotic
+Connected to Discord-BOT-tutorial
+Connected to LG's Legendary Server
+Connected to eat my ass
+Connected to SIVA-dev
+Connected to mutually depressed teens
+Ready
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 500.84 ms
+Connecting
+GET gateway: 39.77 ms
+Connected
+Connected to LG's Legendary Server
+Connected to Greem Community
+Connected to Chaotic
+Connected to Discord-BOT-tutorial
+Connected to SIVA-dev
+Connected to eat my ass
+Connected to mutually depressed teens
+Ready
+POST channels/382678604523503617/messages: 93.2 ms
+POST channels/382678604523503617/messages: 88.99 ms
+Discord.Net v1.0.2 (API v6)
+GET voice/regions: 384.85 ms
+Connecting
+GET gateway: 41.53 ms
+Connected
+Connected to LG's Legendary Server
+Connected to Chaotic
+Connected to eat my ass
+Connected to Greem Community
+Connected to Discord-BOT-tutorial
+Connected to SIVA-dev
+Connected to mutually depressed teens
+Ready
+POST channels/382678604523503617/messages: 196.33 ms
+POST channels/382678604523503617/messages: 85.87 ms

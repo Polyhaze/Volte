@@ -27,7 +27,7 @@ namespace SIVA.Modules
             embed.WithTitle("User Level");
             embed.WithDescription(Utilities.GetFormattedAlert("LevelCommandText", Context.User.Mention, ua.LevelNumber));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -40,7 +40,7 @@ namespace SIVA.Modules
             embed.WithTitle("User Level");
             embed.WithDescription(Utilities.GetFormattedAlert("LevelCommandText", user.Mention, ua.LevelNumber));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }

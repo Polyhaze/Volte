@@ -30,7 +30,7 @@ namespace SIVA
             _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
-            await _client.SetGameAsync(Config.bot.botGameToSet, $"https://twitch.tv/{Config.bot.twitchStreamer}", StreamType.Twitch);
+            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{Config.bot.TwitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
             _handler = new MessageHandler();
             await _handler.InitializeAsync(_client);
@@ -40,7 +40,7 @@ namespace SIVA
 
         private async static Task Log(LogMessage msg)
         {
-            if (!Config.bot.debug) return;
+            if (!Config.bot.Debug) return;
             Console.WriteLine("debug: " + msg.Message);
             try
             {

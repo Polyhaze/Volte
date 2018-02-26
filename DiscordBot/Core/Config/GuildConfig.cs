@@ -62,7 +62,8 @@ namespace SIVA.Core.Config
                 ReactionEmoji = "",
                 ChannelId = 0000000000000,
                 SupportChannelId = 00000000000000,
-                CommandPrefix = "$"
+                CommandPrefix = "$",
+                WelcomeChannel = 0
                 
             };
             Config.Add(newConfig);

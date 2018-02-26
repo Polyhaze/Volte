@@ -14,6 +14,7 @@
         public ulong ChannelId { get; set; }
         public string CommandPrefix { get; set; }
         public bool Leveling { get; set; }
-
+        public ulong WelcomeChannel { get; set; }
+        public string WelcomeMessage { get; set; }
     }
 }

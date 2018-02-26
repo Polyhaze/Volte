@@ -17,7 +17,7 @@ namespace SIVA.Modules
 
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithDescription(Utilities.GetFormattedAlert("MoneyCommandText", bal));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
             await Context.Channel.SendMessageAsync("", false, embed);

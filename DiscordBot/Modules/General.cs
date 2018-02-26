@@ -38,7 +38,7 @@ namespace SIVA.Modules
             switch (config)
             {
                 case null:
-                    prefix = Config.bot.prefix;
+                    prefix = Config.bot.Prefix;
                     break;
                 default:
                     prefix = config.CommandPrefix;
@@ -47,7 +47,7 @@ namespace SIVA.Modules
 
             embed.WithDescription($"The prefix for this server is {prefix}");
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
@@ -63,10 +63,10 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithDescription(message);
-            embed.WithColor(new Color(Config.bot.defaultEmbedColour));
+            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
 
 
-            if (Config.bot.debug == true)
+            if (Config.bot.Debug)
             {
                 Console.WriteLine("DEBUG: " + Context.User.Username + "#" + Context.User.Discriminator + " used the say command in the channel #" + Context.Channel.Name + " and said '" + message + "'!");
                 await Context.Channel.SendMessageAsync("", false, embed);
@@ -88,7 +88,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedAlert("PickCommandText", selection));
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.defaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -114,7 +114,7 @@ namespace SIVA.Modules
             Embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             Embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");
             Embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            Embed.WithColor(Config.bot.defaultEmbedColour);
+            Embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, Embed);
 

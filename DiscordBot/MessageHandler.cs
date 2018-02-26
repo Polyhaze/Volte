@@ -22,6 +22,7 @@ namespace SIVA
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
+            _client.UserJoined += Welcome;
             _client.MessageReceived += SupportChannelUtils;
             _client.UserJoined += Autorole;
             _client.JoinedGuild += GuildUtils;
@@ -57,8 +58,7 @@ namespace SIVA
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
 
-            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
-                         GuildConfig.CreateGuildConfig(context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id);
 
             if (config.Leveling)
             {
@@ -66,15 +66,6 @@ namespace SIVA
             }
 
             string prefix = " ";
-            switch (config)
-            {
-                case null:
-                    prefix = Config.bot.prefix;
-                    break;
-                default:
-                    prefix = config.CommandPrefix;
-                    break;
-            }
 
             int argPos = 0;
             if (msg.HasStringPrefix(prefix, ref argPos)
@@ -92,15 +83,36 @@ namespace SIVA
             }
         }
 
+        public async Task Welcome(SocketGuildUser s)
+        {
+            var config = GuildConfig.GetGuildConfig(s.Guild.Id);
+
+            if (config.WelcomeChannel != 0)
+            {
+                var msg = config.WelcomeMessage.Replace("{UserMention}", s.Mention);
+                var replaced = msg.Replace("{ServerName}", s.Guild.Name);
+
+                var channel = s.Guild.GetTextChannel(config.WelcomeChannel);
+                var embed = new EmbedBuilder();
+                embed.WithDescription(replaced);
+                embed.WithColor(Config.bot.DefaultEmbedColour);
+                embed.WithFooter($"User ID: {s.Id} | Guild ID: {s.Guild.Id} | Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
+                embed.WithThumbnailUrl(s.Guild.IconUrl);
+                await channel.SendMessageAsync("", false, embed);
+            }
+        }
+
         public async Task GuildUtils(SocketGuild s)
         {
+
+            var config = GuildConfig.GetGuildConfig(s.Id) ??
+                         GuildConfig.CreateGuildConfig(s.Id);
 
             if (s.Owner.Id == 396003871434211339)
             {
                 await s.LeaveAsync();
             }
 
-            var config = GuildConfig.GetGuildConfig(s.Id) ?? GuildConfig.CreateGuildConfig(s.Id);
             config.GuildOwnerId = s.Owner.Id;
             GuildConfig.SaveGuildConfig();
 
@@ -128,11 +140,12 @@ namespace SIVA
 
             var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(context.Guild.Id);
+            config.GuildOwnerId = context.Guild.OwnerId;
 
             if (msg.Content == "SetupSupport" && msg.Author.Id == config.GuildOwnerId)
             {
                 var embed = new EmbedBuilder();
-                embed.WithColor(Config.bot.defaultEmbedColour);
+                embed.WithColor(Config.bot.DefaultEmbedColour);
                 embed.WithDescription(Utilities.GetAlert("SupportEmbedText"));
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed);
@@ -165,7 +178,7 @@ namespace SIVA
                         embed.WithAuthor(msg.Author);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());
                         embed.AddInlineField("What do you need help with?", $"{msg.Content}");
-                        embed.WithColor(Config.bot.defaultEmbedColour);
+                        embed.WithColor(Config.bot.DefaultEmbedColour);
                         embed.WithFooter($"Time Created: {DateTime.Now}");
                         await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");
                         await channel.SendMessageAsync("", false, embed);

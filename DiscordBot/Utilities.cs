@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace SIVA
 {
-    class Utilities : ModuleBase<SocketCommandContext>
+    class Utilities
     {
         private static Dictionary<string, string> alerts; 
 
