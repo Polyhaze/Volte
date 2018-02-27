@@ -149,12 +149,12 @@ namespace SIVA.Modules
         public async Task SetGuildPrefix([Remainder]string prefix)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
-            GuildConfig.SaveGuildConfig();
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             config.CommandPrefix = prefix;
+            GuildConfig.SaveGuildConfig();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
@@ -195,6 +195,7 @@ namespace SIVA.Modules
         }
 
         [Command("Warn")]
+        [RequireUserPermission(GuildPermission.KickMembers)]
         public async Task WarnUser(SocketGuildUser user, [Remainder]string reason)
         {
             var embed = new EmbedBuilder();
@@ -231,14 +232,7 @@ namespace SIVA.Modules
         {
             var embed = new EmbedBuilder();
             var ua = UserAccounts.GetAccount(Context.User);
-            if (ua.WarnCount == 1)
-            {
-                Count = "WarnsSingulText";
-            }
-            else
-            {
-                Count = "WarnsPluralText";
-            }
+            Count = ua.WarnCount == 1 ? "WarnsSingulText" : "WarnsPluralText";
             embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedAlert(Count, Context.User.Mention, ua.WarnCount.ToString()));

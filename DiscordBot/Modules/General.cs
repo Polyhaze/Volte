@@ -61,7 +61,6 @@ namespace SIVA.Modules
         public async Task SayCommand([Remainder]string message)
         {
             var embed = new EmbedBuilder();
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
             embed.WithDescription(message);
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
 
