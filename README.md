@@ -58,23 +58,23 @@ Want to use another character than `$`? Run the command `$serverprefix prefix`. 
   {} = Required Argument
   [] = Optional Argument
 
-  AddRole - Give a user a role. | Aliases: AR
-  Usage: `$ar {@User} {rolename}` (Can have spaces, gotta love C#)
+  AddRole - Give a user a role. | Aliases: AR\n
+  Usage: `$ar {@User} {rolename}` (Can have spaces, gotta love C#)\n\n
   
-  RemRole - Remove a role from a user. | Aliases: RR
-  Usage: `$rr {@User} {rolename}` (Can have spaces)
+  RemRole - Remove a role from a user. | Aliases: RR\n
+  Usage: `$rr {@User} {rolename}` (Can have spaces)\n\n
   
-  Purge - Delete last X messages. | Aliases: None
-  Usage: `$purge {182}` (Messages cannot be older than 2 weeks, Discord API limitation.)
+  Purge - Delete last X messages. | Aliases: None\n
+  Usage: `$purge {182}` (Messages cannot be older than 2 weeks, Discord API limitation.)\n\n
   
-  Warn - Warn a mentioned user. Requires KickMembers permission. | Aliases: None
-  Usage: `$warn {@User} {reason}`
+  Warn - Warn a mentioned user. Requires KickMembers permission. | Aliases: None\n
+  Usage: `$warn {@User} {reason}`\n\n
   
-  Warns - Gets amount of warns for a specified user. 
-  Usage: `$warns [@User]`
+  Warns - Gets amount of warns for a specified user.\n 
+  Usage: `$warns [@User]`\n
   
-  ClearWarns - Clears warns for specified user. Requires Admin permission. | Aliases: CW
-  Usage: `$cw {@User}`
+  ClearWarns - Clears warns for specified user. Requires Admin permission. | Aliases: CW\n
+  Usage: `$cw {@User}`\n\n
   
   Kick - Kicks a user. Requires KickMembers permission.
   Usage: `$kick {@User}`
