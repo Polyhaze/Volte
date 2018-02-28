@@ -45,6 +45,16 @@ namespace SIVA.Modules
             await feedbackChannel.SendMessageAsync("", false, embed);
         }
 
+        [Command("Invite"), Alias("Inv")]
+        public async Task InviteBot() {
+            var embed = new EmbedBuilder();
+            embed.WithDescription("Invite SIVA here:\nhttps://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
         [Command("Calculator"), Alias("Calc")]
         public async Task Calculate(string oper, int val1, int val2 = 0)
         {
