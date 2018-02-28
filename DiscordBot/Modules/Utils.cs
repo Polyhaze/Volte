@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using SIVA.Core.UserAccounts;
 using System.Threading.Tasks;
 using System;
-using Google.Apis.Translate.v2;
 
 namespace SIVA.Modules
 {
