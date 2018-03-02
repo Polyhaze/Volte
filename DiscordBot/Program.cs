@@ -38,7 +38,7 @@ namespace SIVA
             await Task.Delay(-1);
         }
 
-        private async static Task Log(LogMessage msg)
+        private static async Task Log(LogMessage msg)
         {
             if (!Config.bot.Debug) return;
             Console.WriteLine("debug: " + msg.Message);
