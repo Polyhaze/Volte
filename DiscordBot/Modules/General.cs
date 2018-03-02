@@ -33,8 +33,8 @@ namespace SIVA.Modules
         public async Task GetPrefixForServer()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-            var prefix = "";
             var embed = new EmbedBuilder();
+            var prefix = "$";
             switch (config)
             {
                 case null:
@@ -46,7 +46,7 @@ namespace SIVA.Modules
             }
 
             embed.WithDescription($"The prefix for this server is {prefix}");
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -85,8 +85,8 @@ namespace SIVA.Modules
             string selection = options[r.Next(0, options.Length)];
 
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetFormattedAlert("PickCommandText", selection));
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("PickCommandText", selection));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -112,7 +112,7 @@ namespace SIVA.Modules
             Embed.AddField("Client ID", "410547925597421571");
             Embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             Embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");
-            Embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            Embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             Embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, Embed);

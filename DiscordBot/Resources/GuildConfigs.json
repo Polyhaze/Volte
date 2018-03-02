@@ -13,7 +13,12 @@
     "CommandPrefix": "$",
     "Leveling": false,
     "WelcomeChannel": 405810820878958602,
-    "WelcomeMessage": "Welcome to {ServerName}, {UserMention}! If you need any help, check out <#415340286210867207>."
+    "WelcomeMessage": "Welcome to {ServerName}, {UserMention}! If you need any help, check out <#415340286210867207>.",
+    "LeavingMessage": null,
+    "WelcomeColour1": 0,
+    "WelcomeColour2": 0,
+    "WelcomeColour3": 0,
+    "MassPengChecks": true
   },
   {
     "ServerId": 345733752749817857,
@@ -29,7 +34,12 @@
     "CommandPrefix": "$",
     "Leveling": false,
     "WelcomeChannel": 0,
-    "WelcomeMessage": null
+    "WelcomeMessage": null,
+    "LeavingMessage": null,
+    "WelcomeColour1": 0,
+    "WelcomeColour2": 0,
+    "WelcomeColour3": 0,
+    "MassPengChecks": false
   },
   {
     "ServerId": 320924254256365579,
@@ -45,6 +55,32 @@
     "CommandPrefix": "$",
     "Leveling": false,
     "WelcomeChannel": 382678604523503617,
-    "WelcomeMessage": "{UserMention}, {ServerName}"
+    "WelcomeMessage": "{UserMention}, {ServerName}",
+    "LeavingMessage": null,
+    "WelcomeColour1": 0,
+    "WelcomeColour2": 255,
+    "WelcomeColour3": 0,
+    "MassPengChecks": false
+  },
+  {
+    "ServerId": 282659727190523905,
+    "CanCloseOwnTicket": true,
+    "ReactionEmoji": "",
+    "GuildOwnerId": 168548441939509248,
+    "SupportChannelId": 0,
+    "SupportChannelName": "",
+    "SupportCategoryId": 0,
+    "SupportRole": "",
+    "RoleToApply": "",
+    "ChannelId": 363782287852175380,
+    "CommandPrefix": "$",
+    "Leveling": false,
+    "WelcomeChannel": 380808193120534529,
+    "WelcomeMessage": "Welcome to {ServerName}, {UserMention}! We're glad to have you here.",
+    "LeavingMessage": null,
+    "WelcomeColour1": 0,
+    "WelcomeColour2": 255,
+    "WelcomeColour3": 0,
+    "MassPengChecks": false
   }
 ]

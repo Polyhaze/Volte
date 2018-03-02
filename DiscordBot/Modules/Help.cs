@@ -11,9 +11,9 @@ namespace SIVA.Modules
         public async Task HelpCommandWithoutArgs()
         {
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetAlert("HelpCommandNoArgs"));
+            embed.WithDescription(Utilities.GetLocaleMsg("HelpCommandNoArgs"));
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -24,44 +24,44 @@ namespace SIVA.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
             switch (module)
             {
                 case "Economy":
                 case "economy":
-                    embed.WithDescription(Utilities.GetAlert("EconomyCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("EconomyCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "General":
                 case "general":
-                    embed.WithDescription(Utilities.GetAlert("GeneralCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("GeneralCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Leveling":
                 case "leveling":
-                    embed.WithDescription(Utilities.GetAlert("LevelingCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("LevelingCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Moderation":
                 case "moderation":
-                    embed.WithDescription(Utilities.GetAlert("ModerationCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("ModerationCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Utils":
                 case "utils":
-                    embed.WithDescription(Utilities.GetAlert("UtilsCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("UtilsCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Stats":
                 case "stats":
-                    embed.WithDescription(Utilities.GetAlert("StatsCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("StatsCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Support":
                 case "support":
-                    embed.WithDescription(Utilities.GetAlert("SupportCmdList"));
+                    embed.WithDescription(Utilities.GetLocaleMsg("SupportCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
             }

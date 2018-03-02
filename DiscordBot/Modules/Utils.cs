@@ -21,7 +21,7 @@ namespace SIVA.Modules
             embed.AddField("Status", Context.User.Status);
             embed.AddField("Account Created", Context.User.CreatedAt.UtcDateTime);
             embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
@@ -34,8 +34,8 @@ namespace SIVA.Modules
         {
 
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetFormattedAlert("FeedbackCommandText", feedback));
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("FeedbackCommandText", feedback));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithTitle("Feedback to Greem");
 
@@ -44,21 +44,11 @@ namespace SIVA.Modules
             await feedbackChannel.SendMessageAsync("", false, embed);
         }
 
-        [Command("Invite"), Alias("Inv")]
-        public async Task InviteBot() {
-            var embed = new EmbedBuilder();
-            embed.WithDescription("Invite SIVA here:\nhttps://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8");
-            embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-
-            await Context.Channel.SendMessageAsync("", false, embed);
-        }
-
         [Command("Calculator"), Alias("Calc")]
         public async Task Calculate(string oper, int val1, int val2 = 0)
         {
             var embed = new EmbedBuilder();
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithTitle("Calculator");
 
@@ -107,7 +97,7 @@ namespace SIVA.Modules
         public async Task SearchYouTube([Remainder]string query)
         {
             var embed = new EmbedBuilder();
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("https://www.freepnglogos.com/uploads/youtube-logo-hd-8.png");
 
@@ -128,7 +118,7 @@ namespace SIVA.Modules
             embed.AddField("Status", user.Status);
             embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
             embed.WithThumbnailUrl(user.GetAvatarUrl());
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", user.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", user.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
@@ -149,7 +139,7 @@ namespace SIVA.Modules
             embed.AddField("Region", Context.Guild.VoiceRegionId);
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.AddField("Roles", Context.Guild.Roles.Count);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -172,8 +162,8 @@ namespace SIVA.Modules
         public async Task PingTheFuckingBot()
         {
             var embed = new EmbedBuilder();
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithDescription(Utilities.GetFormattedAlert("PingCommandText", Context.Client.Latency));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("PingCommandText", Context.Client.Latency));
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -186,7 +176,7 @@ namespace SIVA.Modules
             string SearchUrl = $"https://google.com/search?q={Search}";
             var embed = new EmbedBuilder();
             embed.WithDescription(SearchUrl);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -208,7 +198,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder() {
                 Description = "Invite: https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8",
             };
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);

@@ -25,8 +25,8 @@ namespace SIVA.Modules
             var ua = UserAccounts.GetAccount(Context.User);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
-            embed.WithDescription(Utilities.GetFormattedAlert("LevelCommandText", Context.User.Mention, ua.LevelNumber));
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -38,8 +38,8 @@ namespace SIVA.Modules
             var ua = UserAccounts.GetAccount(user);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
-            embed.WithDescription(Utilities.GetFormattedAlert("LevelCommandText", user.Mention, ua.LevelNumber));
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);

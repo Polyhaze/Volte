@@ -1,13 +1,14 @@
 ﻿using System.IO;
 using Discord.WebSocket;
 using Newtonsoft.Json;
+using Discord;
 
 namespace SIVA
 {
     public class Config
     {
         private const string configFolder = "Resources";
-        private const string configFile = "config.json";
+        private const string configFile = "BotConfig.json";
         public static BotConfig bot;
 
         static Config()
@@ -41,6 +42,7 @@ namespace SIVA
             public string CurrencySymbol;
             public ulong FeedbackChannelId;
             public string GoogleApiKey;
+            public uint ErrorEmbedColour;
         }
     }
 }

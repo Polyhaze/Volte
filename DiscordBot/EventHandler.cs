@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using System.Reflection;
 using SIVA.Core.LevelingSystem;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using Discord;
 using SIVA.Core.Config;
+using System.IO;
 
 namespace SIVA
 {
-    internal class MessageHandler
+    internal class EventHandler
     {
         private DiscordSocketClient _client;
         private CommandService _service;
@@ -21,23 +21,29 @@ namespace SIVA
             _client = client;
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            _client.MessageReceived += MassPengChecks;
             _client.MessageReceived += HandleCommandAsync;
-            _client.UserJoined += Welcome;
             _client.MessageReceived += SupportChannelUtils;
+            _client.UserJoined += Welcome;
             _client.UserJoined += Autorole;
             _client.JoinedGuild += GuildUtils;
-            //_client.ChannelUpdated
-            //_client.GuildMemberUpdated
-            //_client.MessageDeleted
-            //_client.RoleCreated
-            //_client.UserLeft
-            //_client.UserBanned += BannedUser;
-            //_client.ChannelCreated
+            _client.UserLeft += Goodbye;
         }
 
-        /*private async Task BannedUser(SocketGuildUser user, SocketGuild guild, Task task)
+        /*private async Task BannedUser(SocketGuildUser user, SocketGuild guild)
         {
+            var config = GuildConfig.GetGuildConfig(guild.Id);
+            if (config == null) return;
+
+            var chnl = guild.GetTextChannel(config.ChannelId);
+
             var embed = new EmbedBuilder();
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithDescription($"User Banned: {user.Username} - {user.Nickname}");
+            embed.WithThumbnailUrl("https://yt3.ggpht.com/a-/AJLlDp3QNvGtiRpzGAvxRx0xQLpjOw1I_knKVT9NJA=s900-mo-c-c0xffffffff-rj-k-no");
+            await chnl.SendMessageAsync("", false, embed);
+
+
         }*/
 
         private async Task Autorole(SocketGuildUser user)
@@ -50,13 +56,11 @@ namespace SIVA
             }
         }
 
-
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
             if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
-            if (context.User.IsBot) return;
 
             var config = GuildConfig.GetGuildConfig(context.Guild.Id);
 
@@ -65,13 +69,38 @@ namespace SIVA
                 Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
             }
 
-            string prefix = " ";
+            var prefix = Config.bot.Prefix;
+
+            if (config.CommandPrefix != Config.bot.Prefix)
+            {
+                prefix = config.CommandPrefix;
+            }
 
             int argPos = 0;
             if (msg.HasStringPrefix(prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _service.ExecuteAsync(context, argPos);
+                if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
+                {
+
+                    var embed = new EmbedBuilder();
+                    embed.WithColor(Config.bot.ErrorEmbedColour);
+                    embed.WithFooter("Seems like a weird error? Report it in the SIVA-dev server!");
+
+                    if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+                    {
+                        var nm = msg.Content.Replace($"<@{_client.CurrentUser.Id}> ", config.CommandPrefix);
+                        embed.WithDescription($"Error in command: {nm}\n\nReason: {result.ErrorReason}");
+                        await context.Channel.SendMessageAsync("", false, embed);
+                    }
+                    else
+                    {
+                        var nm = msg.Content;
+                        embed.WithDescription($"Error in command: {nm}\n\nReason: {result.ErrorReason}");
+                        await context.Channel.SendMessageAsync("", false, embed);
+                    }
+                }
                 Console.WriteLine($"\\|-Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})");
                 Console.WriteLine($"\\|   -Command Issued: {msg.Content} ({msg.Id})");
                 Console.WriteLine($"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})");
@@ -80,6 +109,40 @@ namespace SIVA
                 Console.WriteLine(result.IsSuccess
                     ? $"\\|         -Executed: {result.IsSuccess}"
                     : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+
+                if (!File.Exists("Commands.log"))
+                {
+                    File.WriteAllText("Commands.log", "");
+                }
+
+                File.AppendAllText("Commands.log", $"\\|-Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
+                File.AppendAllText("Commands.log", $"\\|   -Command Issued: {msg.Content} ({msg.Id})\n");
+                File.AppendAllText("Commands.log", $"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
+                File.AppendAllText("Commands.log", $"\\|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
+                File.AppendAllText("Commands.log", $"\\|      -Time Issued: {DateTime.Now}");
+                File.AppendAllText("Commands.log", result.IsSuccess
+                    ? $"\\|         -Executed: {result.IsSuccess}\n"
+                    : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
+            }
+        }
+
+        public async Task Goodbye(SocketGuildUser s)
+        {
+            var config = GuildConfig.GetGuildConfig(s.Guild.Id);
+
+            if (config.WelcomeChannel != 0)
+            {
+                var rmsg = config.LeavingMessage.Replace("{UserMention}", $"<@{s.Id}>");
+                var msg = rmsg.Replace("{ServerName}", s.Guild.Name);
+
+                var channel = s.Guild.GetTextChannel(config.WelcomeChannel);
+                var embed = new EmbedBuilder();
+                embed.WithDescription(msg);
+                embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
+                embed.WithFooter($"User ID: {s.Id} | Guild ID: {s.Guild.Id} | Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
+                embed.WithThumbnailUrl(s.Guild.IconUrl);
+                await channel.SendMessageAsync("", false, embed);
+
             }
         }
 
@@ -89,13 +152,13 @@ namespace SIVA
 
             if (config.WelcomeChannel != 0)
             {
-                var msg = config.WelcomeMessage.Replace("{UserMention}", s.Mention);
-                var replaced = msg.Replace("{ServerName}", s.Guild.Name);
+                var rmsg = config.WelcomeMessage.Replace("{UserMention}", s.Mention);
+                var msg = rmsg.Replace("{ServerName}", s.Guild.Name);
 
                 var channel = s.Guild.GetTextChannel(config.WelcomeChannel);
                 var embed = new EmbedBuilder();
-                embed.WithDescription(replaced);
-                embed.WithColor(Config.bot.DefaultEmbedColour);
+                embed.WithDescription(msg);
+                embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
                 embed.WithFooter($"User ID: {s.Id} | Guild ID: {s.Guild.Id} | Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
                 embed.WithThumbnailUrl(s.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
@@ -120,14 +183,32 @@ namespace SIVA
 
         public async Task MassPengChecks(SocketMessage s)
         {
+
             var msg = s as SocketUserMessage;
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
 
-            if (msg.Content.Contains("@everyone") || msg.Content.Contains("@here") && context.User != context.Guild.Owner)
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id);
+
+            if (config.MassPengChecks == true)
             {
-                await msg.DeleteAsync();
-                await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
+                if (msg.Content.Contains("@everyone") || msg.Content.Contains("@here"))
+                {
+                    if (msg.Author != context.Guild.Owner)
+                    {
+                        await msg.DeleteAsync();
+                        await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("message not checked.");
+                return;
             }
         }
 
@@ -146,7 +227,7 @@ namespace SIVA
             {
                 var embed = new EmbedBuilder();
                 embed.WithColor(Config.bot.DefaultEmbedColour);
-                embed.WithDescription(Utilities.GetAlert("SupportEmbedText"));
+                embed.WithDescription(Utilities.GetLocaleMsg("SupportEmbedText"));
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed);
                 config.SupportChannelId = context.Channel.Id;

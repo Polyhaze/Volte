@@ -12,18 +12,18 @@ namespace SIVA
 
         static Utilities()
         {
-            string json = File.ReadAllText("Resources/alerts.json");
+            string json = File.ReadAllText("Resources/Locale.json");
             var data = JsonConvert.DeserializeObject<dynamic>(json);
             alerts = data.ToObject<Dictionary<string, string>>();
         }
 
-        public static string GetAlert(string key)
+        public static string GetLocaleMsg(string key)
         {
             if (alerts.ContainsKey(key)) return alerts[key];
             return "";
         }
 
-        public static string GetFormattedAlert(string key, params object[] parameter)
+        public static string GetFormattedLocaleMsg(string key, params object[] parameter)
         {
             if (alerts.ContainsKey(key))
             {
@@ -32,9 +32,9 @@ namespace SIVA
             return "";
         }
 
-        public static string GetFormattedAlert(string key, object parameter)
+        public static string GetFormattedLocaleMsg(string key, object parameter)
         {
-            return GetFormattedAlert(key, new object[] { parameter });
+            return GetFormattedLocaleMsg(key, new object[] { parameter });
         }
 
     }

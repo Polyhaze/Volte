@@ -8,7 +8,7 @@ namespace SIVA.Core.UserAccounts
     {
         private static List<UserAccount> accounts;
 
-        private static string accountsFile = "Resources/accounts.json";
+        private static string accountsFile = "Resources/UAccounts.json";
 
         static UserAccounts()
         {

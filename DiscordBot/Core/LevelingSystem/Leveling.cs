@@ -20,7 +20,7 @@ namespace SIVA.Core.LevelingSystem
                 if (oldLevel != newLevel)
                 {
                     var embed = new EmbedBuilder();
-                    embed.WithDescription(Utilities.GetFormattedAlert("LeveledUpMessage", user.Username, newLevel));
+                    embed.WithDescription(Utilities.GetFormattedLocaleMsg("LeveledUpMessage", user.Username, newLevel));
                     embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
                     embed.WithTitle("Level up!");
                     embed.AddField("XP Amount", userAccount.XP);

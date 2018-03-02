@@ -19,6 +19,7 @@
   "AddRoleCommandText": "Role {0} has been given to user {1}!",
   "RemRoleCommandText": "Role {0} has been taken away user {1}!",
   "FeedbackCommandText": "Your feedback - `{0}` - has been sent to Greem!",
+  "WelcomeColourText":  "Successfully set this Guild's Welcome Message Colour to `{0}-{1}-{2}`.",
   "SupportEmbedText": "If you send a message in here, a support ticket will be created.\n\nDo not abuse tickets, as most servers will punish you for doing so.\nIf you create a false ticket with the means of meming, you're at the staff member's mercy...",
   //Name these after their module's EXACT name.
   "EconomyCmdList":  "**Economy Module**:\n\nMoney - Aliases: $, bal\n- Shows how much money you have.",

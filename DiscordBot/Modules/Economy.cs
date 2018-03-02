@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using SIVA.Core.UserAccounts;
 using Discord;
-using SIVA;
 
 namespace SIVA.Modules
 {
@@ -15,8 +14,8 @@ namespace SIVA.Modules
             var bal = ua.Money.ToString();
             var embed = new EmbedBuilder();
 
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
-            embed.WithDescription(Utilities.GetFormattedAlert("MoneyCommandText", bal));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 

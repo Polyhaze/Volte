@@ -16,9 +16,9 @@ namespace SIVA.Modules
             var _client = new DiscordSocketClient();
 
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetFormattedAlert("LoggingOutMsg", Context.User.Mention));
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await Context.Channel.SendMessageAsync("", false, embed);
             await _client.LogoutAsync();
             await _client.StopAsync();
@@ -34,7 +34,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription($"Successfully added {user.Mention} to the blacklist.");
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }*/
@@ -48,7 +48,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set the bot's game to {game}");
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await client.SetGameAsync(game);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -59,7 +59,7 @@ namespace SIVA.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set the status to {status}.");
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             var client = new DiscordSocketClient();
@@ -88,9 +88,9 @@ namespace SIVA.Modules
         public async Task LeaveServer()
         {
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetAlert("BotLeftServer"));
+            embed.WithDescription(Utilities.GetLocaleMsg("BotLeftServer"));
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await Context.Channel.SendMessageAsync("", false, embed);
             await Context.Guild.LeaveAsync();
         }
@@ -104,7 +104,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
             embed.WithColor(Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedAlert("CommandFooter", Context.User.Username));
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await Context.Channel.SendMessageAsync("", false, embed);
             await client.SetGameAsync($"in {(Context.Client as DiscordSocketClient).Guilds.Count} servers!", $"https://twitch.tv/{Config.bot.TwitchStreamer}", StreamType.Twitch);
 
