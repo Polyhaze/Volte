@@ -182,26 +182,22 @@ namespace SIVA.Modules
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
-        [Command("AddXp")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AddXP(uint xp)
-        {
-            var account = UserAccounts.GetAccount(Context.User);
-            account.XP += xp;
-            UserAccounts.SaveAccounts();
-            await Context.Channel.SendMessageAsync($"You gained {xp} XP.");
-        }
-
         [Command("Invite")]
         public async Task InviteUserToUseBot()
         {
             var embed = new EmbedBuilder() {
-                Description = "Invite: https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8",
+                Description = "Invite: https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8"
             };
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
+
+        /*[Command("Uptime")]
+        public async Task BotUptime()
+        {
+            var embed = new EmbedBuilder();
+        }*/
     }
 }

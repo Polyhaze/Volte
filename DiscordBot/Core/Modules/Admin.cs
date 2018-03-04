@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using SIVA.Core.Config;
 using System.Linq;
 using Discord;
+using SIVA.Core.UserAccounts;
 
 namespace SIVA.Modules
 {
@@ -30,6 +31,16 @@ namespace SIVA.Modules
             config.MassPengChecks = arg;
             GuildConfig.SaveGuildConfig();
             await SendMessage(embed);
+        }
+
+        [Command("AddXp")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task AddXP(uint xp)
+        {
+            var account = UserAccounts.GetAccount(Context.User);
+            account.XP += xp;
+            UserAccounts.SaveAccounts();
+            await Context.Channel.SendMessageAsync($"You gained {xp} XP.");
         }
 
         [Command("ModlogChannel"), Alias("Mc")]

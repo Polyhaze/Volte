@@ -25,14 +25,13 @@ namespace SIVA.Modules
 
         }
 
-        /*[Command("Blacklist"), Alias("Bl")]
+        /*[Command("Eval")]
         [RequireOwner]
-        public async Task AddUserToBlacklist(SocketUser user)
+        public async Task AddUserToBlacklist([Remainder]string code)
         {
-            var config = Config.bot.BlacklistedUsers;
-            config.Append(user);
+
             var embed = new EmbedBuilder();
-            embed.WithDescription($"Successfully added {user.Mention} to the blacklist.");
+            embed.WithDescription("");
             embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
