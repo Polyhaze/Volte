@@ -119,10 +119,10 @@ namespace SIVA
                 File.AppendAllText("Commands.log", $"\\|   -Command Issued: {msg.Content} ({msg.Id})\n");
                 File.AppendAllText("Commands.log", $"\\|         -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
                 File.AppendAllText("Commands.log", $"\\|       -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
-                File.AppendAllText("Commands.log", $"\\|      -Time Issued: {DateTime.Now}");
+                File.AppendAllText("Commands.log", $"\\|      -Time Issued: {DateTime.Now}\n");
                 File.AppendAllText("Commands.log", result.IsSuccess
-                    ? $"\\|         -Executed: {result.IsSuccess}\n"
-                    : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
+                    ? $"\\|         -Executed: {result.IsSuccess}\n-------------------------------------------------\n"
+                    : $"\\|         -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n-------------------------------------------------\n");
             }
         }
 
