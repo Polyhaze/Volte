@@ -102,8 +102,8 @@ namespace SIVA.Core.Modules
         public async Task InformationCommand()
         {
             var Embed = new EmbedBuilder();
-            Embed.AddField("Version", "1.0.0");
-            Embed.AddField("Author", "Greem#1337");
+            Embed.AddField("Version", "1.1.0");
+            Embed.AddField("Author", "<@168548441939509248>");
             Embed.AddField("Language", "C# with Discord.Net");
             Embed.AddField("Server", "https://discord.io/SIVA");
             Embed.AddField("Servers", (Context.Client as DiscordSocketClient).Guilds.Count);

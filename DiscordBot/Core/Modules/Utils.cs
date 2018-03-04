@@ -9,7 +9,6 @@ namespace SIVA.Core.Modules
 {
     public class Utils : ModuleBase<SocketCommandContext>
     {
-        private DiscordSocketClient _client;
 
         [Command("UserInfo"), Alias("uinfo", "useri", "ui"), Priority(0)]
         public async Task UserInformationCommand()
@@ -29,6 +28,24 @@ namespace SIVA.Core.Modules
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
+        [Command("UserInfo"), Alias("uinfo", "useri", "ui"), Priority(1)]
+        public async Task UserInformationCommand(SocketGuildUser user)
+        {
+            var embed = new EmbedBuilder();
+            embed.AddField("Username", user.Username + "#" + user.Discriminator);
+            embed.AddField("User ID", user.Id);
+            embed.AddField("Game", user.Game);
+            embed.AddField("Status", user.Status);
+            embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
+            embed.WithThumbnailUrl(user.GetAvatarUrl());
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", user.Username));
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithTitle("User Information");
+            embed.AddField("Is Bot", Context.User.IsBot);
+
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
         [Command("Feedback"), Alias("Fb")]
         public async Task SendFeedbackToDev([Remainder]string feedback)
         {
@@ -39,9 +56,8 @@ namespace SIVA.Core.Modules
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithTitle("Feedback to Greem");
 
-            var feedbackGuild = _client.GetGuild(405806471578648588);
-            var feedbackChannel = feedbackGuild.GetTextChannel(SIVA.Config.bot.FeedbackChannelId);
-            await feedbackChannel.SendMessageAsync("", false, embed);
+            var chnl = Context.Client.GetGuild(405806471578648588).GetTextChannel(SIVA.Config.bot.FeedbackChannelId);
+            await chnl.SendMessageAsync("", false, embed);
         }
 
         [Command("Calculator"), Alias("Calc")]
@@ -108,24 +124,6 @@ namespace SIVA.Core.Modules
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
-        [Command("UserInfo"), Alias("uinfo", "useri", "ui"), Priority(1)]
-        public async Task UserInformationCommand(SocketGuildUser user)
-        {
-            var embed = new EmbedBuilder();
-            embed.AddField("Username", user.Username + "#" + user.Discriminator);
-            embed.AddField("User ID", user.Id);
-            embed.AddField("Game", user.Game);
-            embed.AddField("Status", user.Status);
-            embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
-            embed.WithThumbnailUrl(user.GetAvatarUrl());
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", user.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
-            embed.WithTitle("User Information");
-            embed.AddField("Is Bot", Context.User.IsBot);
-
-            await Context.Channel.SendMessageAsync("", false, embed);
-        }
-
         [Command("ServerInfo"), Alias("sinfo", "serveri", "si")]
         public async Task ServerInformationCommand()
         {
@@ -178,6 +176,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(SearchUrl);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }

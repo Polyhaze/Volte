@@ -101,28 +101,30 @@ namespace SIVA
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                 }
-                Console.WriteLine($"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})");
-                Console.WriteLine($"\\|     -Command Issued: {msg.Content} ({msg.Id})");
-                Console.WriteLine($"\\|           -In Guild: {context.Guild.Name} ({context.Guild.Id})");
-                Console.WriteLine($"\\|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})");
+                Console.WriteLine($"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
+                Console.WriteLine($"\\|     -Command Issued: {msg.Content}");
+                Console.WriteLine($"\\|           -In Guild: {context.Guild.Name}");
+                Console.WriteLine($"\\|         -In Channel: #{context.Channel.Name}");
                 Console.WriteLine($"\\|        -Time Issued: {DateTime.Now}");
                 Console.WriteLine(result.IsSuccess
                     ? $"\\|           -Executed: {result.IsSuccess}"
                     : $"\\|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
-
-                if (!File.Exists("Commands.log"))
+                try 
                 {
+                    File.AppendAllText("Commands.log", $"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
+                    File.AppendAllText("Commands.log", $"\\|     -Command Issued: {msg.Content} ({msg.Id})\n");
+                    File.AppendAllText("Commands.log", $"\\|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
+                    File.AppendAllText("Commands.log", $"\\|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
+                    File.AppendAllText("Commands.log", $"\\|        -Time Issued: {DateTime.Now}\n");
+                    File.AppendAllText("Commands.log", result.IsSuccess
+                        ? $"\\|           -Executed: {result.IsSuccess}\n-------------------------------------------------\n"
+                        : $"\\|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n-------------------------------------------------\n");
+                }
+                catch (FileNotFoundException) 
+                {
+                    Console.WriteLine("The Commands.log file wasn't found, creating it now.");
                     File.WriteAllText("Commands.log", "");
                 }
-
-                File.AppendAllText("Commands.log", $"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
-                File.AppendAllText("Commands.log", $"\\|     -Command Issued: {msg.Content} ({msg.Id})\n");
-                File.AppendAllText("Commands.log", $"\\|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
-                File.AppendAllText("Commands.log", $"\\|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
-                File.AppendAllText("Commands.log", $"\\|        -Time Issued: {DateTime.Now}\n");
-                File.AppendAllText("Commands.log", result.IsSuccess
-                    ? $"\\|           -Executed: {result.IsSuccess}\n-------------------------------------------------\n"
-                    : $"\\|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n-------------------------------------------------\n");
             }
         }
 
