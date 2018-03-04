@@ -63,7 +63,12 @@ namespace SIVA.Core.Config
                 ChannelId = 0000000000000,
                 SupportChannelId = 00000000000000,
                 CommandPrefix = "$",
-                WelcomeChannel = 0
+                WelcomeChannel = 0,
+                ModlogCase = 0,
+                WelcomeColour1 = 112,
+                WelcomeColour2 = 0,
+                WelcomeColour3 = 251
+
                 
             };
             Config.Add(newConfig);

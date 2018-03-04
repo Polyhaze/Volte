@@ -207,7 +207,6 @@ namespace SIVA
             }
             else
             {
-                Console.WriteLine("message not checked.");
                 return;
             }
         }
@@ -244,7 +243,6 @@ namespace SIVA
 
                 if (msg.Channel == supportStartChannel)
                 {
-                    //var categoryId = supportConfig.SupportCategoryId;
                     var supportChannelExists = context.Guild.Channels.FirstOrDefault(c => c.Name == $"{supportConfig.SupportChannelName}-{context.User.Id}");
                     var role = context.Guild.Roles.FirstOrDefault(r => r.Name == supportConfig.SupportRole);
 
@@ -258,7 +256,7 @@ namespace SIVA
                         var embed = new EmbedBuilder();
                         embed.WithAuthor(msg.Author);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());
-                        embed.AddInlineField("What do you need help with?", $"{msg.Content}");
+                        embed.WithDescription($"What do you need help with?\n```{msg.Content}```");
                         embed.WithColor(Config.bot.DefaultEmbedColour);
                         embed.WithFooter($"Time Created: {DateTime.Now}");
                         await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");

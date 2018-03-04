@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System;
 using SIVA.Core.Config;
 using SIVA.Core.UserAccounts;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SIVA.Modules
 {

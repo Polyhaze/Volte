@@ -18,7 +18,8 @@
     "WelcomeColour1": 0,
     "WelcomeColour2": 0,
     "WelcomeColour3": 0,
-    "MassPengChecks": true
+    "MassPengChecks": true,
+    "ModlogCase": 0
   },
   {
     "ServerId": 345733752749817857,
@@ -39,7 +40,8 @@
     "WelcomeColour1": 0,
     "WelcomeColour2": 0,
     "WelcomeColour3": 0,
-    "MassPengChecks": false
+    "MassPengChecks": false,
+    "ModlogCase": 0
   },
   {
     "ServerId": 320924254256365579,
@@ -60,7 +62,8 @@
     "WelcomeColour1": 0,
     "WelcomeColour2": 255,
     "WelcomeColour3": 0,
-    "MassPengChecks": false
+    "MassPengChecks": false,
+    "ModlogCase": 0
   },
   {
     "ServerId": 282659727190523905,
@@ -81,6 +84,29 @@
     "WelcomeColour1": 0,
     "WelcomeColour2": 255,
     "WelcomeColour3": 0,
-    "MassPengChecks": false
+    "MassPengChecks": false,
+    "ModlogCase": 0
+  },
+  {
+    "ServerId": 419612620090245140,
+    "CanCloseOwnTicket": true,
+    "ReactionEmoji": "",
+    "GuildOwnerId": 343066908993650698,
+    "SupportChannelId": 0,
+    "SupportChannelName": "",
+    "SupportCategoryId": 0,
+    "SupportRole": "",
+    "RoleToApply": "",
+    "ChannelId": 419649127454998538,
+    "CommandPrefix": "%",
+    "Leveling": false,
+    "WelcomeChannel": 0,
+    "WelcomeMessage": null,
+    "LeavingMessage": null,
+    "WelcomeColour1": 0,
+    "WelcomeColour2": 0,
+    "WelcomeColour3": 0,
+    "MassPengChecks": false,
+    "ModlogCase": 0
   }
 ]

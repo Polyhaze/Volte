@@ -32,6 +32,21 @@ namespace SIVA.Modules
             await SendMessage(embed);
         }
 
+        [Command("ModlogChannel"), Alias("Mc")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task AddIdIntoConfig(SocketGuildChannel chnl)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            config.ChannelId = chnl.Id;
+            GuildConfig.SaveGuildConfig();
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Set #{chnl.Name} as the modlog channel for this server.");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+
+            await SendMessage(embed);
+        }
+
         [Command("SupportReactionEmoji"), Alias("SRE")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddReactToJson(string emoji)
@@ -53,7 +68,7 @@ namespace SIVA.Modules
         }
 
         [Command("SupportChannelName"), Alias("SCN")]
-        [RequireUserPermission(Discord.GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddChannelToConfig(string arg)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
@@ -63,7 +78,7 @@ namespace SIVA.Modules
         }
 
         [Command("SupportCategoryId"), Alias("SCI")]
-        [RequireUserPermission(Discord.GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetIdIntoConfig(ulong id)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
@@ -133,7 +148,7 @@ namespace SIVA.Modules
             }
         }
 
-                [Command("WelcomeChannel"), Alias("Wc")]
+        [Command("WelcomeChannel"), Alias("Wc")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task SetIdIntoConfig(SocketGuildChannel chnl)
         {

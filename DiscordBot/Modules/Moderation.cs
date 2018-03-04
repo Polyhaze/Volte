@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord;
+using SIVA.Core.Config;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using SIVA.Core.UserAccounts;
@@ -9,17 +10,33 @@ namespace SIVA.Modules
 {
     public class Moderation : ModuleBase<SocketCommandContext>
     {
+        private DiscordSocketClient _client;
+
         public string Count = "";
 
         [Command("Ban")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task BanUser(SocketGuildUser user)
+        public async Task BanUser(SocketGuildUser user, [Remainder]string reason = "")
         {
-            await Context.Guild.AddBanAsync(user);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+
+            await Context.Guild.AddBanAsync(user, reason: reason);
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+
+            var Case = config.ModlogCase;
+            var lCase = Case + 1;
+            config.ModlogCase = lCase;
+            GuildConfig.SaveGuildConfig();
+
+            var nembed = new EmbedBuilder();
+            var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
+            nembed.WithDescription($"Case: {lCase} - Type: Ban\nUser: {user.Mention} ({user.Id})\nModerator: {Context.User.Username}#{Context.User.Discriminator}\nReason: {reason}");
+            nembed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
+            nembed.WithColor(Config.bot.DefaultEmbedColour);
+            await channel.SendMessageAsync("", false, nembed);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
@@ -27,25 +44,52 @@ namespace SIVA.Modules
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task BanUserById(ulong userid)
         {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+
             await Context.Guild.AddBanAsync(userid);
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+
+            var Case = config.ModlogCase;
+            var lCase = Case + 1;
+            config.ModlogCase = lCase;
+            GuildConfig.SaveGuildConfig();
+            var nembed = new EmbedBuilder();
+
+            var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
+            nembed.WithDescription($"Case: {lCase} - Type: User ID Ban\nUser: <@{userid}> ({userid})\nModerator: {Context.User.Username}#{Context.User.Discriminator}");
+            nembed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
+            nembed.WithColor(Config.bot.DefaultEmbedColour);
+            await channel.SendMessageAsync("", false, nembed);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
         [Command("Kick")]
         [RequireUserPermission(GuildPermission.KickMembers)]
-        public async Task KickUser(SocketGuildUser user)
+        public async Task KickUser(SocketGuildUser user, [Remainder]string reason = "")
         {
+
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
+
             await user.KickAsync();
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
-
             await SendMessage(embed);
+
+            var Case = config.ModlogCase;
+            var lCase = Case + 1;
+            config.ModlogCase = lCase;
+            GuildConfig.SaveGuildConfig();
+
+            var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
+            embed.WithDescription($"Case: {lCase} - Type: Kick\nUser: <@{user.Id}> ({user.Id})\nModerator: {Context.User.Username}#{Context.User.Discriminator}\nReason: {reason}");
+            embed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+            await channel.SendMessageAsync("", false, embed);
 
         }
 

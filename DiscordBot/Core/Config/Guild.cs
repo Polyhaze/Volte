@@ -21,5 +21,6 @@
         public int WelcomeColour2 { get; set; }
         public int WelcomeColour3 { get; set; }
         public bool MassPengChecks { get; set; }
+        public int ModlogCase { get; set;}
     }
 }
