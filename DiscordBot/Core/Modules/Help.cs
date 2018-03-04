@@ -1,29 +1,32 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
+using SIVA.Core.Config;
 
-namespace SIVA.Modules
+namespace SIVA.Core.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
 
-        [Command("Help"), Alias("H"), Priority(1)]
+        /*[Command("Help"), Alias("H"), Priority(1)]
         public async Task HelpCommandWithoutArgs()
         {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetLocaleMsg("HelpCommandNoArgs"));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithDescription(Utilities.GetFormattedLocaleMsg("HelpCommandNoArgs", config.CommandPrefix));
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
             await Context.Channel.SendMessageAsync("", false, embed);
-        }
+        }*/
 
-        [Command("Help"), Alias("H"), Priority(0)]
-        public async Task HelpCommandWithArgs(string module)
+        [Command("Help"), Alias("H")]
+        public async Task HelpCommand(string module = "")
         {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
@@ -59,9 +62,13 @@ namespace SIVA.Modules
                     embed.WithDescription(Utilities.GetLocaleMsg("StatsCmdList"));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
-                case "Support":
-                case "support":
-                    embed.WithDescription(Utilities.GetLocaleMsg("SupportCmdList"));
+                case "Admin":
+                case "admin":
+                    embed.WithDescription(Utilities.GetLocaleMsg("AdminCmdList"));
+                    await Context.Channel.SendMessageAsync("", false, embed);
+                    break;
+                case "":
+                    embed.WithDescription(Utilities.GetFormattedLocaleMsg("HelpCommandNoArgs", config.CommandPrefix));
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
             }

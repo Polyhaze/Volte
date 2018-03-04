@@ -5,7 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.UserAccounts;
 
-namespace SIVA.Modules
+namespace SIVA.Core.Modules
 {
     public class Leveling : ModuleBase<SocketCommandContext>
     {
@@ -19,12 +19,12 @@ namespace SIVA.Modules
         [Command("Level"), Priority(0)]
         public async Task Level()
         {
-            var ua = UserAccounts.GetAccount(Context.User);
+            var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -32,12 +32,12 @@ namespace SIVA.Modules
         [Command("Level"), Priority(1)]
         public async Task Level(SocketGuildUser user)
         {
-            var ua = UserAccounts.GetAccount(user);
+            var ua = UserAccounts.UserAccounts.GetAccount(user);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }

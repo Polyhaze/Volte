@@ -3,11 +3,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using SIVA.Core.Config;
-using SIVA.Core.UserAccounts;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace SIVA.Modules
+namespace SIVA.Core.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
@@ -24,7 +23,7 @@ namespace SIVA.Modules
             }
             else
             {
-                var account = UserAccounts.GetAccount(target);
+                var account = UserAccounts.UserAccounts.GetAccount(target);
                 await Context.Channel.SendMessageAsync($"**{target.Username}** is level {account.LevelNumber}, and has {account.XP} XP and {account.Points} points.");
             }
         }
@@ -38,7 +37,7 @@ namespace SIVA.Modules
             switch (config)
             {
                 case null:
-                    prefix = Config.bot.Prefix;
+                    prefix = SIVA.Config.bot.Prefix;
                     break;
                 default:
                     prefix = config.CommandPrefix;
@@ -47,7 +46,7 @@ namespace SIVA.Modules
 
             embed.WithDescription($"The prefix for this server is {prefix}");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
@@ -62,12 +61,13 @@ namespace SIVA.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithDescription(message);
-            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            await Context.Message.DeleteAsync();
 
 
-            if (Config.bot.Debug)
+            if (SIVA.Config.bot.Debug)
             {
-                Console.WriteLine("DEBUG: " + Context.User.Username + "#" + Context.User.Discriminator + " used the say command in the channel #" + Context.Channel.Name + " and said '" + message + "'!");
+                Console.WriteLine($"DEBUG: {Context.User.Username}#{Context.User.Discriminator} used the say command in the channel #{Context.Channel.Name} and said \"{Context.Message.Content}\".");
                 await Context.Channel.SendMessageAsync("", false, embed);
             } 
             else
@@ -87,7 +87,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("PickCommandText", selection));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -113,7 +113,7 @@ namespace SIVA.Modules
             Embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             Embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");
             Embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            Embed.WithColor(Config.bot.DefaultEmbedColour);
+            Embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
             await Context.Channel.SendMessageAsync("", false, Embed);
 

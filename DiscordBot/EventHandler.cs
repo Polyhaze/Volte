@@ -38,7 +38,7 @@ namespace SIVA
             var chnl = guild.GetTextChannel(config.ChannelId);
 
             var embed = new EmbedBuilder();
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription($"User Banned: {user.Username} - {user.Nickname}");
             embed.WithThumbnailUrl("https://yt3.ggpht.com/a-/AJLlDp3QNvGtiRpzGAvxRx0xQLpjOw1I_knKVT9NJA=s900-mo-c-c0xffffffff-rj-k-no");
             await chnl.SendMessageAsync("", false, embed);
@@ -69,9 +69,9 @@ namespace SIVA
                 Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
             }
 
-            var prefix = Config.bot.Prefix;
+            var prefix = SIVA.Config.bot.Prefix;
 
-            if (config.CommandPrefix != Config.bot.Prefix)
+            if (config.CommandPrefix != SIVA.Config.bot.Prefix)
             {
                 prefix = config.CommandPrefix;
             }
@@ -85,7 +85,7 @@ namespace SIVA
                 {
 
                     var embed = new EmbedBuilder();
-                    embed.WithColor(Config.bot.ErrorEmbedColour);
+                    embed.WithColor(SIVA.Config.bot.ErrorEmbedColour);
                     embed.WithFooter("Seems like a weird error? Report it in the SIVA-dev server!");
 
                     if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -225,14 +225,13 @@ namespace SIVA
             if (msg.Content == "SetupSupport" && msg.Author.Id == config.GuildOwnerId)
             {
                 var embed = new EmbedBuilder();
-                embed.WithColor(Config.bot.DefaultEmbedColour);
+                embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
                 embed.WithDescription(Utilities.GetLocaleMsg("SupportEmbedText"));
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed);
                 config.SupportChannelId = context.Channel.Id;
                 config.SupportChannelName = context.Channel.Name;
                 config.CanCloseOwnTicket = true;
-                config.SupportRole = "Support";
 
             }
             
@@ -249,7 +248,8 @@ namespace SIVA
                     if (supportChannelExists == null)
                     {
                         await msg.DeleteAsync();
-                        var channel = await context.Guild.CreateTextChannelAsync($"{supportConfig.SupportChannelName}-{context.User.Id}");
+                        var chnl = await context.Guild.CreateTextChannelAsync($"{supportConfig.SupportChannelName}-{context.User.Id}");
+                        var channel = context.Guild.GetTextChannel(chnl.Id);
                         await channel.AddPermissionOverwriteAsync(context.User, OverwritePermissions.AllowAll(channel));
                         await channel.AddPermissionOverwriteAsync(context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
                         await channel.AddPermissionOverwriteAsync(role, OverwritePermissions.AllowAll(channel));
@@ -257,7 +257,7 @@ namespace SIVA
                         embed.WithAuthor(msg.Author);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());
                         embed.WithDescription($"What do you need help with?\n```{msg.Content}```");
-                        embed.WithColor(Config.bot.DefaultEmbedColour);
+                        embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
                         embed.WithFooter($"Time Created: {DateTime.Now}");
                         await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");
                         await channel.SendMessageAsync("", false, embed);

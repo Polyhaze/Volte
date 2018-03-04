@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using SIVA.Core.UserAccounts;
 using System.Linq;
 
-namespace SIVA.Modules
+namespace SIVA.Core.Modules
 {
     public class Moderation : ModuleBase<SocketCommandContext>
     {
@@ -24,7 +24,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
 
             var Case = config.ModlogCase;
             var lCase = Case + 1;
@@ -35,7 +35,7 @@ namespace SIVA.Modules
             var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
             nembed.WithDescription($"Case: {lCase} - Type: Ban\nUser: {user.Mention} ({user.Id})\nModerator: {Context.User.Username}#{Context.User.Discriminator}\nReason: {reason}");
             nembed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
-            nembed.WithColor(Config.bot.DefaultEmbedColour);
+            nembed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await channel.SendMessageAsync("", false, nembed);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -50,7 +50,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
 
             var Case = config.ModlogCase;
             var lCase = Case + 1;
@@ -61,7 +61,7 @@ namespace SIVA.Modules
             var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
             nembed.WithDescription($"Case: {lCase} - Type: User ID Ban\nUser: <@{userid}> ({userid})\nModerator: {Context.User.Username}#{Context.User.Discriminator}");
             nembed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
-            nembed.WithColor(Config.bot.DefaultEmbedColour);
+            nembed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await channel.SendMessageAsync("", false, nembed);
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -77,7 +77,7 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
             await SendMessage(embed);
 
             var Case = config.ModlogCase;
@@ -88,7 +88,7 @@ namespace SIVA.Modules
             var channel = _client.GetGuild(Context.Guild.Id).GetTextChannel(config.ChannelId);
             embed.WithDescription($"Case: {lCase} - Type: Kick\nUser: <@{user.Id}> ({user.Id})\nModerator: {Context.User.Username}#{Context.User.Discriminator}\nReason: {reason}");
             embed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await channel.SendMessageAsync("", false, embed);
 
         }
@@ -119,7 +119,7 @@ namespace SIVA.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
@@ -135,7 +135,7 @@ namespace SIVA.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
@@ -166,11 +166,11 @@ namespace SIVA.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("WarnCommandText", user.Mention, reason));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
-            var ua = UserAccounts.GetAccount(user);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            var ua = UserAccounts.UserAccounts.GetAccount(user);
             ua.Warns.Add(reason);
             ua.WarnCount = (uint)ua.Warns.Count;
-            UserAccounts.SaveAccounts();
+            UserAccounts.UserAccounts.SaveAccounts();
 
             await SendMessage(embed);
 
@@ -180,14 +180,14 @@ namespace SIVA.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ClearUsersWarns(SocketGuildUser user)
         {
-            var ua = UserAccounts.GetAccount(user);
+            var ua = UserAccounts.UserAccounts.GetAccount(user);
             var embed = new EmbedBuilder();
             embed.WithDescription($"{ua.WarnCount} warn(s) cleared for {user.Mention}");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             ua.WarnCount = 0;
             ua.Warns.Clear();
-            UserAccounts.SaveAccounts();
+            UserAccounts.UserAccounts.SaveAccounts();
 
             await SendMessage(embed);
         }
@@ -196,10 +196,10 @@ namespace SIVA.Modules
         public async Task WarnsAmountForGivenUser()
         {
             var embed = new EmbedBuilder();
-            var ua = UserAccounts.GetAccount(Context.User);
+            var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
             Count = ua.WarnCount == 1 ? "WarnsSingulText" : "WarnsPluralText";
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, Context.User.Mention, ua.WarnCount.ToString()));
 
             await SendMessage(embed);
@@ -209,7 +209,7 @@ namespace SIVA.Modules
         public async Task WarnsAmountForGivenUser(SocketGuildUser user)
         {
             var embed = new EmbedBuilder();
-            var ua = UserAccounts.GetAccount(user);
+            var ua = UserAccounts.UserAccounts.GetAccount(user);
             if (ua.WarnCount == 1)
             {
                 Count = "WarnsSingulText";
@@ -219,7 +219,7 @@ namespace SIVA.Modules
                 Count = "WarnsPluralText";
             }
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Config.bot.DefaultEmbedColour);
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, user.Mention, ua.WarnCount.ToString()));
 
             await SendMessage(embed);

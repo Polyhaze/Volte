@@ -20,7 +20,7 @@ namespace SIVA
 
         public async Task StartAsync()
         {
-            if (string.IsNullOrEmpty(Config.bot.Token))
+            if (string.IsNullOrEmpty(SIVA.Config.bot.Token))
             {
                 Console.WriteLine("Token not specified.");
                 Console.ReadLine();
@@ -28,9 +28,9 @@ namespace SIVA
             }
             _client = new DiscordSocketClient(new DiscordSocketConfig{LogLevel = LogSeverity.Verbose});
             _client.Log += Log;
-            await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
+            await _client.LoginAsync(TokenType.Bot, SIVA.Config.bot.Token);
             await _client.StartAsync();
-            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{Config.bot.TwitchStreamer}", StreamType.Twitch);
+            await _client.SetGameAsync(SIVA.Config.bot.BotGameToSet, $"https://twitch.tv/{SIVA.Config.bot.TwitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
             _handler = new EventHandler();
             await _handler.InitializeAsync(_client);
@@ -40,7 +40,7 @@ namespace SIVA
 
         private async static Task Log(LogMessage msg)
         {
-            if (!Config.bot.Debug) return;
+            if (!SIVA.Config.bot.Debug) return;
             Console.WriteLine("INFO: " + msg.Message);
             try
             {
