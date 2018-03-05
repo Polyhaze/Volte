@@ -148,22 +148,30 @@ namespace SIVA
             }
         }
 
-        public async Task Welcome(SocketGuildUser s)
+        public async Task Welcome(SocketGuildUser user)
         {
-            var config = GuildConfig.GetGuildConfig(s.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(user.Guild.Id);
 
             if (config.WelcomeChannel != 0)
             {
-                var rmsg = config.WelcomeMessage.Replace("{UserMention}", s.Mention);
-                var msg = rmsg.Replace("{ServerName}", s.Guild.Name);
+                var rmsg = config.WelcomeMessage.Replace("{UserMention}", user.Mention);
+                var msg = rmsg.Replace("{ServerName}", user.Guild.Name);
 
-                var channel = s.Guild.GetTextChannel(config.WelcomeChannel);
+                var channel = user.Guild.GetTextChannel(config.WelcomeChannel);
                 var embed = new EmbedBuilder();
                 embed.WithDescription(msg);
                 embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
-                embed.WithFooter($"User ID: {s.Id} | Guild ID: {s.Guild.Id} | Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
-                embed.WithThumbnailUrl(s.Guild.IconUrl);
+                embed.WithFooter($"User ID: {user.Id} | Guild ID: {user.Guild.Id} | Guild Owner: {user.Guild.Owner.Username}#{user.Guild.Owner.Discriminator}");
+                embed.WithThumbnailUrl(user.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
+            }
+
+            if (user.Guild.Id == 419612620090245140)
+            {
+                await user.ModifyAsync(x => 
+                {
+                    x.Nickname = $"{user.Username}.cs";
+                });
             }
         }
 
@@ -227,13 +235,14 @@ namespace SIVA
             if (msg.Content == "SetupSupport" && msg.Author.Id == config.GuildOwnerId)
             {
                 var embed = new EmbedBuilder();
-                embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+                embed.WithColor(Config.bot.DefaultEmbedColour);
                 embed.WithDescription(Utilities.GetLocaleMsg("SupportEmbedText"));
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed);
                 config.SupportChannelId = context.Channel.Id;
                 config.SupportChannelName = context.Channel.Name;
                 config.CanCloseOwnTicket = true;
+                GuildConfig.SaveGuildConfig();
 
             }
             
@@ -251,18 +260,25 @@ namespace SIVA
                     {
                         await msg.DeleteAsync();
                         var chnl = await context.Guild.CreateTextChannelAsync($"{supportConfig.SupportChannelName}-{context.User.Id}");
-                        var channel = context.Guild.GetTextChannel(chnl.Id);
-                        await channel.AddPermissionOverwriteAsync(context.User, OverwritePermissions.AllowAll(channel));
-                        await channel.AddPermissionOverwriteAsync(context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
-                        await channel.AddPermissionOverwriteAsync(role, OverwritePermissions.AllowAll(channel));
+                        await chnl.AddPermissionOverwriteAsync(context.User, OverwritePermissions.AllowAll(chnl));
+                        await chnl.AddPermissionOverwriteAsync(context.Guild.EveryoneRole, OverwritePermissions.DenyAll(chnl));
+                        if (role != null)
+                        {
+                            await chnl.AddPermissionOverwriteAsync(role, OverwritePermissions.AllowAll(chnl));
+                        }
+                        
+                        await chnl.ModifyAsync(x =>
+                        {
+                            x.Position = supportStartChannel.Position + 1;
+                        });
                         var embed = new EmbedBuilder();
                         embed.WithAuthor(msg.Author);
                         embed.WithThumbnailUrl(context.User.GetAvatarUrl());
                         embed.WithDescription($"What do you need help with?\n```{msg.Content}```");
-                        embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+                        embed.WithColor(Config.bot.DefaultEmbedColour);
                         embed.WithFooter($"Time Created: {DateTime.Now}");
-                        await channel.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");
-                        await channel.SendMessageAsync("", false, embed);
+                        await chnl.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`");
+                        await chnl.SendMessageAsync("", false, embed);
 
                     }
                     else
