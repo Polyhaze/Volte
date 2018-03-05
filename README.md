@@ -1,6 +1,6 @@
 # SIVA-Issues
 Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions/a8e3cd4d-6001-43ff-ae22-5a7d66420da7/3/badge)
-![Feature Requests](http://feathub.com/Greeem/greeem.github.io)
+[Feature Requests](https://feathub.com/Greeem/greeem.github.io)
 
 ![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA.png)
 
