@@ -108,5 +108,27 @@
     "WelcomeColour3": 0,
     "MassPengChecks": false,
     "ModlogCase": 0
+  },
+  {
+    "ServerId": 385902350432206849,
+    "CanCloseOwnTicket": true,
+    "ReactionEmoji": "",
+    "GuildOwnerId": 168548441939509248,
+    "SupportChannelId": 0,
+    "SupportChannelName": "",
+    "SupportCategoryId": 0,
+    "SupportRole": "",
+    "RoleToApply": "",
+    "ChannelId": 0,
+    "CommandPrefix": "$",
+    "Leveling": false,
+    "WelcomeChannel": 0,
+    "WelcomeMessage": null,
+    "LeavingMessage": null,
+    "WelcomeColour1": 112,
+    "WelcomeColour2": 0,
+    "WelcomeColour3": 251,
+    "MassPengChecks": false,
+    "ModlogCase": 0
   }
 ]

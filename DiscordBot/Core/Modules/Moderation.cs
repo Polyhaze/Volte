@@ -3,7 +3,6 @@ using Discord;
 using SIVA.Core.Config;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using SIVA.Core.UserAccounts;
 using System.Linq;
 
 namespace SIVA.Core.Modules
@@ -37,7 +36,21 @@ namespace SIVA.Core.Modules
             nembed.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
             nembed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await channel.SendMessageAsync("", false, nembed);
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await SendMessage(embed);
+        }
+
+        [Command("Softban"), Alias("Sb")]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        public async Task BanThenUnbanUser(SocketGuildUser user)
+        {
+            var embed = new EmbedBuilder();
+            await Context.Guild.AddBanAsync(user, pruneDays: 7);
+            await Context.Guild.RemoveBanAsync(user);
+            embed.WithDescription($"{Context.User.Mention} softbanned <@{user.Id}>, deleting the last 7 days of messages from that user.");
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+
+            await SendMessage(embed);
         }
 
         [Command("IdBan")]
@@ -64,6 +77,19 @@ namespace SIVA.Core.Modules
             nembed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await channel.SendMessageAsync("", false, nembed);
             await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
+        [Command("Rename")]
+        [RequireUserPermission(GuildPermission.ManageNicknames)]
+        public async Task SetUsersNickname(SocketGuildUser user, [Remainder]string nick)
+        {
+            await user.ModifyAsync(x => x.Nickname = nick);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+
+            await SendMessage(embed);
         }
 
         [Command("Kick")]

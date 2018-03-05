@@ -4,12 +4,24 @@ using Discord.WebSocket;
 using SIVA.Core.Config;
 using System.Linq;
 using Discord;
-using SIVA.Core.UserAccounts;
 
 namespace SIVA.Core.Modules
 {
     public class Admin : ModuleBase<SocketCommandContext>
     {
+        [Command("ServerName")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ModifyServerName([Remainder]string name)
+        {
+            await Context.Guild.ModifyAsync(x => x.Name = name);
+            var embed = new EmbedBuilder();
+            embed.WithDescription($"Set this server's name to **{name}**!");
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+
+            await SendMessage(embed);
+        }
+
         [Command("PengChecks"), Alias("Pc")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetBoolToJson(bool arg)

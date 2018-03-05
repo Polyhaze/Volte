@@ -44,7 +44,7 @@ namespace SIVA.Core.Modules
                     break;
             }
 
-            embed.WithDescription($"The prefix for this server is {prefix}");
+            embed.WithDescription($"The prefix for this server is `{prefix}`");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             await Context.Channel.SendMessageAsync("", false, embed);
@@ -57,12 +57,13 @@ namespace SIVA.Core.Modules
         }
 
         [Command("Say")]
+        [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task SayCommand([Remainder]string message)
         {
             var embed = new EmbedBuilder();
             embed.WithDescription(message);
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
-            await Context.Message.DeleteAsync();
+                await Context.Message.DeleteAsync();
 
 
             if (SIVA.Config.bot.Debug)

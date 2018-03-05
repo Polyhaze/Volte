@@ -69,7 +69,16 @@ namespace SIVA
                 Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
             }
 
-            var prefix = SIVA.Config.bot.Prefix;
+            if (context.Guild.Id == 385902350432206849)
+            {
+                if (msg.Content.Contains("🎷"))
+                {
+                    await msg.DeleteAsync();
+                    await context.Channel.SendMessageAsync(context.User.Mention + " no");
+                }
+            }
+
+            var prefix = Config.bot.Prefix;
 
             if (config.CommandPrefix != SIVA.Config.bot.Prefix)
             {
@@ -83,21 +92,26 @@ namespace SIVA
                 var result = await _service.ExecuteAsync(context, argPos);
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
                 {
+                    string reason = result.ErrorReason;
+                    if (result.ErrorReason == "The server responded with error 403: Forbidden")
+                    {
+                        reason = "I'm not allowed to do that. (Missing permission, most likely.)";
+                    }
 
                     var embed = new EmbedBuilder();
-                    embed.WithColor(SIVA.Config.bot.ErrorEmbedColour);
+                    embed.WithColor(Config.bot.ErrorEmbedColour);
                     embed.WithFooter("Seems like a weird error? Report it in the SIVA-dev server!");
 
                     if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
                     {
                         var nm = msg.Content.Replace($"<@{_client.CurrentUser.Id}> ", config.CommandPrefix);
-                        embed.WithDescription($"Error in command: {nm}\n\nReason: {result.ErrorReason}");
+                        embed.WithDescription($"Error in command: {nm}\n\nReason: {reason}");
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                     else
                     {
                         var nm = msg.Content;
-                        embed.WithDescription($"Error in command: {nm}\n\nReason: {result.ErrorReason}");
+                        embed.WithDescription($"Error in command: {nm}\n\nReason: {reason}");
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                 }
