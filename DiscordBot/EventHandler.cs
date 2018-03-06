@@ -200,6 +200,17 @@ namespace SIVA
                 await s.LeaveAsync();
             }
 
+            var owner = s.Owner;
+            var dmChannel = await owner.GetOrCreateDMChannelAsync();
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"Thanks for adding me to your server, {s.Owner.Username}!");
+            embed.WithDescription($"For quick information, visit the wiki: https://github.com/Greeem/greeem.github.io/wiki \nNeed quick help? Visit the SIVA-dev server and create a support ticket: https://discord.io/SIVA \nTo get started, use the command `$h`. Follow that with a module to get a list of commands!");
+            embed.WithThumbnailUrl(s.Owner.GetAvatarUrl());
+            embed.WithFooter("Still need help? Visit the SIVA-dev server linked above.");
+            embed.WithColor(Config.bot.DefaultEmbedColour);
+
+            await dmChannel.SendMessageAsync("", false, embed);
+
             config.GuildOwnerId = s.Owner.Id;
             GuildConfig.SaveGuildConfig();
 

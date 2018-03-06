@@ -7,7 +7,6 @@ namespace SIVA.Core.Modules
 {
     public class Owner : ModuleBase<SocketCommandContext>
     {
-
         [Command("Shutdown")]
         [RequireOwner]
         public async Task Shutdown()
