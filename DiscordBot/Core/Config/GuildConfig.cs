@@ -67,9 +67,8 @@ namespace SIVA.Core.Config
                 ModlogCase = 0,
                 WelcomeColour1 = 112,
                 WelcomeColour2 = 0,
-                WelcomeColour3 = 251
-
-                
+                WelcomeColour3 = 251,
+                Antilink = false
             };
             Config.Add(newConfig);
             SaveGuildConfig();

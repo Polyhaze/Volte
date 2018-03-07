@@ -19,7 +19,8 @@
     "WelcomeColour2": 0,
     "WelcomeColour3": 0,
     "MassPengChecks": true,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": false
   },
   {
     "ServerId": 345733752749817857,
@@ -41,7 +42,8 @@
     "WelcomeColour2": 0,
     "WelcomeColour3": 0,
     "MassPengChecks": false,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": false
   },
   {
     "ServerId": 320924254256365579,
@@ -63,7 +65,8 @@
     "WelcomeColour2": 255,
     "WelcomeColour3": 0,
     "MassPengChecks": false,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": false
   },
   {
     "ServerId": 282659727190523905,
@@ -85,7 +88,8 @@
     "WelcomeColour2": 255,
     "WelcomeColour3": 0,
     "MassPengChecks": false,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": false
   },
   {
     "ServerId": 419612620090245140,
@@ -107,7 +111,8 @@
     "WelcomeColour2": 0,
     "WelcomeColour3": 0,
     "MassPengChecks": false,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": false
   },
   {
     "ServerId": 385902350432206849,
@@ -129,6 +134,7 @@
     "WelcomeColour2": 0,
     "WelcomeColour3": 251,
     "MassPengChecks": false,
-    "ModlogCase": 0
+    "ModlogCase": 0,
+    "Antilink": true
   }
 ]

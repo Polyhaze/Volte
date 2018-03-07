@@ -22,5 +22,6 @@
         public int WelcomeColour3 { get; set; }
         public bool MassPengChecks { get; set; }
         public int ModlogCase { get; set;}
+        public bool Antilink { get; set; }
     }
 }

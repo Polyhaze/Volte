@@ -45,6 +45,25 @@ namespace SIVA.Core.Modules
             await SendMessage(embed);
         }
 
+        [Command("Antilink")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SetBoolIntoConfig(bool setting)
+        {
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            if (setting == true || setting == false) config.Antilink = setting;
+            GuildConfig.SaveGuildConfig();
+            var embed = new EmbedBuilder();
+            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            if (setting == true || setting == false)
+            {
+                if (setting == true) embed.WithDescription("Enabled Antilink for this server.");
+                if (setting == false) embed.WithDescription("Disabled Antilink for this server.");
+            }
+            await ReplyAsync("", false, embed);
+            
+        }
+
         [Command("AddXp")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddXP(uint xp)

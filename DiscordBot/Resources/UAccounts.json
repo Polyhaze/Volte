@@ -76,8 +76,11 @@
     "Points": 10,
     "XP": 40,
     "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
+    "Warns": [
+      "Invite link at 07/03/2018 17:36:03",
+      "Invite link at 07/03/2018 17:41:37"
+    ],
+    "WarnCount": 2,
     "Money": 8
   },
   {

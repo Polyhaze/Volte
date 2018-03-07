@@ -8,6 +8,7 @@ using System.Linq;
 using Discord;
 using SIVA.Core.Config;
 using System.IO;
+using SIVA.Core.UserAccounts;
 
 namespace SIVA
 {
@@ -62,7 +63,9 @@ namespace SIVA
             if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
 
-            var config = GuildConfig.GetGuildConfig(context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ?? GuildConfig.CreateGuildConfig(context.Guild.Id);
+            config.GuildOwnerId = context.Guild.Owner.Id;
+            GuildConfig.SaveGuildConfig();
 
             if (config.Leveling)
             {
@@ -71,18 +74,55 @@ namespace SIVA
 
             if (context.Guild.Id == 385902350432206849)
             {
-                if (msg.Content.Contains("🎷"))
+                if (msg.Content.Contains("🎷") || msg.Content.Contains("🎺"))
                 {
-                    await msg.DeleteAsync();
-                    await context.Channel.SendMessageAsync(context.User.Mention + " no");
+                    if (msg.Author.Id == 360493978371751937)
+                    {
+                        await msg.DeleteAsync();
+                        await context.Channel.SendMessageAsync(context.User.Mention + " no");
+                    }
                 }
             }
 
             var prefix = Config.bot.Prefix;
 
-            if (config.CommandPrefix != SIVA.Config.bot.Prefix)
+            if (config.CommandPrefix != Config.bot.Prefix)
             {
                 prefix = config.CommandPrefix;
+            }
+
+            try //attempt something
+            {
+                if (config.Antilink == false)
+                {
+                    //if antilink is turned off then proceed to processing the command
+                }
+                else //if it isnt then do the following
+                {
+                    if (msg.Author.Id == config.GuildOwnerId) //if the message is from the guild owner
+                    {
+                        //don't do anything
+                    }
+                    else //if the message isnt from the guild owner, do the following
+                    {
+                        if (msg.Content.Contains("https://discord.gg")) //if the message contains https://discord.gg (it's an invite link), then delete it
+                        {
+                            var offendingAccount = UserAccounts.GetAccount(context.User);
+                            offendingAccount.Warns.Add($"Invite link at {DateTime.Now}");
+                            offendingAccount.WarnCount++;
+                            UserAccounts.SaveAccounts();
+                            await msg.DeleteAsync();
+                            var embed = new EmbedBuilder();
+                            embed.WithDescription($"{context.User.Mention}, no invite links.");
+                            embed.WithColor(Config.bot.DefaultEmbedColour);
+                            await context.Channel.SendMessageAsync("", false, embed);
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException) // if the config variable returns an invalid value then create the guild config
+            {
+                GuildConfig.CreateGuildConfig(context.Guild.Id);
             }
 
             int argPos = 0;
