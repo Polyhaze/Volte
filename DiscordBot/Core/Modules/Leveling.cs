@@ -13,7 +13,7 @@ namespace SIVA.Core.Modules
         public async Task WhatLevelIs(uint xp)
         {
             uint level = (uint)Math.Sqrt(xp / 50);
-            await Context.Channel.SendMessageAsync("The level is " + level);
+            await ReplyAsync("The level is " + level);
         }
 
         [Command("Level"), Priority(0)]
@@ -26,7 +26,7 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Level"), Priority(1)]
@@ -39,7 +39,7 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
     }
 }

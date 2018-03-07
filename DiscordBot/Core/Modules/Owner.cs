@@ -18,7 +18,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
             await _client.LogoutAsync();
             await _client.StopAsync();
 
@@ -34,7 +34,7 @@ namespace SIVA.Core.Modules
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }*/
 
         [Command("Game")]
@@ -48,7 +48,7 @@ namespace SIVA.Core.Modules
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await client.SetGameAsync(game);
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Status")]
@@ -78,7 +78,7 @@ namespace SIVA.Core.Modules
                     break;
             }
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("LeaveServer")]
@@ -89,7 +89,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetLocaleMsg("BotLeftServer"));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
             await Context.Guild.LeaveAsync();
         }
 
@@ -103,7 +103,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription("Done.");
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
             await client.SetGameAsync($"in {(Context.Client as DiscordSocketClient).Guilds.Count} servers!", $"https://twitch.tv/{SIVA.Config.bot.TwitchStreamer}", StreamType.Twitch);
 
         }

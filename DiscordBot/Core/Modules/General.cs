@@ -5,6 +5,8 @@ using System;
 using SIVA.Core.Config;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace SIVA.Core.Modules
 {
@@ -19,12 +21,12 @@ namespace SIVA.Core.Modules
             
             if (Context.Guild.Id == 377879473158356992)
             {
-                await Context.Channel.SendMessageAsync("That command is disabled on this server.");
+                await ReplyAsync("That command is disabled on this server.");
             }
             else
             {
                 var account = UserAccounts.UserAccounts.GetAccount(target);
-                await Context.Channel.SendMessageAsync($"**{target.Username}** is level {account.LevelNumber}, and has {account.XP} XP and {account.Points} points.");
+                await ReplyAsync($"**{target.Username}** is level {account.LevelNumber}, and has {account.XP} XP and {account.Points} points.");
             }
         }
 
@@ -47,14 +49,38 @@ namespace SIVA.Core.Modules
             embed.WithDescription($"The prefix for this server is `{prefix}`");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Lenny")]
         public async Task LennyLol()
         {
-            await Context.Channel.SendMessageAsync("( ͡° ͜ʖ ͡°)");
+            await ReplyAsync("( ͡° ͜ʖ ͡°)");
         }
+
+        /*public class CatReply
+        {
+            public String status { get; set;}
+            public String message { get; set;}
+        }
+
+        [Command("Cat")]
+        public async Task RandomCat()
+        {
+            string json = "";
+            using (WebClient client = new WebClient())
+            {
+                json = client.DownloadString("https://random.cat/meow");
+            }
+
+            var ReplyObject = JsonConvert.DeserializeObject<CatReply>(json);
+            var status = ReplyObject.status;
+            var catImageUrl = ReplyObject.message;
+            var embed = new EmbedBuilder();
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithImageUrl(catImageUrl);
+            await ReplyAsync("", false, embed);
+        }*/
 
         [Command("Say")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
@@ -63,17 +89,17 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(message);
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
-                await Context.Message.DeleteAsync();
+            await Context.Message.DeleteAsync();
 
 
             if (SIVA.Config.bot.Debug)
             {
                 Console.WriteLine($"DEBUG: {Context.User.Username}#{Context.User.Discriminator} used the say command in the channel #{Context.Channel.Name} and said \"{Context.Message.Content}\".");
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await ReplyAsync("", false, embed);
             } 
             else
             {
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await ReplyAsync("", false, embed);
             }
         }
 
@@ -90,13 +116,13 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Roast")]
         public async Task Roast()
         {   //this doesnt have any other roasts as its incomplete
-            await Context.Channel.SendMessageAsync(Context.User.Mention + ", maybe you would talk better if your parents were second cousins rather than first cousins.");
+            await ReplyAsync(Context.User.Mention + ", maybe you would talk better if your parents were second cousins rather than first cousins.");
         }
 
         [Command("Info")]
@@ -116,14 +142,14 @@ namespace SIVA.Core.Modules
             Embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             Embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, Embed);
+            await ReplyAsync("", false, Embed);
 
         }
 
         [Command("Suggest")]
         public async Task Suggest()
         {
-            await Context.Channel.SendMessageAsync("https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
+            await ReplyAsync("https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
         }
 
     }

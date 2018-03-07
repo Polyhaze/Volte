@@ -25,7 +25,7 @@ namespace SIVA.Core.Modules
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("UserInfo"), Alias("uinfo", "useri", "ui"), Priority(1)]
@@ -43,7 +43,7 @@ namespace SIVA.Core.Modules
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Feedback"), Alias("Fb")]
@@ -101,11 +101,11 @@ namespace SIVA.Core.Modules
                     embed.WithDescription($"The answer is `{result}`");
                 }
 
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await ReplyAsync("", false, embed);
             }
             else
             {
-                await Context.Channel.SendMessageAsync("You forgot to specify an operation. Valid operations are `add`, `sub`, `mult`, `div`, `power`, and `sqrt`.");
+                await ReplyAsync("You forgot to specify an operation. Valid operations are `add`, `sub`, `mult`, `div`, `power`, and `sqrt`.");
             }
         }
 
@@ -121,7 +121,7 @@ namespace SIVA.Core.Modules
             var newQuery = query.Replace(' ', '+');
             embed.WithDescription(url + newQuery);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("ServerInfo"), Alias("sinfo", "serveri", "si")]
@@ -140,7 +140,7 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         /*[Command("Poll")]
@@ -164,7 +164,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("PingCommandText", Context.Client.Latency));
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Google")]
@@ -178,7 +178,7 @@ namespace SIVA.Core.Modules
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
             embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Invite")]
@@ -190,7 +190,7 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         /*[Command("Uptime")]

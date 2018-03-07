@@ -52,7 +52,7 @@ namespace SIVA.Core.Modules
             var account = UserAccounts.UserAccounts.GetAccount(Context.User);
             account.XP += xp;
             UserAccounts.UserAccounts.SaveAccounts();
-            await Context.Channel.SendMessageAsync($"You gained {xp} XP.");
+            await ReplyAsync($"You gained {xp} XP.");
         }
 
         [Command("ModlogChannel"), Alias("Mc")]
@@ -77,7 +77,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.ReactionEmoji = emoji;
             GuildConfig.SaveGuildConfig();
-            await Context.Channel.SendMessageAsync($":{emoji}: set as the Support Ticket close emoji for this Guild.");
+            await ReplyAsync($":{emoji}: set as the Support Ticket close emoji for this Guild.");
         }
 
         [Command("SupportCloseOwnTicket"), Alias("SCOT")]
@@ -87,7 +87,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.CanCloseOwnTicket = arg;
             GuildConfig.SaveGuildConfig();
-            await Context.Channel.SendMessageAsync($"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
+            await ReplyAsync($"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
         }
 
         [Command("SupportChannelName"), Alias("SCN")]
@@ -97,7 +97,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportChannelName = arg;
             GuildConfig.SaveGuildConfig();
-            await Context.Channel.SendMessageAsync($"{arg} set as the Support channel name.");
+            await ReplyAsync($"{arg} set as the Support channel name.");
         }
 
         [Command("SupportCategoryId"), Alias("SCI")]
@@ -107,7 +107,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportCategoryId = id;
             GuildConfig.SaveGuildConfig();
-            await Context.Channel.SendMessageAsync($"{id.ToString()} set as the support channel category ID.");
+            await ReplyAsync($"{id.ToString()} set as the support channel category ID.");
         }
 
         [Command("SupportRole"), Alias("SR")]
@@ -117,7 +117,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportRole = role;
             GuildConfig.SaveGuildConfig();
-            await Context.Channel.SendMessageAsync($"`{role}` set as the role to manage tickets.");
+            await ReplyAsync($"`{role}` set as the role to manage tickets.");
         }
 
         [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(0)] 
@@ -130,18 +130,18 @@ namespace SIVA.Core.Modules
 
             if (config.CanCloseOwnTicket == false)
             {
-                await Context.Channel.SendMessageAsync("This server doesn't allow you to close your own ticket!");
+                await ReplyAsync("This server doesn't allow you to close your own ticket!");
             }
             else
             {
                 if (supportChannel == null)
                 {
-                    await Context.Channel.SendMessageAsync("You don't have a support channel made.");
+                    await ReplyAsync("You don't have a support channel made.");
                 }
                 else
                 {
                     await supportChannel.DeleteAsync();
-                    await Context.Channel.SendMessageAsync($"Your ticket - \"{supportChannel.Name}\" - has been deleted.");
+                    await ReplyAsync($"Your ticket - \"{supportChannel.Name}\" - has been deleted.");
                 }
             }
         }
@@ -155,18 +155,18 @@ namespace SIVA.Core.Modules
 
             if (config.CanCloseOwnTicket == false)
             {
-                await Context.Channel.SendMessageAsync("This server doesn't allow you to close your own ticket!");
+                await ReplyAsync("This server doesn't allow you to close your own ticket!");
             }
             else
             {
                 if (supportChannel == null)
                 {
-                    await Context.Channel.SendMessageAsync("You don't have a support channel made.");
+                    await ReplyAsync("You don't have a support channel made.");
                 }
                 else
                 {
                     await supportChannel.DeleteAsync();
-                    await Context.Channel.SendMessageAsync($"Your ticket - \"{supportChannel.Name}\" - has been deleted.");
+                    await ReplyAsync($"Your ticket - \"{supportChannel.Name}\" - has been deleted.");
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace SIVA.Core.Modules
         
         public async Task SendMessage(Embed embed, string message = "", bool isTTS = false)
         {
-            await Context.Channel.SendMessageAsync(message, isTTS, embed);
+            await ReplyAsync(message, isTTS, embed);
         }
     }
 }

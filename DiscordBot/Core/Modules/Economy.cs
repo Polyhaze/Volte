@@ -20,7 +20,7 @@ namespace SIVA.Core.Modules
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Pay")]
@@ -34,7 +34,7 @@ namespace SIVA.Core.Modules
             if (ua.Money < amt)
             {
                 embed.WithDescription($"You don't have enough money, {Context.User.Mention}!");
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await ReplyAsync("", false, embed);
             }
             else
             {
@@ -42,7 +42,7 @@ namespace SIVA.Core.Modules
                 ua1.Money = ua1.Money + amt;
                 UserAccounts.UserAccounts.SaveAccounts();
                 embed.WithDescription($"{Context.User.Mention} paid {user.Mention} {SIVA.Config.bot.CurrencySymbol}{amt}!");
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await ReplyAsync("", false, embed);
             }
         }
     }

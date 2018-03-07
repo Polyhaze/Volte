@@ -1,6 +1,5 @@
 ﻿using Discord.Commands;
 using Discord;
-using SIVA.Core.Config;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Linq;
@@ -17,17 +16,16 @@ namespace SIVA.Core.Modules
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task BanUser(SocketGuildUser user, [Remainder]string reason = "")
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
 
             await Context.Guild.AddBanAsync(user, 7, reason: reason);
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
-            var BotUtils = new BotUtils();
+            await ReplyAsync("", false, embed);
 
-            await BotUtils.Reply(embed);
         }
+
 
         [Command("Softban"), Alias("Sb")]
         [RequireUserPermission(GuildPermission.BanMembers)]
@@ -39,16 +37,14 @@ namespace SIVA.Core.Modules
             embed.WithDescription($"{Context.User.Mention} softbanned <@{user.Id}>, deleting the last 7 days of messages from that user.");
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            var BotUtils = new BotUtils();
+            await ReplyAsync("", false, embed);
 
-            await BotUtils.Reply(embed);
         }
 
         [Command("IdBan")]
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task BanUserById(ulong userid, [Remainder]string reason = "")
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             if (reason == "")
             {
                 reason = $"Banned by {Context.User.Username}#{Context.User.Discriminator}";
@@ -58,9 +54,8 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
-            var BotUtils = new BotUtils();
 
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Rename")]
@@ -72,9 +67,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription($"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            var BotUtils = new BotUtils();
-
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Kick")]
@@ -82,16 +75,12 @@ namespace SIVA.Core.Modules
         public async Task KickUser(SocketGuildUser user, [Remainder]string reason = "")
         {
 
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-
             await user.KickAsync();
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
-            var BotUtils = new BotUtils();
-
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
 
         }
 
@@ -102,13 +91,13 @@ namespace SIVA.Core.Modules
             if (config == null)
             {
                 var newConfig = Modlogs.CreateModlogConfig(Context.Guild.Id, Context.Channel.Id);
-                await Context.Channel.SendMessageAsync("Modlog config created and channel set to current channel!");
+                await ReplyAsync("Modlog config created and channel set to current channel!");
             }
             else
             {
                 config.channelId = Context.Channel.Id;
                 Modlogs.SaveModlogConfig();
-                await Context.Channel.SendMessageAsync("Modlog channel set to current channel!");
+                await ReplyAsync("Modlog channel set to current channel!");
             }
         }*/
 
@@ -125,9 +114,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
-            var BotUtils = new BotUtils();
-
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("RemRole"), Alias("RR")]
@@ -143,9 +130,7 @@ namespace SIVA.Core.Modules
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
-            var BotUtils = new BotUtils();
-
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Purge")]
@@ -156,7 +141,7 @@ namespace SIVA.Core.Modules
             amount++;
             if (amount < 1)
             {
-                await Context.Channel.SendMessageAsync("You cannot delete 0 messages, ya dingus!");
+                await ReplyAsync("You cannot delete 0 messages, ya dingus!");
             }
             else
             {
@@ -177,9 +162,7 @@ namespace SIVA.Core.Modules
             ua.Warns.Add(reason);
             ua.WarnCount = (uint)ua.Warns.Count;
             UserAccounts.UserAccounts.SaveAccounts();
-            var BotUtils = new BotUtils();
-
-            await BotUtils.Reply(embed);
+            await ReplyAsync("", false, embed);
 
         }
 
@@ -196,9 +179,8 @@ namespace SIVA.Core.Modules
             ua.Warns.Clear();
             UserAccounts.UserAccounts.SaveAccounts();
             
-            var BotUtils = new BotUtils();
+            await ReplyAsync("", false, embed);
 
-            await BotUtils.Reply(embed);
         }
 
         [Command("Warns"), Priority(0)]
@@ -210,9 +192,8 @@ namespace SIVA.Core.Modules
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, Context.User.Mention, ua.WarnCount.ToString()));
-            var BotUtils = new BotUtils();
+            await ReplyAsync("", false, embed);
 
-            await BotUtils.Reply(embed);
         }
 
         [Command("Warns"), Priority(1)]
@@ -232,9 +213,8 @@ namespace SIVA.Core.Modules
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, user.Mention, ua.WarnCount.ToString()));
 
-            var utils = new BotUtils();
+            await ReplyAsync("", false, embed);
 
-            await utils.Reply(embed);
         }
     }
 }
