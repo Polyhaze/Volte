@@ -137,6 +137,10 @@ namespace SIVA.Core.Bot
                     {
                         reason = "I'm not allowed to do that. (Missing permission, most likely.)";
                     }
+                    else if (result.ErrorReason == "Sequence contains no elements") 
+                    {
+                        reason = $"{msg.MentionedUsers.FirstOrDefault().Mention} doesn't have any.";
+                    }
 
                     var embed = new EmbedBuilder();
                     embed.WithColor(Config.bot.ErrorEmbedColour);

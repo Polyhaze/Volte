@@ -4,8 +4,12 @@
     "Points": 10,
     "XP": 2640,
     "LevelNumber": 7,
-    "Warns": [],
-    "WarnCount": 2,
+    "Warns": [
+      "being gay",
+      "being gay v2",
+      "being gay v3"
+    ],
+    "WarnCount": 3,
     "Money": 53
   },
   {

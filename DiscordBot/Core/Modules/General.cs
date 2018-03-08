@@ -57,30 +57,6 @@ namespace SIVA.Core.Modules
             await ReplyAsync("( ͡° ͜ʖ ͡°)");
         }
 
-        /*public class CatReply
-        {
-            public String status { get; set;}
-            public String message { get; set;}
-        }
-
-        [Command("Cat")]
-        public async Task RandomCat()
-        {
-            string json = "";
-            using (WebClient client = new WebClient())
-            {
-                json = client.DownloadString("https://random.cat/meow");
-            }
-
-            var ReplyObject = JsonConvert.DeserializeObject<CatReply>(json);
-            var status = ReplyObject.status;
-            var catImageUrl = ReplyObject.message;
-            var embed = new EmbedBuilder();
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithImageUrl(catImageUrl);
-            await ReplyAsync("", false, embed);
-        }*/
-
         [Command("Say")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task SayCommand([Remainder]string message)

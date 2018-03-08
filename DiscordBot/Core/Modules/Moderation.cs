@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Linq;
 using SIVA.Core.Bot;
+using System;
 
 namespace SIVA.Core.Modules
 {
@@ -139,10 +140,9 @@ namespace SIVA.Core.Modules
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         public async Task PurgeMessages(int amount)
         {
-            amount++;
             if (amount < 1)
             {
-                await ReplyAsync("You cannot delete 0 messages, ya dingus!");
+                await ReplyAsync("You cannot delete less than 1 message.");
             }
             else
             {
@@ -192,7 +192,7 @@ namespace SIVA.Core.Modules
             Count = ua.WarnCount == 1 ? "WarnsSingulText" : "WarnsPluralText";
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, Context.User.Mention, ua.WarnCount.ToString()));
+            embed.WithDescription($"{Context.User.Mention} has {ua.WarnCount} warns and their most recent warn is `{ua.Warns.Last()}`");
             await ReplyAsync("", false, embed);
 
         }
@@ -212,7 +212,7 @@ namespace SIVA.Core.Modules
             }
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, user.Mention, ua.WarnCount.ToString()));
+            embed.WithDescription($"{user.Mention} has {ua.WarnCount} warns and their most recent warn is `{ua.Warns.Last()}`");
 
             await ReplyAsync("", false, embed);
 
