@@ -195,7 +195,7 @@ namespace SIVA
                 var embed = new EmbedBuilder();
                 embed.WithDescription(msg);
                 embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
-                embed.WithFooter($"User ID: {s.Id} | Guild ID: {s.Guild.Id} | Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
+                embed.WithFooter($"Guild Owner: {s.Guild.Owner.Username}#{s.Guild.Owner.Discriminator}");
                 embed.WithThumbnailUrl(s.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
 
@@ -215,7 +215,7 @@ namespace SIVA
                 var embed = new EmbedBuilder();
                 embed.WithDescription(msg);
                 embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
-                embed.WithFooter($"User ID: {user.Id} | Guild ID: {user.Guild.Id} | Guild Owner: {user.Guild.Owner.Username}#{user.Guild.Owner.Discriminator}");
+                embed.WithFooter($"Guild Owner: {user.Guild.Owner.Username}#{user.Guild.Owner.Discriminator}");
                 embed.WithThumbnailUrl(user.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
             }

@@ -74,6 +74,20 @@ namespace SIVA.Core.Modules
             await ReplyAsync($"You gained {xp} XP.");
         }
 
+        [Command("Award")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task GiveUserMoney(SocketGuildUser user, int amt)
+        {
+            var embed = new EmbedBuilder();
+            var acc = UserAccounts.UserAccounts.GetAccount(user);
+            acc.Money = acc.Money + amt;
+            UserAccounts.UserAccounts.SaveAccounts();
+            embed.WithDescription($"{amt} added to **{user.Username}#{user.Discriminator}**'s balance.");
+            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+
+            await SendMessage(embed);
+        }
+
         [Command("ModlogChannel"), Alias("Mc")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddIdIntoConfig(SocketGuildChannel chnl)
@@ -218,34 +232,61 @@ namespace SIVA.Core.Modules
             config.WelcomeMessage = msg;
             GuildConfig.SaveGuildConfig();
             await SendMessage(embed);
+
+            if (config.WelcomeChannel != 0)
+            {
+                var rmsg = config.WelcomeMessage.Replace("{UserMention}", Context.User.Mention);
+                var msg1 = rmsg.Replace("{ServerName}", Context.Guild.Name);
+
+                var channel = Context.Guild.GetTextChannel(config.WelcomeChannel);
+                var embed2 = new EmbedBuilder();
+                embed2.WithDescription(msg1);
+                embed2.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
+                embed2.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
+                embed2.WithThumbnailUrl(Context.Guild.IconUrl);
+                await channel.SendMessageAsync("", false, embed2);
+            }
         }
 
         [Command("WelcomeMessage"), Alias("Wmsg"), Priority(1)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task SetTextIntoConfig()
+        public async Task SendWMSGToUser()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithDescription(config.WelcomeMessage);
+            embed.WithDescription($"The welcome message for this server is: `{config.WelcomeMessage}`");
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await SendMessage(embed);
         }
 
         [Command("LeavingMessage"), Alias("Lmsg")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task SetTextIntoConfig1([Remainder]string msg)
+        public async Task SetTextIntoConfigL([Remainder]string msg)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithDescription($"Set this guild's leaving message to:\n\n ```{msg}```");
+            embed.WithDescription($"Set this guild's leaving message to:\n\n ```{msg}```\n\nSending a test welcome message to <#{config.WelcomeChannel}>");
             embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             config.LeavingMessage = msg;
             GuildConfig.SaveGuildConfig();
             await SendMessage(embed);
+
+            if (config.WelcomeChannel != 0)
+            {
+                var rmsg = config.LeavingMessage.Replace("{UserMention}", Context.User.Mention);
+                var msg1 = rmsg.Replace("{ServerName}", Context.Guild.Name);
+
+                var channel = Context.Guild.GetTextChannel(config.WelcomeChannel);
+                var embed2 = new EmbedBuilder();
+                embed2.WithDescription(msg1);
+                embed2.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
+                embed2.WithFooter($"Guild Owner: {Context.Guild.Owner.Username}#{Context.Guild.Owner.Discriminator}");
+                embed2.WithThumbnailUrl(Context.Guild.IconUrl);
+                await channel.SendMessageAsync("", false, embed2);
+            }
         }
 
         [Command("WelcomeColour"), Alias("Wcl", "WelcomeColor")]
