@@ -262,7 +262,7 @@ namespace SIVA.Core.Modules
 
         [Command("LeavingMessage"), Alias("Lmsg")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task SetTextIntoConfigL([Remainder]string msg)
+        public async Task SetTextIntoConfigLol([Remainder]string msg)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
