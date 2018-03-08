@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using SIVA.Core.Config;
 using System.Linq;
 using Discord;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules
 {
@@ -16,7 +17,7 @@ namespace SIVA.Core.Modules
             await Context.Guild.ModifyAsync(x => x.Name = name);
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set this server's name to **{name}**!");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await SendMessage(embed);
@@ -29,7 +30,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             if (arg == true)
             {
@@ -54,7 +55,7 @@ namespace SIVA.Core.Modules
             GuildConfig.SaveGuildConfig();
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             if (setting == true || setting == false)
             {
                 if (setting == true) embed.WithDescription("Enabled Antilink for this server.");
@@ -83,7 +84,7 @@ namespace SIVA.Core.Modules
             acc.Money = acc.Money + amt;
             UserAccounts.UserAccounts.SaveAccounts();
             embed.WithDescription($"{amt} added to **{user.Username}#{user.Discriminator}**'s balance.");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await SendMessage(embed);
         }
@@ -97,7 +98,7 @@ namespace SIVA.Core.Modules
             GuildConfig.SaveGuildConfig();
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set #{chnl.Name} as the modlog channel for this server.");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await SendMessage(embed);
@@ -212,7 +213,7 @@ namespace SIVA.Core.Modules
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set this guild's welcome channel to #{chnl}.");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             config.WelcomeChannel = chnl.Id;
             GuildConfig.SaveGuildConfig();
@@ -227,7 +228,7 @@ namespace SIVA.Core.Modules
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set this guild's welcome message to:\n\n ```{msg}```");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             config.WelcomeMessage = msg;
             GuildConfig.SaveGuildConfig();
@@ -256,7 +257,7 @@ namespace SIVA.Core.Modules
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithDescription($"The welcome message for this server is: `{config.WelcomeMessage}`");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             await SendMessage(embed);
         }
 
@@ -268,7 +269,7 @@ namespace SIVA.Core.Modules
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set this guild's leaving message to:\n\n ```{msg}```\n\nSending a test welcome message to <#{config.WelcomeChannel}>");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             config.LeavingMessage = msg;
             GuildConfig.SaveGuildConfig();
@@ -300,7 +301,7 @@ namespace SIVA.Core.Modules
             config.WelcomeColour3 = arg3;
             GuildConfig.SaveGuildConfig();
             var embed = new EmbedBuilder();
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("WelcomeColourText", arg1, arg2, arg3));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
@@ -314,7 +315,7 @@ namespace SIVA.Core.Modules
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(arg ? "Enabled leveling for this server." : "Disabled leveling for this server.");
             config.Leveling = arg;
             GuildConfig.SaveGuildConfig();
@@ -330,7 +331,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             config.CommandPrefix = prefix;
             GuildConfig.SaveGuildConfig();
             await SendMessage(embed);
@@ -348,7 +349,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("AutoroleCommandText", arg));
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await SendMessage(embed);
 

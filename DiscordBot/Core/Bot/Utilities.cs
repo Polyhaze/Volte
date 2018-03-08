@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Discord.Commands;
 
-namespace SIVA
+namespace SIVA.Core.Bot
 {
     class Utilities
     {

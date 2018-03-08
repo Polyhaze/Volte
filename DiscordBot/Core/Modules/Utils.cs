@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using SIVA.Core.UserAccounts;
+using SIVA.Core.Bot;
 using System.Threading.Tasks;
 using System;
 
@@ -21,7 +21,7 @@ namespace SIVA.Core.Modules
             embed.AddField("Account Created", Context.User.CreatedAt.UtcDateTime);
             embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
 
@@ -39,7 +39,7 @@ namespace SIVA.Core.Modules
             embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
             embed.WithThumbnailUrl(user.GetAvatarUrl());
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", user.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithTitle("User Information");
             embed.AddField("Is Bot", Context.User.IsBot);
 
@@ -53,10 +53,10 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("FeedbackCommandText", feedback));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithTitle("Feedback to Greem");
 
-            var chnl = Context.Client.GetGuild(405806471578648588).GetTextChannel(SIVA.Config.bot.FeedbackChannelId);
+            var chnl = Context.Client.GetGuild(405806471578648588).GetTextChannel(Bot.Config.bot.FeedbackChannelId);
             await chnl.SendMessageAsync("", false, embed);
         }
 
@@ -65,7 +65,7 @@ namespace SIVA.Core.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithTitle("Calculator");
 
             if (oper != "")
@@ -114,7 +114,7 @@ namespace SIVA.Core.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("https://www.freepnglogos.com/uploads/youtube-logo-hd-8.png");
 
             var url = "https://youtube.com/results?search_query=";
@@ -138,7 +138,7 @@ namespace SIVA.Core.Modules
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.AddField("Roles", Context.Guild.Roles.Count);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await ReplyAsync("", false, embed);
         }
@@ -162,7 +162,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("PingCommandText", Context.Client.Latency));
-            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(Bot.Config.bot.DefaultEmbedColour));
 
             await ReplyAsync("", false, embed);
         }
@@ -175,7 +175,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(SearchUrl);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(Bot.Config.bot.DefaultEmbedColour));
             embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
 
             await ReplyAsync("", false, embed);
@@ -188,7 +188,7 @@ namespace SIVA.Core.Modules
                 Description = "Invite: https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8"
             };
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await ReplyAsync("", false, embed);
         }

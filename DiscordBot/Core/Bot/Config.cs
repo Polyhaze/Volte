@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using Newtonsoft.Json;
 using Discord;
 
-namespace SIVA
+namespace SIVA.Core.Bot
 {
     public class Config
     {

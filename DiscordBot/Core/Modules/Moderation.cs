@@ -3,6 +3,7 @@ using Discord;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Linq;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules
 {
@@ -21,7 +22,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(Bot.Config.bot.DefaultEmbedColour));
             await ReplyAsync("", false, embed);
 
         }
@@ -35,7 +36,7 @@ namespace SIVA.Core.Modules
             await Context.Guild.AddBanAsync(user, 7);
             await Context.Guild.RemoveBanAsync(user);
             embed.WithDescription($"{Context.User.Mention} softbanned <@{user.Id}>, deleting the last 7 days of messages from that user.");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
 
@@ -53,7 +54,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(Bot.Config.bot.DefaultEmbedColour));
 
             await ReplyAsync("", false, embed);
         }
@@ -65,7 +66,7 @@ namespace SIVA.Core.Modules
             await user.ModifyAsync(x => x.Nickname = nick);
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
@@ -79,7 +80,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(SIVA.Config.bot.DefaultEmbedColour));
+            embed.WithColor(new Color(Bot.Config.bot.DefaultEmbedColour));
             await ReplyAsync("", false, embed);
 
         }
@@ -110,7 +111,7 @@ namespace SIVA.Core.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
@@ -126,7 +127,7 @@ namespace SIVA.Core.Modules
 
             var embed = new EmbedBuilder();
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
@@ -157,7 +158,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription(Utilities.GetFormattedLocaleMsg("WarnCommandText", user.Mention, reason));
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             var ua = UserAccounts.UserAccounts.GetAccount(user);
             ua.Warns.Add(reason);
             ua.WarnCount = (uint)ua.Warns.Count;
@@ -174,7 +175,7 @@ namespace SIVA.Core.Modules
             var embed = new EmbedBuilder();
             embed.WithDescription($"{ua.WarnCount} warn(s) cleared for {user.Mention}");
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             ua.WarnCount = 0;
             ua.Warns.Clear();
             UserAccounts.UserAccounts.SaveAccounts();
@@ -190,7 +191,7 @@ namespace SIVA.Core.Modules
             var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
             Count = ua.WarnCount == 1 ? "WarnsSingulText" : "WarnsPluralText";
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, Context.User.Mention, ua.WarnCount.ToString()));
             await ReplyAsync("", false, embed);
 
@@ -210,7 +211,7 @@ namespace SIVA.Core.Modules
                 Count = "WarnsPluralText";
             }
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription(Utilities.GetFormattedLocaleMsg(Count, user.Mention, ua.WarnCount.ToString()));
 
             await ReplyAsync("", false, embed);

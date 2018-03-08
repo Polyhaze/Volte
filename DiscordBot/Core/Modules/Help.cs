@@ -2,31 +2,19 @@
 using Discord.Commands;
 using System.Threading.Tasks;
 using SIVA.Core.Config;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-
-        /*[Command("Help"), Alias("H"), Priority(1)]
-        public async Task HelpCommandWithoutArgs()
-        {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder();
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg("HelpCommandNoArgs", config.CommandPrefix));
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
-
-            await ReplyAsync("", false, embed);
-        }*/
-
         [Command("Help"), Alias("H")]
+        [Summary("Shows commands for the bot.")]
         public async Task HelpCommand(string module = "")
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithThumbnailUrl("http://www.clker.com/cliparts/b/F/3/q/f/M/help-browser-hi.png");
 
@@ -40,11 +28,6 @@ namespace SIVA.Core.Modules
                 case "General":
                 case "general":
                     embed.WithDescription(Utilities.GetLocaleMsg("GeneralCmdList"));
-                    await ReplyAsync("", false, embed);
-                    break;
-                case "Leveling":
-                case "leveling":
-                    embed.WithDescription(Utilities.GetLocaleMsg("LevelingCmdList"));
                     await ReplyAsync("", false, embed);
                     break;
                 case "Moderation":
@@ -67,7 +50,7 @@ namespace SIVA.Core.Modules
                     embed.WithDescription(Utilities.GetLocaleMsg("AdminCmdList"));
                     await ReplyAsync("", false, embed);
                     break;
-                case "":
+                default:
                     embed.WithDescription(Utilities.GetFormattedLocaleMsg("HelpCommandNoArgs", config.CommandPrefix));
                     await ReplyAsync("", false, embed);
                     break;

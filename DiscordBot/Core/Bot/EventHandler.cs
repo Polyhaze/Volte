@@ -10,7 +10,7 @@ using SIVA.Core.Config;
 using System.IO;
 using SIVA.Core.UserAccounts;
 
-namespace SIVA
+namespace SIVA.Core.Bot
 {
     internal class EventHandler
     {
@@ -24,7 +24,7 @@ namespace SIVA
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += MassPengChecks;
             _client.MessageReceived += HandleCommandAsync;
-            _client.MessageReceived += SupportChannelUtils;
+            _client.MessageReceived += SupportSystem;
             _client.UserJoined += Welcome;
             _client.UserJoined += Autorole;
             _client.JoinedGuild += GuildUtils;
@@ -39,7 +39,7 @@ namespace SIVA
             var chnl = guild.GetTextChannel(config.ChannelId);
 
             var embed = new EmbedBuilder();
-            embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithDescription($"User Banned: {user.Username} - {user.Nickname}");
             embed.WithThumbnailUrl("https://yt3.ggpht.com/a-/AJLlDp3QNvGtiRpzGAvxRx0xQLpjOw1I_knKVT9NJA=s900-mo-c-c0xffffffff-rj-k-no");
             await chnl.SendMessageAsync("", false, embed);
@@ -107,10 +107,10 @@ namespace SIVA
                     {
                         if (msg.Content.Contains("https://discord.gg")) //if the message contains https://discord.gg (it's an invite link), then delete it
                         {
-                            var offendingAccount = UserAccounts.GetAccount(context.User);
+                            var offendingAccount = UserAccounts.UserAccounts.GetAccount(context.User);
                             offendingAccount.Warns.Add($"Invite link at {DateTime.Now}");
                             offendingAccount.WarnCount++;
-                            UserAccounts.SaveAccounts();
+                            UserAccounts.UserAccounts.SaveAccounts();
                             await msg.DeleteAsync();
                             var embed = new EmbedBuilder();
                             embed.WithDescription($"{context.User.Mention}, no invite links.");
@@ -286,7 +286,7 @@ namespace SIVA
             }
         }
 
-        public async Task SupportChannelUtils(SocketMessage s)
+        public async Task SupportSystem(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
             if (msg == null) return;
@@ -334,7 +334,8 @@ namespace SIVA
                         
                         await chnl.ModifyAsync(x =>
                         {
-                            x.Position = supportStartChannel.Position + 1;
+                            x.Position = supportStartChannel.Position - 1;
+                            x.Topic = $"Support ticket created by <@{msg.Author.Id}> at {DateTime.UtcNow} (UTC)";
                         });
                         var embed = new EmbedBuilder();
                         embed.WithAuthor(msg.Author);

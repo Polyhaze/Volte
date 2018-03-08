@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using SIVA;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.LevelingSystem
 {
@@ -21,7 +21,7 @@ namespace SIVA.Core.LevelingSystem
                 {
                     var embed = new EmbedBuilder();
                     embed.WithDescription(Utilities.GetFormattedLocaleMsg("LeveledUpMessage", user.Username, newLevel));
-                    embed.WithColor(SIVA.Config.bot.DefaultEmbedColour);
+                    embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
                     embed.WithTitle("Level up!");
                     embed.AddField("XP Amount", userAccount.XP);
 

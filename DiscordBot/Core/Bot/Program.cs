@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using System.IO;
 
-namespace SIVA
+namespace SIVA.Core.Bot
 {
     internal class Program
     {
@@ -20,7 +20,7 @@ namespace SIVA
 
         public async Task StartAsync()
         {
-            if (string.IsNullOrEmpty(SIVA.Config.bot.Token))
+            if (string.IsNullOrEmpty(Config.bot.Token))
             {
                 Console.WriteLine("Token not specified.");
                 Console.ReadLine();
@@ -30,7 +30,7 @@ namespace SIVA
             _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
-            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{SIVA.Config.bot.TwitchStreamer}", StreamType.Twitch);
+            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{Bot.Config.bot.TwitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
             _handler = new EventHandler();
             await _handler.InitializeAsync(_client);
@@ -40,7 +40,7 @@ namespace SIVA
 
         private async static Task Log(LogMessage msg)
         {
-            if (!SIVA.Config.bot.Debug) return;
+            if (!Bot.Config.bot.Debug) return;
             Console.WriteLine("INFO: " + msg.Message);
             try
             {
