@@ -16,7 +16,9 @@ Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions
 ### Invite SIVA
 > https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8
   
-**By default, this has the Administrator permission checked. Keep this if you're using the support system. If you're not, feel free to uncheck. It's still advised to keep it checked.**
+**By default, this has the Administrator permission checked. Keep this if you're using the support system. If you're not, feel free to uncheck. It's still advised to keep it checked. If you don't want admin, here's another invite link.**
+https://discordapp.com/api/oauth2/authorize?client_id=320942091049893888&permissions=201682038&scope=bot
+If you want support and refuse to give the bot the admin permission if it needs it, you won't get support. Period.
 
 ### What is SIVA-dev (bot)
 It's the debugging copy of SIVA. It's only online when I am debugging new changes. Recommended to not use it, the invite here is mostly for my purposes. If you see this in SIVA-dev, donotfear.
