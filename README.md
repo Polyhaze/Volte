@@ -29,8 +29,11 @@ For the secondary bot invite: `https://discordapp.com/api/oauth2/authorize?clien
 
 Manage {blank}: admin module.
 Kick/Ban members: what else do you think this is for?
+
 Use external emojis: for a WHO PENG emoji on the ping command and future commands
+
 Embed Links: REQUIRED. all commands are embeds and therefore require this.
+
 Send/Read Messages: obvious.
   
 
