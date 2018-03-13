@@ -1,5 +1,7 @@
-# SIVA-Issues
+# SIVA's Wiki and Issue Tracker
 Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions/a8e3cd4d-6001-43ff-ae22-5a7d66420da7/3/badge)
+
+This repository contains NO CODE. This is simply for the wiki.
 
 [Feature Requests](https://feathub.com/Greeem/greeem.github.io)
 
