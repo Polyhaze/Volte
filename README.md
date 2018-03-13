@@ -30,6 +30,7 @@ It's the debugging copy of SIVA. It's only online when I am debugging new change
 For the secondary bot invite: `https://discordapp.com/api/oauth2/authorize?client_id=320942091049893888&permissions=201682038&scope=bot` there's a few permissions checked. Here's a rundown of what they all do.
 
 Manage {blank}: admin module.
+
 Kick/Ban members: what else do you think this is for?
 
 Use external emojis: for a WHO PENG emoji on the ping command and future commands
