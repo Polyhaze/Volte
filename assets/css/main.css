@@ -48,6 +48,8 @@
 		-webkit-text-size-adjust: none;
 	}
 
+
+
 /* Box Model */
 
 	*, *:before, *:after {
@@ -1672,7 +1674,7 @@
 	}
 
 	body, input, select, textarea {
-		font-family: "Merriweather", Georgia, serif;
+		font-family: "Consolas", Georgia, serif;
 		font-weight: 300;
 		font-size: 1rem;
 		line-height: 2.375;
@@ -4478,5 +4480,52 @@
 			box-shadow: 0 0 1.5rem 0 rgba(0, 0, 0, 0.2);
 			visibility: visible;
 		}
-
+		
+	.count-particles{
+		background: #000022;
+		position: absolute;
+		top: 48px;
+		left: 0;
+		width: 80px;
+		color: #13E8E9;
+		font-size: .8em;
+		text-align: left;
+		text-indent: 4px;
+		line-height: 14px;
+		padding-bottom: 2px;
+		font-family: Helvetica, Arial, sans-serif;
+		font-weight: bold;
 	}
+
+	.js-count-particles{
+		font-size: 1.1em;
+	}
+
+	#stats,
+	.count-particles{
+		-webkit-user-select: none;
+		margin-top: 5px;
+		margin-left: 5px;
+		}
+
+	#stats{
+		border-radius: 3px 3px 0 0;
+		overflow: hidden;
+	}
+
+	.count-particles{
+		border-radius: 0 0 3px 3px;
+	}
+
+	#particles-js{
+		width: 100%;
+		height: 100%;
+		background-color: #b61924;
+		background-image: url('');
+		background-size: cover;
+		background-position: 50% 50%;
+		background-repeat: no-repeat;
+	}
+
+}
+	
