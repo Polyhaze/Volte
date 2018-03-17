@@ -1,5 +1,9 @@
 # SIVA's Wiki and Issue Tracker
 Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions/a8e3cd4d-6001-43ff-ae22-5a7d66420da7/3/badge)
+[![Discord Bots](https://discordbots.org/api/widget/status/320942091049893888.svg)](https://discordbots.org/bot/320942091049893888)
+[![Discord Bots](https://discordbots.org/api/widget/upvotes/320942091049893888.svg)](https://discordbots.org/bot/320942091049893888)
+[![Discord Bots](https://discordbots.org/api/widget/lib/320942091049893888.svg)](https://discordbots.org/bot/320942091049893888)
+
 
 This repository contains NO CODE. This is simply for the wiki.
 
