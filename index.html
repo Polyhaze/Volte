@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>SIVA</title>
+		<link rel="shortcut icon" href="/Images/SIVA.ico" />
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -10,17 +11,23 @@
 	</head>
 	<body class="is-loading">
 
+		<div id="particles-js">
 		<!-- Wrapper -->
 			<!-- <div id="wrapper" class="fade-in">-->
-			<div id="particles-js"></div>
 			<!--<div class="count-particles">
 				<span class="js-count-particles">--</span>
 			</div>-->
+			<script src="assets/js/particles.js"></script>
+			<script>
+				particlesJS.load('particles-js', 'particles.json', function() {
+					console.log('particles.json loaded.');
+				});
+			</script>
 
 				<!-- Intro -->
 					<div id="intro">
 						<h1>SIVA</h1>
-						<p>A free, fully functional Discord bot created by <a href="https://twitter.com/Greeeem_">Greem</a>, written in <a href="https://github.com/RogueException/Discord.Net">Discord.NET</a> by RogueException.</p>
+						<p>A free, fully functional Discord bot created by <a href="https://twitter.com/Greeeem_">@Greem#1337</a>, written in <a href="https://github.com/RogueException/Discord.Net">Discord.Net</a> by RogueException.</p>
 						<ul class="actions">
 							<li><a href="#header" class="button icon solo fa-arrow-down scrolly">Continue</a></li>
 						</ul>
@@ -65,7 +72,6 @@
 
 				<!-- Main -->
 					<div id="main">
-
 						<!-- Featured Post -->
 							<article class="post featured">
 								<header class="major">
@@ -86,18 +92,17 @@
 					<div id="copyright">
 						<ul><li>&copy; Greem 2018. All rights reserved. <a href="https://discord.gg/ubXaT6u">Need help? Join my Discord.</a></li></ul>
 					</div>
-
 			</div>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/app.js"></script>
-			<script src="assets/js/particles.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
 			<script src="assets/js/jquery.scrolly.min.js"></script>
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+		</div>
 	</body>
 </html>
