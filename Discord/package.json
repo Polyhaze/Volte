@@ -1,0 +1,21 @@
+{
+  "name": "discord-manager",
+  "version": "0.0.2",
+  "description": "A discord.js manager for your discord bot",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moustacheminer/discord-manager.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moustacheminer/discord-manager/issues"
+  },
+  "homepage": "https://github.com/moustacheminer/discord-manager#readme",
+  "dependencies": {
+    "eslint": "^4.2.0"
+  }
+}

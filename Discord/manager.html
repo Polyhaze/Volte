@@ -1,0 +1,130 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+		<title>Discord Manager</title>
+
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
+        <link href="css/style.css" type="text/css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+	</head>
+	<body>
+		<nav class="light-blue lighten-1" role="navigation">
+			<div class="nav-wrapper container">
+				<div class="brand-logo white-text"><a href="index.html">Discord Manager</a></div>
+			</div>
+		</nav>
+
+		<main>
+			<!-- Guilds list -->
+			<div class="container">
+				<div class="row">
+					<div class="col s12 m4">
+						<h4>Basic Stats</h4>
+						<div id="stats">
+							<span>Users: Loading...</span><br>
+							<span>Bots: Loading...</span><br>
+							<span>Total: Loading...</span><br>
+							<span>Guilds: Loading...</span><br>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<h4>Functions</h4>
+						<div class="row">
+							<a class="waves-effect waves-light btn tooltipped" data-position="top" data-delay="50" data-tooltip="Change the username of your bot" onclick="usernameModal()">
+								Edit Username
+							</a>
+						</div>
+						<div class="row">
+							<a class="waves-effect waves-light btn tooltipped" data-position="top" data-delay="50" data-tooltip="Change the profile picture of your bot" onclick="avatarModal()">
+								Edit Avatar
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m12">
+						<h4>Live Analytics</h4>
+					</div>
+					<div class="col s12 m6">
+						<h5>Users</h5>
+						<canvas id="userchart" style="width: 100%; height: 100px;" width="500" height="100"></canvas>
+					</div>
+					<div class="col s12 m6">
+						<h5>Guilds</h5>
+						<canvas id="guildchart" style="width: 100%; height: 100px;" width="500" height="100"></canvas>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m12">
+						<h4>Guilds</h4>
+						<h5>Purge Utility</h5>
+					</div>
+					<div class="col s4 m2">
+						<a class="waves-effect waves-light btn-large red tooltipped" data-position="top" data-delay="50" data-tooltip="Prune bots that follow the criteria set." onclick="removeModal(client, html.minimumusers.value, html.percentagebots.value)">Prune</a>
+					</div>
+					<div class="input-field col s4 m5">
+						<select id="percentagebots">
+							<option value="30">30% bots</option>
+							<option value="40">40% bots</option>
+							<option value="50" selected>50% bots</option>
+							<option value="60">60% bots</option>
+							<option value="70">70% bots</option>
+							<option value="80">80% bots</option>
+							<option value="90">90% bots</option>
+						</select>
+						<label>Minimum Bot Percentage</label>
+					</div>
+					<div class="input-field col s4 m5">
+						<select id="minimumusers">
+							<option value="5">5 users</option>
+							<option value="10">10 users</option>
+							<option value="20" selected>20 users</option>
+							<option value="40">40 users</option>
+							<option value="60">60 users</option>
+							<option value="80">80 users</option>
+							<option value="100">100 users</option>
+						</select>
+						<label>Minimum Accounts</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m12">
+						<ul class="collapsible" data-collapsible="accordion" id="guilds">
+							<div class="collapsible-header">Loading</div>
+      						<div class="collapsible-body">Your bot data is loading...</div>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="modal" class="modal"></div>
+		</main>
+
+		<footer class="page-footer light-blue lighten-1" style="margin: 0px;">
+			<div class="container">
+				<div class="row">
+					<div class="col s12">
+						<p class="grey-text text-lighten-4">
+							Now with 100% more submodules
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-copyright light-blue">
+				<div class="container">
+					Copyright 2015 - 2017, Moustacheminer Server Services
+				</div>
+			</div>
+		</footer>
+
+		<script src="js/discord/discord.11.1-dev.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.29.1/smoothie.min.js"></script>
+		<script src="js/init.js"></script>
+		<script src="js/mustache/mustache.js"></script>
+		<script src="js/manager.js"></script>
+	</body>
+</html>

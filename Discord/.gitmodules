@@ -1,0 +1,8 @@
+[submodule "js/mustache"]
+	path = js/mustache
+	url = https://github.com/janl/mustache.js.git
+	branch = master
+[submodule "js/discord"]
+	path = js/discord
+	url = https://github.com/hydrabolt/discord.js.git
+	branch = webpack

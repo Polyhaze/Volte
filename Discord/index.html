@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+		<title>Discord Manager</title>
+
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+        <link href="css/style.css" type="text/css" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="light-blue lighten-1" role="navigation">
+			<div class="nav-wrapper container">
+				<div class="brand-logo white-text"><a href="index.html">Discord Manager</a></div>
+			</div>
+		</nav>
+
+		<main>
+			<div class="container">
+				<div class="section">
+					<div class="row">
+						<div class="col s12 center">
+							<h1>DiscordManager</h1>
+							<h5 id="error"></h5>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="section">
+					<div class="row">
+						<form class="col s12" action="manager.html">
+							<div class="row">
+								<div class="input-field col s12">
+									<input id="token" type="text" name="token">
+									<label for="token">Token (press enter to continue)</label>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="section">
+					<div class="row">
+						<div class="col s12 center">
+							<p><i>Did you know? You can bookmark the manager page to come back to it later without typing your token in again?</i></p>
+							<!--<p><b>It is recommended that you DO NOT use this service without self-hosting. If not self hosting, only use testing bots to test the server.</b></p>
+							<p><b>NEVER USE YOUR LEGITIMATE TOKENS ON NON-SELF HOSTED SITES, THEY ARE RECORDED BY THE WEBSERVER</b></p>
+							<p>For instructions on how to self host, go to <a href="https://github.com/moustacheminer/discord-manager">my GitHub repo</a></p>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<footer class="page-footer light-blue lighten-1" style="margin: 0px;">
+			<div class="container">
+				<div class="row">
+					<div class="col s12">
+						<p class="grey-text text-lighten-4">
+							My name is John Madden, and I would like a pizza.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-copyright light-blue">
+				<div class="container">
+					Copyright 2015 - 2017, Moustacheminer Server Services
+				</div>
+			</div>
+		</footer>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+		<script src="js/init.js"></script>
+		<script src="js/login.js"></script>
+	</body>
+</html>
