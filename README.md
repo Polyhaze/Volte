@@ -5,11 +5,11 @@ Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions
 [![Discord Bots](https://discordbots.org/api/widget/lib/320942091049893888.svg)](https://discordbots.org/bot/320942091049893888)
 
 
-This repository contains NO CODE. This is simply for the wiki.
+This repository contains NO CODE. This is simply for the wiki and the `github.io` website. https://greemdotcs.github.io
 
 [Feature Requests](https://feathub.com/Greeem/greeem.github.io)
 
-![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA.png)
+![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA_25.png)
 
 ## What is the SIVA rewrite?
 `The SIVA rewrite is a simple term for creating the bot in an entirely new programming language. Discord.py was getting rewritten, and it was becoming obsolete, so I decided to completely remake the entire bot. It's taken 40+ hours, but it's nearly done.`
