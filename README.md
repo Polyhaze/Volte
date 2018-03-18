@@ -9,7 +9,7 @@ This repository contains NO CODE. This is simply for the wiki.
 
 [Feature Requests](https://feathub.com/Greeem/greeem.github.io)
 
-![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA.png)
+![SIVA logo](https://raw.githubusercontent.com/Greeem/SIVA-Issues/master/Images/SIVA_25.png)
 
 ## What is the SIVA rewrite?
 `The SIVA rewrite is a simple term for creating the bot in an entirely new programming language. Discord.py was getting rewritten, and it was becoming obsolete, so I decided to completely remake the entire bot. It's taken 40+ hours, but it's nearly done.`
