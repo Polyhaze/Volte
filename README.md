@@ -5,7 +5,7 @@ Nightly Build: ![](https://greem.visualstudio.com/_apis/public/build/definitions
 [![Discord Bots](https://discordbots.org/api/widget/lib/320942091049893888.svg)](https://discordbots.org/bot/320942091049893888)
 
 
-This repository contains NO CODE. This is simply for the wiki.
+This repository contains NO CODE. This is simply for the wiki and the `github.io` website. https://greemdotcs.github.io
 
 [Feature Requests](https://feathub.com/Greeem/greeem.github.io)
 
