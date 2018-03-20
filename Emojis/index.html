@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Discord Emoji Generator</title>
+    <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="title">
+      <h1>Discord Emoji Generator</h1>
+    </div>
+    ​<textarea id="input" style="resize:none;" cols="50" rows="5"></textarea><br><br>
+    <button onclick="convert()">Convert</button><br><br>
+    <textarea id="output" style="resize:none;" cols="50" rows="5" readonly></textarea><br><br>
+    <button onclick="copy()">Copy to Cipboard</button><br><br>
+    <script type="text/javascript">
+      var isalpha = function(ch){
+        return /^[A-Z]$/i.test(ch);
+      }
+      var returnnum = function(ch){
+        var num=[':zero: ', ':one: ', ':two: ', ':three: ', ':four: ', ':five: ', ':six: ', ':seven: ', ':eight: ', ':nine: '];
+        return num[Number(ch)];
+      }
+      function convert(){
+        document.getElementById("output").value=''; //
+        var input=document.getElementById("input").value;
+        var output='';
+        for(var i=0; i<input.length; i++){ //for letter in input text
+          if(isalpha(input.charAt(i))){ //alphabet
+            output=output+':regional_indicator_'+input.charAt(i).toLowerCase()+': ';
+          }
+          else{
+            if(!isNaN(input.charAt(i))){ //number or Whitespace
+              if(input.charAt(i)=='\n'||input.charAt(i)=='\t'||input.charAt(i)==' '){ //Whitespace
+                output+=input.charAt(i);
+              }
+              else{ //number
+                output+=returnnum(input.charAt(i));
+              }
+            }
+            else{ //other chars
+              output+=input.charAt(i);
+            }
+          }
+        }
+        output=output.replace(' ', '  '); //공백 중복하여 확연히 구별
+        document.getElementById("output").value=output;
+      }
+      function copy(){
+        document.querySelector("#output").select();
+        document.execCommand('copy');
+      }
+    </script>
+    <br><p>Made by JunhoYeo</p>
+    <ul id="icons">
+      <!--webpage source code-->
+      <li><a href="https://github.com/JunhoYeo/Discord-Emoji-Generator/blob/master/index.html" target="_blank"><i class="fas fa-code"></i></a></li>
+      <!--Python3 source code-->
+      <li><a href="Python3/generator.py" target="_blank"><i class="far fa-file-code"></i></a></li>
+      <!--project Github page-->
+      <li><a href="https://github.com/JunhoYeo/Discord-Emoji-Generator" target="_blank"><i class="fab fa-github"></i></a></li>
+    </ul>
+  </body>
+</html>

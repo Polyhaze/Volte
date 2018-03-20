@@ -1,0 +1,55 @@
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Alegreya+Sans+SC);
+ol, ul {
+  list-style: none;
+  margin: 20px;
+}
+ul li{
+  display: inline;
+}
+body {
+  text-align: center; /*가운데 정렬*/
+  background-color: #36393e;
+}
+h1 {
+  color: #7289da;
+  font: Extra-Bold 40px Alegreya Sans SC;
+}
+textarea {
+  background-color: #1e2124;
+  color: #ffffff;
+  font: 20px Roboto;
+  border: none;
+  border-radius: 8px;
+}
+button {
+  background-color: #7289da; /*button background color is Discord Blurple(#7289da)*/
+  color: #ffffff; /*text color is white(#ffffff)*/
+  font: 20px Roboto;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+}
+p {
+  color: #99aab5;
+  font: 20px Roboto;
+}
+#icons li {
+  margin-right: 30px;
+}
+#icons i {
+  color: #99aab5;
+  font-size: 35px;
+}
+#icons {
+  opacity: 0.5;
+  transform: scale(1);
+  transition: all 0.5s;
+}
+#icons i:hover {
+  color: #ffffff;
+  opacity: 1;
+  transform: scale(1.5);
+}
