@@ -12,7 +12,7 @@ nav .brand-logo {
 }
 
 p {
-  line-height: 2rem;
+  line-height: 3rem;
 }
 
 .button-collapse {
@@ -21,7 +21,7 @@ p {
 
 .parallax-container {
   min-height: 380px;
-  line-height: 0;
+  line-height: 380px;
   height: auto;
   color: rgba(255,255,255,.9);
 }
@@ -55,3 +55,13 @@ p {
 footer.page-footer {
   margin: 0;
 }
+
+body {
+  background-color: white;
+  
+}
+
+a {
+  color: #7000FB;
+}
+
