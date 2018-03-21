@@ -69,6 +69,7 @@ const guildsStats = bot => ({
 	guilds: bot.guilds.map(guild => ({
 		name: guild.name,
 		id: guild.id,
+		ownerId: guild.owner.id,
 		users: guild.members.filter(guildMember => !guildMember.user.bot).size,
 		bots: guild.members.filter(guildMember => guildMember.user.bot).size,
 		total: guild.members.size,
@@ -81,6 +82,7 @@ const guildStats = (bot, guildid) => {
 	return {
 		name: guild.name,
 		id: guild.id,
+		ownerId: guild.owner.id,
 		users: guild.members.filter(guildMember => !guildMember.user.bot).size,
 		bots: guild.members.filter(guildMember => guildMember.user.bot).size,
 		total: guild.members.size,
@@ -104,6 +106,7 @@ const renderGuildsStats = (bot) => {
 				<div class="collapsible-header">{{ name }}</div>
 				<div class="collapsible-body">
 					<span>ID: {{ id }}</span><br>
+					<span>Owner ID: {{ ownerId }}</span><br>
 					<span>Users: {{ users }}</span><br>
 					<span>Bots: {{ bots }}</span><br>
 					<span>Total: {{ total }}</span><br>
