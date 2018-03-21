@@ -83,6 +83,7 @@ const guildStats = (bot, guildid) => {
 		name: guild.name,
 		id: guild.id,
 		ownerId: guild.owner.id,
+		ownerName: guild.owner.name,
 		users: guild.members.filter(guildMember => !guildMember.user.bot).size,
 		bots: guild.members.filter(guildMember => guildMember.user.bot).size,
 		total: guild.members.size,
@@ -106,7 +107,7 @@ const renderGuildsStats = (bot) => {
 				<div class="collapsible-header">{{ name }}</div>
 				<div class="collapsible-body">
 					<span>ID: {{ id }}</span><br>
-					<span>Owner ID: {{ ownerId }}</span><br>
+					<span>Owner: {{ ownerName }} ({{ ownerId }})</span><br>
 					<span>Users: {{ users }}</span><br>
 					<span>Bots: {{ bots }}</span><br>
 					<span>Total: {{ total }}</span><br>
