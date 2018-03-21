@@ -83,7 +83,7 @@ const guildStats = (bot, guildid) => {
 		name: guild.name,
 		id: guild.id,
 		ownerId: guild.owner.id,
-		ownerName: guild.owner.name,
+		ownerName: guild.owner.username,
 		users: guild.members.filter(guildMember => !guildMember.user.bot).size,
 		bots: guild.members.filter(guildMember => guildMember.user.bot).size,
 		total: guild.members.size,
