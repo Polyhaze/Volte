@@ -17,14 +17,20 @@
   <PropertyGroup>
     <RootNamespace>SIVA</RootNamespace>
     <ApplicationIcon>SIVA.ico</ApplicationIcon>
-    <StartupObject />
+    <StartupObject>SIVA.Core.Bot.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Core" Version="1.0.2" />
+    <PackageReference Include="DiscordBotsList.Api" Version="1.1.0" />
     <PackageReference Include="FortniteApi" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="Overwatch.Net" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="Resources\Locale.json">

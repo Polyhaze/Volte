@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
-using Discord.Commands;
 
 namespace SIVA.Core.Bot
 {
@@ -37,5 +36,59 @@ namespace SIVA.Core.Bot
             return GetFormattedLocaleMsg(key, new object[] { parameter });
         }
 
+        public static string InlineMsg(string msg)
+        {
+            return $"`{msg}`";
+        }
+
+        public static string CodeBlock(string msg)
+        {
+            return $"```{msg}```";
+        }
+
+        public static string Italic(string msg)
+        {
+            return $"*{msg}*";
+        }
+
+        public static string Bold(string msg)
+        {
+            return $"**{msg}**";
+        }
+
+        public static string BoldItalic(string msg)
+        {
+            return $"***{msg}***";
+        }
+
+        public static string Underline(string msg)
+        {
+            return $"__{msg}__";
+        }
+
+        public static string Strikethrough(string msg)
+        {
+            return $"~~{msg}~~";
+        } 
+
+        public static int Multiply(int a, int b)
+        {
+            return a * b;
+        }
+
+        public static float Divide(int a, int b)
+        {
+            return a / b;
+        }
+
+        public static int Add(int a, int b)
+        {
+            return a + b;
+        }
+
+        public static int Subtract(int a, int b)
+        {
+            return a - b;
+        }
     }
 }

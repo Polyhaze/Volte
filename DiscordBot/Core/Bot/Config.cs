@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using Discord.WebSocket;
 using Newtonsoft.Json;
-using Discord;
 
 namespace SIVA.Core.Bot
 {
@@ -29,6 +27,27 @@ namespace SIVA.Core.Bot
             }
         }
 
+        public static BotConfig GetOrCreateConfig()
+        {
+            if (bot.Token == "")
+            {
+                string jsonFile = JsonConvert.SerializeObject(bot, Formatting.Indented);
+                bot = JsonConvert.DeserializeObject<BotConfig>(jsonFile);
+                File.WriteAllText($"{configFolder}/{configFile}", jsonFile);
+                return bot;
+            }
+            else
+            {
+                return bot;
+            }
+        }
+
+        public static void SaveConfig()
+        {
+            string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
+            File.WriteAllText($"{configFolder}/{configFile}", json);
+        }
+
         public struct BotConfig
         {
             public string Token;
@@ -41,8 +60,9 @@ namespace SIVA.Core.Bot
             public bool IsSelfbot;
             public string CurrencySymbol;
             public ulong FeedbackChannelId;
-            public string GoogleApiKey;
             public uint ErrorEmbedColour;
+            public string LogSeverity;
+            public ulong[] Blacklist;
         }
     }
 }

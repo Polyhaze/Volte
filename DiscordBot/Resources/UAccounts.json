@@ -1,168 +1,26 @@
 [
   {
-    "ID": 168548441939509248,
-    "Points": 10,
-    "XP": 2640,
-    "LevelNumber": 7,
-    "Warns": [
-      "being gay",
-      "being gay v2",
-      "being gay v3"
-    ],
-    "WarnCount": 3,
-    "Money": 53
-  },
-  {
-    "ID": 410547925597421571,
-    "Points": 10,
-    "XP": 0,
+    "Id": 168548441939509248,
+    "Xp": 5,
     "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
     "Money": 0
   },
   {
-    "ID": 320942091049893888,
-    "Points": 10,
-    "XP": 0,
+    "Id": 410547925597421571,
+    "Xp": 5,
     "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
     "Money": 0
   },
   {
-    "ID": 315687211704123393,
-    "Points": 10,
-    "XP": 25,
+    "Id": 400407128441094144,
+    "Xp": 5,
     "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 5
+    "Money": 0
   },
   {
-    "ID": 329153903557869569,
-    "Points": 10,
-    "XP": 60,
-    "LevelNumber": 1,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 2
-  },
-  {
-    "ID": 182941761801420802,
-    "Points": 10,
-    "XP": 25,
+    "Id": 320942091049893888,
+    "Xp": 5,
     "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 5
-  },
-  {
-    "ID": 360493978371751937,
-    "Points": 10,
-    "XP": 20,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 4
-  },
-  {
-    "ID": 145765405271523328,
-    "Points": 10,
-    "XP": 10,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 2
-  },
-  {
-    "ID": 385899728283500546,
-    "Points": 10,
-    "XP": 40,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 2,
-    "Money": 8
-  },
-  {
-    "ID": 370034554565689344,
-    "Points": 10,
-    "XP": 10,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 2
-  },
-  {
-    "ID": 199969241531678720,
-    "Points": 10,
-    "XP": 15,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 3
-  },
-  {
-    "ID": 191602681280724992,
-    "Points": 10,
-    "XP": 5,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 1
-  },
-  {
-    "ID": 388845396467777539,
-    "Points": 10,
-    "XP": 5,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 1
-  },
-  {
-    "ID": 313101186444296202,
-    "Points": 10,
-    "XP": 10,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 2
-  },
-  {
-    "ID": 322199688680046594,
-    "Points": 10,
-    "XP": 25,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 115
-  },
-  {
-    "ID": 216608905025814528,
-    "Points": 10,
-    "XP": 5,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 1
-  },
-  {
-    "ID": 407657297007869966,
-    "Points": 10,
-    "XP": 5,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 1
-  },
-  {
-    "ID": 216987162598572032,
-    "Points": 10,
-    "XP": 10,
-    "LevelNumber": 0,
-    "Warns": [],
-    "WarnCount": 0,
-    "Money": 2
+    "Money": 0
   }
 ]

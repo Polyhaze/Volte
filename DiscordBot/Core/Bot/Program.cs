@@ -22,33 +22,66 @@ namespace SIVA.Core.Bot
         {
             if (string.IsNullOrEmpty(Config.bot.Token))
             {
-                Console.WriteLine("Token not specified.");
-                Console.ReadLine();
-                return;
+                InteractiveSetup.Setup();
             }
-            _client = new DiscordSocketClient(new DiscordSocketConfig{LogLevel = LogSeverity.Verbose});
+
+            LogSeverity LogSeverity;
+            switch (Config.bot.LogSeverity)
+            {
+                case "Verbose":
+                case "verbose":
+                    LogSeverity = LogSeverity.Verbose;
+                    break;
+                case "Info":
+                case "info":
+                    LogSeverity = LogSeverity.Info;
+                    break;
+                case "Warning":
+                case "warning":
+                    LogSeverity = LogSeverity.Warning;
+                    break;
+                case "Debug":
+                case "debug":
+                    LogSeverity = LogSeverity.Debug;
+                    break;
+                case "Critical":
+                case "critical":
+                    LogSeverity = LogSeverity.Critical;
+                    break;
+                case "Error":
+                case "error":
+                    LogSeverity = LogSeverity.Error;
+                    break;
+                default:
+                    LogSeverity = LogSeverity.Verbose;
+                    break;
+            }
+
+            _client = new DiscordSocketClient(new DiscordSocketConfig {LogLevel = LogSeverity} );
             _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
-            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{Bot.Config.bot.TwitchStreamer}", StreamType.Twitch);
+            await _client.SetGameAsync(Config.bot.BotGameToSet, $"https://twitch.tv/{Config.bot.TwitchStreamer}", StreamType.Twitch);
             await _client.SetStatusAsync(UserStatus.DoNotDisturb);
             _handler = new EventHandler();
             await _handler.InitializeAsync(_client);
-            Console.WriteLine("Use this to invite the bot into your server: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
+            Console.WriteLine("Public SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=320942091049893888&permissions=8");
+            Console.WriteLine("Dev SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             await Task.Delay(-1);
         }
 
-        private async static Task Log(LogMessage msg)
+        private static async Task Log(LogMessage msg)
         {
-            if (!Bot.Config.bot.Debug) return;
-            Console.WriteLine("INFO: " + msg.Message);
+            if (!Config.bot.Debug) return;
+            if (msg.Message.Contains("blocking the gateway task")) return;
+            Console.WriteLine($"[{DateTime.UtcNow}]: " + msg.Message);
             try
             {
-                File.AppendAllText("Debug.log", $"{msg.Message}\n");
+                File.AppendAllText("Debug.log", $"[{DateTime.UtcNow}]: {msg.Message}\n");
             }
             catch (FileNotFoundException)
             {
-                File.WriteAllText("Debug.log", msg.Message);
+                File.WriteAllText("Debug.log", $"[{DateTime.UtcNow}]: {msg.Message}\n");
             }
         }
     }

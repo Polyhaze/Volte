@@ -1,13 +1,14 @@
-{
-  "Token": "//",
+ {
+  "Token": "NDEwNTQ3OTI1NTk3NDIxNTcx.DaWg-g.Kz2rWSoPXEbewCdiyu0jzsRSZPw",
   "Prefix": "$",
   "Debug": true,
-  "BotGameToSet": "$h - @SIVA-dev h",
-  "TwitchStreamer": "joltzdude139", 
-  "BotOwner": 168548441939509248,
-  "DefaultEmbedColour": 0x7000FB,
+  "BotGameToSet": "$h - @SIVA h",
+  "TwitchStreamer": "uGreem",
+  "BotOwner": 0,
+  "DefaultEmbedColour": 0,
   "IsSelfbot": false,
   "CurrencySymbol": "$",
-  "FeedbackChannelId": 415182876326232064,
-  "ErrorEmbedColour": 0xFF0000
+  "ErrorEmbedColour": 0,
+  "LogSeverity": "verbose",
+  "Blacklist": null
 }

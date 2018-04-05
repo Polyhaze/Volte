@@ -4,8 +4,9 @@ using Discord;
 using Discord.WebSocket;
 using System;
 using SIVA.Core.Bot;
+using SIVA.Core.JsonFiles;
 
-namespace SIVA.Core.Modules
+namespace SIVA.Core.Modules.Economy
 {
     public class Economy : ModuleBase<SocketCommandContext>
     {
@@ -19,11 +20,11 @@ namespace SIVA.Core.Modules
         [Command("Level"), Priority(0)]
         public async Task Level()
         {
-            var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
+            var ua = UserAccounts.GetAccount(Context.User);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
+            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await ReplyAsync("", false, embed);
@@ -32,11 +33,11 @@ namespace SIVA.Core.Modules
         [Command("Level"), Priority(1)]
         public async Task Level(SocketGuildUser user)
         {
-            var ua = UserAccounts.UserAccounts.GetAccount(user);
+            var ua = UserAccounts.GetAccount(user);
             var embed = new EmbedBuilder();
             embed.WithTitle("User Level");
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
+            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
             await ReplyAsync("", false, embed);
@@ -45,12 +46,12 @@ namespace SIVA.Core.Modules
         [Command("Money"), Alias("$", "bal")]
         public async Task HowMuchDoIHave()
         {
-            var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
+            var ua = UserAccounts.GetAccount(Context.User);
             var bal = ua.Money.ToString();
             var embed = new EmbedBuilder();
 
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
+            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
@@ -62,9 +63,9 @@ namespace SIVA.Core.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            var ua = UserAccounts.UserAccounts.GetAccount(Context.User);
-            var ua1 = UserAccounts.UserAccounts.GetAccount(user);
+            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            var ua = UserAccounts.GetAccount(Context.User);
+            var ua1 = UserAccounts.GetAccount(user);
             if (ua.Money < amt)
             {
                 embed.WithDescription($"You don't have enough money, {Context.User.Mention}!");
@@ -74,7 +75,7 @@ namespace SIVA.Core.Modules
             {
                 ua.Money = ua.Money - amt;
                 ua1.Money = ua1.Money + amt;
-                UserAccounts.UserAccounts.SaveAccounts();
+                UserAccounts.SaveAccounts();
                 embed.WithDescription($"{Context.User.Mention} paid {user.Mention} {Bot.Config.bot.CurrencySymbol}{amt}!");
                 await ReplyAsync("", false, embed);
             }
