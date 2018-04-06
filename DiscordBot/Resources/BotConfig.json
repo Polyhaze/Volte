@@ -5,10 +5,10 @@
   "BotGameToSet": "$h - @SIVA h",
   "TwitchStreamer": "uGreem",
   "BotOwner": 0,
-  "DefaultEmbedColour": 0,
+  "DefaultEmbedColour": 0x7000FB,
   "IsSelfbot": false,
   "CurrencySymbol": "$",
-  "ErrorEmbedColour": 0,
-  "LogSeverity": "verbose",
+  "ErrorEmbedColour": 0xFF0000,
+  "LogSeverity": "Verbose",
   "Blacklist": null
 }

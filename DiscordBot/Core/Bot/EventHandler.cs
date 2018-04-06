@@ -84,27 +84,33 @@ namespace SIVA.Core.Bot
                             try { reason = $"{msg.MentionedUsers.FirstOrDefault().Mention} doesn't have any."; } catch (NullReferenceException) { reason = "List has no elements."; }
                             break;
                         case "Failed to parse Boolean":
-                            reason = "You can only input `true` or `false` for this command/";
+                            reason = "You can only input `true` or `false` for this command.";
                             break;
                         default:
                             reason = result.ErrorReason;
                             break;
                     }
 
-                    var embed = new EmbedBuilder();
-                    embed.WithColor(Config.bot.ErrorEmbedColour);
-                    embed.WithFooter("Seems like a weird error? Report it in the SIVA-dev server!");
+                    EmbedBuilder embed = new EmbedBuilder();
 
                     if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
                     {
                         var nm = msg.Content.Replace($"<@{_client.CurrentUser.Id}> ", config.CommandPrefix);
-                        embed.WithDescription($"Error in command: {nm}\n\nReason: {reason}");
+                        embed.AddField("Error in command:", nm);
+                        embed.AddField("Error reason:", reason);
+                        embed.AddField("Weird error?", "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
+                        embed.WithAuthor(context.User);
+                        embed.WithColor(Config.bot.ErrorEmbedColour);
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                     else
                     {
                         var nm = msg.Content;
-                        embed.WithDescription($"Error in command: {nm}\n\nReason: {reason}");
+                        embed.AddField("Error in command:", nm);
+                        embed.AddField("Error reason:", reason);
+                        embed.AddField("Weird error?", "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
+                        embed.WithAuthor(context.User);
+                        embed.WithColor(Config.bot.ErrorEmbedColour);
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                 }

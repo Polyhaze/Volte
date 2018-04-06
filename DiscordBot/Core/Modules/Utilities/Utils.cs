@@ -80,8 +80,8 @@ namespace SIVA.Core.Modules.Utilities
                 .WithColor(Config.bot.DefaultEmbedColour);
 
 
-            var user = await Context.Client.GetUser(Config.bot.BotOwner).GetOrCreateDMChannelAsync();
-            await user.SendMessageAsync("", false, feedbackEmbed);
+            var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
+            await channel.SendMessageAsync("", false, feedbackEmbed);
         }
 
         [Command("Calculator"), Alias("Calc")]

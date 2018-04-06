@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.Commands;
+using System.IO;
 
 namespace SIVA.Core.Bot
 {
@@ -210,9 +211,32 @@ namespace SIVA.Core.Bot
                     if (msg.Author != context.Guild.Owner)
                     {
                         await msg.DeleteAsync();
-                        await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
+                        var msgg = await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
+                        Thread.Sleep(4000);
+                        await msgg.DeleteAsync();
                     }
                 }
+            }
+        }
+
+        internal static async Task Log(LogMessage msg)
+        {
+            if (!Config.bot.Debug) return;
+            if (msg.Message.Contains("blocking the gateway task")) return;
+            Console.WriteLine($"[{msg.Severity}]: ({msg.Source}): {msg.Message}");
+            var msg2 = $"[{msg.Severity}]: ({msg.Source}): {msg.Message}";
+            if (!msg2.Contains("(Rest)"))
+            {
+                var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800).SendMessageAsync(msg2);
+            }
+
+            try
+            {
+                File.AppendAllText("Debug.log", $"[{msg.Severity}]: ({msg.Source}): {msg.Message}\n");
+            }
+            catch (FileNotFoundException)
+            {
+                File.WriteAllText("Debug.log", $"[{msg.Severity}]: ({msg.Source}): {msg.Message}\n");
             }
         }
     }
