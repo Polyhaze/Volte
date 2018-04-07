@@ -2,13 +2,12 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using System.IO;
 
 namespace SIVA.Core.Bot
 {
     internal class Program
     {
-        internal static DiscordSocketClient _client;
+        public static DiscordSocketClient _client;
         private EventHandler _handler;
 
         private static void Main()
@@ -21,7 +20,7 @@ namespace SIVA.Core.Bot
 
         public async Task StartAsync()
         {
-            if (string.IsNullOrEmpty(Config.bot.Token))
+            if (string.IsNullOrEmpty(Config.bot.Token)) 
             {
                 InteractiveSetup.Setup();
             }

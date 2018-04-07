@@ -13,7 +13,7 @@ namespace SIVA.Core.Bot
 {
     internal class EventHandler
     {
-        private DiscordSocketClient _client;
+        DiscordSocketClient _client = Program._client;
         private CommandService _service;
 
         public async Task InitializeAsync(DiscordSocketClient client)

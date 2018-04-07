@@ -7,17 +7,14 @@ namespace SIVA.Core.Bot
 {
     internal class Blacklist
     {
-        protected static DiscordSocketClient _client;
+        protected static DiscordSocketClient _client = Program._client;
 
         public static async Task CheckMessageForBlacklistedTerms(SocketMessage s)
         {
-            var offendingAccount = UserAccounts.GetAccount(s.Author);
             var msg = s as SocketUserMessage;
-            if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
-            if (context.User.IsBot) return;
             var config = GuildConfig.GetGuildConfig(context.Guild.Id);
-            if (config == null) return;
+            if (msg == null || context.User.IsBot || config == null) return;
             foreach (var word in config.Blacklist)
             {
                 if (msg.Content.Contains(word))

@@ -12,7 +12,7 @@ namespace SIVA.Core.Bot
 {
     internal class EventUtils
     {
-        private static DiscordSocketClient _client;
+        private static DiscordSocketClient _client = Program._client;
 
         public static async Task Autorole(SocketGuildUser user)
         {
@@ -227,7 +227,7 @@ namespace SIVA.Core.Bot
             var msg2 = $"[{msg.Severity}]: ({msg.Source}): {msg.Message}";
             if (!msg2.Contains("(Rest)"))
             {
-                var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800).SendMessageAsync(msg2);
+                var channel = await Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800).SendMessageAsync(msg2);
             }
 
             try

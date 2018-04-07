@@ -4,6 +4,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Bot;
 using SIVA.Core.JsonFiles;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -14,13 +16,14 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task Shutdown()
         {
-            var embed = new EmbedBuilder();
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            var client = Program._client;
+            var embed = new EmbedBuilder()
+                .WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention))
+                .WithColor(Config.bot.DefaultEmbedColour)
+                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
-            await Context.Client.LogoutAsync();
-            await Context.Client.StopAsync();
+            await client.LogoutAsync();
+            await client.StopAsync();
         }
 
         [Command("VerifyGuild"), Alias("Verify")]
@@ -38,39 +41,23 @@ namespace SIVA.Core.Modules.Management
             await ReplyAsync("", false, embed);
         }
 
-        /*[Command("AddDare")]
+        [Command("Eval")]
         [RequireOwner]
-        public async Task AddDareToJson([Remainder]string dare)
+        public async Task EvaluateCSharpCode([Remainder]string code)
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            TruthOrDareJson.AddDareToJson(dare);
+            var result = await CSharpScript.EvaluateAsync(code, ScriptOptions.Default.AddImports("System", "System.IO", "System.Collections.Generic", "System.Threading.Tasks", "System.Threading"));//RunAsync(code, ScriptOptions.Default.WithImports("System", "System.IO"));
             var embed = new EmbedBuilder()
-                .WithDescription("Successfully added the dare to the JSON file.")
-                .AddField("Dare", dare)
-                .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithDescription($"Input: \n```cs\n{code}```\n\nOutput: `{result}`")
+                .WithColor(Config.bot.DefaultEmbedColour);
             await ReplyAsync("", false, embed);
         }
 
-        [Command("AddTruth")]
-        [RequireOwner]
-        public async Task AddTruthToJson([Remainder]string truth)
-        {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            TruthOrDareJson.AddDareToJson(truth);
-            var embed = new EmbedBuilder()
-                .WithDescription("Successfully added the truth to the JSON file.")
-                .AddField("Truth", truth)
-                .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            await ReplyAsync("", false, embed);
-        }*/
 
         [Command("Game")]
         [RequireOwner]
         public async Task SetBotGame([Remainder] string game)
         {
-            var client = new DiscordSocketClient();
+            var client = Program._client;
 
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set the bot's game to {game}");
@@ -89,7 +76,7 @@ namespace SIVA.Core.Modules.Management
             embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
-            var client = new DiscordSocketClient();
+            var client = Program._client;
 
             switch (status)
             {
@@ -126,7 +113,7 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task ServerCountStream()
         {
-            var client = new DiscordSocketClient();
+            var client = Program._client;
             var guilds = Context.Client.Guilds.Count;
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");

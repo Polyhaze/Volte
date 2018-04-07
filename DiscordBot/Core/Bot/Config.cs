@@ -5,24 +5,23 @@ namespace SIVA.Core.Bot
 {
     public class Config
     {
-        private const string configFolder = "Resources";
-        private const string configFile = "BotConfig.json";
+        private const string configFile = "Resources/BotConfig.json";
         public static BotConfig bot;
 
         static Config()
         {
-            if (!Directory.Exists(configFolder))
-                Directory.CreateDirectory(configFolder);
+            if (!Directory.Exists("Resources"))
+                Directory.CreateDirectory("Resources");
 
-            if (!File.Exists(configFolder + "/" + configFile))
+            if (!File.Exists(configFile))
             {
                 bot = new BotConfig();
                 string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
-                File.WriteAllText(configFolder + "/" + configFile, json);
+                File.WriteAllText(configFile, json);
             }
             else
             {
-                string json = File.ReadAllText(configFolder + "/" + configFile);
+                string json = File.ReadAllText(configFile);
                 bot = JsonConvert.DeserializeObject<BotConfig>(json);
             }
         }
@@ -33,7 +32,7 @@ namespace SIVA.Core.Bot
             {
                 string jsonFile = JsonConvert.SerializeObject(bot, Formatting.Indented);
                 bot = JsonConvert.DeserializeObject<BotConfig>(jsonFile);
-                File.WriteAllText($"{configFolder}/{configFile}", jsonFile);
+                File.WriteAllText(configFile, jsonFile);
                 return bot;
             }
             else
@@ -45,7 +44,7 @@ namespace SIVA.Core.Bot
         public static void SaveConfig()
         {
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
-            File.WriteAllText($"{configFolder}/{configFile}", json);
+            File.WriteAllText(configFile, json);
         }
 
         public struct BotConfig

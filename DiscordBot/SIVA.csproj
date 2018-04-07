@@ -24,6 +24,7 @@
     <PackageReference Include="Discord.Net.Core" Version="1.0.2" />
     <PackageReference Include="DiscordBotsList.Api" Version="1.1.0" />
     <PackageReference Include="FortniteApi" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="Overwatch.Net" Version="3.1.0" />
   </ItemGroup>
