@@ -70,14 +70,14 @@ namespace SIVA.Core.Bot
             if (config.WelcomeChannel != 0)
             {
                 var a = config.LeavingMessage.Replace("{UserMention}", user.Mention);
-                var b = a.Replace("{ServerName}", user.Guild.Name);
-                var c = b.Replace("{UserName}", user.Username);
-                var d = c.Replace("{OwnerMention}", user.Guild.Owner.Mention);
-                var e = d.Replace("{UserTag}", user.DiscriminatorValue.ToString());
+                a = a.Replace("{ServerName}", user.Guild.Name);
+                a = a.Replace("{UserName}", user.Username);
+                a = a.Replace("{OwnerMention}", user.Guild.Owner.Mention);
+                a = a.Replace("{UserTag}", user.DiscriminatorValue.ToString());
 
                 var channel = user.Guild.GetTextChannel(config.WelcomeChannel);
                 var embed = new EmbedBuilder();
-                embed.WithDescription(e);
+                embed.WithDescription(a);
                 embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
                 embed.WithFooter($"Guild Owner: {user.Guild.Owner.Username}#{user.Guild.Owner.Discriminator}");
                 embed.WithThumbnailUrl(user.Guild.IconUrl);
@@ -93,14 +93,14 @@ namespace SIVA.Core.Bot
             if (config.WelcomeChannel != 0)
             {
                 var a = config.WelcomeMessage.Replace("{UserMention}", user.Mention);
-                var b = a.Replace("{ServerName}", user.Guild.Name);
-                var c = b.Replace("{UserName}", user.Username);
-                var d = c.Replace("{OwnerMention}", user.Guild.Owner.Mention);
-                var e = d.Replace("{UserTag}", user.DiscriminatorValue.ToString());
+                a = a.Replace("{ServerName}", user.Guild.Name);
+                a = a.Replace("{UserName}", user.Username);
+                a = a.Replace("{OwnerMention}", user.Guild.Owner.Mention);
+                a = a.Replace("{UserTag}", user.DiscriminatorValue.ToString());
 
                 var channel = user.Guild.GetTextChannel(config.WelcomeChannel);
                 var embed = new EmbedBuilder();
-                embed.WithDescription(e);
+                embed.WithDescription(a);
                 embed.WithColor(new Color(config.WelcomeColour1, config.WelcomeColour2, config.WelcomeColour3));
                 embed.WithThumbnailUrl(user.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
