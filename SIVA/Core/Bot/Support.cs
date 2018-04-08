@@ -70,7 +70,7 @@ namespace SIVA.Core.Bot
                             .WithThumbnailUrl(context.User.GetAvatarUrl())
                             .WithTitle("What do you need help with?")
                             .WithDescription($"```{msg.Content}```\n\nIf you're done with the ticket, type `{config.CommandPrefix}close`, or react to the message with ☑.")
-                            .WithColor(Config.bot.DefaultEmbedColour)
+                            .WithColor(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3)
                             .WithFooter($"Time Created: {DateTime.Now}");
                         var message = await chnl.SendMessageAsync($"You can close this ticket if you have the role set for moderating tickets: `{supportConfig.SupportRole}`", false, embed);
                         await message.PinAsync();
@@ -93,10 +93,10 @@ namespace SIVA.Core.Bot
             var channel = s.Channel as SocketGuildChannel;
             var config = GuildConfig.GetGuildConfig(channel.Guild.Id);
             var embed = new EmbedBuilder()
-                .WithColor(Config.bot.DefaultEmbedColour)
+                .WithColor(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3)
                 .WithDescription($"Ticket marked as solved by {s.User.Value.Mention}! Closing in 45 seconds.")
                 .WithAuthor(s.User.Value);
-            if (channel.Name.Contains($"{config.SupportChannelName}-") && s.Emote.Equals(new Emoji("☑")))
+            if (channel.Name.Contains($"{config.SupportChannelName}-{s.UserId}") && s.Emote.Equals(new Emoji("☑")))
             {
                 if (s.UserId != 320942091049893888 && s.UserId != 410547925597421571)
                 {
