@@ -7,8 +7,8 @@ namespace SIVA.WebPanel.Backend
 {
     public class SivaPanel
     {
-        public SimpleServer.SimpleServer server;
-        public void InitialiseServer()
+        public static SimpleServer.SimpleServer server;
+        public static void InitialiseServer()
         {
             SimpleServer.SimpleServer.Initialize();
             Log.AddWriter(Console.Out);
