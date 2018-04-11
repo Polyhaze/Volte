@@ -90,22 +90,22 @@ namespace SIVA.Core.Bot
 
         public static async Task DeleteSupportChannel(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel ch, SocketReaction s)
         {
-            var channel = s.Channel as SocketGuildChannel;
-            var config = GuildConfig.GetGuildConfig(channel.Guild.Id);
-            var embed = new EmbedBuilder()
+            var channel = s.Channel as SocketGuildChannel; //allow us to send a message
+            var config = GuildConfig.GetGuildConfig(channel.Guild.Id); //get the config so we can see the support channel name. (and embed colour)
+            var embed = new EmbedBuilder() //create the embedded message.
                 .WithColor(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3)
                 .WithDescription($"Ticket marked as solved by {s.User.Value.Mention}! Closing in 45 seconds.")
                 .WithAuthor(s.User.Value);
-            if (channel.Name.Contains($"{config.SupportChannelName}-{s.UserId}") && s.Emote.Equals(new Emoji("☑")))
+            if (channel.Name.Contains($"{config.SupportChannelName}-{s.UserId}") && s.Emote.Equals(new Emoji("☑"))) //check if a user made the reaction in a support ticket, 
+                //check if the emote is `☑` and then delete the channel.
             {
-                if (s.UserId != 320942091049893888 && s.UserId != 410547925597421571)
+                if (s.UserId != 320942091049893888 && s.UserId != 410547925597421571) //check if the id of the person who made the reaction is NOT SIVA-dev or SIVA public.
                 {
-                    await (channel as SocketTextChannel).SendMessageAsync("", false, embed);
-                    Thread.Sleep(45000);
-                    await channel.DeleteAsync();
+                    await ch.SendMessageAsync("", false, embed); //send the embedded message defined above.
+                    Thread.Sleep(45000); //wait 45 seconds (45000ms)
+                    await channel.DeleteAsync(); //delete the channel
                 }
             }
-
         }
     }
 }
