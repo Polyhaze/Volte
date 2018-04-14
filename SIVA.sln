@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIVA", "SIVA\SIVA.csproj", "{206271A3-422E-4D56-963D-B92682131868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIVA.WebPanel", "SIVA.WebPanel\SIVA.WebPanel.csproj", "{BCFFB88A-B394-4C8C-B65A-CED0835A6125}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,14 +21,6 @@ Global
 		{206271A3-422E-4D56-963D-B92682131868}.Release|Any CPU.Build.0 = Release|Any CPU
 		{206271A3-422E-4D56-963D-B92682131868}.Release|x64.ActiveCfg = Release|Any CPU
 		{206271A3-422E-4D56-963D-B92682131868}.Release|x64.Build.0 = Release|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Debug|x64.Build.0 = Debug|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Release|x64.ActiveCfg = Release|Any CPU
-		{BCFFB88A-B394-4C8C-B65A-CED0835A6125}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using SIVA.WebPanel.Backend;
 
 namespace SIVA.Core.Bot
 {
@@ -68,7 +67,6 @@ namespace SIVA.Core.Bot
             await _handler.InitializeAsync(_client);
             Console.WriteLine("Public SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=320942091049893888&permissions=8");
             Console.WriteLine("Dev SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
-            SivaPanel.InitialiseServer(); //start it
             await Task.Delay(-1);
         }
     }

@@ -30,9 +30,6 @@
     <PackageReference Include="Ultz.SimpleServer" Version="0.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SIVA.WebPanel\SIVA.WebPanel.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System">
       <HintPath>System</HintPath>
     </Reference>
