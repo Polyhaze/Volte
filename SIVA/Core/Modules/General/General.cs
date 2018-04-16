@@ -74,10 +74,9 @@ namespace SIVA.Core.Modules.General
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             await Context.Message.DeleteAsync();
 
-
             if (Config.bot.Debug)
             {
-                Console.WriteLine($"DEBUG: {Context.User.Username}#{Context.User.Discriminator} used the say command in the channel #{Context.Channel.Name} and said \"{Context.Message.Content}\".");
+                Console.WriteLine($"DEBUG: {Context.User.Username}#{Context.User.Discriminator} used the say command in the channel #{Context.Channel.Name} and said \"{message}\".");
                 await ReplyAsync("", false, embed);
             } 
             else
@@ -121,7 +120,7 @@ namespace SIVA.Core.Modules.General
             embed.AddField("Servers", (Context.Client as DiscordSocketClient).Guilds.Count);
             embed.AddField("Invite Me", "https://bot.discord.io/SIVA");
             embed.AddField("Ping", (Context.Client as DiscordSocketClient).Latency);
-            embed.AddField("Client ID", "410547925597421571");
+            embed.AddField("Client ID", Program._client.CurrentUser.Id);
             embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");
             embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));

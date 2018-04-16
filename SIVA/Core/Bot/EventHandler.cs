@@ -14,19 +14,30 @@ namespace SIVA.Core.Bot
     internal class EventHandler
     {
         DiscordSocketClient _client = Program._client;
-        private CommandService _service;
+        internal CommandService _service;
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
             _client = client;
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            _service.Log += EventUtils.Log;
             _client.MessageReceived += HandleCommandAsync;
             _client.ReactionAdded += Support.DeleteSupportChannel;
             _client.UserJoined += EventUtils.Welcome;
             _client.UserJoined += EventUtils.Autorole;
             _client.JoinedGuild += EventUtils.GuildUtils;
             _client.UserLeft += EventUtils.Goodbye;
+            _client.UserBanned += Logging.HandleBans;
+            _client.ChannelCreated += Logging.HandleChannelCreate;
+            _client.ChannelDestroyed += Logging.HandleChannelDelete;
+            _client.GuildUpdated += Logging.HandleServerUpdate;
+            _client.MessageDeleted += Logging.HandleMessageDelete;
+            _client.MessageUpdated += Logging.HandleMessageUpdate;
+            _client.UserUpdated += Logging.HandleUserUpdate;
+            _client.RoleCreated += Logging.HandleRoleCreation;
+            _client.RoleUpdated += Logging.HandleRoleUpdate;
+            _client.RoleDeleted += Logging.HandleRoleDelete;
         }
     
         private async Task HandleCommandAsync(SocketMessage s)

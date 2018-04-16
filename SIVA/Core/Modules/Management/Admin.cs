@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using SIVA.Core.JsonFiles;
 using System.Linq;
 using Discord;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -111,7 +112,21 @@ namespace SIVA.Core.Modules.Management
             }
 
             await SendMessage(embed);
+        }
 
+        [Command("ServerLogging"), Alias("Sl")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SetServerLoggingChannel(bool isEnabled, SocketTextChannel chnl = null)
+        {
+            string lol;
+            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
+            if (isEnabled) { lol = "Enabled server logging"; } else { lol = "Disabled server logging"; }
+            if (chnl == null) { chnl = (SocketTextChannel)Context.Channel; }
+            config.IsServerLoggingEnabled = isEnabled;
+            config.ServerLoggingChannel = chnl.Id;
+            GuildConfig.SaveGuildConfig();
+            var embed = Helpers.CreateEmbed(Context, $"{lol}, and set the channel to <#{chnl.Id}>.");
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("AdminRole")]
@@ -305,7 +320,8 @@ namespace SIVA.Core.Modules.Management
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.CanCloseOwnTicket = arg;
             GuildConfig.SaveGuildConfig();
-            await ReplyAsync($"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
+            var embed = Helpers.CreateEmbed(Context, $"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("SupportChannelName"), Alias("SCN")]

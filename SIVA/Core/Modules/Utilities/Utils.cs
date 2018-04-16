@@ -478,13 +478,13 @@ namespace SIVA.Core.Modules.Utilities
         }
 
         [Command("Google")]
-        public async Task Google([Remainder]string Search)
+        public async Task Google([Remainder]string search)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            Search = Search.Replace(' ', '+');
-            string SearchUrl = $"https://google.com/search?q={Search}";
+            search = search.Replace(' ', '+');
+            string searchUrl = $"https://google.com/search?q={search}";
             var embed = new EmbedBuilder();
-            embed.WithDescription(SearchUrl);
+            embed.WithDescription(searchUrl);
             embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");

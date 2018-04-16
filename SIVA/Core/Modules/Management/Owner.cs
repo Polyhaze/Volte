@@ -6,6 +6,9 @@ using SIVA.Core.Bot;
 using SIVA.Core.JsonFiles;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using Discord.Net;
+using System;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -24,6 +27,31 @@ namespace SIVA.Core.Modules.Management
             await ReplyAsync("", false, embed);
             await client.LogoutAsync();
             await client.StopAsync();
+        }
+
+        [Command("NotifyBotUsers"), Alias("Nbu")]
+        [RequireOwner]
+        public async Task NotifyPeopleWhoUseBot([Remainder]string message)
+        {
+            var client = Program._client;
+            var embed = new EmbedBuilder()
+                .WithDescription(message)
+                .WithTitle("Message from Greem (Bot Creator)")
+                .WithColor(Config.bot.DefaultEmbedColour);
+
+            foreach (SocketGuild server in client.Guilds)
+            {
+                var dm = await server.Owner.GetOrCreateDMChannelAsync();
+                
+                try {
+                    await dm.SendMessageAsync("", false, embed);
+                } catch (RateLimitedException e)
+                {
+                    Console.WriteLine($"ratelimited. {e.Message}");
+                }
+            }
+
+            await ReplyAsync($"Successfully sent `{message}` to all server owners.");
         }
 
         [Command("VerifyGuild"), Alias("Verify")]
@@ -45,11 +73,20 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task EvaluateCSharpCode([Remainder]string code)
         {
-            var result = await CSharpScript.EvaluateAsync(code, ScriptOptions.Default.AddImports("System", "System.IO", "System.Collections.Generic", "System.Threading.Tasks", "System.Threading"));//RunAsync(code, ScriptOptions.Default.WithImports("System", "System.IO"));
+            var result = await CSharpScript.EvaluateAsync(code, ScriptOptions.Default.AddImports("System", "System.IO", "System.Collections.Generic", "System.Threading.Tasks", "System.Threading"));
             var embed = new EmbedBuilder()
                 .WithDescription($"Input: \n```cs\n{code}```\n\nOutput: `{result}`")
                 .WithColor(Config.bot.DefaultEmbedColour);
             await ReplyAsync("", false, embed);
+        }
+
+        [Command("Stream")]
+        [RequireOwner]
+        public async Task SetBotStream(string streamer, [Remainder]string streamName)
+        {
+            await Program._client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", StreamType.Twitch);
+            var embed = Helpers.CreateEmbed(Context, $"Set the stream name to **{streamName}**, and set the streamer to <https://twitch.tv/{streamer}>!");
+            await Helpers.SendMessage(Context, embed);
         }
 
 
