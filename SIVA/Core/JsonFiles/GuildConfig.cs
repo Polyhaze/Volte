@@ -8,6 +8,7 @@ namespace SIVA.Core.JsonFiles
 {
     public class Guild
     {
+        #region JSONValueDeclaration
         public Guild()
         {
             AntilinkIgnoredChannels = new List<ulong>();
@@ -35,7 +36,6 @@ namespace SIVA.Core.JsonFiles
         public int EmbedColour2 { get; set; }
         public int EmbedColour3 { get; set; }
         public bool MassPengChecks { get; set; }
-        public int ModlogCase { get; set; } // not used
         public bool Antilink { get; set; }
         public bool VerifiedGuild { get; set; }
         public ulong ModRole { get; set; }
@@ -47,6 +47,7 @@ namespace SIVA.Core.JsonFiles
         public List<string> SelfRoles { get; set; }
         public List<string> Blacklist { get; set; }
         public Dictionary<string, string> CustomCommands { get; set; }
+        #endregion
     }
 
     public static class GuildConfig
@@ -102,7 +103,6 @@ namespace SIVA.Core.JsonFiles
                 SupportChannelId = 00000000000000,
                 CommandPrefix = "$",
                 WelcomeChannel = 0,
-                ModlogCase = 0,
                 WelcomeColour1 = 112,
                 WelcomeColour2 = 0,
                 WelcomeColour3 = 251,

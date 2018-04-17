@@ -5,6 +5,7 @@ using System;
 using SIVA.Core.JsonFiles;
 using System.Threading.Tasks;
 using System.Linq;
+using Flurl.Util;
 using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules.General
@@ -126,7 +127,7 @@ namespace SIVA.Core.Modules.General
             embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
 
         }
 

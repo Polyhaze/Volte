@@ -76,15 +76,15 @@ namespace SIVA.Core.Bot
         {
             var msg = message.Value as SocketUserMessage;
             var context = new SocketCommandContext(Program._client, msg);
-            var config = GuildConfig.GetGuildConfig((message.Value.Channel as SocketTextChannel).Guild.Id);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id);
             var loggingChannel = context.Guild.GetTextChannel(config.ServerLoggingChannel);
             var embed = new EmbedBuilder()
-                .AddField("Author", message.Value.Author)
+                .AddField("Author", context.Message.Author)
                 .WithTitle("Message Deleted")
-                .AddField("Message Content", message.Value.Content.ToString())
+                .AddField("Message Content", message.Value.Content)
                 .AddField("Time", DateTime.UtcNow + " UTC")
                 .WithThumbnailUrl("https://lh3.googleusercontent.com/G2jzG8a6-GAA4yhxx3XMJfPXsm6_pluyeEWKr9I5swUGF62d2xo_Qg3Kdnu00HAmDQ=s180")
-                .WithAuthor((message.Value.Channel as SocketTextChannel).Guild.Owner)
+                .WithAuthor(context.Guild.Owner)
                 .WithColor(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3);
 
             await loggingChannel.SendMessageAsync("", false, embed);
@@ -99,8 +99,8 @@ namespace SIVA.Core.Bot
             var embed = new EmbedBuilder()
                 .AddField("Author", message.Value.Author)
                 .WithTitle("Message Edited")
-                .AddField("Before", message.Value.Content.ToString())
-                .AddField("After", s.Content.ToString())
+                .AddField("Before", message.Value.Content)
+                .AddField("After", s.Content)
                 .AddField("Time", DateTime.UtcNow + " UTC")
                 .WithThumbnailUrl("https://lh3.googleusercontent.com/G2jzG8a6-GAA4yhxx3XMJfPXsm6_pluyeEWKr9I5swUGF62d2xo_Qg3Kdnu00HAmDQ=s180")
                 .WithAuthor(context.Guild.Owner)
@@ -121,7 +121,7 @@ namespace SIVA.Core.Bot
                 .AddField("Mentionable", role.IsMentionable)
                 .AddField("Displayed Separately", role.IsHoisted)
                 .AddField("Time", DateTime.UtcNow + " UTC")
-                .WithThumbnailUrl("https://lh3.googleusercontent.com/G2jzG8a6-GAA4yhxx3XMJfPXsm6_pluyeEWKr9I5swUGF62d2xo_Qg3Kdnu00HAmDQ=s180")
+                .WithThumbnailUrl("https://vignette.wikia.nocookie.net/uncyclopedia/images/b/b2/Plus_sign.png/revision/latest?cb=20101129042826")
                 .WithAuthor(role.Guild.Owner)
                 .WithColor(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3);
 
@@ -134,16 +134,16 @@ namespace SIVA.Core.Bot
             var loggingChannel = roleAfter.Guild.GetTextChannel(config.ServerLoggingChannel);
             var embed = new EmbedBuilder()
                 .WithDescription(
-                $"**Name**\n" +
+                "**Name**\n" +
                 $"  **Before**: {roleBefore.Name}\n" +
                 $"  **After**: {roleAfter.Name}\n" +
-                $"**Colour**\n" +
+                "**Colour**\n" +
                 $"  **Before**: ({roleBefore.Color.R}, {roleBefore.Color.G}, {roleBefore.Color.B})\n" +
                 $"  **After**: ({roleAfter.Color.R}, {roleAfter.Color.G}, {roleAfter.Color.B})\n" +
-                $"**Mentionable**\n" +
+                "**Mentionable**\n" +
                 $"  **Before**: {roleBefore.IsMentionable}\n" +
                 $"  **After**: {roleAfter.IsMentionable}\n" +
-                $"**Displayed Separately**\n" +
+                "**Displayed Separately**\n" +
                 $"  **Before**: {roleBefore.IsHoisted}\n" +
                 $"  **After**: {roleAfter.IsHoisted}\n" +
                 $"**Time**: {DateTime.UtcNow} UTC")
