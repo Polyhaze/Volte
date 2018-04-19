@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Discord.Net;
 using System;
+using System.Threading;
 using Microsoft.CodeAnalysis.Operations;
 
 namespace SIVA.Core.Modules.Management
@@ -20,11 +21,9 @@ namespace SIVA.Core.Modules.Management
         public async Task Shutdown()
         {
             var client = Program._client;
-            var embed = new EmbedBuilder()
-                .WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention))
-                .WithColor(Config.bot.DefaultEmbedColour)
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            await ReplyAsync("", false, embed);
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
+
+            await Helpers.SendMessage(Context, embed);
             await client.LogoutAsync();
             await client.StopAsync();
         }
@@ -43,11 +42,16 @@ namespace SIVA.Core.Modules.Management
             {
                 var dm = await server.Owner.GetOrCreateDMChannelAsync();
                 
-                try {
+                try 
+                {
+                    Thread.Sleep(1000);
                     await dm.SendMessageAsync("", false, embed);
-                } catch (RateLimitedException e)
+                } 
+                catch (RateLimitedException e)
                 {
                     Console.WriteLine($"ratelimited. {e.Message}");
+                    var ownerDm = await Helpers.GetDmChannel(Config.bot.BotOwner);
+                    await ownerDm.SendMessageAsync("Ratelimited.");
                 }
             }
 

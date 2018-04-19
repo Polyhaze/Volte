@@ -10,6 +10,7 @@ namespace SIVA.Core.Bot
 {
     internal class Program
     {
+        
         public static DiscordSocketClient _client;
         public static EventHandler _handler;
 

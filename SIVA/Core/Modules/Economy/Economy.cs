@@ -21,26 +21,20 @@ namespace SIVA.Core.Modules.Economy
         public async Task Level()
         {
             var ua = UserAccounts.GetAccount(Context.User);
-            var embed = new EmbedBuilder();
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Level"), Priority(1)]
         public async Task Level(SocketGuildUser user)
         {
             var ua = UserAccounts.GetAccount(user);
-            var embed = new EmbedBuilder();
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Money"), Alias("$", "bal")]
@@ -48,14 +42,10 @@ namespace SIVA.Core.Modules.Economy
         {
             var ua = UserAccounts.GetAccount(Context.User);
             var bal = ua.Money.ToString();
-            var embed = new EmbedBuilder();
-
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Pay")]
@@ -69,7 +59,7 @@ namespace SIVA.Core.Modules.Economy
             if (ua.Money < amt)
             {
                 embed.WithDescription($"You don't have enough money, {Context.User.Mention}!");
-                await ReplyAsync("", false, embed);
+                await Helpers.SendMessage(Context, embed);
             }
             else
             {
@@ -77,7 +67,7 @@ namespace SIVA.Core.Modules.Economy
                 ua1.Money = ua1.Money + amt;
                 UserAccounts.SaveAccounts();
                 embed.WithDescription($"{Context.User.Mention} paid {user.Mention} {Bot.Config.bot.CurrencySymbol}{amt}!");
-                await ReplyAsync("", false, embed);
+                await Helpers.SendMessage(Context, embed);
             }
         }
     }

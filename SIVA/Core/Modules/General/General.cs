@@ -34,7 +34,6 @@ namespace SIVA.Core.Modules.General
         public async Task GetPrefixForServer()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder();
             string prefix;
             switch (config)
             {
@@ -46,23 +45,17 @@ namespace SIVA.Core.Modules.General
                     break;
             }
 
-            embed.WithDescription($"The prefix for this server is `{prefix}`");
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
-            await ReplyAsync("", false, embed);
+            var embed = Helpers.CreateEmbed(Context, $"The prefix for this server is {prefix}.");
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Lenny")]
         public async Task LennyLol()
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder()
-                .WithDescription("( ͡° ͜ʖ ͡°)")
-                .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username))
-                .WithAuthor(Context.User);
+            var embed = Helpers.CreateEmbed(Context, "( ͡° ͜ʖ ͡°)");
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Say")]
@@ -70,9 +63,7 @@ namespace SIVA.Core.Modules.General
         public async Task SayCommand([Remainder]string message)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder();
-            embed.WithDescription(message);
-            embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
+            var embed = Helpers.CreateEmbed(Context, message);
             await Context.Message.DeleteAsync();
 
             if (Config.bot.Debug)
@@ -95,12 +86,9 @@ namespace SIVA.Core.Modules.General
             Random r = new Random();
             string selection = options[r.Next(0, options.Length)];
 
-            var embed = new EmbedBuilder();
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("PickCommandText", selection));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("PickCommandText", selection));
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Roast")]
@@ -135,6 +123,7 @@ namespace SIVA.Core.Modules.General
         public async Task Suggest()
         {
             await ReplyAsync("<https://goo.gl/forms/i6pgYTSnDdMMNLZU2>");
+            await Helpers.SendMessage(Context, msg:"https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
         }
 
     }

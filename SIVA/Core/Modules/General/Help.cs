@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
+using SIVA.Core.Bot;
 using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.General
@@ -12,10 +13,8 @@ namespace SIVA.Core.Modules.General
         public async Task HelpCommand()
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder();
-            embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("HelpString"));
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+
             await Context.Message.AddReactionAsync(new Emoji("☑"));
 
             var dm = await Context.User.GetOrCreateDMChannelAsync();

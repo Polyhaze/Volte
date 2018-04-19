@@ -21,5 +21,6 @@
   "WarnCommandText": "{0} has been warned for: `{1}`",
   "WarnsPluralText": "{0} has {1} warns.",
   "WarnsSingulText": "{0} has {1} warn.",
-  "WelcomeColourText": "Successfully set this Guild's Welcome Message Colour to `{0}-{1}-{2}`."
+  "WelcomeColourText": "Successfully set this Guild's Welcome Message Colour to `{0}-{1}-{2}`.",
+  "SetStreamText": ""
 }

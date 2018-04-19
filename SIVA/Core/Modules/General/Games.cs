@@ -3,6 +3,7 @@ using Discord.Commands;
 using System.Threading.Tasks;
 using SIVA.Core.JsonFiles;
 using System;
+using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules.General
 {
@@ -18,13 +19,10 @@ namespace SIVA.Core.Modules.General
             var truthsList = json.Truths.ToArray();
             var truth = truthsList[r];
 
-            var embed = new EmbedBuilder()
-                .WithDescription(truth)
-                .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            EmbedBuilder embed = Helpers.CreateEmbed(Context, truth);
 
-            await ReplyAsync("", false, embed);
-            
+            await Helpers.SendMessage(Context, embed);
+
         }
 
         [Command("Dare")]
@@ -37,12 +35,9 @@ namespace SIVA.Core.Modules.General
             var daresList = json.Dares.ToArray();
             var dare = daresList[r];
 
-            var embed = new EmbedBuilder()
-                .WithDescription(dare)
-                .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            EmbedBuilder embed = Helpers.CreateEmbed(Context, dare);
 
-            await ReplyAsync("", false, embed);
+            await Helpers.SendMessage(Context, embed);
 
         }
     }
