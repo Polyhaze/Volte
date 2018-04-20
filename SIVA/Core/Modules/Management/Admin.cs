@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Discord.WebSocket;
 using SIVA.Core.JsonFiles;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace SIVA.Core.Modules.Management
 {
     public class Admin : ModuleBase<SocketCommandContext>
     {
+        
         [Command("ServerName")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ModifyServerName([Remainder]string name)

@@ -13,6 +13,8 @@ namespace SIVA.Core.Modules.General
     public class General : ModuleBase<SocketCommandContext>
     {
 
+        private Helpers Jda;
+
         [Command("Stats")]
         public async Task MyStats([Remainder]string arg = "")
         {

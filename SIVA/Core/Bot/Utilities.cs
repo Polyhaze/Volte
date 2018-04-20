@@ -24,11 +24,7 @@ namespace SIVA.Core.Bot
 
         public static string GetFormattedLocaleMsg(string key, params object[] parameter)
         {
-            if (alerts.ContainsKey(key))
-            {
-                return String.Format(alerts[key], parameter);
-            }
-            return "";
+            return alerts.ContainsKey(key) ? String.Format(alerts[key], parameter) : "";
         }
 
         public static string GetFormattedLocaleMsg(string key, object parameter)
