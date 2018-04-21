@@ -6,7 +6,7 @@ namespace SIVA.Core.Bot.Services.Database.DbTypes
 {
     public class BotConfig : DatabaseEntity
     {
-        public string Token { get; set; }
+        public string Token { get; set; } = "";
         public string Prefix { get; set; } = "$";
         public bool Debug { get; set; } = true;
         public string BotGameToSet { get; set; } = "$h - @SIVA h";

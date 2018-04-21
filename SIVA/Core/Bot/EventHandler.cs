@@ -8,6 +8,8 @@ using Discord;
 using SIVA.Core.JsonFiles;
 using System.IO;
 using System.Collections.Generic;
+using SIVA.Core.Modules;
+using SIVA.Core.Modules.Management;
 
 namespace SIVA.Core.Bot
 {
@@ -53,6 +55,8 @@ namespace SIVA.Core.Bot
                 Console.WriteLine($"{s} not cared for as it's {msg} (for whatever reason)");
                 return;
             }
+            
+            
 
 
             if (context.User.IsBot) return;
