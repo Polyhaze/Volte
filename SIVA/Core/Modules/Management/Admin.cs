@@ -1,8 +1,5 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
-using SIVA.Core.Bot.Services;
-//using SIVA.Core.Bot.Services.Database.DbTypes;
-using System;
 using Discord.WebSocket;
 using SIVA.Core.JsonFiles;
 using System.Linq;
@@ -11,39 +8,9 @@ using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules.Management
 {
-
-    public class AdminService : INService
-    {
-        private readonly Database _db;
-
-        public AdminService(Database db)
-        {
-            _db = db;
-        }
-
-        public bool IsServerLoggingEnabled(ulong serverId)
-        {
-            bool enabled;
-            using (var uoW = _db.UnitOfWork)
-            {
-                var conf = uoW.GuildConfig.LogSettingsFor(serverId);
-                enabled = conf.IsServerLoggingEnabled = !conf.IsServerLoggingEnabled;
-
-                uoW.Complete();
-            }
-
-            return enabled;
-        }
-    }
     
-    public class Admin : SivaModule<AdminService>
+    public class Admin : SivaModule
     {
-        private readonly Database _db;
-
-        public Admin(Database db)
-        {
-            _db = db;
-        }
         
         [Command("ServerName")]
         [RequireUserPermission(GuildPermission.Administrator)]

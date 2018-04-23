@@ -8,8 +8,10 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Discord.Net;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -26,6 +28,48 @@ namespace SIVA.Core.Modules.Management
             await Helpers.SendMessage(Context, embed);
             await client.LogoutAsync();
             await client.StopAsync();
+        }
+
+        [Command("CreateConfigEmergency")]
+        [RequireOwner]
+        public async Task CreateConfigsBecauseImADumbassDotExe()
+        {
+            foreach (var guild in Program._client.Guilds)
+            {
+                if (guild.Id != 405806471578648588) { GuildConfig.CreateGuildConfig(guild.Id); }
+            }
+
+            await ReplyAsync($"Successfully created configs for {Program._client.Guilds.Count - 1} servers.");
+        }
+
+        [Command("CreateConfig")]
+        [RequireOwner]
+        public async Task CreateConfigIfOneDoesntExist(ulong serverId = 0)
+        {
+            if (serverId == 0) serverId = Context.Guild.Id;
+
+            var g = Program._client.GetGuild(serverId);
+            var embed = Helpers.CreateEmbed(Context, $"Created a config for the guild `{g.Name}! ({serverId})`");
+            var targetConfig = GuildConfig.GetGuildConfig(serverId);
+            
+            List<ulong> serverIds = new List<ulong>();
+            
+            foreach (SocketGuild server in Program._client.Guilds)
+            {
+                serverIds.Add(server.Id);
+            }
+            
+            if (targetConfig == null && serverIds.Contains(serverId))
+            {
+                GuildConfig.CreateGuildConfig(serverId);
+            }
+            else
+            {
+                embed.WithDescription($"Couldn't create a config for {serverId}. Either they already have a config, or I don't have access to that server.");
+            }
+
+            await Helpers.SendMessage(Context, embed);
+
         }
 
         [Command("NotifyBotUsers"), Alias("Nbu")]

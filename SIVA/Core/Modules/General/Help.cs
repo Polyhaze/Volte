@@ -2,24 +2,23 @@
 using Discord.Commands;
 using System.Threading.Tasks;
 using SIVA.Core.Bot;
-using SIVA.Core.JsonFiles;
+using Discord.Net;
 
 namespace SIVA.Core.Modules.General
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("H")]
-        [Summary("Shows commands for the bot.")]
+        [Summary("Shows useful links for the bot.")]
         public async Task HelpCommand()
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            var embed = Helpers.CreateEmbed(Context,
+            Bot.Utilities.GetFormattedLocaleMsg("HelpString", Context.User.Username));
 
             await Context.Message.AddReactionAsync(new Emoji("☑"));
 
             var dm = await Context.User.GetOrCreateDMChannelAsync();
             await dm.SendMessageAsync("", false, embed);
-
         }
     }
 }

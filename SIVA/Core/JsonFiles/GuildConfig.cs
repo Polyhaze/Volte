@@ -104,6 +104,8 @@ namespace SIVA.Core.JsonFiles
                 SupportChannelId = 00000000000000,
                 CommandPrefix = "$",
                 WelcomeChannel = 0,
+                WelcomeMessage = string.Empty,
+                LeavingMessage = string.Empty,
                 WelcomeColour1 = 112,
                 WelcomeColour2 = 0,
                 WelcomeColour3 = 251,
