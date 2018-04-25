@@ -8,7 +8,7 @@ namespace SIVA.Core.Modules
     {
         private EventHandler _eHandler;
     }
-    
+    	
     public class SivaModule<TService> : SivaModule where TService : INService
     {
         //public SocketCommandContext Context;
