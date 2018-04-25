@@ -49,7 +49,6 @@ namespace SIVA.Core.Bot
                 com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
                 com.ExecuteNonQuery();
             }
-
             return context;
         }
 
