@@ -15,7 +15,7 @@ The source code is available, hack at it to your heart's content; however, the S
 
 > [SIVA-public](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) **By default, this has the Administrator permission checked. Keep this if you're using moderation, you should keep it checked.**
 
->
+> SIVA-dev is not public. It's for my debugging purposes.
 
 # FAQ
 
@@ -24,10 +24,10 @@ Error Reporting, Memes, Consistent bot update messages, Chat with the developers
 
 
 ### Is the bot open source?
-[Yes.](https://hub.ultz.co.uk/code/projects/SIVA/repos/bot/browse/)
+[Yes.](https://hub.ultz.co.uk/code/projects/SIVA/repos/bot/browse/) (Yes is clickable)
 
 ### Is there a Discord server for the bot?
-[Yes.](https://greem.xyz/SIVA)
+[Yes.](https://greem.xyz/SIVA) (Yes is clickable)
 
 ### Why do you use the Ultz code server rather than GitHub?
 I prefer BitBucket, and the Ultz code server is a selfhosted derivative of bitbucket. See the bottom of this page for info.
@@ -37,12 +37,14 @@ You can access it by running the `help` command. Alternatively, it's on Ultz's C
 You can use the GitHub wiki, but it will not be updated as much, since Confluence is SO nice to work in.
 
 ### Where can I report issues with the bot?
-Report them on GitHub for now. I'm going to setup something on Ultz's server for issue handling. Once you make the issue, join our Discord and ping me. `@Greem#1337`
+Report them on GitHub for now. I'm going to setup something on Ultz's server for issue handling. Once you make the issue, join our Discord and ping me. `Greem#1337`
 
 ### What do the errors mean?
 
 `Failed to parse Boolean` - That command can only have `true` or `false` passed in as a command argument.
+
 `Failed to parse Int` - That command can only take numbers in as a command argument. If you pass in too big of a number, then it'll yell at you.
+
 `The input text had too many parameters` - If you passed in something like text with spaces and got this, join the [SIVA Discord Server](https://greem.xyz/SIVA) and report it, along with the command you tried. I forgot the `[Remainder]` string property.
 
 Some errors have custom text. If you find an error, and don't know what it means, report it on the SIVA server. Include the command and the arguments provided.
