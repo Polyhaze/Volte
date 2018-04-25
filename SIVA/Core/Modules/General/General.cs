@@ -2,18 +2,18 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using SIVA.Core.JsonFiles;
 using System.Threading.Tasks;
 using System.Linq;
 using Flurl.Util;
+using Microsoft.CodeAnalysis.CSharp;
 using SIVA.Core.Bot;
 
 namespace SIVA.Core.Modules.General
 {
-    public class General : ModuleBase<SocketCommandContext>
+    public class General : SivaModule
     {
-
-        private Helpers Jda;
 
         [Command("Stats")]
         public async Task MyStats([Remainder]string arg = "")
@@ -54,7 +54,6 @@ namespace SIVA.Core.Modules.General
         [Command("Lenny")]
         public async Task LennyLol()
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = Helpers.CreateEmbed(Context, "( ͡° ͜ʖ ͡°)");
 
             await Helpers.SendMessage(Context, embed);
@@ -64,13 +63,13 @@ namespace SIVA.Core.Modules.General
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task SayCommand([Remainder]string message)
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = Helpers.CreateEmbed(Context, message);
             await Context.Message.DeleteAsync();
 
             if (Config.bot.Debug)
             {
-                Console.WriteLine($"DEBUG: {Context.User.Username}#{Context.User.Discriminator} used the say command in the channel #{Context.Channel.Name} and said \"{message}\".");
+                var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800);
+                await channel.SendMessageAsync("", false, Helpers.CreateEmbed(Context, $"{Context.User.Mention} used the say command in the channel <#{Context.Channel.Id}>, in Guild **{Context.Guild.Name}** and said **\"{message}\"**."));
                 await ReplyAsync("", false, embed);
             } 
             else
@@ -82,13 +81,11 @@ namespace SIVA.Core.Modules.General
         [Command("Choose")]
         public async Task PickOne([Remainder]string message)
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] options = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
             Random r = new Random();
-            string selection = options[r.Next(0, options.Length)];
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("PickCommandText", selection));
+            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
 
             await Helpers.SendMessage(Context, embed);
         }
@@ -105,12 +102,12 @@ namespace SIVA.Core.Modules.General
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.AddField("Version", Bot.Utilities.GetLocaleMsg("VersionString"));
-            embed.AddField("Author", "<@168548441939509248>");
+            embed.AddField("Author", $"<@{Program._client.CurrentUser.Id}>");
             embed.AddField("Language", "C# with Discord.Net");
-            embed.AddField("Server", "https://discord.io/SIVA");
-            embed.AddField("Servers", (Context.Client as DiscordSocketClient).Guilds.Count);
+            embed.AddField("Server", "https://greem.xyz/SIVA");
+            embed.AddField("Servers", Program._client.Guilds.Count);
             embed.AddField("Invite Me", "https://bot.discord.io/SIVA");
-            embed.AddField("Ping", (Context.Client as DiscordSocketClient).Latency);
+            embed.AddField("Ping", Program._client.Latency);
             embed.AddField("Client ID", Program._client.CurrentUser.Id);
             embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");

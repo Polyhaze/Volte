@@ -85,7 +85,7 @@ namespace SIVA.Core.Modules.Utilities
         }
 
         [Command("Calculator"), Alias("Calc")]
-        public async Task Calculate(string oper, int val1, int val2 = 0)
+        public async Task Calculate(string oper, int val1, int val2 = 0) //this code is fucking nasty, i will fix it in the future.
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
@@ -471,7 +471,7 @@ namespace SIVA.Core.Modules.Utilities
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("PingCommandText", Context.Client.Latency));
+            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("PingCommandText", Program._client.Latency));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
