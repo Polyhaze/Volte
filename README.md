@@ -52,3 +52,4 @@ Some errors have custom text. If you find an error, and don't know what it means
 ### Any other questions?
 
 Ask them on the [SIVA Discord server](https://greem.xyz)
+
