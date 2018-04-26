@@ -20,7 +20,19 @@ The source code is available, hack at it to your heart's content; however, the S
 # FAQ
 
 ### Why should I join the [Discord server](https://greem.xyz/SIVA)?
-Error Reporting, Memes, Consistent bot update messages, Chat with the developers, ask us coding questions, and more! Link is embedded in the header of this message.
+Error Reporting, 
+
+Memes, 
+
+Consistent bot update messages, 
+
+Chat with the developers, 
+
+ask us coding questions, 
+
+and more! 
+
+Link is embedded in the header of this message.
 
 
 ### Is the bot open source?
