@@ -2,7 +2,6 @@
 using Discord.Commands;
 using System.Threading.Tasks;
 using SIVA.Core.Bot;
-using Discord.Net;
 
 namespace SIVA.Core.Modules.General
 {
