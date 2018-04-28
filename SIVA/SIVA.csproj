@@ -17,7 +17,7 @@
   <PropertyGroup>
     <RootNamespace>SIVA</RootNamespace>
     <ApplicationIcon>SIVA.ico</ApplicationIcon>
-    <StartupObject>SIVA.Core.Bot.Program</StartupObject>
+    <StartupObject>SIVA.Core.Bot.Internal.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.2" />
