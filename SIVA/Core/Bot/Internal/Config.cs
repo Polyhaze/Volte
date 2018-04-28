@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using SIVA.Core.Bot.Services;
 
 namespace SIVA.Core.Bot.Internal
 {

@@ -45,7 +45,7 @@ namespace SIVA.Core.Modules.Management
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemoveStringFromBl([Remainder]string bl)
         {
-            var config = JsonFiles.GuildConfig.GetOrCreateConfig(Context.Guild.Id);
+            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
@@ -57,7 +57,7 @@ namespace SIVA.Core.Modules.Management
             {
                 embed.WithDescription($"Removed {bl} from the Blacklist.");
                 config.Blacklist.Remove(bl);
-                JsonFiles.GuildConfig.SaveGuildConfig();
+                GuildConfig.SaveGuildConfig();
             }
 
             await SendMessage(embed);
@@ -337,7 +337,7 @@ namespace SIVA.Core.Modules.Management
         }
 
         [Command("SupportRole"), Alias("SR")]
-        [RequireUserPermission(Discord.GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetRoleInConfig([Remainder]string role)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
@@ -347,7 +347,7 @@ namespace SIVA.Core.Modules.Management
         }
 
         [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(0)] 
-        [RequireUserPermission(Discord.GuildPermission.ManageChannels)]
+        [RequireUserPermission(GuildPermission.ManageChannels)]
         public async Task CloseTicket()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
@@ -613,9 +613,9 @@ namespace SIVA.Core.Modules.Management
 
         }
         
-        public async Task SendMessage(Embed embed, string message = "", bool isTTS = false)
+        public async Task SendMessage(Embed embed, string message = "", bool isTts = false)
         {
-            await ReplyAsync(message, isTTS, embed);
+            await ReplyAsync(message, isTts, embed);
         }
     }
 }

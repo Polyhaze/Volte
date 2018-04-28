@@ -1,9 +1,6 @@
 ﻿using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
 using Discord;
 
 namespace SIVA.Core.Bot.Internal

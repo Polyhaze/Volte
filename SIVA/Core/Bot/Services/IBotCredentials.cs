@@ -16,8 +16,8 @@ namespace SIVA.Core.Bot.Services
     {
         public DBConfig(string type, string connectionString)
         {
-            this.Type = type;
-            this.ConnectionString = connectionString;
+            Type = type;
+            ConnectionString = connectionString;
         }
         public string Type { get; }
         public string ConnectionString { get; }

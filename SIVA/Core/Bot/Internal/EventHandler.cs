@@ -8,15 +8,13 @@ using Discord;
 using SIVA.Core.JsonFiles;
 using System.IO;
 using System.Collections.Generic;
-using SIVA.Core.Modules;
-using SIVA.Core.Modules.Management;
 
 namespace SIVA.Core.Bot.Internal
 {
     internal class EventHandler
     {
-        DiscordSocketClient _client = Program._client;
-        internal CommandService _service;
+        private DiscordSocketClient _client = Program._client;
+        private CommandService _service;
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
@@ -52,7 +50,7 @@ namespace SIVA.Core.Bot.Internal
             await Support.SupportSystem(s);
             if (msg == null)
             {
-                Console.WriteLine($"{s} not cared for as it's {msg} (for whatever reason)");
+                Console.WriteLine($"{s} not cared for as it's null (for whatever reason)");
                 return;
             }
             
@@ -131,25 +129,25 @@ namespace SIVA.Core.Bot.Internal
                 }
                 if (result.ErrorReason == "Unknown command.") return;
 
-                Console.WriteLine($"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
-                Console.WriteLine($"\\|     -Command Issued: {msg.Content}");
-                Console.WriteLine($"\\|           -In Guild: {context.Guild.Name}");
-                Console.WriteLine($"\\|         -In Channel: #{context.Channel.Name}");
-                Console.WriteLine($"\\|        -Time Issued: {DateTime.Now}");
+                Console.WriteLine($"--|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
+                Console.WriteLine($"--|     -Command Issued: {msg.Content}");
+                Console.WriteLine($"--|           -In Guild: {context.Guild.Name}");
+                Console.WriteLine($"--|         -In Channel: #{context.Channel.Name}");
+                Console.WriteLine($"--|        -Time Issued: {DateTime.Now}");
                 Console.WriteLine(result.IsSuccess
-                    ? $"\\|           -Executed: {result.IsSuccess}"
-                    : $"\\|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+                    ? $"--|           -Executed: {result.IsSuccess}"
+                    : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
                 Console.WriteLine("-------------------------------------------------");
                 try 
                 {
-                    File.AppendAllText("Commands.log", $"\\|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
-                    File.AppendAllText("Commands.log", $"\\|     -Command Issued: {msg.Content} ({msg.Id})\n");
-                    File.AppendAllText("Commands.log", $"\\|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
-                    File.AppendAllText("Commands.log", $"\\|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
-                    File.AppendAllText("Commands.log", $"\\|        -Time Issued: {DateTime.Now}\n");
+                    File.AppendAllText("Commands.log", $"--|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
+                    File.AppendAllText("Commands.log", $"--|     -Command Issued: {msg.Content} ({msg.Id})\n");
+                    File.AppendAllText("Commands.log", $"--|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
+                    File.AppendAllText("Commands.log", $"--|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
+                    File.AppendAllText("Commands.log", $"--|        -Time Issued: {DateTime.Now}\n");
                     File.AppendAllText("Commands.log", result.IsSuccess
-                        ? $"\\|           -Executed: {result.IsSuccess}\n"
-                        : $"\\|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
+                        ? $"--|           -Executed: {result.IsSuccess}\n"
+                        : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
                     File.AppendAllText("Commands.log", "-------------------------------------------------\n");
                 }
                 catch (FileNotFoundException) 

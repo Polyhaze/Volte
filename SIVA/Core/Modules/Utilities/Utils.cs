@@ -1,13 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using SIVA.Core.Bot;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
 using System.Threading;
 using SIVA.Core.JsonFiles;
-using DiscordBotsList.Api;
 
 namespace SIVA.Core.Modules.Utilities
 {

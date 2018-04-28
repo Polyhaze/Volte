@@ -53,7 +53,7 @@ namespace SIVA.Core.Modules.Economy
         public async Task PayAUser(SocketGuildUser user, int amt)
         {
             var embed = new EmbedBuilder();
-            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+            embed.WithColor(Config.bot.DefaultEmbedColour);
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             var ua = UserAccounts.GetAccount(Context.User);
             var ua1 = UserAccounts.GetAccount(user);

@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using SIVA.Core.Bot;
 using SIVA.Core.Bot.Services;
 
 namespace SIVA.Core.Modules
@@ -13,7 +12,5 @@ namespace SIVA.Core.Modules
     	
     public class SivaModule<TService> : SivaModule where TService : INService
     {
-        //public SocketCommandContext Context;
-        public TService _service { get; set; }
     }
 }

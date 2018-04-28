@@ -29,7 +29,7 @@ namespace SIVA.Core.Bot.Services.Database.Repositories.Impl
             _set.ToList();
 
         public void Remove(int id) =>
-            _set.Remove(this.Get(id));
+            _set.Remove(Get(id));
 
         public void Remove(T obj) =>
             _set.Remove(obj);

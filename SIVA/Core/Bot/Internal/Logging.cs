@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System;
-using System.Text;
 using Discord.WebSocket;
 using SIVA.Core.JsonFiles;
 using Discord;
