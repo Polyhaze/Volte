@@ -14,8 +14,8 @@ namespace SIVA.Core.Modules.Utilities
         {
             var embed = new EmbedBuilder()
                 .WithDescription($"Donate to my Patreon!\n\n{patreonLink}")
-                .WithColor(Config.bot.DefaultEmbedColour)
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour)
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
 
@@ -25,7 +25,7 @@ namespace SIVA.Core.Modules.Utilities
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithDescription(config.VerifiedGuild
                 ? "This server is verified! Greem thanks you for your generosity. (Unless this is a server Greem owns)"
                 : $"This server isn't verified. Donate on my Patreon to unlock cool perks! (Plus you can brag to your friends about it.)\n\n{patreonLink}");
@@ -40,7 +40,7 @@ namespace SIVA.Core.Modules.Utilities
             var embed = new EmbedBuilder()
                 .WithDescription($"Nobody has donated yet! Maybe you'll be the first? Use `{config.CommandPrefix}donate` to get to there.")
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await ReplyAsync("", false, embed);
         }

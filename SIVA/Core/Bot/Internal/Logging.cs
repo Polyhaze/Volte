@@ -6,7 +6,7 @@ using SIVA.Core.JsonFiles;
 using Discord;
 using Discord.Commands;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     public static class Logging
     {

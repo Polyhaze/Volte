@@ -22,7 +22,7 @@ namespace SIVA.Core.Modules.Utilities
             var embed = new EmbedBuilder()
                 .WithImageUrl(s.GetAvatarUrl())
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username))
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username))
                 .WithDescription($"**{s.Username}#{s.DiscriminatorValue}**'s Avatar");
             await ReplyAsync("", false, embed);
         }
@@ -41,7 +41,7 @@ namespace SIVA.Core.Modules.Utilities
                 embed.AddField("Status", user.Status);
                 embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
                 embed.WithThumbnailUrl(user.GetAvatarUrl());
-                embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
                 embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
                 embed.WithTitle("User Information");
                 embed.AddField("Is Bot", user.IsBot);
@@ -54,7 +54,7 @@ namespace SIVA.Core.Modules.Utilities
                 embed.AddField("Status", Context.User.Status);
                 embed.AddField("Account Created", Context.User.CreatedAt.UtcDateTime);
                 embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
-                embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
                 embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
                 embed.WithTitle("User Information");
                 embed.AddField("Is Bot", Context.User.IsBot);
@@ -69,18 +69,18 @@ namespace SIVA.Core.Modules.Utilities
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("FeedbackCommandText", feedback));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Internal.Utilities.GetFormattedLocaleMsg("FeedbackCommandText", feedback));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithTitle("Feedback to Greem");
             await ReplyAsync("", false, embed);
             var feedbackEmbed = new EmbedBuilder()
                 .WithDescription(feedback)
                 .WithTitle($"Feedback from {Context.User.Username}#{Context.User.DiscriminatorValue}")
-                .WithColor(Config.bot.DefaultEmbedColour);
+                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
 
 
-            var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
+            var channel = Bot.Internal.Program._client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
             await channel.SendMessageAsync("", false, feedbackEmbed);
         }
 
@@ -89,7 +89,7 @@ namespace SIVA.Core.Modules.Utilities
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithTitle("Calculator");
 
@@ -136,7 +136,7 @@ namespace SIVA.Core.Modules.Utilities
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithThumbnailUrl("https://www.freepnglogos.com/uploads/youtube-logo-hd-8.png");
 
@@ -162,7 +162,7 @@ namespace SIVA.Core.Modules.Utilities
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.AddField("Roles", Context.Guild.Roles.Count);
             embed.AddField("Donator Guild", config.VerifiedGuild);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
@@ -175,7 +175,7 @@ namespace SIVA.Core.Modules.Utilities
             var user = Context.User as SocketGuildUser;
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             if (config == null)
             {
                 embed.WithDescription("This server doesn't have any self roles set.");
@@ -204,7 +204,7 @@ namespace SIVA.Core.Modules.Utilities
             var user = Context.User as SocketGuildUser;
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             if (config == null)
             {
                 embed.WithDescription("This server doesn't have any self roles set.");
@@ -239,7 +239,7 @@ namespace SIVA.Core.Modules.Utilities
                 .WithDescription(commandList)
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                 .WithTitle($"Custom Commands available for {Context.Guild.Name}")
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
 
@@ -249,7 +249,7 @@ namespace SIVA.Core.Modules.Utilities
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             if (config == null)
             {
                 embed.WithDescription("This server doesn't have any self-assignable roles.");
@@ -461,17 +461,17 @@ namespace SIVA.Core.Modules.Utilities
             var embed = new EmbedBuilder()
                 .WithDescription($"http://lmgtfy.com/?q={oh}")
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
 
         [Command("Ping")]
-        public async Task PingTheFuckingBot()
+        public async Task Ping()
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("PingCommandText", Program._client.Latency));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Internal.Utilities.GetFormattedLocaleMsg("PingCommandText", Bot.Internal.Program._client.Latency));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
@@ -485,7 +485,7 @@ namespace SIVA.Core.Modules.Utilities
             string searchUrl = $"https://google.com/search?q={search}";
             var embed = new EmbedBuilder();
             embed.WithDescription(searchUrl);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
 
@@ -499,7 +499,7 @@ namespace SIVA.Core.Modules.Utilities
             var embed = new EmbedBuilder {
                 Description = "Invite the bot [here](https://bot.discord.io/SIVA)"
             };
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
@@ -513,7 +513,7 @@ namespace SIVA.Core.Modules.Utilities
                 .AddField("Invite the bot", "https://discord.io/plutoBot")
                 .AddField("Pluto Support Server", "https://discord.gg/qTNEgPD")
                 .WithColor(new Color(0x195AC4))
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await ReplyAsync("", false, embed);
         }
@@ -527,7 +527,7 @@ namespace SIVA.Core.Modules.Utilities
                 var embedNull = new EmbedBuilder();
                     embedNull.WithDescription("User doesn't exist in this server.")
                     .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
-                    .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                    .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
                 await ReplyAsync("", false, embedNull);
                 return;
             }

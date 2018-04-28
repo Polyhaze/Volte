@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Discord;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     internal class Program
     {

@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.JsonFiles;
+using SIVA.Core.Bot.Internal;
 
 namespace SIVA.Core.Bot 
 {

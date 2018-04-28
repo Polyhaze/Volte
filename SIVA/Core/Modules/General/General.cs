@@ -1,14 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
 using SIVA.Core.JsonFiles;
 using System.Threading.Tasks;
 using System.Linq;
-using Flurl.Util;
-using Microsoft.CodeAnalysis.CSharp;
 using SIVA.Core.Bot;
+using SIVA.Core.Bot.Internal;
 
 namespace SIVA.Core.Modules.General
 {
@@ -85,7 +82,7 @@ namespace SIVA.Core.Modules.General
 
             Random r = new Random();
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
 
             await Helpers.SendMessage(Context, embed);
         }
@@ -101,7 +98,7 @@ namespace SIVA.Core.Modules.General
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.AddField("Version", Bot.Utilities.GetLocaleMsg("VersionString"));
+            embed.AddField("Version", Bot.Internal.Utilities.GetLocaleMsg("VersionString"));
             embed.AddField("Author", $"<@{Program._client.CurrentUser.Id}>");
             embed.AddField("Language", "C# with Discord.Net");
             embed.AddField("Server", "https://greem.xyz/SIVA");
@@ -111,7 +108,7 @@ namespace SIVA.Core.Modules.General
             embed.AddField("Client ID", Program._client.CurrentUser.Id);
             embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
             embed.WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png");
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await Helpers.SendMessage(Context, embed);

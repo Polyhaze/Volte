@@ -22,8 +22,8 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task Shutdown()
         {
-            var client = Program._client;
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
+            var client = Bot.Internal.Program._client;
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
 
             await Helpers.SendMessage(Context, embed);
             await client.LogoutAsync();
@@ -34,12 +34,12 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task CreateConfigsBecauseImADumbassDotExe()
         {
-            foreach (var guild in Program._client.Guilds)
+            foreach (var guild in Bot.Internal.Program._client.Guilds)
             {
                 if (guild.Id != 405806471578648588) { GuildConfig.CreateGuildConfig(guild.Id); }
             }
 
-            await ReplyAsync($"Successfully created configs for {Program._client.Guilds.Count - 1} servers.");
+            await ReplyAsync($"Successfully created configs for {Bot.Internal.Program._client.Guilds.Count - 1} servers.");
         }
 
         [Command("CreateConfig")]
@@ -48,13 +48,13 @@ namespace SIVA.Core.Modules.Management
         {
             if (serverId == 0) serverId = Context.Guild.Id;
 
-            var g = Program._client.GetGuild(serverId);
+            var g = Bot.Internal.Program._client.GetGuild(serverId);
             var embed = Helpers.CreateEmbed(Context, $"Created a config for the guild `{g.Name}! ({serverId})`");
             var targetConfig = GuildConfig.GetGuildConfig(serverId);
             
             List<ulong> serverIds = new List<ulong>();
             
-            foreach (SocketGuild server in Program._client.Guilds)
+            foreach (SocketGuild server in Bot.Internal.Program._client.Guilds)
             {
                 serverIds.Add(server.Id);
             }
@@ -76,11 +76,11 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task NotifyPeopleWhoUseBot([Remainder]string message)
         {
-            var client = Program._client;
+            var client = Bot.Internal.Program._client;
             var embed = new EmbedBuilder()
                 .WithDescription(message)
                 .WithTitle("Message from Greem (Bot Creator)")
-                .WithColor(Config.bot.DefaultEmbedColour);
+                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
 
             foreach (SocketGuild server in client.Guilds)
             {
@@ -94,7 +94,7 @@ namespace SIVA.Core.Modules.Management
                 catch (RateLimitedException e)
                 {
                     Console.WriteLine($"ratelimited. {e.Message}");
-                    var ownerDm = await Helpers.GetDmChannel(Config.bot.BotOwner);
+                    var ownerDm = await Helpers.GetDmChannel(Bot.Internal.Config.bot.BotOwner);
                     await ownerDm.SendMessageAsync("Ratelimited.");
                 }
             }
@@ -112,8 +112,8 @@ namespace SIVA.Core.Modules.Management
             config.VerifiedGuild = true;
             var embed = new EmbedBuilder()
                 .WithDescription("Successfully verified this server.")
-                .WithColor(Config.bot.DefaultEmbedColour)
-                .WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour)
+                .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
 
@@ -124,7 +124,7 @@ namespace SIVA.Core.Modules.Management
             var result = await CSharpScript.EvaluateAsync(code, ScriptOptions.Default.AddImports("System", "System.IO", "System.Collections.Generic", "System.Threading.Tasks", "System.Threading"));
             var embed = new EmbedBuilder()
                 .WithDescription($"Input: \n```cs\n{code}```\n\nOutput: `{result}`")
-                .WithColor(Config.bot.DefaultEmbedColour);
+                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
             await ReplyAsync("", false, embed);
         }
 
@@ -132,7 +132,7 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task SetBotStream(string streamer, [Remainder]string streamName)
         {
-            await Program._client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", StreamType.Twitch);
+            await Bot.Internal.Program._client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", StreamType.Twitch);
             var embed = Helpers.CreateEmbed(Context, $"Set the stream name to **{streamName}**, and set the streamer to <https://twitch.tv/{streamer}>!");
             await Helpers.SendMessage(Context, embed);
         }
@@ -142,12 +142,12 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task SetBotGame([Remainder] string game)
         {
-            var client = Program._client;
+            var client = Bot.Internal.Program._client;
 
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set the bot's game to {game}");
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await client.SetGameAsync(game);
             await ReplyAsync("", false, embed);
         }
@@ -158,10 +158,10 @@ namespace SIVA.Core.Modules.Management
         {
             var embed = new EmbedBuilder();
             embed.WithDescription($"Set the status to {status}.");
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
 
-            var client = Program._client;
+            var client = Bot.Internal.Program._client;
 
             switch (status)
             {
@@ -187,9 +187,9 @@ namespace SIVA.Core.Modules.Management
         public async Task LeaveServer()
         {
             var embed = new EmbedBuilder();
-            embed.WithDescription(Bot.Utilities.GetLocaleMsg("BotLeftServer"));
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Internal.Utilities.GetLocaleMsg("BotLeftServer"));
+            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
             await Context.Guild.LeaveAsync();
         }
@@ -198,14 +198,14 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task ServerCountStream()
         {
-            var client = Program._client;
-            var guilds = Context.Client.Guilds.Count;
+            var client = Bot.Internal.Program._client;
+            var guilds = client.Guilds.Count;
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
-            await client.SetGameAsync($"in {(Context.Client as DiscordSocketClient).Guilds.Count} servers!", $"https://twitch.tv/{Config.bot.TwitchStreamer}", StreamType.Twitch);
+            await client.SetGameAsync($"in {guilds} servers!", $"https://twitch.tv/{Bot.Internal.Config.bot.TwitchStreamer}", StreamType.Twitch);
 
         }
     }

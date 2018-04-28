@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using System.IO;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     internal class EventUtils
     {

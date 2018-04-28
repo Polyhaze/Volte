@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using SIVA.Core.JsonFiles;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     internal static class Support
     {

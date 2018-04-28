@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using SIVA.Core.Modules;
 using SIVA.Core.Modules.Management;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     internal class EventHandler
     {

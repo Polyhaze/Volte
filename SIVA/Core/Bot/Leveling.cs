@@ -3,6 +3,7 @@ using System.Threading;
 using Discord.WebSocket;
 using System.Threading.Tasks;
 using SIVA.Core.JsonFiles;
+using SIVA.Core.Bot.Internal;
 
 namespace SIVA.Core.Bot
 {
@@ -21,8 +22,8 @@ namespace SIVA.Core.Bot
             if (oldLevel != newLevel)
             {
                 var embed = new EmbedBuilder();
-                embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("LeveledUpMessage", user.Username, newLevel));
-                embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
+                embed.WithDescription(Utilities.GetFormattedLocaleMsg("LeveledUpMessage", user.Username, newLevel));
+                embed.WithColor(Config.bot.DefaultEmbedColour);
                 embed.WithTitle("Level up!");
                 embed.WithDescription($"Good job **{user.Mention}**! You leveled up to level **{newLevel}**!");
 

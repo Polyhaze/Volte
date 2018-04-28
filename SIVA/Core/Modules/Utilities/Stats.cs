@@ -23,7 +23,7 @@ namespace SIVA.Core.Modules.Utilities
             embed.AddField("Profile URL", player.ProfileUrl);
             embed.AddField("Achievements", player.Achievements.Count);
             embed.WithThumbnailUrl(player.CompetitiveRankImageUrl);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
@@ -37,7 +37,7 @@ namespace SIVA.Core.Modules.Utilities
             var profile = await fortnite.FindPlayerAsync(platform, name);
             var embed = new EmbedBuilder();
             embed.WithTitle($"{name}'s Fortnite Info - {platform}");
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.AddField("Account ID", profile.AccountId);
             embed.AddField("Platform", profile.PlatformName);
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));

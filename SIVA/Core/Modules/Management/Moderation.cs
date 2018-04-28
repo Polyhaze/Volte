@@ -21,8 +21,8 @@ namespace SIVA.Core.Modules.Management
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             await Context.Guild.AddBanAsync(user, 7, reason);
             var embed = new EmbedBuilder();
-            embed.WithDescription(Bot.Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithDescription(Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             await ReplyAsync("", false, embed);
 
@@ -48,7 +48,7 @@ namespace SIVA.Core.Modules.Management
                 reason = $"Banned by {Context.User.Username}#{Context.User.Discriminator}";
             }
             await Context.Guild.AddBanAsync(userid, 7, reason);
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
 
             await Helpers.SendMessage(Context, embed);
         }
@@ -69,7 +69,7 @@ namespace SIVA.Core.Modules.Management
         public async Task KickUser(SocketGuildUser user, [Remainder]string reason = "")
         {
             await user.KickAsync(reason);
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
 
             await Helpers.SendMessage(Context, embed);
         }
@@ -82,7 +82,7 @@ namespace SIVA.Core.Modules.Management
         {
             var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
             await Helpers.SendMessage(Context, embed);
@@ -95,7 +95,7 @@ namespace SIVA.Core.Modules.Management
         {
             var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
             await Helpers.SendMessage(Context, embed);

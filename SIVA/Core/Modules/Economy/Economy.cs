@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using System;
+using SIVA.Core.Bot.Internal;
 using SIVA.Core.Bot;
 using SIVA.Core.JsonFiles;
 
@@ -21,7 +22,7 @@ namespace SIVA.Core.Modules.Economy
         public async Task Level()
         {
             var ua = UserAccounts.GetAccount(Context.User);
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
 
             await Helpers.SendMessage(Context, embed);
@@ -31,7 +32,7 @@ namespace SIVA.Core.Modules.Economy
         public async Task Level(SocketGuildUser user)
         {
             var ua = UserAccounts.GetAccount(user);
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
 
             await Helpers.SendMessage(Context, embed);
@@ -42,7 +43,7 @@ namespace SIVA.Core.Modules.Economy
         {
             var ua = UserAccounts.GetAccount(Context.User);
             var bal = ua.Money.ToString();
-            var embed = Helpers.CreateEmbed(Context, Bot.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
             await Helpers.SendMessage(Context, embed);
@@ -52,8 +53,8 @@ namespace SIVA.Core.Modules.Economy
         public async Task PayAUser(SocketGuildUser user, int amt)
         {
             var embed = new EmbedBuilder();
-            embed.WithColor(Bot.Config.bot.DefaultEmbedColour);
-            embed.WithFooter(Bot.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
+            embed.WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+            embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             var ua = UserAccounts.GetAccount(Context.User);
             var ua1 = UserAccounts.GetAccount(user);
             if (ua.Money < amt)
@@ -66,7 +67,7 @@ namespace SIVA.Core.Modules.Economy
                 ua.Money = ua.Money - amt;
                 ua1.Money = ua1.Money + amt;
                 UserAccounts.SaveAccounts();
-                embed.WithDescription($"{Context.User.Mention} paid {user.Mention} {Bot.Config.bot.CurrencySymbol}{amt}!");
+                embed.WithDescription($"{Context.User.Mention} paid {user.Mention} {Config.bot.CurrencySymbol}{amt}!");
                 await Helpers.SendMessage(Context, embed);
             }
         }

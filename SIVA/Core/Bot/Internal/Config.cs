@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     public class Config
     {

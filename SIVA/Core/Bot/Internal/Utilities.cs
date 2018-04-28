@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     class Utilities
     {

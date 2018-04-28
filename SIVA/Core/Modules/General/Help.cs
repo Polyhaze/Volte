@@ -12,7 +12,7 @@ namespace SIVA.Core.Modules.General
         public async Task HelpCommand()
         {
             var embed = Helpers.CreateEmbed(Context,
-            Bot.Utilities.GetFormattedLocaleMsg("HelpString", Context.User.Username));
+             Bot.Internal.Utilities.GetFormattedLocaleMsg("HelpString", Context.User.Username));
 
             await Context.Message.AddReactionAsync(new Emoji("☑"));
 

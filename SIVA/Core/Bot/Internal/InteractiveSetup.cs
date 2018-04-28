@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SIVA.Core.Bot
+namespace SIVA.Core.Bot.Internal
 {
     public class InteractiveSetup
     {
