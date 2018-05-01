@@ -25,6 +25,43 @@ namespace SIVA.Core.Modules.Management
 
             await SendMessage(embed);
         }
+        
+        [Command("AddRole"), Alias("Ar")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task GiveUserSpecifiedRole(SocketGuildUser user, [Remainder]string role)
+        {
+            var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
+
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
+
+            await user.AddRoleAsync(targetRole);
+            await Helpers.SendMessage(Context, embed);
+        }
+        
+        [Command("Rename")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SetUsersNickname(SocketGuildUser user, [Remainder]string nick)
+        {
+            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
+            await user.ModifyAsync(x => x.Nickname = nick);
+            var embed = Helpers.CreateEmbed(Context, $"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
+
+            await Helpers.SendMessage(Context, embed);
+        }
+
+        [Command("RemRole"), Alias("Rr")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task TakeAwaySpecifiedRole(SocketGuildUser user, [Remainder]string role)
+        {
+            var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
+
+            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
+
+            await user.RemoveRoleAsync(targetRole);
+            await Helpers.SendMessage(Context, embed);
+        }
 
         [Command("BlacklistAdd"), Alias("Bladd")]
         [RequireUserPermission(GuildPermission.Administrator)]
