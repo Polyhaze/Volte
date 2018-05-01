@@ -568,7 +568,7 @@ namespace SIVA.Core.Modules.Management
 
             if (config.WelcomeChannel != 0)
             {
-                var a = config.WelcomeMessage.Replace("{UserMention}", Context.User.Mention);
+                var a = config.LeavingMessage.Replace("{UserMention}", Context.User.Mention);
                 var b = a.Replace("{ServerName}", Context.Guild.Name);
                 var c = b.Replace("{UserName}", Context.User.Username);
                 var d = c.Replace("{OwnerMention}", Context.Guild.Owner.Mention);

@@ -27,7 +27,10 @@ namespace SIVA.Core.Bot.Internal
             return alerts.ContainsKey(key) ? String.Format(alerts[key], parameter) : "";
         }
 
-        public static string GetFormattedLocaleMsg(string key, object parameter) => GetFormattedLocaleMsg(key,  parameter );
+        public static string GetFormattedLocaleMsg(string key, object parameter)
+        {
+            return alerts.ContainsKey(key) ? String.Format(alerts[key], parameter) : "";
+        }
 
         public static string InlineMsg(string msg)
         {
