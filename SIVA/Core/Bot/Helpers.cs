@@ -135,17 +135,10 @@ namespace SIVA.Core.Bot
 
         internal static bool UserHasRole(SocketCommandContext ctx, ulong roleId)
         {
-            var targetRole = ctx.Guild.Roles.Where(r => r.Id == roleId);
-            var config = GuildConfig.GetOrCreateConfig(ctx.Guild.Id);
+            var targetRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == roleId);
             var gUser = ctx.User as SocketGuildUser;
-            var roleList = new List<ulong>();
-            foreach (SocketRole role in gUser.Roles)
-            {
-                roleList.Add(role.Id);
-            }
 
-            return roleList.Contains(config.ModRole);
-
+            return (gUser.Roles.Contains(targetRole));
         }
     }
 }

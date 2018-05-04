@@ -1,6 +1,6 @@
 # SIVA
 
-![SIVA logo](http://gitlab.greem.xyz/Greem/SIVA/raw/master/Images/SIVA_25.png)
+![SIVA logo](http://code.greem.xyz/SIVA-Developers/SIVA/raw/master/Images/SIVA_25.png)
 
 ## What is SIVA?
 
