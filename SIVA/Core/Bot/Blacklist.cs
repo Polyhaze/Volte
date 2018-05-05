@@ -11,7 +11,7 @@ namespace SIVA.Core.Bot
 
         public static async Task CheckMessageForBlacklistedTerms(SocketMessage s)
         {
-            var msg = s as SocketUserMessage;
+            var msg = s as SocketUserMessage; 
             var context = new SocketCommandContext(Program._client, msg);
             var config = GuildConfig.GetGuildConfig(context.Guild.Id);
             if (msg == null || context.User.IsBot || config == null) return;
