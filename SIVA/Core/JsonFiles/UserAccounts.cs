@@ -53,7 +53,7 @@ namespace SIVA.Core.JsonFiles
     {
         private static List<UserAccount> accounts;
 
-        private static string accountsFile = "Resources/UAccounts.json";
+        private static string accountsFile = "data/UAccounts.json";
 
         static UserAccounts()
         {

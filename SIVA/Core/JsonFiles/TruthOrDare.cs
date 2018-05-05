@@ -29,12 +29,12 @@ namespace SIVA.Core.JsonFiles
             }
             catch (Exception)
             {
-                File.Create("Resources/TruthOrDare.json");
+                File.Create("data/TruthOrDare.json");
             }
         }
 
         private static readonly List<TruthOrDare> TruthOrDare = new List<TruthOrDare>();
-        private static string filePath = "Resources/TruthOrDare.json";
+        private static string filePath = "data/TruthOrDare.json";
 
         public static TruthOrDare LoadJson()
         {

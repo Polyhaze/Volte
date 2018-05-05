@@ -11,7 +11,7 @@ namespace SIVA.Core.Bot.Internal
 
         static Utilities()
         {
-            string json = File.ReadAllText("Resources/Locale.json");
+            string json = File.ReadAllText("data/Locale.json");
             var data = JsonConvert.DeserializeObject<dynamic>(json);
             alerts = data.ToObject<Dictionary<string, string>>();
         }

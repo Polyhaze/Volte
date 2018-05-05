@@ -6,13 +6,13 @@ namespace SIVA.Core.Bot.Internal
 {
     public class Config
     {
-        private const string configFile = "Resources/BotConfig.json";
+        private const string configFile = "data/BotConfig.json";
         public static BotConfig bot;
 
         static Config()
         {
-            if (!Directory.Exists("Resources"))
-                Directory.CreateDirectory("Resources");
+            if (!Directory.Exists("data"))
+                Directory.CreateDirectory("data");
 
             if (!File.Exists(configFile))
             {

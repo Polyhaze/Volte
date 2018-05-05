@@ -67,7 +67,7 @@ namespace SIVA.Core.JsonFiles
         }
 
         private static readonly List<Guild> Config = new List<Guild>();
-        private static string filePath = "Resources/GuildConfigs.json";
+        private static string filePath = "data/GuildConfigs.json";
 
         public static Guild GetGuildConfig(ulong id)
         {
