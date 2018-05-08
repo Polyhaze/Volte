@@ -15,4 +15,4 @@
     
 ## Notes
 
-    Join our Discord [here](https://greem.xyz/SIVA)
+    Join our Discord here: https://greem.xyz/SIVA
