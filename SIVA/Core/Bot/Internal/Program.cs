@@ -16,10 +16,10 @@ namespace SIVA.Core.Bot.Internal
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Green;
-            new Program().StartAsync().GetAwaiter().GetResult();
+            new Program().Start().GetAwaiter().GetResult();
         }
 
-        private async Task StartAsync()
+        private async Task Start()
         {
             if (string.IsNullOrEmpty(Config.bot.Token)) 
             {
@@ -27,29 +27,23 @@ namespace SIVA.Core.Bot.Internal
             }
 
             LogSeverity logSeverity;
-            switch (Config.bot.LogSeverity)
+            switch (Config.bot.LogSeverity.ToLower())
             {
-                case "Verbose":
                 case "verbose":
                     logSeverity = LogSeverity.Verbose;
                     break;
-                case "Info":
                 case "info":
                     logSeverity = LogSeverity.Info;
                     break;
-                case "Warning":
                 case "warning":
                     logSeverity = LogSeverity.Warning;
                     break;
-                case "Debug":
                 case "debug":
                     logSeverity = LogSeverity.Debug;
                     break;
-                case "Critical":
                 case "critical":
                     logSeverity = LogSeverity.Critical;
                     break;
-                case "Error":
                 case "error":
                     logSeverity = LogSeverity.Error;
                     break;
@@ -68,8 +62,8 @@ namespace SIVA.Core.Bot.Internal
             await _handler.InitializeAsync(_client);
             Console.WriteLine("Public SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=320942091049893888&permissions=8");
             Console.WriteLine("Dev SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
-            //SivaPanel.StartPanel(); this method isnt needed for a while
             await Task.Delay(-1);
         }
+        
     }
 }

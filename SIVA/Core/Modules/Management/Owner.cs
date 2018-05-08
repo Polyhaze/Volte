@@ -13,9 +13,13 @@ using System.Threading;
 
 namespace SIVA.Core.Modules.Management
 {
-    public class Owner : ModuleBase<SocketCommandContext>
+    public class Owner : SivaModule
     {
+        
+        public void KillProgram() => Kill(); // DO. NOT. USE. THIS. This is only for deliberately causing a StackOverflowException to stop the program.
 
+        public void Kill() => KillProgram(); // DO. NOT. USE. THIS. This is only for deliberately causing a StackOverflowException to stop the program.
+        
         [Command("Shutdown")]
         [RequireOwner]
         public async Task Shutdown()
@@ -26,6 +30,8 @@ namespace SIVA.Core.Modules.Management
             await Helpers.SendMessage(Context, embed);
             await client.LogoutAsync();
             await client.StopAsync();
+            KillProgram();
+
         }
 
         [Command("CreateConfigEmergency")]
