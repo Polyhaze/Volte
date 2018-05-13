@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
 
@@ -50,6 +51,11 @@ namespace SIVA.Core.Bot.Internal
                 default:
                     logSeverity = LogSeverity.Verbose;
                     break;
+            }
+
+            if (!File.Exists("data/SIVA.db"))
+            {
+                File.Create("data/SIVA.db");
             }
 
             _client = new DiscordSocketClient(new DiscordSocketConfig {LogLevel = logSeverity} );

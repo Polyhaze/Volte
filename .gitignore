@@ -3,9 +3,10 @@
 SIVA/bin/
 SIVA/obj/
 SIVA/Properties/
-SIVA/Resources/BotConfig.json
-SIVA/Resources/GuildConfigs.json
-SIVA/Resources/UAccounts.json
+SIVA/data/BotConfig.json
+SIVA/data/GuildConfigs.json
+SIVA/data/UAccounts.json
+SIVA/data/SIVA.db
 *.user
 *.vspscc
 *.vssscc

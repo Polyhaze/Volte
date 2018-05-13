@@ -24,6 +24,8 @@ namespace SIVA.Core.Modules.Management
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await SendMessage(embed);
+            
+           
         }
         
         [Command("AddRole"), Alias("Ar")]
