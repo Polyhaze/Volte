@@ -172,7 +172,7 @@ namespace SIVA.Core.Modules.Management
 
         [Command("AdminRole")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetServerAdminRole(string roleName)
+        public async Task SetServerAdminRole([Remainder]string roleName)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -195,7 +195,7 @@ namespace SIVA.Core.Modules.Management
 
         [Command("ModRole")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetServerModRole(string roleName)
+        public async Task SetServerModRole([Remainder]string roleName)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()

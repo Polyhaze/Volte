@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using System.Threading;
+using SIVA.Core.Bot;
 using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Utilities
 {
     public class Utils : ModuleBase<SocketCommandContext>
     {
-
-
         [Command("Avatar")]
         public async Task GetUsersAvatar(SocketGuildUser s)
         {
