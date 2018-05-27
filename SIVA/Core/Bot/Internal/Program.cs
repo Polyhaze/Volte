@@ -69,6 +69,7 @@ namespace SIVA.Core.Bot.Internal
             Console.WriteLine("Public SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=320942091049893888&permissions=8");
             Console.WriteLine("Dev SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             await Task.Delay(-1);
+            
         }
         
     }

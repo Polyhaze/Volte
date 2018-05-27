@@ -9,6 +9,8 @@ using Microsoft.CodeAnalysis.Scripting;
 using Discord.Net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace SIVA.Core.Modules.Management
@@ -104,6 +106,32 @@ namespace SIVA.Core.Modules.Management
             }
 
             await ReplyAsync($"Successfully sent `{message}` to all server owners.");
+        }
+
+        [Command("SSH")]
+        [RequireOwner]
+        public async Task SendLinuxCommand([Remainder]string command)
+        {
+            var escArg = command.Replace("\"", "\\\"");
+
+            var task = new Process()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c {escArg}",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            task.Start();
+            string res = task.StandardOutput.ReadToEnd();
+            task.WaitForExit();
+
+            await Helpers.SendMessage(Context, Helpers.CreateEmbed(Context, $"{res}"));
+
         }
 
         [Command("VerifyGuild"), Alias("Verify")]
