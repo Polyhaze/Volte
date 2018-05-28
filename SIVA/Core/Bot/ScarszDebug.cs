@@ -1,32 +1,26 @@
 ﻿using System;
 using RestSharp;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SIVA.Core.Bot.Internal;
 using SIVA.Core.JsonFiles;
 using SIVA.Core.Modules;
 
 namespace SIVA.Core.Bot
 {
     public class ScarszDebug : SivaModule
-    {
-        private static readonly HttpClientHandler _handler = new HttpClientHandler {AllowAutoRedirect = false};
-        private static readonly HttpClient _http = new HttpClient(_handler);
-        
+    {   
         internal static string CreateDebug(string config)
         {
             
             var files = new Dictionary<string, Dictionary<string, string>>
             {
-                {"1-Thanks.txt", new Dictionary<string, string> {{"content", "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr"}}},
-                {"2-ServerConfig.txt", new Dictionary<string, string> {{"content", config}}},
-                {"3-Info.txt", new Dictionary<string, string> {{"content", "Support Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: http://code.greem.xyz/SIVA-Developers/SIVA"}}}
+                {"1-Info.txt", new Dictionary<string, string> {{"content", "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr\n\nSupport Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: http://code.greem.xyz/SIVA-Developers/SIVA"}, {"description", "Thanks Scarsz for this amazing utility!"}}},
+                {"2-Server.conf", new Dictionary<string, string> {{"content", $"{config}"}, {"description", "Server config for debug purposes."}}}
+                
             };
 
             var payload = new
@@ -36,8 +30,7 @@ namespace SIVA.Core.Bot
             };
             var payloadJson = JsonConvert.SerializeObject(payload);
             
-            var httpClient = new RestClient("https://debug.scarsz.me");
-            httpClient.UserAgent = $"SIVA/{Utilities.GetLocaleMsg("VersionString")}";
+            var httpClient = new RestClient("https://debug.scarsz.me") {UserAgent = "SIVA/V1.5.1"};
             var req = new RestRequest("post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
@@ -45,15 +38,22 @@ namespace SIVA.Core.Bot
             req.AddParameter("application/json", payloadJson, ParameterType.RequestBody);
             var resJson = httpClient.Execute(req);
             var res = (JObject)JsonConvert.DeserializeObject(resJson.Content);
-            return res.GetValue("url").ToString();
+            return res.GetValue("url").ToString().Replace("scarsz.me", "greem.xyz"); 
                 
+        }
+
+        [Command("ForceDebug")]
+        [RequireOwner]
+        public async Task CreateDebugToUrl(ulong serverId)
+        {
+            await Helpers.SendMessage(Context, Helpers.CreateEmbed(Context, CreateDebug(CreateConfigString(GuildConfig.GetOrCreateConfig(serverId)))));
         }
 
         [Command("Debug")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task CreateDebugToUrl()
         {
-            await Helpers.SendMessage(Context, Helpers.CreateEmbed(Context, CreateDebug(CreateConfigString(GuildConfig.GetOrCreateConfig(Context.Guild.Id)))));
+            await Helpers.SendMessage(Context, Helpers.CreateEmbed(Context, $"{CreateDebug(CreateConfigString(GuildConfig.GetOrCreateConfig(Context.Guild.Id)))}\n\nTake this to the SIVA server for support. Join the server [here](https://greem.xyz/SIVA)."));
         }
 
         private static string CreateConfigString(Guild config)
@@ -122,5 +122,6 @@ namespace SIVA.Core.Bot
             return parsedConfig;
 
         }
+       
     }
 }
