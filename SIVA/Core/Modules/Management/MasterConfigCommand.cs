@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Discord.WebSocket;
-using SIVA.Core.JsonFiles;
-using SIVA.Core.Bot.Internal;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Discord.WebSocket;
 using SIVA.Core.Bot;
+using SIVA.Core.Bot.Internal;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -17,14 +16,14 @@ namespace SIVA.Core.Modules.Management
 
         public static string ConvertBoolean(bool boolean)
         {
-            return boolean == true ? "**On**" : "**Off**";
+            return boolean ? "**On**" : "**Off**";
         }
 
         public static string ConvertList(List<string> list, int count)
         {
             return list.Count >= count ? "**On**" : "**Off**";
         }
-        
+
         public static string ConvertList(List<ulong> list, int count)
         {
             return list.Count >= count ? "**On**" : "**Off**";
@@ -35,7 +34,7 @@ namespace SIVA.Core.Modules.Management
             return dict.Count >= count ? "**On**" : "**Off**";
         }
 
-        
+
         [Command("Config")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task MasterConfig()
@@ -44,46 +43,31 @@ namespace SIVA.Core.Modules.Management
             var embed = Helpers.CreateEmbed(Context, $"Server ID: {config.ServerId}\n" +
                                                      $"Owner: <@{config.GuildOwnerId}>");
 
-            string modRole = "**Not set**";
-            string adminRole = "**Not set**";
+            var modRole = "**Not set**";
+            var adminRole = "**Not set**";
             if (config.ModRole != 0)
-            {
                 modRole = $"**{Context.Guild.Roles.First(role => role.Id == config.ModRole).Name}**";
-            }
             else if (config.AdminRole != 0)
-            {
                 adminRole = $"**{Context.Guild.Roles.First(role => role.Id == config.ModRole).Name}**";
-            }
-            
-            
-            
-            
-            
+
+
             if (config.WelcomeChannel != 0)
-            {
                 embed.AddField("Welcome/Leaving", "On:\n" +
-                                          $"- Channel: <#{config.WelcomeChannel}>\n" +
-                                          $"- WelcomeMsg: {config.WelcomeMessage}\n" +
-                                          $"- Colours: {config.WelcomeColour1} {config.WelcomeColour2} {config.WelcomeColour3}\n" +
-                                          $"- LeavingMsg: {config.LeavingMessage}");
-            }
+                                                  $"- Channel: <#{config.WelcomeChannel}>\n" +
+                                                  $"- WelcomeMsg: {config.WelcomeMessage}\n" +
+                                                  $"- Colours: {config.WelcomeColour1} {config.WelcomeColour2} {config.WelcomeColour3}\n" +
+                                                  $"- LeavingMsg: {config.LeavingMessage}");
             else
-            {
                 embed.AddField("Welcome/Leaving", "Off");
-            }
 
             if (config.SupportChannelId != 0)
-            {
                 embed.AddField("Support", "On\n" +
                                           $"- Channel: <#{config.SupportChannelId}>\n" +
                                           $"- Role: {config.SupportRole}\n" +
                                           $"- Channel Name: {config.SupportChannelName}\n" +
                                           $"- Close Own Ticket: {config.CanCloseOwnTicket}\n");
-            }
             else
-            {
                 embed.AddField("Support", "Off");
-            }
 
             embed.AddField("Other", $"Antilink: {ConvertBoolean(config.Antilink)}\n" +
                                     $"Mass Ping Checks: {ConvertBoolean(config.MassPengChecks)}\n" +
@@ -99,7 +83,6 @@ namespace SIVA.Core.Modules.Management
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
 
             await Helpers.SendMessage(Context, embed);
-
         }
     }
 }

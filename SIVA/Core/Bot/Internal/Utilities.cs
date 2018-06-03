@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 using System.IO;
+using Discord;
+using Discord.Commands;
+using Newtonsoft.Json;
 
 namespace SIVA.Core.Bot.Internal
 {
-    class Utilities
+    internal class Utilities
     {
-        private static Dictionary<string, string> alerts; 
+        private static readonly Dictionary<string, string> alerts;
 
         static Utilities()
         {
-            string json = File.ReadAllText("data/Locale.json");
+            var json = File.ReadAllText("data/Locale.json");
             var data = JsonConvert.DeserializeObject<dynamic>(json);
             alerts = data.ToObject<Dictionary<string, string>>();
         }
@@ -24,12 +25,12 @@ namespace SIVA.Core.Bot.Internal
 
         public static string GetFormattedLocaleMsg(string key, params object[] parameter)
         {
-            return alerts.ContainsKey(key) ? String.Format(alerts[key], parameter) : "";
+            return alerts.ContainsKey(key) ? string.Format(alerts[key], parameter) : "";
         }
 
         public static string GetFormattedLocaleMsg(string key, object parameter)
         {
-            return alerts.ContainsKey(key) ? String.Format(alerts[key], parameter) : "";
+            return alerts.ContainsKey(key) ? string.Format(alerts[key], parameter) : "";
         }
 
         public static string InlineMsg(string msg)
@@ -65,7 +66,7 @@ namespace SIVA.Core.Bot.Internal
         public static string Strikethrough(string msg)
         {
             return $"~~{msg}~~";
-        } 
+        }
 
         public static int Multiply(int a, int b)
         {

@@ -1,9 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using System;
 using System.Threading.Tasks;
-using SIVA.Core.JsonFiles;
-using System;
+using Discord;
+using Discord.Commands;
 using SIVA.Core.Bot;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.General
 {
@@ -19,10 +19,9 @@ namespace SIVA.Core.Modules.General
             var truthsList = json.Truths.ToArray();
             var truth = truthsList[r];
 
-            EmbedBuilder embed = Helpers.CreateEmbed(Context, truth);
+            var embed = Helpers.CreateEmbed(Context, truth);
 
             await Helpers.SendMessage(Context, embed);
-
         }
 
         [Command("Dare")]
@@ -35,10 +34,9 @@ namespace SIVA.Core.Modules.General
             var daresList = json.Dares.ToArray();
             var dare = daresList[r];
 
-            EmbedBuilder embed = Helpers.CreateEmbed(Context, dare);
+            var embed = Helpers.CreateEmbed(Context, dare);
 
             await Helpers.SendMessage(Context, embed);
-
         }
     }
 }

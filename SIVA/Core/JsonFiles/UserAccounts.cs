@@ -1,8 +1,10 @@
-﻿using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace SIVA.Core.JsonFiles
@@ -11,14 +13,14 @@ namespace SIVA.Core.JsonFiles
     {
         public static void SaveUserAccounts(IEnumerable<UserAccount> accounts, string filePath)
         {
-            string json = JsonConvert.SerializeObject(accounts, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(accounts, Formatting.Indented);
             File.WriteAllText(filePath, json);
         }
 
         public static IEnumerable<UserAccount> LoadUserAccounts(string filePath)
         {
             if (!File.Exists(filePath)) return null;
-            string json = File.ReadAllText(filePath);
+            var json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<List<UserAccount>>(json);
         }
 
@@ -39,21 +41,20 @@ namespace SIVA.Core.JsonFiles
 
         public uint Xp { get; set; }
 
-        public uint LevelNumber => (uint)Math.Sqrt(Xp / 50);
+        public uint LevelNumber => (uint) Math.Sqrt(Xp / 50);
 
         //public Dictionary<ulong, string> Warns { get; set; }
 
         //public uint WarnCount { get; set; }
 
         public int Money { get; set; }
-
     }
 
     public static class UserAccounts
     {
-        private static List<UserAccount> accounts;
+        private static readonly List<UserAccount> accounts;
 
-        private static string accountsFile = "data/UAccounts.json";
+        private static readonly string accountsFile = "data/UAccounts.json";
 
         static UserAccounts()
         {
@@ -81,8 +82,8 @@ namespace SIVA.Core.JsonFiles
         private static UserAccount GetOrCreateAccount(ulong id)
         {
             var result = from a in accounts
-                         where a.Id == id
-                         select a;
+                where a.Id == id
+                select a;
 
             var account = result.FirstOrDefault();
             if (account == null) account = CreateUserAccount(id);
@@ -91,7 +92,7 @@ namespace SIVA.Core.JsonFiles
 
         private static UserAccount CreateUserAccount(ulong id)
         {
-            var newAccount = new UserAccount()
+            var newAccount = new UserAccount
             {
                 Id = id,
                 Xp = 5,

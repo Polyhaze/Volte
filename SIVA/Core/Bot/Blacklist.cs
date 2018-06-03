@@ -1,28 +1,26 @@
 ﻿using System.Threading.Tasks;
-using Discord.WebSocket;
+using Discord;
 using Discord.Commands;
-using SIVA.Core.JsonFiles;
+using Discord.WebSocket;
 using SIVA.Core.Bot.Internal;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Bot
 {
     internal class Blacklist
     {
-
         public static async Task CheckMessageForBlacklistedTerms(SocketMessage s)
         {
-            var msg = s as SocketUserMessage; 
+            var msg = s as SocketUserMessage;
             var context = new SocketCommandContext(Program._client, msg);
             var config = GuildConfig.GetGuildConfig(context.Guild.Id);
             if (msg == null || context.User.IsBot || config == null) return;
             foreach (var word in config.Blacklist)
-            {
                 if (msg.Content.Contains(word))
                 {
                     await msg.DeleteAsync();
                     break;
                 }
-            }
         }
     }
 }

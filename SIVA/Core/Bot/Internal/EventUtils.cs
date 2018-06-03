@@ -1,18 +1,18 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using System;
+using System.IO;
 using System.Linq;
-using SIVA.Core.JsonFiles;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
-using System.IO;
+using Discord.WebSocket;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Bot.Internal
 {
     internal class EventUtils
     {
-        private static DiscordSocketClient _client = Program._client;
+        private static readonly DiscordSocketClient _client = Program._client;
 
         public static async Task Autorole(SocketGuildUser user)
         {
@@ -28,7 +28,11 @@ namespace SIVA.Core.Bot.Internal
         {
             var msg = s as SocketUserMessage;
             var context = new SocketCommandContext(_client, msg);
-            if (msg == null) { Console.WriteLine($"{s} not cared for as it's null (for whatever reason)"); return; }
+            if (msg == null)
+            {
+                Console.WriteLine($"{s} not cared for as it's null (for whatever reason)");
+                return;
+            }
             //Console.WriteLine($"Var msg: {msg}");
             //Console.WriteLine($"Var s: {s}");
             //Console.WriteLine($"Var context: {context}");
@@ -39,19 +43,16 @@ namespace SIVA.Core.Bot.Internal
                 await user.SendMessageAsync("Commands are not available in DMs.");
             }
 
-            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ?? GuildConfig.CreateGuildConfig(context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(context.Guild.Id);
             config.GuildOwnerId = context.Guild.Owner.Id;
             GuildConfig.SaveGuildConfig();
 
             if (config.Leveling)
-            {
-                await Leveling.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
-            }
+                await Leveling.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel);
 
             if (context.Guild.Id == 385902350432206849)
-            {
                 if (msg.Content.Contains("🎷") || msg.Content.Contains("🎺"))
-                {
                     if (msg.Author.Id == 360493978371751937)
                     {
                         await msg.DeleteAsync();
@@ -59,8 +60,6 @@ namespace SIVA.Core.Bot.Internal
                         Thread.Sleep(5000);
                         await msgObj.DeleteAsync();
                     }
-                }
-            }
         }
 
         public static async Task Goodbye(SocketGuildUser user)
@@ -82,7 +81,6 @@ namespace SIVA.Core.Bot.Internal
                 embed.WithFooter($"Guild Owner: {user.Guild.Owner.Username}#{user.Guild.Owner.Discriminator}");
                 embed.WithThumbnailUrl(user.Guild.IconUrl);
                 await channel.SendMessageAsync("", false, embed);
-
             }
         }
 
@@ -107,17 +105,11 @@ namespace SIVA.Core.Bot.Internal
             }
 
             if (user.Guild.Id == 419612620090245140)
-            {
-                await user.ModifyAsync(x => 
-                {
-                    x.Nickname = $"{user.Username}.cs";
-                });
-            }
+                await user.ModifyAsync(x => { x.Nickname = $"{user.Username}.cs"; });
         }
 
         public static async Task GuildUtils(SocketGuild s)
         {
-
             var config = GuildConfig.GetGuildConfig(s.Id) ??
                          GuildConfig.CreateGuildConfig(s.Id);
 
@@ -127,30 +119,29 @@ namespace SIVA.Core.Bot.Internal
                 return;
             }
 
-            int Bots = 0;
-            int Users = 0;
-            foreach (SocketGuildUser user in s.Users)
-            {
+            var Bots = 0;
+            var Users = 0;
+            foreach (var user in s.Users)
                 if (user.IsBot)
-                {
                     Bots += 1;
-                }
                 else
-                {
                     Users += 1;
-                }
-            }
 
             if (Bots > Users)
             {
                 var greemDm = await _client.GetUser(Config.bot.BotOwner).GetOrCreateDMChannelAsync();
-                await greemDm.SendMessageAsync("", false, new EmbedBuilder().WithDescription($"Server {s.Name} is potentially harmful. They have {Bots} bots and {Users} users. Consider making the bot leave.").WithColor(Config.bot.DefaultEmbedColour));
+                await greemDm.SendMessageAsync("", false,
+                    new EmbedBuilder()
+                        .WithDescription(
+                            $"Server {s.Name} is potentially harmful. They have {Bots} bots and {Users} users. Consider making the bot leave.")
+                        .WithColor(Config.bot.DefaultEmbedColour));
             }
 
             var dmChannel = await s.Owner.GetOrCreateDMChannelAsync();
             var embed = new EmbedBuilder();
             embed.WithTitle($"Thanks for adding me to your server, {s.Owner.Username}!");
-            embed.WithDescription("For quick information, visit the wiki: https://github.com/greemdotcs/greemdotcs.github.io/wiki \nNeed quick help? Visit the SIVA-dev server and create a support ticket: https://discord.gg/ubXaT6u \nTo get started, use the command `$h`. Follow that with a module to get a list of commands!");
+            embed.WithDescription(
+                "For quick information, visit the wiki: https://github.com/greemdotcs/greemdotcs.github.io/wiki \nNeed quick help? Visit the SIVA-dev server and create a support ticket: https://discord.gg/ubXaT6u \nTo get started, use the command `$h`. Follow that with a module to get a list of commands!");
             embed.WithThumbnailUrl(s.IconUrl);
             embed.WithFooter("Still need help? Visit the SIVA-dev server linked above.");
             embed.WithColor(Config.bot.DefaultEmbedColour);
@@ -159,12 +150,10 @@ namespace SIVA.Core.Bot.Internal
 
             config.GuildOwnerId = s.Owner.Id;
             GuildConfig.SaveGuildConfig();
-
         }
 
         public static async Task AssholeChecks(SocketMessage s)
         {
-
             var msg = s as SocketUserMessage;
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;
@@ -186,7 +175,10 @@ namespace SIVA.Core.Bot.Internal
                     }
                     else //if the message isnt from the guild owner, do the following
                     {
-                        if ((msg.Content.Contains("https://discord.gg") || msg.Content.Contains("https://discord.io")) && !config.AntilinkIgnoredChannels.Contains(context.Channel.Id)) //if the message contains https://discord.gg or io (it's an invite link), then delete it
+                        if ((msg.Content.Contains("https://discord.gg") ||
+                             msg.Content.Contains("https://discord.io")) &&
+                            !config.AntilinkIgnoredChannels.Contains(context.Channel.Id)
+                        ) //if the message contains https://discord.gg or io (it's an invite link), then delete it
                         {
                             await msg.DeleteAsync();
                             var embed = new EmbedBuilder();
@@ -199,24 +191,22 @@ namespace SIVA.Core.Bot.Internal
                     }
                 }
             }
-            catch (NullReferenceException) // if the config variable returns an invalid value then create the guild config
+            catch (NullReferenceException
+            ) // if the config variable returns an invalid value then create the guild config
             {
                 GuildConfig.CreateGuildConfig(context.Guild.Id);
             }
 
             if (config.MassPengChecks)
-            {
                 if (msg.Content.Contains("@everyone") || msg.Content.Contains("@here"))
-                {
                     if (msg.Author != context.Guild.Owner)
                     {
                         await msg.DeleteAsync();
-                        var msgg = await context.Channel.SendMessageAsync($"{msg.Author.Mention}, try not to mass ping.");
+                        var msgg = await context.Channel.SendMessageAsync(
+                            $"{msg.Author.Mention}, try not to mass ping.");
                         Thread.Sleep(4000);
                         await msgg.DeleteAsync();
                     }
-                }
-            }
         }
 
         internal static async Task Log(LogMessage msg)
@@ -227,7 +217,8 @@ namespace SIVA.Core.Bot.Internal
             var msg2 = $"[{msg.Severity}]: ({msg.Source}): {msg.Message}";
             if (!msg2.Contains("(Rest)"))
             {
-                var channel = await Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800).SendMessageAsync(msg2);
+                var channel = await Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800)
+                    .SendMessageAsync(msg2);
             }
 
             try

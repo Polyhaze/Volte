@@ -1,13 +1,12 @@
 ﻿using System;
-using Discord.WebSocket;
-using Discord.Commands;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Linq;
-using Discord;
-using SIVA.Core.JsonFiles;
 using System.IO;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Bot.Internal
 {
@@ -39,7 +38,7 @@ namespace SIVA.Core.Bot.Internal
             _client.RoleUpdated += Logging.HandleRoleUpdate;
             _client.RoleDeleted += Logging.HandleRoleDelete;
         }
-    
+
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
@@ -53,13 +52,12 @@ namespace SIVA.Core.Bot.Internal
                 Console.WriteLine($"{s} not cared for as it's null (for whatever reason)");
                 return;
             }
-            
-            
 
 
             if (context.User.IsBot) return;
 
-            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ?? GuildConfig.CreateGuildConfig(context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(context.Guild.Id);
             var prefix = config.CommandPrefix ?? Config.bot.Prefix;
 
             if (config.EmbedColour1 == 0 && config.EmbedColour2 == 0 && config.EmbedColour3 == 0)
@@ -72,18 +70,16 @@ namespace SIVA.Core.Bot.Internal
 
             var argPos = 0;
 
-            foreach (KeyValuePair<string, string> command in config.CustomCommands)
-            {
+            foreach (var command in config.CustomCommands)
                 if (msg.HasStringPrefix($"{config.CommandPrefix}{command.Key}", ref argPos))
                 {
                     await context.Channel.SendMessageAsync(command.Value);
                     break;
                 }
-            }
 
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                var result = await _service.ExecuteAsync(context, argPos); 
+                var result = await _service.ExecuteAsync(context, argPos);
                 //Console.WriteLine($"Command -{msg.Content}- executed");
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
                 {
@@ -91,10 +87,19 @@ namespace SIVA.Core.Bot.Internal
                     switch (result.ErrorReason)
                     {
                         case "The server responded with error 403: Forbidden":
-                            reason = "I'm not allowed to do that. Either I don't have permission or the requested user is higher than me in the role heirarchy.";
+                            reason =
+                                "I'm not allowed to do that. Either I don't have permission or the requested user is higher than me in the role heirarchy.";
                             break;
                         case "Sequence contains no elements":
-                            try { reason = $"{msg.MentionedUsers.FirstOrDefault().Mention} doesn't have any."; } catch (NullReferenceException) { reason = "List has no elements."; }
+                            try
+                            {
+                                reason = $"{msg.MentionedUsers.FirstOrDefault().Mention} doesn't have any.";
+                            }
+                            catch (NullReferenceException)
+                            {
+                                reason = "List has no elements.";
+                            }
+
                             break;
                         case "Failed to parse Boolean":
                             reason = "You can only input `true` or `false` for this command.";
@@ -104,14 +109,15 @@ namespace SIVA.Core.Bot.Internal
                             break;
                     }
 
-                    EmbedBuilder embed = new EmbedBuilder();
+                    var embed = new EmbedBuilder();
 
                     if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
                     {
                         var nm = msg.Content.Replace($"<@{_client.CurrentUser.Id}> ", config.CommandPrefix);
                         embed.AddField("Error in command:", nm);
                         embed.AddField("Error reason:", reason);
-                        embed.AddField("Weird error?", "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
+                        embed.AddField("Weird error?",
+                            "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
                         embed.WithAuthor(context.User);
                         embed.WithColor(Config.bot.ErrorEmbedColour);
                         await context.Channel.SendMessageAsync("", false, embed);
@@ -121,12 +127,14 @@ namespace SIVA.Core.Bot.Internal
                         var nm = msg.Content;
                         embed.AddField("Error in command:", nm);
                         embed.AddField("Error reason:", reason);
-                        embed.AddField("Weird error?", "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
+                        embed.AddField("Weird error?",
+                            "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
                         embed.WithAuthor(context.User);
                         embed.WithColor(Config.bot.ErrorEmbedColour);
                         await context.Channel.SendMessageAsync("", false, embed);
                     }
                 }
+
                 if (result.ErrorReason == "Unknown command.") return;
 
                 Console.WriteLine($"--|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
@@ -138,26 +146,27 @@ namespace SIVA.Core.Bot.Internal
                     ? $"--|           -Executed: {result.IsSuccess}"
                     : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
                 Console.WriteLine("-------------------------------------------------");
-                try 
+                try
                 {
-                    File.AppendAllText("Commands.log", $"--|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
+                    File.AppendAllText("Commands.log",
+                        $"--|  -Command from user: {context.User.Username}#{context.User.Discriminator} ({context.User.Id})\n");
                     File.AppendAllText("Commands.log", $"--|     -Command Issued: {msg.Content} ({msg.Id})\n");
-                    File.AppendAllText("Commands.log", $"--|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
-                    File.AppendAllText("Commands.log", $"--|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
+                    File.AppendAllText("Commands.log",
+                        $"--|           -In Guild: {context.Guild.Name} ({context.Guild.Id})\n");
+                    File.AppendAllText("Commands.log",
+                        $"--|         -In Channel: #{context.Channel.Name} ({context.Channel.Id})\n");
                     File.AppendAllText("Commands.log", $"--|        -Time Issued: {DateTime.Now}\n");
                     File.AppendAllText("Commands.log", result.IsSuccess
                         ? $"--|           -Executed: {result.IsSuccess}\n"
                         : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
                     File.AppendAllText("Commands.log", "-------------------------------------------------\n");
                 }
-                catch (FileNotFoundException) 
+                catch (FileNotFoundException)
                 {
                     Console.WriteLine("The Commands.log file wasn't found, creating it now.");
                     File.WriteAllText("Commands.log", "");
                 }
             }
         }
-
-
     }
 }

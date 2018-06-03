@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using Discord;
+using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace SIVA.Core.Bot.Internal
@@ -16,12 +18,12 @@ namespace SIVA.Core.Bot.Internal
             if (!File.Exists(configFile))
             {
                 bot = new BotConfig();
-                string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(bot, Formatting.Indented);
                 File.WriteAllText(configFile, json);
             }
             else
             {
-                string json = File.ReadAllText(configFile);
+                var json = File.ReadAllText(configFile);
                 bot = JsonConvert.DeserializeObject<BotConfig>(json);
             }
         }
@@ -30,20 +32,18 @@ namespace SIVA.Core.Bot.Internal
         {
             if (bot.Token == "")
             {
-                string jsonFile = JsonConvert.SerializeObject(bot, Formatting.Indented);
+                var jsonFile = JsonConvert.SerializeObject(bot, Formatting.Indented);
                 bot = JsonConvert.DeserializeObject<BotConfig>(jsonFile);
                 File.WriteAllText(configFile, jsonFile);
                 return bot;
             }
-            else
-            {
-                return bot;
-            }
+
+            return bot;
         }
 
         public static void SaveConfig()
         {
-            string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(bot, Formatting.Indented);
             File.WriteAllText(configFile, json);
         }
 
@@ -65,4 +65,3 @@ namespace SIVA.Core.Bot.Internal
         }
     }
 }
-

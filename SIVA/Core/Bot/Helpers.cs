@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using SIVA.Core.JsonFiles;
 using SIVA.Core.Bot.Internal;
+using SIVA.Core.JsonFiles;
 
-namespace SIVA.Core.Bot 
+namespace SIVA.Core.Bot
 {
-    class Helpers 
+    internal class Helpers
     {
-        
         /*
          * <summary>
          * 
@@ -28,7 +27,7 @@ namespace SIVA.Core.Bot
                 .WithFooter(Utilities.GetFormattedLocaleMsg("CommandFooter", ctx.User.Username));
             return embed;
         }
-        
+
         /*
          * <summary>
          *
@@ -40,15 +39,11 @@ namespace SIVA.Core.Bot
         public static async Task SendMessage(SocketCommandContext ctx, EmbedBuilder embed = null, string msg = "")
         {
             if (embed == null)
-            {
                 await ctx.Channel.SendMessageAsync(msg);
-            }
             else
-            {
                 await ctx.Channel.SendMessageAsync(msg, false, embed);
-            }
         }
-        
+
         /*
          * <summary>
          *
@@ -61,7 +56,7 @@ namespace SIVA.Core.Bot
         {
             return Program._client.GetChannel(channelId) as SocketTextChannel;
         }
-        
+
         /*
          * <summary>
          *
@@ -74,7 +69,7 @@ namespace SIVA.Core.Bot
         {
             return Program._client.GetGuild(serverId);
         }
-        
+
         /*
          * <summary>
          *
@@ -87,7 +82,7 @@ namespace SIVA.Core.Bot
         {
             return Program._client.CurrentUser;
         }
-        
+
         /*
          * <summary>
          *
@@ -100,7 +95,7 @@ namespace SIVA.Core.Bot
         {
             return Program._client.GetUser(userId);
         }
-        
+
         /*
          * <summary>
          *
@@ -113,7 +108,7 @@ namespace SIVA.Core.Bot
         {
             return GetUserById(userId).GetOrCreateDMChannelAsync();
         }
-        
+
         /*
          * <summary>
          *
@@ -138,7 +133,7 @@ namespace SIVA.Core.Bot
             var targetRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == roleId);
             var gUser = ctx.User as SocketGuildUser;
 
-            return (gUser.Roles.Contains(targetRole));
+            return gUser.Roles.Contains(targetRole);
         }
     }
 }

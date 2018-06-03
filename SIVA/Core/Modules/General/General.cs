@@ -1,23 +1,22 @@
-﻿using Discord;
-using Discord.Commands;
-using System;
-using SIVA.Core.JsonFiles;
-using System.Threading.Tasks;
+﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using SIVA.Core.Bot;
 using SIVA.Core.Bot.Internal;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.General
 {
     public class General : SivaModule
     {
-
         [Command("Stats")]
-        public async Task MyStats([Remainder]string arg = "")
+        public async Task MyStats([Remainder] string arg = "")
         {
             var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
             var target = mentionedUser ?? Context.User;
-            
+
             if (Context.Guild.Id == 377879473158356992)
             {
                 await ReplyAsync("That command is disabled on this server.");
@@ -58,7 +57,7 @@ namespace SIVA.Core.Modules.General
 
         [Command("Say")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task SayCommand([Remainder]string message)
+        public async Task SayCommand([Remainder] string message)
         {
             var embed = Helpers.CreateEmbed(Context, message);
             await Context.Message.DeleteAsync();
@@ -66,9 +65,11 @@ namespace SIVA.Core.Modules.General
             if (Config.bot.Debug)
             {
                 var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800);
-                await channel.SendMessageAsync("", false, Helpers.CreateEmbed(Context, $"{Context.User.Mention} used the say command in the channel <#{Context.Channel.Id}>, in Guild **{Context.Guild.Name}** and said **\"{message}\"**."));
+                await channel.SendMessageAsync("", false,
+                    Helpers.CreateEmbed(Context,
+                        $"{Context.User.Mention} used the say command in the channel <#{Context.Channel.Id}>, in Guild **{Context.Guild.Name}** and said **\"{message}\"**."));
                 await ReplyAsync("", false, embed);
-            } 
+            }
             else
             {
                 await ReplyAsync("", false, embed);
@@ -76,21 +77,23 @@ namespace SIVA.Core.Modules.General
         }
 
         [Command("Choose")]
-        public async Task PickOne([Remainder]string message)
+        public async Task PickOne([Remainder] string message)
         {
-            string[] options = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
+            var options = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-            Random r = new Random();
+            var r = new Random();
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
 
             await Helpers.SendMessage(Context, embed);
         }
 
         [Command("Roast")]
         public async Task Roast()
-        {   //this doesnt have any other roasts as its incomplete
-            await ReplyAsync(Context.User.Mention + ", maybe you would talk better if your parents were second cousins rather than first cousins.");
+        { //this doesnt have any other roasts as its incomplete
+            await ReplyAsync(Context.User.Mention +
+                             ", maybe you would talk better if your parents were second cousins rather than first cousins.");
         }
 
         [Command("Info")]
@@ -112,15 +115,13 @@ namespace SIVA.Core.Modules.General
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await Helpers.SendMessage(Context, embed);
-
         }
 
         [Command("Suggest")]
         public async Task Suggest()
         {
             await ReplyAsync("<https://goo.gl/forms/i6pgYTSnDdMMNLZU2>");
-            await Helpers.SendMessage(Context, msg:"https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
+            await Helpers.SendMessage(Context, msg: "https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
         }
-
     }
 }

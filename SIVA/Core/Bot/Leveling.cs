@@ -1,9 +1,10 @@
-﻿using Discord;
-using System.Threading;
-using Discord.WebSocket;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using SIVA.Core.JsonFiles;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using SIVA.Core.Bot.Internal;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Bot
 {
@@ -11,13 +12,12 @@ namespace SIVA.Core.Bot
     {
         internal static async Task UserSentMessage(SocketGuildUser user, SocketTextChannel channel)
         {
-
             var userAccount = UserAccounts.GetAccount(user);
-            uint oldLevel = userAccount.LevelNumber;
+            var oldLevel = userAccount.LevelNumber;
             userAccount.Xp += 5;
             userAccount.Money += 1;
             UserAccounts.SaveAccounts();
-            uint newLevel = userAccount.LevelNumber;
+            var newLevel = userAccount.LevelNumber;
 
             if (oldLevel != newLevel)
             {
@@ -30,7 +30,6 @@ namespace SIVA.Core.Bot
                 var lvlUpMsg = await channel.SendMessageAsync("", false, embed);
                 Thread.Sleep(5000);
                 await lvlUpMsg.DeleteAsync();
-
             }
         }
     }

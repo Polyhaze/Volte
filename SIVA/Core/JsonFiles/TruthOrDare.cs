@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
+using Discord.Commands;
+using Newtonsoft.Json;
 
 namespace SIVA.Core.JsonFiles
 {
@@ -20,6 +22,9 @@ namespace SIVA.Core.JsonFiles
 
     public class TruthOrDareJson
     {
+        private static readonly List<TruthOrDare> TruthOrDare = new List<TruthOrDare>();
+        private static readonly string filePath = "data/TruthOrDare.json";
+
         static TruthOrDareJson()
         {
             try
@@ -32,9 +37,6 @@ namespace SIVA.Core.JsonFiles
                 File.Create("data/TruthOrDare.json");
             }
         }
-
-        private static readonly List<TruthOrDare> TruthOrDare = new List<TruthOrDare>();
-        private static string filePath = "data/TruthOrDare.json";
 
         public static TruthOrDare LoadJson()
         {

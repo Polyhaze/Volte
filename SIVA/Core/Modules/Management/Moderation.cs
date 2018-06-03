@@ -1,9 +1,9 @@
-﻿using Discord.Commands;
+﻿using System.Threading.Tasks;
 using Discord;
-using System.Threading.Tasks;
+using Discord.Commands;
 using Discord.WebSocket;
-using SIVA.Core.JsonFiles;
 using SIVA.Core.Bot;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Management
 {
@@ -13,89 +13,91 @@ namespace SIVA.Core.Modules.Management
 
         [Command("Ban")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task BanUser(SocketGuildUser user, [Remainder]string reason = "Banned by a moderator.")
+        public async Task BanUser(SocketGuildUser user, [Remainder] string reason = "Banned by a moderator.")
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             if (Helpers.UserHasRole(Context, config.ModRole))
             {
                 await Context.Guild.AddBanAsync(user, 7, reason);
                 var embed = new EmbedBuilder();
-                embed.WithDescription(Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
+                embed.WithDescription(
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", user.Mention, Context.User.Mention));
                 embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
                 embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
                 await ReplyAsync("", false, embed);
             }
             else
             {
-                var e = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
+                var e = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
                 await Helpers.SendMessage(Context, e);
             }
-
         }
 
-        [Command("Softban"), Alias("Sb")]
+        [Command("Softban")]
+        [Alias("Sb")]
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task BanThenUnbanUser(SocketGuildUser user)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             if (Helpers.UserHasRole(Context, config.ModRole))
             {
-                var embed = Helpers.CreateEmbed(Context, $"{Context.User.Mention} softbanned <@{user.Id}>, deleting the last 7 days of messages from that user.");
+                var embed = Helpers.CreateEmbed(Context,
+                    $"{Context.User.Mention} softbanned <@{user.Id}>, deleting the last 7 days of messages from that user.");
                 await Helpers.SendMessage(Context, embed);
                 await Context.Guild.AddBanAsync(user, 7);
                 await Context.Guild.RemoveBanAsync(user);
             }
             else
             {
-                var e = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
+                var e = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
                 await Helpers.SendMessage(Context, e);
             }
-
         }
 
         [Command("IdBan")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task BanUserById(ulong userid, [Remainder]string reason = "")
+        public async Task BanUserById(ulong userid, [Remainder] string reason = "")
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             if (Helpers.UserHasRole(Context, config.ModRole))
             {
-                if (reason == "")
-                {
-                    reason = $"Banned by {Context.User.Username}#{Context.User.Discriminator}";
-                }
+                if (reason == "") reason = $"Banned by {Context.User.Username}#{Context.User.Discriminator}";
                 await Context.Guild.AddBanAsync(userid, 7, reason);
-                var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
+                var embed = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("BanText", $"<@{userid}>", $"<@{Context.User.Id}>"));
 
                 await Helpers.SendMessage(Context, embed);
             }
             else
             {
-                var e = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
+                var e = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
                 await Helpers.SendMessage(Context, e);
             }
-            
         }
 
 
         [Command("Kick")]
         [RequireUserPermission(GuildPermission.KickMembers)]
-        public async Task KickUser(SocketGuildUser user, [Remainder]string reason = "")
+        public async Task KickUser(SocketGuildUser user, [Remainder] string reason = "")
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             if (Helpers.UserHasRole(Context, config.ModRole))
             {
                 await user.KickAsync(reason);
-                var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
+                var embed = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("KickUserMsg", user.Mention, Context.User.Mention));
 
                 await Helpers.SendMessage(Context, embed);
             }
             else
             {
-                var e = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
+                var e = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
                 await Helpers.SendMessage(Context, e);
             }
-            
         }
 
         [Command("Purge")]
@@ -121,10 +123,10 @@ namespace SIVA.Core.Modules.Management
             }
             else
             {
-                var e = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
+                var e = Helpers.CreateEmbed(Context,
+                    Bot.Internal.Utilities.GetFormattedLocaleMsg("NotEnoughPermission", Context.User.Username));
                 await Helpers.SendMessage(Context, e);
             }
-            
         }
 
         /*[Command("Warn")]

@@ -1,25 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using SIVA.Core.Bot;
+using SIVA.Core.Bot.Internal;
 using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Utilities
 {
     public class Patreon : ModuleBase<SocketCommandContext>
     {
-        string patreonLink = "https://patreon.com/_SIVA";
+        private readonly string patreonLink = "https://patreon.com/_SIVA";
+
         [Command("Donate")]
         public async Task SendDonateEmbed()
         {
             var embed = new EmbedBuilder()
                 .WithDescription($"Donate to my Patreon!\n\n{patreonLink}")
-                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour)
+                .WithColor(Config.bot.DefaultEmbedColour)
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             await ReplyAsync("", false, embed);
         }
 
-        [Command("VerifyCheck"), Alias("Vc")]
+        [Command("VerifyCheck")]
+        [Alias("Vc")]
         public async Task CheckIfServerIsVerified()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
@@ -38,7 +40,8 @@ namespace SIVA.Core.Modules.Utilities
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
-                .WithDescription($"Nobody has donated yet! Maybe you'll be the first? Use `{config.CommandPrefix}donate` to get to there.")
+                .WithDescription(
+                    $"Nobody has donated yet! Maybe you'll be the first? Use `{config.CommandPrefix}donate` to get to there.")
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 

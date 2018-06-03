@@ -1,11 +1,11 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using System.Threading.Tasks;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
-using SIVA.Core.Bot;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using SIVA.Core.Bot.Internal;
 using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Utilities
@@ -24,17 +24,20 @@ namespace SIVA.Core.Modules.Utilities
             await ReplyAsync("", false, embed);
         }
 
-        [Command("UserInfo"), Alias("uinfo", "useri", "ui")]
+        [Command("UserInfo")]
+        [Alias("uinfo", "useri", "ui")]
         public async Task UserInformationCommand(SocketGuildUser user = null)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             if (user != null)
             {
-
                 embed.AddField("Username", $"{user.Username}#{user.Discriminator}");
                 embed.AddField("User ID", user.Id);
-                if (user.Game != null) { embed.AddField("Game", user.Game); } else { embed.AddField("Game", "Nothing"); }
+                if (user.Game != null)
+                    embed.AddField("Game", user.Game);
+                else
+                    embed.AddField("Game", "Nothing");
                 embed.AddField("Status", user.Status);
                 embed.AddField("Account Created", user.CreatedAt.UtcDateTime);
                 embed.WithThumbnailUrl(user.GetAvatarUrl());
@@ -47,7 +50,10 @@ namespace SIVA.Core.Modules.Utilities
             {
                 embed.AddField("Username", $"{Context.User.Username}#{Context.User.Discriminator}");
                 embed.AddField("User ID", Context.User.Id);
-                if (Context.User.Game != null) { embed.AddField("Game", Context.User.Game); } else { embed.AddField("Game", "Nothing"); }
+                if (Context.User.Game != null)
+                    embed.AddField("Game", Context.User.Game);
+                else
+                    embed.AddField("Game", "Nothing");
                 embed.AddField("Status", Context.User.Status);
                 embed.AddField("Account Created", Context.User.CreatedAt.UtcDateTime);
                 embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
@@ -56,13 +62,14 @@ namespace SIVA.Core.Modules.Utilities
                 embed.WithTitle("User Information");
                 embed.AddField("Is Bot", Context.User.IsBot);
             }
-            
+
 
             await ReplyAsync("", false, embed);
         }
 
-        [Command("Feedback"), Alias("Fb")]
-        public async Task SendFeedbackToDev([Remainder]string feedback)
+        [Command("Feedback")]
+        [Alias("Fb")]
+        public async Task SendFeedbackToDev([Remainder] string feedback)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
@@ -74,15 +81,17 @@ namespace SIVA.Core.Modules.Utilities
             var feedbackEmbed = new EmbedBuilder()
                 .WithDescription(feedback)
                 .WithTitle($"Feedback from {Context.User.Username}#{Context.User.DiscriminatorValue}")
-                .WithColor(Bot.Internal.Config.bot.DefaultEmbedColour);
+                .WithColor(Config.bot.DefaultEmbedColour);
 
 
-            var channel = Bot.Internal.Program._client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
+            var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
             await channel.SendMessageAsync("", false, feedbackEmbed);
         }
 
-        [Command("Calculator"), Alias("Calc")]
-        public async Task Calculate(string oper, int val1, int val2 = 0) //this code is fucking nasty, i will fix it in the future.
+        [Command("Calculator")]
+        [Alias("Calc")]
+        public async Task
+            Calculate(string oper, int val1, int val2 = 0) //this code is fucking nasty, i will fix it in the future.
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
@@ -120,16 +129,17 @@ namespace SIVA.Core.Modules.Utilities
                     embed.WithDescription($"The answer is `{result2}`");
                     break;
                 default:
-                    embed.WithDescription("You didn't specify a valid operation. Valid operations are `add`, `sub`, `mult`, `div`, `power`, and `sqrt`.");
+                    embed.WithDescription(
+                        "You didn't specify a valid operation. Valid operations are `add`, `sub`, `mult`, `div`, `power`, and `sqrt`.");
                     break;
-
-                
             }
+
             await ReplyAsync("", false, embed);
         }
 
-        [Command("YouTube"), Alias("Yt")]
-        public async Task SearchYouTube([Remainder]string query)
+        [Command("YouTube")]
+        [Alias("Yt")]
+        public async Task SearchYouTube([Remainder] string query)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
@@ -144,7 +154,8 @@ namespace SIVA.Core.Modules.Utilities
             await ReplyAsync("", false, embed);
         }
 
-        [Command("ServerInfo"), Alias("sinfo", "serveri", "si")]
+        [Command("ServerInfo")]
+        [Alias("sinfo", "serveri", "si")]
         public async Task ServerInformationCommand()
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
@@ -166,7 +177,7 @@ namespace SIVA.Core.Modules.Utilities
         }
 
         [Command("Iam")]
-        public async Task GiveYourselfRole([Remainder]string role)
+        public async Task GiveYourselfRole([Remainder] string role)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var user = Context.User as SocketGuildUser;
@@ -187,15 +198,17 @@ namespace SIVA.Core.Modules.Utilities
                 }
                 else
                 {
-                    embed.WithDescription("That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
+                    embed.WithDescription(
+                        "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
                 }
             }
 
             await ReplyAsync("", false, embed);
         }
 
-        [Command("Iamnot"), Alias("Iamn")]
-        public async Task TakeAwayRole([Remainder]string role)
+        [Command("Iamnot")]
+        [Alias("Iamn")]
+        public async Task TakeAwayRole([Remainder] string role)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var user = Context.User as SocketGuildUser;
@@ -216,22 +229,21 @@ namespace SIVA.Core.Modules.Utilities
                 }
                 else
                 {
-                    embed.WithDescription("That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
+                    embed.WithDescription(
+                        "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
                 }
             }
 
             await ReplyAsync("", false, embed);
         }
 
-        [Command("CustomCommandList"), Alias("Ccl")]
+        [Command("CustomCommandList")]
+        [Alias("Ccl")]
         public async Task GetCustomCommandsForServer()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-            string commandList= "";
-            foreach (string value in config.CustomCommands.Keys)
-            {
-                commandList += $"**{value}**\n";
-            }
+            var commandList = "";
+            foreach (var value in config.CustomCommands.Keys) commandList += $"**{value}**\n";
             var embed = new EmbedBuilder()
                 .WithDescription(commandList)
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
@@ -240,7 +252,8 @@ namespace SIVA.Core.Modules.Utilities
             await ReplyAsync("", false, embed);
         }
 
-        [Command("SelfRoleList"), Alias("Srl")]
+        [Command("SelfRoleList")]
+        [Alias("Srl")]
         public async Task GetSelfRoleListForServer()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
@@ -254,28 +267,23 @@ namespace SIVA.Core.Modules.Utilities
             else
             {
                 config.SelfRoles.Sort();
-                string roles = "\n";
-                foreach (var role in config.SelfRoles)
-                {
-                    roles += $"**{role}**\n";
-                }
+                var roles = "\n";
+                foreach (var role in config.SelfRoles) roles += $"**{role}**\n";
 
                 embed.WithTitle("Roles you can self-assign: ");
                 embed.WithDescription(roles);
             }
 
             await ReplyAsync("", false, embed);
-
-
         }
 
 
         [Command("Poll")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task ReactionPoll([Remainder]string pollBody)
+        public async Task ReactionPoll([Remainder] string pollBody)
         {
             var choices = pollBody.Split(';');
-            var numbers = choices.Length-1;
+            var numbers = choices.Length - 1;
 
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -351,8 +359,6 @@ namespace SIVA.Core.Modules.Utilities
                 default:
                     embed.WithDescription("No options specified.");
                     break;
-
-
             }
 
             if (choices.Length > 8)
@@ -450,8 +456,9 @@ namespace SIVA.Core.Modules.Utilities
             }
         }
 
-        [Command("Lmgtfy"), Alias("Googleit")]
-        public async Task WhyDoYouBotherMeLol([Remainder]string oh)
+        [Command("Lmgtfy")]
+        [Alias("Googleit")]
+        public async Task WhyDoYouBotherMeLol([Remainder] string oh)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             oh = oh.Replace(' ', '+');
@@ -468,23 +475,25 @@ namespace SIVA.Core.Modules.Utilities
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            embed.WithDescription(Bot.Internal.Utilities.GetFormattedLocaleMsg("PingCommandText", Bot.Internal.Program._client.Latency));
+            embed.WithDescription(
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("PingCommandText", Program._client.Latency));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await ReplyAsync("", false, embed);
         }
 
         [Command("Google")]
-        public async Task Google([Remainder]string search)
+        public async Task Google([Remainder] string search)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             search = search.Replace(' ', '+');
-            string searchUrl = $"https://google.com/search?q={search}";
+            var searchUrl = $"https://google.com/search?q={search}";
             var embed = new EmbedBuilder();
             embed.WithDescription(searchUrl);
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
-            embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
+            embed.WithThumbnailUrl(
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png");
 
             await ReplyAsync("", false, embed);
         }
@@ -493,7 +502,8 @@ namespace SIVA.Core.Modules.Utilities
         public async Task InviteUserToUseBot()
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var embed = new EmbedBuilder {
+            var embed = new EmbedBuilder
+            {
                 Description = "Invite the bot [here](https://bot.discord.io/SIVA)"
             };
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
@@ -506,7 +516,8 @@ namespace SIVA.Core.Modules.Utilities
         public async Task SendPartnerInfo()
         {
             var embed = new EmbedBuilder()
-                .WithDescription("**What is PlutoBot?**\nPlutoBot is a bot that is currently under development but already has moderation commands, channel logs, a cleverbot module, and some fun commands. It is developed by <@345318328195350528>.")
+                .WithDescription(
+                    "**What is PlutoBot?**\nPlutoBot is a bot that is currently under development but already has moderation commands, channel logs, a cleverbot module, and some fun commands. It is developed by <@345318328195350528>.")
                 .AddField("Invite the bot", "https://discord.io/plutoBot")
                 .AddField("Pluto Support Server", "https://discord.gg/qTNEgPD")
                 .WithColor(new Color(0x195AC4))
@@ -516,18 +527,20 @@ namespace SIVA.Core.Modules.Utilities
         }
 
         [Command("User")]
-        public async Task GetUserFromText([Remainder]string arg)
+        public async Task GetUserFromText([Remainder] string arg)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var user = Context.Guild.Users.FirstOrDefault(x => x.Username == arg);
-            if (user == null) {
+            if (user == null)
+            {
                 var embedNull = new EmbedBuilder();
-                    embedNull.WithDescription("User doesn't exist in this server.")
+                embedNull.WithDescription("User doesn't exist in this server.")
                     .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                     .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
                 await ReplyAsync("", false, embedNull);
                 return;
             }
+
             var embedNotNull = new EmbedBuilder()
                 .AddField("Username: ", $"{user.Username}#{user.Discriminator}")
                 .AddField("Game: ", user.Game.ToString() ?? "Nothing")

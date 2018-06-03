@@ -1,49 +1,56 @@
-﻿using Discord.Commands;
+﻿using System;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using System;
-using SIVA.Core.Bot.Internal;
 using SIVA.Core.Bot;
+using SIVA.Core.Bot.Internal;
 using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Economy
 {
     public class Economy : ModuleBase<SocketCommandContext>
     {
-        [Command("WhatLevelIs"), Alias("WLI")]
+        [Command("WhatLevelIs")]
+        [Alias("WLI")]
         public async Task WhatLevelIs(uint xp)
         {
-            uint level = (uint)Math.Sqrt(xp / 50);
+            var level = (uint) Math.Sqrt(xp / 50);
             await ReplyAsync("The level is " + level);
         }
 
-        [Command("Level"), Priority(0)]
+        [Command("Level")]
+        [Priority(0)]
         public async Task Level()
         {
             var ua = UserAccounts.GetAccount(Context.User);
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", Context.User.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
 
             await Helpers.SendMessage(Context, embed);
         }
 
-        [Command("Level"), Priority(1)]
+        [Command("Level")]
+        [Priority(1)]
         public async Task Level(SocketGuildUser user)
         {
             var ua = UserAccounts.GetAccount(user);
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("LevelCommandText", user.Mention, ua.LevelNumber));
             embed.WithTitle("User Level");
 
             await Helpers.SendMessage(Context, embed);
         }
 
-        [Command("Money"), Alias("$", "bal")]
+        [Command("Money")]
+        [Alias("$", "bal")]
         public async Task HowMuchDoIHave()
         {
             var ua = UserAccounts.GetAccount(Context.User);
             var bal = ua.Money.ToString();
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("MoneyCommandText", bal));
             embed.WithThumbnailUrl("http://www.stickpng.com/assets/images/580b585b2edbce24c47b2878.png");
 
             await Helpers.SendMessage(Context, embed);

@@ -1,20 +1,18 @@
-﻿using Discord.Commands;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using SIVA.Core.JsonFiles;
-using System.Linq;
 using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using SIVA.Core.Bot;
+using SIVA.Core.JsonFiles;
 
 namespace SIVA.Core.Modules.Management
 {
-    
     public class Admin : SivaModule
     {
-        
         [Command("ServerName")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task ModifyServerName([Remainder]string name)
+        public async Task ModifyServerName([Remainder] string name)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             await Context.Guild.ModifyAsync(x => x.Name = name);
@@ -24,26 +22,27 @@ namespace SIVA.Core.Modules.Management
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
 
             await SendMessage(embed);
-            
-           
         }
-        
-        [Command("AddRole"), Alias("Ar")]
+
+        [Command("AddRole")]
+        [Alias("Ar")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task GiveUserSpecifiedRole(SocketGuildUser user, [Remainder]string role)
+        public async Task GiveUserSpecifiedRole(SocketGuildUser user, [Remainder] string role)
         {
             var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role, user.Username + "#" + user.Discriminator));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("AddRoleCommandText", role,
+                    user.Username + "#" + user.Discriminator));
 
             await user.AddRoleAsync(targetRole);
             await Helpers.SendMessage(Context, embed);
         }
-        
+
         [Command("Rename")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetUsersNickname(SocketGuildUser user, [Remainder]string nick)
+        public async Task SetUsersNickname(SocketGuildUser user, [Remainder] string nick)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             await user.ModifyAsync(x => x.Nickname = nick);
@@ -52,22 +51,26 @@ namespace SIVA.Core.Modules.Management
             await Helpers.SendMessage(Context, embed);
         }
 
-        [Command("RemRole"), Alias("Rr")]
+        [Command("RemRole")]
+        [Alias("Rr")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task TakeAwaySpecifiedRole(SocketGuildUser user, [Remainder]string role)
+        public async Task TakeAwaySpecifiedRole(SocketGuildUser user, [Remainder] string role)
         {
             var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == role);
 
-            var embed = Helpers.CreateEmbed(Context, Bot.Internal.Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role, user.Username + "#" + user.Discriminator));
+            var embed = Helpers.CreateEmbed(Context,
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("RemRoleCommandText", role,
+                    user.Username + "#" + user.Discriminator));
 
             await user.RemoveRoleAsync(targetRole);
             await Helpers.SendMessage(Context, embed);
         }
 
-        [Command("BlacklistAdd"), Alias("Bladd")]
+        [Command("BlacklistAdd")]
+        [Alias("Bladd")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AddStringToBl([Remainder]string bl)
+        public async Task AddStringToBl([Remainder] string bl)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             config.Blacklist.Add(bl);
@@ -80,9 +83,10 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("BlacklistRemove"), Alias("Blrem")]
+        [Command("BlacklistRemove")]
+        [Alias("Blrem")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task RemoveStringFromBl([Remainder]string bl)
+        public async Task RemoveStringFromBl([Remainder] string bl)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
@@ -102,7 +106,8 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("BlacklistClear"), Alias("Blcl")]
+        [Command("BlacklistClear")]
+        [Alias("Blcl")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ClearBlacklist()
         {
@@ -117,9 +122,10 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("CustomCommandAdd"), Alias("Cca")]
+        [Command("CustomCommandAdd")]
+        [Alias("Cca")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AddCustomCommand(string commandName, [Remainder]string commandValue)
+        public async Task AddCustomCommand(string commandName, [Remainder] string commandValue)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             config.CustomCommands.Add(commandName, commandValue);
@@ -133,7 +139,8 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("CustomCommandRem"), Alias("Ccr")]
+        [Command("CustomCommandRem")]
+        [Alias("Ccr")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemCustomCommand(string commandName)
         {
@@ -155,14 +162,15 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("ServerLogging"), Alias("Sl")]
+        [Command("ServerLogging")]
+        [Alias("Sl")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetServerLoggingChannel(bool isEnabled, SocketTextChannel chnl = null)
         {
             string lol;
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            if (isEnabled) { lol = "Enabled server logging"; } else { lol = "Disabled server logging"; }
-            if (chnl == null) { chnl = (SocketTextChannel)Context.Channel; }
+            lol = isEnabled ? "Enabled server logging" : "Disabled server logging";
+            if (chnl == null) chnl = (SocketTextChannel) Context.Channel;
             config.IsServerLoggingEnabled = isEnabled;
             config.ServerLoggingChannel = chnl.Id;
             GuildConfig.SaveGuildConfig();
@@ -172,7 +180,7 @@ namespace SIVA.Core.Modules.Management
 
         [Command("AdminRole")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetServerAdminRole([Remainder]string roleName)
+        public async Task SetServerAdminRole([Remainder] string roleName)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -181,7 +189,8 @@ namespace SIVA.Core.Modules.Management
             var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == roleName);
             if (role == null)
             {
-                embed.WithDescription($"The role `{roleName}` doesn't exist on this server. Remember that this command is cAsE sEnSiTiVe.");
+                embed.WithDescription(
+                    $"The role `{roleName}` doesn't exist on this server. Remember that this command is cAsE sEnSiTiVe.");
             }
             else
             {
@@ -195,7 +204,7 @@ namespace SIVA.Core.Modules.Management
 
         [Command("ModRole")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetServerModRole([Remainder]string roleName)
+        public async Task SetServerModRole([Remainder] string roleName)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -205,7 +214,8 @@ namespace SIVA.Core.Modules.Management
             var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == roleName);
             if (role == null)
             {
-                embed.WithDescription($"The role `{roleName}` doesn't exist on this server. Remember that this command is cAsE sEnSiTiVe.");
+                embed.WithDescription(
+                    $"The role `{roleName}` doesn't exist on this server. Remember that this command is cAsE sEnSiTiVe.");
             }
             else
             {
@@ -217,7 +227,8 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("EmbedColour"), Alias("Ec", "EmbedColor")]
+        [Command("EmbedColour")]
+        [Alias("Ec", "EmbedColor")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetColorForDonatorsIntoJson(int r, int g, int b)
         {
@@ -235,14 +246,16 @@ namespace SIVA.Core.Modules.Management
             }
             else
             {
-                embed.WithDescription($"This feature and command is for donators only! Consider donating to unlock: `{config.CommandPrefix}donate`.");
+                embed.WithDescription(
+                    $"This feature and command is for donators only! Consider donating to unlock: `{config.CommandPrefix}donate`.");
                 embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             }
 
             await ReplyAsync("", false, embed);
         }
 
-        [Command("PengChecks"), Alias("Pc")]
+        [Command("PengChecks")]
+        [Alias("Pc")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetBoolToJson(bool arg)
         {
@@ -260,11 +273,13 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("Antilink"), Alias("Al")]
+        [Command("Antilink")]
+        [Alias("Al")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetBoolIntoConfig(bool setting)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.Antilink = setting;
             GuildConfig.SaveGuildConfig();
             var embed = new EmbedBuilder();
@@ -273,10 +288,10 @@ namespace SIVA.Core.Modules.Management
             if (setting) embed.WithDescription("Enabled Antilink for this server.");
             if (setting == false) embed.WithDescription("Disabled Antilink for this server.");
             await ReplyAsync("", false, embed);
-
         }
 
-        [Command("TruthOrDare"), Alias("Tod")]
+        [Command("TruthOrDare")]
+        [Alias("Tod")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DisableSlashEnableTod(bool setting)
         {
@@ -291,7 +306,8 @@ namespace SIVA.Core.Modules.Management
             await ReplyAsync("", false, embed);
         }
 
-        [Command("AntilinkIgnore"), Alias("Ali")]
+        [Command("AntilinkIgnore")]
+        [Alias("Ali")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetChannelToBeIgnored(string type, SocketGuildChannel chnl = null)
         {
@@ -320,7 +336,8 @@ namespace SIVA.Core.Modules.Management
                     embed.WithDescription("List of channels to be ignored by Antilink has been cleared.");
                     break;
                 default:
-                    embed.WithDescription($"Valid types are `add`, `rem`, and `clear`. Syntax: `{config.CommandPrefix}ali {{add/rem/clear}} [channelMention]`");
+                    embed.WithDescription(
+                        $"Valid types are `add`, `rem`, and `clear`. Syntax: `{config.CommandPrefix}ali {{add/rem/clear}} [channelMention]`");
                     break;
             }
 
@@ -354,44 +371,53 @@ namespace SIVA.Core.Modules.Management
         }
 
 
-        [Command("SupportCloseOwnTicket"), Alias("SCOT")]
+        [Command("SupportCloseOwnTicket")]
+        [Alias("SCOT")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddBooleanToJson(bool arg)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.CanCloseOwnTicket = arg;
             GuildConfig.SaveGuildConfig();
             var embed = Helpers.CreateEmbed(Context, $"{arg} set as the Support Ticket `CanCloseOwnTicket` option.");
             await Helpers.SendMessage(Context, embed);
         }
 
-        [Command("SupportChannelName"), Alias("SCN")]
+        [Command("SupportChannelName")]
+        [Alias("SCN")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddChannelToConfig(string arg)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportChannelName = arg;
             GuildConfig.SaveGuildConfig();
             await ReplyAsync($"{arg} set as the Support channel name.");
         }
 
-        [Command("SupportRole"), Alias("SR")]
+        [Command("SupportRole")]
+        [Alias("SR")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetRoleInConfig([Remainder]string role)
+        public async Task SetRoleInConfig([Remainder] string role)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             config.SupportRole = role;
             GuildConfig.SaveGuildConfig();
             await ReplyAsync($"`{role}` set as the role to manage tickets.");
         }
 
-        [Command("SupportCloseTicket"), Alias("SCT", "Close"), Priority(0)] 
+        [Command("SupportCloseTicket")]
+        [Alias("SCT", "Close")]
+        [Priority(0)]
         [RequireUserPermission(GuildPermission.ManageChannels)]
         public async Task CloseTicket()
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             if (config == null) return;
-            var supportChannel = Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{Context.User.Id}");
+            var supportChannel =
+                Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{Context.User.Id}");
 
             if (config.CanCloseOwnTicket == false)
             {
@@ -411,9 +437,10 @@ namespace SIVA.Core.Modules.Management
             }
         }
 
-        [Command("SelfRoleAdd"), Alias("SRA")]
+        [Command("SelfRoleAdd")]
+        [Alias("SRA")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AddStringToList([Remainder]string role)
+        public async Task AddStringToList([Remainder] string role)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -425,9 +452,10 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("SelfRoleRem"), Alias("SRR")]
+        [Command("SelfRoleRem")]
+        [Alias("SRR")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task RemoveStringFromList([Remainder]string role)
+        public async Task RemoveStringFromList([Remainder] string role)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder()
@@ -446,7 +474,8 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("SelfRoleClear"), Alias("SRC")]
+        [Command("SelfRoleClear")]
+        [Alias("SRC")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ClearListFromConfig()
         {
@@ -468,14 +497,16 @@ namespace SIVA.Core.Modules.Management
         }
 
 
-        [Command("SupportCloseTicket"), Alias("SCT", "Close"), 
-         Priority(1), 
-         RequireUserPermission(GuildPermission.ManageChannels)]
+        [Command("SupportCloseTicket")]
+        [Alias("SCT", "Close")]
+        [Priority(1)]
+        [RequireUserPermission(GuildPermission.ManageChannels)]
         public async Task CloseTicket(SocketGuildUser user)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
             if (config == null) return;
-            var supportChannel = Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{user.Id}");
+            var supportChannel =
+                Context.Guild.Channels.FirstOrDefault(c => c.Name == $"{config.SupportChannelName}-{user.Id}");
 
             if (config.CanCloseOwnTicket == false)
             {
@@ -495,7 +526,8 @@ namespace SIVA.Core.Modules.Management
             }
         }
 
-        [Command("WelcomeChannel"), Alias("Wc")]
+        [Command("WelcomeChannel")]
+        [Alias("Wc")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task SetIdIntoConfig(SocketGuildChannel chnl)
         {
@@ -510,9 +542,11 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("WelcomeMessage"), Alias("Wmsg"), Priority(0)]
+        [Command("WelcomeMessage")]
+        [Alias("Wmsg")]
+        [Priority(0)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task SetTextIntoConfig([Remainder]string msg)
+        public async Task SetTextIntoConfig([Remainder] string msg)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
@@ -542,7 +576,9 @@ namespace SIVA.Core.Modules.Management
             }
         }
 
-        [Command("WelcomeMessage"), Alias("Wmsg"), Priority(1)]
+        [Command("WelcomeMessage")]
+        [Alias("Wmsg")]
+        [Priority(1)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task SendWMSGToUser()
         {
@@ -554,14 +590,16 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("LeavingMessage"), Alias("Lmsg")]
+        [Command("LeavingMessage")]
+        [Alias("Lmsg")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task SetTextIntoConfigLol([Remainder]string msg)
+        public async Task SetTextIntoConfigLol([Remainder] string msg)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
                          GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithDescription($"Set this guild's leaving message to:\n\n ```{msg}```\n\nSending a test welcome message to <#{config.WelcomeChannel}>");
+            embed.WithDescription(
+                $"Set this guild's leaving message to:\n\n ```{msg}```\n\nSending a test welcome message to <#{config.WelcomeChannel}>");
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             config.LeavingMessage = msg;
@@ -586,7 +624,8 @@ namespace SIVA.Core.Modules.Management
             }
         }
 
-        [Command("WelcomeColour"), Alias("Wcl", "WelcomeColor")]
+        [Command("WelcomeColour")]
+        [Alias("Wcl", "WelcomeColor")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task SetIntIntoConfig(int arg1, int arg2, int arg3)
         {
@@ -604,11 +643,13 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
-        [Command("Levels"), Alias("L")]
+        [Command("Levels")]
+        [Alias("L")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Leveling(bool arg)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
@@ -621,9 +662,10 @@ namespace SIVA.Core.Modules.Management
 
         [Command("ServerPrefix")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task SetGuildPrefix([Remainder]string prefix)
+        public async Task SetGuildPrefix([Remainder] string prefix)
         {
-            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ?? GuildConfig.CreateGuildConfig(Context.Guild.Id);
+            var config = GuildConfig.GetGuildConfig(Context.Guild.Id) ??
+                         GuildConfig.CreateGuildConfig(Context.Guild.Id);
             var embed = new EmbedBuilder();
             embed.WithDescription("Done.");
             embed.WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
@@ -635,9 +677,8 @@ namespace SIVA.Core.Modules.Management
 
         [Command("AutoRole")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AutoRoleRoleAdd([Remainder]string arg = "")
+        public async Task AutoRoleRoleAdd([Remainder] string arg = "")
         {
-
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
             config.Autorole = arg;
             GuildConfig.SaveGuildConfig();
@@ -648,10 +689,8 @@ namespace SIVA.Core.Modules.Management
             embed.WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3));
 
             await SendMessage(embed);
-
-
         }
-        
+
         public async Task SendMessage(Embed embed, string message = "", bool isTts = false)
         {
             await ReplyAsync(message, isTts, embed);
