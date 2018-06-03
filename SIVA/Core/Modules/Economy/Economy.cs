@@ -11,6 +11,9 @@ namespace SIVA.Core.Modules.Economy
 {
     public class Economy : ModuleBase<SocketCommandContext>
     {
+        
+        // LEVELING
+        
         [Command("WhatLevelIs")]
         [Alias("WLI")]
         public async Task WhatLevelIs(uint xp)
@@ -42,6 +45,8 @@ namespace SIVA.Core.Modules.Economy
 
             await Helpers.SendMessage(Context, embed);
         }
+        
+        // ECONOMY
 
         [Command("Money")]
         [Alias("$", "bal")]

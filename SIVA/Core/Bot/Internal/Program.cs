@@ -50,8 +50,6 @@ namespace SIVA.Core.Bot.Internal
                     break;
             }
 
-            if (!File.Exists("data/SIVA.db")) File.Create("data/SIVA.db");
-
             _client = new DiscordSocketClient(new DiscordSocketConfig {LogLevel = logSeverity});
             await _client.LoginAsync(TokenType.Bot, Config.bot.Token);
             await _client.StartAsync();
