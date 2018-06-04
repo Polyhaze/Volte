@@ -1,6 +1,6 @@
-# SIVA
+![SIVA logo](https://i.rossm.pw/813669.png)
 
-![SIVA logo](http://code.greem.xyz/SIVA-Developers/SIVA/raw/master/Images/SIVA_25.png)
+# SIVA
 
 ## What is SIVA?
 
@@ -15,20 +15,20 @@ The source code is available, hack at it to your heart's content; however, the S
 
 > [SIVA-public](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) **By default, this has the Administrator permission checked. Keep this if you're using moderation, you should keep it checked.**
 
-> SIVA-dev is not public. It's for my debugging purposes.
+> SIVA-dev is <b>not</b> obtainable for public servers, it's used primarily for debugging.
 
 # FAQ
 
 ### Why should I join the [Discord server](https://greem.xyz/SIVA)?
-Error Reporting, 
+* Error Reporting
 
-Memes, 
+* Memes
 
-Consistent bot update messages, 
+* Consistent bot update messages
 
-Chat with the developers, 
+* Chat with the developers
 
-ask us coding questions, 
+* ask us coding questions
 
 and more! 
 
@@ -36,10 +36,10 @@ Link is embedded in the header of this message.
 
 
 ### Is the bot open source?
-[Yes.](https://hub.ultz.co.uk/code/projects/SIVA/repos/bot/browse/) (Yes is clickable)
+[Yes.](https://hub.ultz.co.uk/code/projects/SIVA/repos/bot/browse/)
 
 ### Is there a Discord server for the bot?
-[Yes.](https://greem.xyz/SIVA) (Yes is clickable)
+[Yes.](https://greem.xyz/SIVA)
 
 ### Why do you use the Ultz code server rather than GitHub?
 I prefer BitBucket, and the Ultz code server is a selfhosted derivative of bitbucket. See the bottom of this page for info.
