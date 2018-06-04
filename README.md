@@ -35,14 +35,11 @@ and more!
 Link is embedded in the header of this message.
 
 
-### Is the bot open source?
-[Yes.](https://hub.ultz.co.uk/code/projects/SIVA/repos/bot/browse/)
+
 
 ### Is there a Discord server for the bot?
 [Yes.](https://greem.xyz/SIVA)
 
-### Why do you use the Ultz code server rather than GitHub?
-I prefer BitBucket, and the Ultz code server is a selfhosted derivative of bitbucket. See the bottom of this page for info.
 
 ### Where is the wiki for the bot? 
 You can access it by running the `help` command. Alternatively, it's on Ultz's Confluence server. Click [here](https://confluence.ultz.co.uk/display/SIVA/SIVA).
