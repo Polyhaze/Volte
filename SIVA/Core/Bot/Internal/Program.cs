@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -59,10 +58,6 @@ namespace SIVA.Core.Bot.Internal
             _client.Log += EventUtils.Log;
             _handler = new EventHandler();
             await _handler.InitializeAsync(_client);
-            Console.WriteLine(
-                "Public SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=320942091049893888&permissions=8");
-            Console.WriteLine(
-                "Dev SIVA: https://discordapp.com/oauth2/authorize?scope=bot&client_id=410547925597421571&permissions=8");
             await Task.Delay(-1);
         }
     }

@@ -39,6 +39,7 @@ namespace SIVA.Core.Bot.Internal
             _client.RoleDeleted += Logging.HandleRoleDelete;
         }
 
+
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;

@@ -1,6 +1,5 @@
-﻿using System.IO;
-using Discord;
-using Discord.Commands;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace SIVA.Core.JsonFiles
@@ -9,15 +8,23 @@ namespace SIVA.Core.JsonFiles
     {
         public static object ReadJson(string fileName)
         {
-            var json = JsonConvert.DeserializeObject(fileName);
-            return json;
+            var json = File.ReadAllText(fileName);
+            var data = JsonConvert.DeserializeObject<dynamic>(json);
+            return data;
         }
 
         public static bool WriteJson(string fileName, string fileContents)
         {
-            var json = JsonConvert.SerializeObject(fileContents, Formatting.Indented);
-            File.WriteAllText(fileName, json);
-            return true;
+            try
+            {
+                var json = JsonConvert.SerializeObject(fileContents, Formatting.Indented);
+                File.WriteAllText(fileName, json);
+                return true;
+            }
+            catch
+            {
+                throw new Exception("The operation failed to complete.");
+            }
         }
     }
 }

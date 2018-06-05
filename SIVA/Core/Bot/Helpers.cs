@@ -11,13 +11,14 @@ namespace SIVA.Core.Bot
 {
     internal class Helpers
     {
-        /*
-         * <summary>
-         * 
-         *     Creates an embed and returns the finished EmbedBuilder value for easy embed creation.
-         * 
-         * </summary>
-         */
+
+        /// <summary>
+        ///     Creates an embed. Pass in a SocketCommandContext and a string for the embed contents.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="desc"></param>
+        /// <returns></returns>
+
         public static EmbedBuilder CreateEmbed(SocketCommandContext ctx, string desc)
         {
             var config = GuildConfig.GetOrCreateConfig(ctx.Guild.Id);
@@ -28,13 +29,13 @@ namespace SIVA.Core.Bot
             return embed;
         }
 
-        /*
-         * <summary>
-         *
-         *     Sends a message in the channel context.
-         *
-         * </summary>
-         */
+        /// <summary>
+        ///     Sends a message. Pass in a SocketCommandContext, embed, and/or a string.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="embed"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
 
         public static async Task SendMessage(SocketCommandContext ctx, EmbedBuilder embed = null, string msg = "")
         {
@@ -44,78 +45,66 @@ namespace SIVA.Core.Bot
                 await ctx.Channel.SendMessageAsync(msg, false, embed);
         }
 
-        /*
-         * <summary>
-         *
-         *     Gets a channel based on the Server ID and Channel ID given.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        ///     Gets a SocketTextChannel by its ID.
+        /// </summary>
+        /// <param name="channelId"></param>
+        /// <returns></returns>
 
         public static SocketTextChannel GetChannelById(ulong channelId)
         {
             return Program._client.GetChannel(channelId) as SocketTextChannel;
         }
 
-        /*
-         * <summary>
-         *
-         *     Gets a guild based on the Server ID given.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        ///     Gets a guild by its ID.
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <returns></returns>
 
         public static SocketGuild GetGuild(ulong serverId)
         {
             return Program._client.GetGuild(serverId);
         }
 
-        /*
-         * <summary>
-         *
-         *     Get the bot user.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        ///     Gets the bot user.
+        /// </summary>
+        /// <returns></returns>
 
         public static SocketSelfUser GetSelfUser()
         {
             return Program._client.CurrentUser;
         }
 
-        /*
-         * <summary>
-         *
-         *     Gets a user based on their ID.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        ///     Get a user by their ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
 
         public static SocketUser GetUserById(ulong userId)
         {
             return Program._client.GetUser(userId);
         }
 
-        /*
-         * <summary>
-         *
-         *     Get a DM channel with a user by their ID.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        ///     Get a DM channel with a user by their ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
 
         public static Task<IDMChannel> GetDmChannel(ulong userId)
         {
             return GetUserById(userId).GetOrCreateDMChannelAsync();
         }
 
-        /*
-         * <summary>
-         *
-         *     Get a role based on its name with LINQ.
-         * 
-         * </summary>
-         */
+        /// <summary>
+        /// Get a role by its ID. 
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
 
         public static IEnumerable<SocketRole> GetRole(SocketCommandContext ctx, string roleName)
         {
@@ -123,10 +112,25 @@ namespace SIVA.Core.Bot
             return role;
         }
 
+
+        /// <summary>
+        ///     Find a user by their username and discriminator.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+
         public static SocketUser GetUserByName(SocketCommandContext ctx, string userName)
         {
             return Program._client.GetUser(userName, userName);
         }
+
+        /// <summary>
+        ///     Checks if a user has a role, by the role's ID.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="roleId"></param>
+        /// <returns>Boolean</returns>
 
         internal static bool UserHasRole(SocketCommandContext ctx, ulong roleId)
         {
