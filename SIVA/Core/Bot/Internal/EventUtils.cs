@@ -215,11 +215,6 @@ namespace SIVA.Core.Bot.Internal
             if (msg.Message.Contains("blocking the gateway task")) return;
             Console.WriteLine($"[{msg.Severity}]: ({msg.Source}): {msg.Message}");
             var msg2 = $"[{msg.Severity}]: ({msg.Source}): {msg.Message}";
-            if (!msg2.Contains("(Rest)"))
-            {
-                var channel = await Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800)
-                    .SendMessageAsync(msg2);
-            }
 
             try
             {
