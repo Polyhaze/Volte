@@ -100,7 +100,7 @@ namespace SIVA.Core.Modules.Management
             }
         }
 
-        [Command("Purge")]
+        [Command("Purge"), Alias("Rm")]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         public async Task PurgeMessages(int amount)
