@@ -8,7 +8,7 @@ namespace SIVA.Core.Bot.Internal
 {
     internal class Utilities
     {
-        private static readonly Dictionary<string, string> alerts;
+        private static readonly Dictionary<string, string> alerts = new Dictionary<string, string>();
 
         static Utilities()
         {
@@ -33,59 +33,26 @@ namespace SIVA.Core.Bot.Internal
             return alerts.ContainsKey(key) ? string.Format(alerts[key], parameter) : "";
         }
 
-        public static string InlineMsg(string msg)
-        {
-            return $"`{msg}`";
-        }
+        public static string InlineMsg(string msg) => $"`{msg}`";
 
-        public static string CodeBlock(string msg)
-        {
-            return $"```{msg}```";
-        }
+        public static string CodeBlock(string msg) => $"```{msg}```";
 
-        public static string Italic(string msg)
-        {
-            return $"*{msg}*";
-        }
+        public static string Italic(string msg) => $"*{msg}*";
 
-        public static string Bold(string msg)
-        {
-            return $"**{msg}**";
-        }
+        public static string Bold(string msg) => $"**{msg}**";
 
-        public static string BoldItalic(string msg)
-        {
-            return $"***{msg}***";
-        }
+        public static string BoldItalic(string msg) => $"***{msg}***";
 
-        public static string Underline(string msg)
-        {
-            return $"__{msg}__";
-        }
+        public static string Underline(string msg) => $"__{msg}__";
 
-        public static string Strikethrough(string msg)
-        {
-            return $"~~{msg}~~";
-        }
+        public static string Strikethrough(string msg) => $"~~{msg}~~";
 
-        public static int Multiply(int a, int b)
-        {
-            return a * b;
-        }
+        public static int Multiply(int a, int b) => a * b;
 
-        public static float Divide(int a, int b)
-        {
-            return a / b;
-        }
+        public static float Divide(int a, int b) => a / b;
 
-        public static int Add(int a, int b)
-        {
-            return a + b;
-        }
+        public static int Add(int a, int b) => a + b;
 
-        public static int Subtract(int a, int b)
-        {
-            return a - b;
-        }
+        public static int Subtract(int a, int b) => a - b;
     }
 }

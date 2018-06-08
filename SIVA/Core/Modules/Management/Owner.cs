@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -16,14 +17,21 @@ namespace SIVA.Core.Modules.Management
 {
     public class Owner : SivaModule
     {
-        public void KillProgram()
+        [Command("ForceLeave")]
+        [RequireOwner]
+        public async Task ForceServerLeaveByName([Remainder]string serverName)
         {
-            Kill();
-        }
+            var targetGuild = Program._client.Guilds.FirstOrDefault(x => x.Name == serverName);
+            if (targetGuild == null)
+            {
+                var embed1 = Helpers.CreateEmbed(Context, $"I'm not in the server `{serverName}`.");
+                await Helpers.SendMessage(Context, embed1);
+                return;
+            }
+            await targetGuild.LeaveAsync();
+            var embed2 = Helpers.CreateEmbed(Context, $"Successfully left `{serverName}`.");
+            await Helpers.SendMessage(Context, embed2);
 
-        public void Kill()
-        {
-            KillProgram();
         }
 
         [Command("Shutdown")]
@@ -37,7 +45,7 @@ namespace SIVA.Core.Modules.Management
             await Helpers.SendMessage(Context, embed);
             await client.LogoutAsync();
             await client.StopAsync();
-            KillProgram();
+            Environment.Exit(0);
         }
 
         [Command("CreateConfigEmergency")]

@@ -16,7 +16,7 @@ namespace SIVA.Core.Bot
             var config = GuildConfig.GetGuildConfig(context.Guild.Id);
             if (msg == null || context.User.IsBot || config == null) return;
             foreach (var word in config.Blacklist)
-                if (msg.Content.Contains(word))
+                if (msg.Content.ToLower().Contains(word.ToLower()))
                 {
                     await msg.DeleteAsync();
                     break;
