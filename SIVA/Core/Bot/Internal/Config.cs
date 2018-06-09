@@ -50,6 +50,7 @@ namespace SIVA.Core.Bot.Internal
         public struct BotConfig
         {
             public string Token;
+            public string DblToken;
             public string Prefix;
             public bool Debug;
             public string BotGameToSet;

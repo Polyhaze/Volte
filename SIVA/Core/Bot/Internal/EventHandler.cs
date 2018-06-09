@@ -37,6 +37,12 @@ namespace SIVA.Core.Bot.Internal
             _client.RoleCreated += Logging.HandleRoleCreation;
             _client.RoleUpdated += Logging.HandleRoleUpdate;
             _client.RoleDeleted += Logging.HandleRoleDelete;
+            _client.Ready += OnClientReady;
+        }
+
+        private async Task OnClientReady()
+        {
+            await DblServerCount.UpdateServerCount(_client);
         }
 
 

@@ -158,11 +158,11 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task EvaluateCSharpCode([Remainder] string code)
         {
-            var result = await CSharpScript.EvaluateAsync(code,
+            var result = CSharpScript.EvaluateAsync(code,
                 ScriptOptions.Default.AddImports("System", "System.IO", "System.Collections.Generic",
-                    "System.Threading.Tasks", "System.Threading"));
+                    "System.Threading.Tasks", "System.Threading")).IsCompletedSuccessfully;
             var embed = new EmbedBuilder()
-                .WithDescription($"Input: \n```cs\n{code}```\n\nOutput: `{result}`")
+                .WithDescription($"Input: \n```cs\n{code}```\n\nOutput: `{result.ToString()}`")
                 .WithColor(Config.bot.DefaultEmbedColour);
             await ReplyAsync("", false, embed);
         }

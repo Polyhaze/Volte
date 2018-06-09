@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 
 namespace SIVA.Core.JsonFiles
@@ -10,7 +11,7 @@ namespace SIVA.Core.JsonFiles
         {
             var json = File.ReadAllText(fileName);
             var data = JsonConvert.DeserializeObject<dynamic>(json);
-            return data;
+            return data.ToObject();
         }
 
         public static bool WriteJson(string fileName, string fileContents)
@@ -21,9 +22,11 @@ namespace SIVA.Core.JsonFiles
                 File.WriteAllText(fileName, json);
                 return true;
             }
-            catch
+            catch (IOException e)
             {
-                throw new Exception("The operation failed to complete.");
+                Console.WriteLine(e.StackTrace);
+                return false;
+
             }
         }
     }
