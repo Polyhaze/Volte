@@ -38,13 +38,12 @@ namespace SIVA.Core.Modules.Management
         [RequireOwner]
         public async Task Shutdown()
         {
-            var client = Program._client;
             var embed = Helpers.CreateEmbed(Context,
                 Bot.Internal.Utilities.GetFormattedLocaleMsg("LoggingOutMsg", Context.User.Mention));
 
             await Helpers.SendMessage(Context, embed);
-            await client.LogoutAsync();
-            await client.StopAsync();
+            await Program._client.LogoutAsync();
+            await Program._client.StopAsync();
             Environment.Exit(0);
         }
 

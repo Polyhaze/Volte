@@ -61,6 +61,7 @@ namespace SIVA.Core.Bot.Internal
             }
 
 
+
             if (context.User.IsBot) return;
 
             var config = GuildConfig.GetGuildConfig(context.Guild.Id) ??
@@ -172,6 +173,18 @@ namespace SIVA.Core.Bot.Internal
                 {
                     Console.WriteLine("The Commands.log file wasn't found, creating it now.");
                     File.WriteAllText("Commands.log", "");
+                }
+                
+                if (config.DeleteMessageOnCommand)
+                {
+                    await context.Message.DeleteAsync();
+                }
+            }
+            else
+            {
+                if (msg.Content.Contains($"<@{_client.CurrentUser.Id}>"))
+                {
+                    await Helpers.SendMessage(context, null, "<:whO_PENG:437088256291504130>");
                 }
             }
         }

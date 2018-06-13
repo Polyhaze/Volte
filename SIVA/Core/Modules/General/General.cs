@@ -57,23 +57,11 @@ namespace SIVA.Core.Modules.General
 
         [Command("Say")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task SayCommand([Remainder] string message)
+        public async Task Say([Remainder] string message)
         {
             var embed = Helpers.CreateEmbed(Context, message);
             await Context.Message.DeleteAsync();
-
-            if (Config.bot.Debug)
-            {
-                var channel = Program._client.GetGuild(405806471578648588).GetTextChannel(431928769465548800);
-                await channel.SendMessageAsync("", false,
-                    Helpers.CreateEmbed(Context,
-                        $"{Context.User.Mention} used the say command in the channel <#{Context.Channel.Id}>, in Guild **{Context.Guild.Name}** and said **\"{message}\"**."));
-                await ReplyAsync("", false, embed);
-            }
-            else
-            {
-                await ReplyAsync("", false, embed);
-            }
+            await ReplyAsync("", false, embed);
         }
 
         [Command("Choose")]
@@ -81,10 +69,8 @@ namespace SIVA.Core.Modules.General
         {
             var options = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-            var r = new Random();
-
             var embed = Helpers.CreateEmbed(Context,
-                Bot.Internal.Utilities.GetFormattedLocaleMsg("PickCommandText", options[r.Next(0, options.Length)]));
+                Bot.Internal.Utilities.GetFormattedLocaleMsg("PickCommandText", options[new Random().Next(0, options.Length)]));
 
             await Helpers.SendMessage(Context, embed);
         }

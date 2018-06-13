@@ -44,6 +44,7 @@ namespace SIVA.Core.JsonFiles
         public ulong ModRole { get; set; }
         public ulong AdminRole { get; set; }
         public bool IsTodEnabled { get; set; }
+        public bool DeleteMessageOnCommand { get; set; }
         public ulong ServerLoggingChannel { get; set; }
         public bool IsServerLoggingEnabled { get; set; }
         public List<ulong> AntilinkIgnoredChannels { get; set; }

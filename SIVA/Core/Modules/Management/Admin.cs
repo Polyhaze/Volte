@@ -24,6 +24,17 @@ namespace SIVA.Core.Modules.Management
             await SendMessage(embed);
         }
 
+        [Command("DeleteMessageOnCommand"), Alias("Dmoc")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DeleteMessageOnCommand(bool arg)
+        {
+            GuildConfig.GetOrCreateConfig(Context.Guild.Id).DeleteMessageOnCommand = arg;
+            GuildConfig.SaveGuildConfig();
+            await Helpers.SendMessage(Context,
+                Helpers.CreateEmbed(Context, $"Set deleting messages on commands to {arg}"));
+
+        }
+
         [Command("AddRole")]
         [Alias("Ar")]
         [RequireUserPermission(GuildPermission.Administrator)]
@@ -44,9 +55,10 @@ namespace SIVA.Core.Modules.Management
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetUsersNickname(SocketGuildUser user, [Remainder] string nick)
         {
-            var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
+            EmbedBuilder embed;
+            embed = Helpers.CreateEmbed(Context, nick.Length >= 33 ? $"You can't have nicknames longer than 32 characters. The nickname you specified was {nick.Length} characters long." : $"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
             await user.ModifyAsync(x => x.Nickname = nick);
-            var embed = Helpers.CreateEmbed(Context, $"Set <@{user.Id}>'s nickname on this server to **{nick}**!");
+            
 
             await Helpers.SendMessage(Context, embed);
         }
