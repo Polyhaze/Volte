@@ -19,7 +19,7 @@ The source code is available, hack at it to your heart's content; however, the S
 
 # FAQ
 
-### Why should I join the [Discord server](https://greem.xyz/SIVA)?
+### Why should I join the [Discord server](https://greem.xyz/discord)?
 * Error Reporting
 
 * Memes
@@ -38,7 +38,7 @@ Link is embedded in the header of this message.
 
 
 ### Is there a Discord server for the bot?
-[Yes.](https://greem.xyz/SIVA)
+[Yes.](https://greem.xyz/discord)
 
 
 ### Where is the wiki for the bot? 
@@ -60,5 +60,5 @@ Some errors have custom text. If you find an error, and don't know what it means
 
 ### Any other questions?
 
-Ask them on the [SIVA Discord server](https://greem.xyz)
+Ask them on the [SIVA Discord server](https://greem.xyz/discord)
 
