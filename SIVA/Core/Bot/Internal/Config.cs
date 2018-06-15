@@ -57,7 +57,7 @@ namespace SIVA.Core.Bot.Internal
             public string TwitchStreamer;
             public ulong BotOwner;
             public uint DefaultEmbedColour;
-            public bool IsSelfbot;
+            public bool LogAllCommands;
             public string CurrencySymbol;
             public ulong FeedbackChannelId;
             public uint ErrorEmbedColour;

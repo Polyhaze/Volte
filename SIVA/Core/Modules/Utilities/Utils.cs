@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,30 +179,26 @@ namespace SIVA.Core.Modules.Utilities
         }
 
         [Command("Iam")]
-        public async Task GiveYourselfRole([Remainder] string role)
+        public async Task GiveRole([Remainder] string role)
         {
             var config = GuildConfig.GetOrCreateConfig(Context.Guild.Id);
-            var user = Context.User as SocketGuildUser;
+            var roleList = new List<string>();
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            if (config == null)
+            foreach (var roleName in config.SelfRoles) roleList.Add(roleName.ToLower());
+                
+            if (roleList.Contains(role))
             {
-                embed.WithDescription("This server doesn't have any self roles set.");
+                
+                var r = Context.Guild.Roles.First(x => x.Name.ToLower() == role.ToLower());
+                embed.WithDescription($"Gave you the **{r.Name}** role.");
+                await (Context.User as SocketGuildUser).AddRoleAsync(r);
             }
             else
             {
-                if (config.SelfRoles.Contains(role))
-                {
-                    embed.WithDescription($"Gave you the **{role}** role.");
-                    var r = Context.Guild.Roles.FirstOrDefault(x => x.Name == role);
-                    await user.AddRoleAsync(r);
-                }
-                else
-                {
-                    embed.WithDescription(
-                        "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
-                }
+                embed.WithDescription(
+                    "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
             }
 
             await ReplyAsync("", false, embed);
@@ -208,30 +206,24 @@ namespace SIVA.Core.Modules.Utilities
 
         [Command("Iamnot")]
         [Alias("Iamn")]
-        public async Task TakeAwayRole([Remainder] string role)
+        public async Task TakeRole([Remainder] string role)
         {
             var config = GuildConfig.GetGuildConfig(Context.Guild.Id);
-            var user = Context.User as SocketGuildUser;
+            var roleList = new List<string>();
             var embed = new EmbedBuilder()
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
-            if (config == null)
+            foreach (var roleName in config.SelfRoles) roleList.Add(roleName.ToLower());
+            if (roleList.Contains(role))
             {
-                embed.WithDescription("This server doesn't have any self roles set.");
+                var r = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == role.ToLower());
+                embed.WithDescription($"Removed your **{r.Name}** role.");
+                await (Context.User as SocketGuildUser).RemoveRoleAsync(r);
             }
             else
             {
-                if (config.SelfRoles.Contains(role))
-                {
-                    embed.WithDescription($"Removed your **{role}** role.");
-                    var r = Context.Guild.Roles.FirstOrDefault(x => x.Name == role);
-                    await user.RemoveRoleAsync(r);
-                }
-                else
-                {
-                    embed.WithDescription(
-                        "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
-                }
+                embed.WithDescription(
+                    "That role isn't in the self roles list for this server. Remember that this command is cAsE sEnSiTiVe!");
             }
 
             await ReplyAsync("", false, embed);

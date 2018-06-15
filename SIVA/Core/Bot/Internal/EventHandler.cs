@@ -145,15 +145,19 @@ namespace SIVA.Core.Bot.Internal
 
                 if (result.ErrorReason == "Unknown command.") return;
 
-                Console.WriteLine($"--|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
-                Console.WriteLine($"--|     -Command Issued: {msg.Content}");
-                Console.WriteLine($"--|           -In Guild: {context.Guild.Name}");
-                Console.WriteLine($"--|         -In Channel: #{context.Channel.Name}");
-                Console.WriteLine($"--|        -Time Issued: {DateTime.Now}");
-                Console.WriteLine(result.IsSuccess
-                    ? $"--|           -Executed: {result.IsSuccess}"
-                    : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
-                Console.WriteLine("-------------------------------------------------");
+                if (Config.bot.LogAllCommands)
+                {
+                    Console.WriteLine($"--|  -Command from user: {context.User.Username}#{context.User.Discriminator}");
+                    Console.WriteLine($"--|     -Command Issued: {msg.Content}");
+                    Console.WriteLine($"--|           -In Guild: {context.Guild.Name}");
+                    Console.WriteLine($"--|         -In Channel: #{context.Channel.Name}");
+                    Console.WriteLine($"--|        -Time Issued: {DateTime.Now}");
+                    Console.WriteLine(result.IsSuccess
+                        ? $"--|           -Executed: {result.IsSuccess}"
+                        : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
+                    Console.WriteLine("-------------------------------------------------");
+                }
+                
                 try
                 {
                     File.AppendAllText("Commands.log",
