@@ -1,5 +1,7 @@
 ![SIVA logo](https://i.rossm.pw/813669.png)
 
+![SIVA-Nightly](https://greem.visualstudio.com/_apis/public/build/definitions/5e60ff00-e5eb-4f85-b79a-c82a84e87fd7/5/badge)
+
 # SIVA
 
 ## What is SIVA?
