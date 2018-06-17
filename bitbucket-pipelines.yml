@@ -14,3 +14,5 @@ pipelines:
           - export PROJECT_NAME=SIVA
           - dotnet restore
           - dotnet build $PROJECT_NAME
+        artifacts:
+          - SIVA/bin/Debug/**
