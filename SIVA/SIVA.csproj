@@ -10,7 +10,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifiers>win-x86;linux-x64;osx-x64</RuntimeIdentifiers>
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <Platforms>AnyCPU;x64</Platforms>
