@@ -15,4 +15,4 @@ pipelines:
           - dotnet restore
           - dotnet build $PROJECT_NAME
         artifacts:
-          - SIVA/bin/Debug/**
+          - SIVA/bin/Debug/netcoreapp2.0/*
