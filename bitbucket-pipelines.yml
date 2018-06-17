@@ -8,16 +8,6 @@ image: microsoft/dotnet:sdk
 pipelines:
   default:
     - step:
-        name: Build
-        caches:
-          - dotnetcore
-        script: # Modify the comma`nds below to build your repository.
-          - export PROJECT_NAME=SIVA
-          - dotnet restore
-          - dotnet build $PROJECT_NAME
-        artifacts:
-          - SIVA/bin/Debug/netcoreapp2.0/win-x86/**
-    - step:
         name: Publish
         deployment: test
         caches:
