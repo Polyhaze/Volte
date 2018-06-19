@@ -33,6 +33,8 @@ namespace SIVA.Core.Helpers
             public string CommandPrefix;
             public string Game;
             public string Streamer;
+            public uint ErrorEmbedColour;
+            public bool LogAllCommands;
         }
     }
 }

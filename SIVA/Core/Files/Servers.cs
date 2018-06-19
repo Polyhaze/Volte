@@ -52,12 +52,12 @@ namespace SIVA.Core.Files
                 WelcomeChannel = ulong.MinValue,
                 WelcomeMessage = string.Empty,
                 LeavingMessage = string.Empty,
-                WelcomeColour1 = 112,
-                WelcomeColour2 = 0,
-                WelcomeColour3 = 251,
-                EmbedColour1 = 112,
-                EmbedColour2 = 0,
-                EmbedColour3 = 251,
+                WelcomeColourR = 112,
+                WelcomeColourG = 0,
+                WelcomeColourB = 251,
+                EmbedColourR = 112,
+                EmbedColourG = 0,
+                EmbedColourB = 251,
                 Antilink = false,
                 VerifiedGuild = false
             };
@@ -93,12 +93,12 @@ namespace SIVA.Core.Files
         public ulong WelcomeChannel { get; set; }
         public string WelcomeMessage { get; set; }
         public string LeavingMessage { get; set; }
-        public int WelcomeColour1 { get; set; }
-        public int WelcomeColour2 { get; set; }
-        public int WelcomeColour3 { get; set; }
-        public int EmbedColour1 { get; set; }
-        public int EmbedColour2 { get; set; }
-        public int EmbedColour3 { get; set; }
+        public int WelcomeColourR { get; set; }
+        public int WelcomeColourG { get; set; }
+        public int WelcomeColourB { get; set; }
+        public int EmbedColourR { get; set; }
+        public int EmbedColourG { get; set; }
+        public int EmbedColourB { get; set; }
         public bool MassPengChecks { get; set; }
         public bool Antilink { get; set; }
         public bool VerifiedGuild { get; set; }
