@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace SIVA.Core.Helpers
+namespace SIVA.Core.Files
 {
     public class Config
     {
-        internal static BotConfig conf;
+        public static BotConfig conf;
         private const string ConfigFile = "data/config.json";
 
         static Config()
@@ -27,9 +27,10 @@ namespace SIVA.Core.Helpers
         }
         
         
-        internal struct BotConfig
+        public struct BotConfig
         {
             public string Token;
+            public string DblToken;
             public string CommandPrefix;
             public string Game;
             public string Streamer;

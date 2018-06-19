@@ -1,0 +1,51 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "C:\\Users\\Evan\\OneDrive\\SIVA Rewrite\\SIVA.Helpers\\SIVA.Helpers.csproj",
+    "projectName": "SIVA.Helpers",
+    "projectPath": "C:\\Users\\Evan\\OneDrive\\SIVA Rewrite\\SIVA.Helpers\\SIVA.Helpers.csproj",
+    "outputPath": "C:\\Users\\Evan\\OneDrive\\SIVA Rewrite\\SIVA.Helpers\\obj\\",
+    "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+    ],
+    "originalTargetFrameworks": [
+      "netcoreapp2.0"
+    ],
+    "frameworks": {
+      "netcoreapp2.0": {
+        "projectReferences": {
+          "C:\\Users\\Evan\\OneDrive\\SIVA Rewrite\\SIVA\\SIVA.csproj": {
+            "projectPath": "C:\\Users\\Evan\\OneDrive\\SIVA Rewrite\\SIVA\\SIVA.csproj"
+          }
+        }
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netcoreapp2.0": {
+      "dependencies": {
+        "Discord.Net": {
+          "target": "Package",
+          "version": "[2.0.0-beta, )"
+        },
+        "Microsoft.NETCore.App": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.0.0, )",
+          "autoReferenced": true
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}

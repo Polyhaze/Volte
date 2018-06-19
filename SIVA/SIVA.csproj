@@ -6,4 +6,12 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.0.0-beta" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Discord\Automod" />
+    <Folder Include="Core\Discord\Modules\Admin" />
+    <Folder Include="Core\Discord\Modules\General" />
+    <Folder Include="Core\Discord\Modules\LevelingAndEco" />
+    <Folder Include="Core\Discord\Modules\Owner" />
+    <Folder Include="Core\Discord\Support" />
+  </ItemGroup>
 </Project>
