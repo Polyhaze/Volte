@@ -31,6 +31,7 @@ namespace SIVA.Core.Runtime
             var ctx = new SocketCommandContext(_client, msg);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.GetOrCreate(ctx.Guild.Id);
+            Users.Get(s.Author.Id);
             var prefix = config.CommandPrefix ?? Config.conf.CommandPrefix;
 
             if (config.EmbedColourR == 0 && config.EmbedColourG == 0 && config.EmbedColourB == 0)

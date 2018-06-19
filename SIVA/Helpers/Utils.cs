@@ -7,11 +7,11 @@ namespace SIVA.Helpers
 {
     public class Utils
     {
-        public Embed CreateEmbed(SocketCommandContext ctx, string content, SocketUser author = null)
+        public static Embed CreateEmbed(SocketCommandContext ctx, string content)
         {
             var config = ServerConfig.GetOrCreate(ctx.Guild.Id);
             return new EmbedBuilder()
-                .WithAuthor(author)
+                .WithAuthor(ctx.Message.Author)
                 .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))
                 .WithDescription(content)
                 .Build();
