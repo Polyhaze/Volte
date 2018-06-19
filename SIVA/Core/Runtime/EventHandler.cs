@@ -22,10 +22,11 @@ namespace SIVA.Core.Runtime
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _service.Log += Program.Log;
-            
+            _client.MessageReceived += HandleMessageOrCommand;
+
         }
 
-        public async Task HandleMessage(SocketMessage s)
+        public async Task HandleMessageOrCommand(SocketMessage s)
         {
             var msg = (SocketUserMessage)s;
             var ctx = new SocketCommandContext(_client, msg);
