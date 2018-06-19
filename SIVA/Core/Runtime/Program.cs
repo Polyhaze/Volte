@@ -6,16 +6,16 @@ using SIVA.Core.Helpers;
 
 namespace SIVA.Core.Runtime
 {
-    class Program
+    internal class Program
     {
-        public DiscordSocketClient Client;
+        public static DiscordSocketClient Client;
         
-        static void Main()
+        private static void Main()
         {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
-            return;
+            new Program().StartAsync().GetAwaiter().GetResult();
         }
 
         private async Task StartAsync()
