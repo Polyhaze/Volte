@@ -11,7 +11,7 @@ namespace SIVA.Core.Files
     public static class ServerConfig
     {
         private static readonly List<Server> Config = new List<Server>();
-        private const string FilePath = "data/ServerConfigs.json";
+        private const string FilePath = "data/serverconfigs.json";
 
         static ServerConfig()
         {
