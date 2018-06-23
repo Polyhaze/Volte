@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using SIVA.Core.Discord.Automod;
 using SIVA.Core.Files;
 
 namespace SIVA.Core.Runtime
@@ -29,6 +30,8 @@ namespace SIVA.Core.Runtime
         {
             var msg = (SocketUserMessage)s;
             var ctx = new SocketCommandContext(_client, msg);
+            await Blacklist.CheckMessageForBlacklistedWords(s);
+            await Antilink.CheckMessageForInvite(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.GetOrCreate(ctx.Guild.Id);
             Users.Get(s.Author.Id);
