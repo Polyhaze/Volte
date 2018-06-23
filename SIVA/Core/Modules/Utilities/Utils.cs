@@ -188,7 +188,7 @@ namespace SIVA.Core.Modules.Utilities
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             foreach (var roleName in config.SelfRoles) roleList.Add(roleName.ToLower());
                 
-            if (roleList.Contains(role))
+            if (roleList.Contains(role.ToLower()))
             {
                 
                 var r = Context.Guild.Roles.First(x => x.Name.ToLower() == role.ToLower());
@@ -214,7 +214,7 @@ namespace SIVA.Core.Modules.Utilities
                 .WithColor(new Color(config.EmbedColour1, config.EmbedColour2, config.EmbedColour3))
                 .WithFooter(Bot.Internal.Utilities.GetFormattedLocaleMsg("CommandFooter", Context.User.Username));
             foreach (var roleName in config.SelfRoles) roleList.Add(roleName.ToLower());
-            if (roleList.Contains(role))
+            if (roleList.Contains(role.ToLower()))
             {
                 var r = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == role.ToLower());
                 embed.WithDescription($"Removed your **{r.Name}** role.");
