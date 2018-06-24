@@ -7,7 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Discord.Automod;
-using SIVA.Core.Files;
+using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Runtime
 {

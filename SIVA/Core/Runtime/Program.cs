@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using SIVA.Core.Files;
+using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Runtime
 {

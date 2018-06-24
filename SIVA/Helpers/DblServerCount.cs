@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using SIVA.Core.Files;
+using SIVA.Core.Files.Readers;
 
 namespace SIVA.Helpers
 {

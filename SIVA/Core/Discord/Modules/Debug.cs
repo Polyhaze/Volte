@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.IO.Pipes;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using SIVA.Core.Files;
+using SIVA.Core.Files.Readers;
+using SIVA.Core.Files.Objects;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules

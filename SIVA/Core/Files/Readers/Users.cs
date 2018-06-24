@@ -1,22 +1,12 @@
-﻿using System;
+﻿using SIVA.Core.Files.Objects;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using Newtonsoft.Json;
 using SIVA.Core.Runtime;
 
-namespace SIVA.Core.Files
+namespace SIVA.Core.Files.Readers
 {
-    public class DiscordUser
-    {
-        public string Tag { get; internal set; }
-        public ulong Id { get; internal set; }
-        public ulong Xp { get; set; }
-        public uint Level => (uint)Math.Sqrt(Xp/ 50);
-        public int Money { get; set; }    
-    }
-
     public static class Users
     {
         private static readonly List<DiscordUser> users;

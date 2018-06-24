@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace SIVA.Core.Files
+namespace SIVA.Core.Files.Readers
 {
     public class Config
     {
