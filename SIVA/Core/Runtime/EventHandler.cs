@@ -23,7 +23,26 @@ namespace SIVA.Core.Runtime
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _service.Log += Program.Log;
             _client.MessageReceived += HandleMessageOrCommand;
+            _client.JoinedGuild += Guilds;
+            _client.UserJoined += Autorole;
+        }
 
+        public async Task Autorole(SocketGuildUser user)
+        {
+            var config = ServerConfig.GetOrCreate(user.Guild.Id);
+            if (!string.IsNullOrEmpty(config.Autorole))
+            {
+                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == config.Autorole);
+                await user.AddRoleAsync(targetRole);
+            }
+        }
+
+        public async Task Guilds(SocketGuild guild)
+        {
+            if (Config.conf.BlacklistedServerOwners.Contains(guild.OwnerId))
+            {
+                await guild.LeaveAsync();
+            }
         }
 
         public async Task HandleMessageOrCommand(SocketMessage s)

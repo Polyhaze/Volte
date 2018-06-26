@@ -36,6 +36,7 @@ namespace SIVA.Core.Files.Readers
             public string Streamer;
             public uint ErrorEmbedColour;
             public bool LogAllCommands;
+            public ulong[] BlacklistedServerOwners;
         }
     }
 }
