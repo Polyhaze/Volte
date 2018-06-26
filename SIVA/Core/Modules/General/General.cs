@@ -90,9 +90,9 @@ namespace SIVA.Core.Modules.General
             embed.AddField("Version", Bot.Internal.Utilities.GetLocaleMsg("VersionString"));
             embed.AddField("Author", $"<@{Program._client.CurrentUser.Id}>");
             embed.AddField("Language", "C# with Discord.Net");
-            embed.AddField("Server", "https://greem.xyz/SIVA");
+            embed.AddField("Server", "https://greem.xyz/discord");
             embed.AddField("Servers", Program._client.Guilds.Count);
-            embed.AddField("Invite Me", "https://bot.discord.io/SIVA");
+            embed.AddField("Invite Me", "https://greem.xyz/bot");
             embed.AddField("Ping", Program._client.Latency);
             embed.AddField("Client ID", Program._client.CurrentUser.Id);
             embed.AddField("Invite my Nadeko", "https://bot.discord.io/snadeko");
