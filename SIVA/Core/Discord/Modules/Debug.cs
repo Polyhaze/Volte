@@ -11,7 +11,7 @@ using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules
 {
-    public class ScarszDebug : SIVAModule
+    public class ScarszDebug : SIVACommand
     {
         internal static string CreateDebug(string config)
         {
@@ -63,7 +63,7 @@ namespace SIVA.Core.Discord.Modules
             await Context.Channel.SendMessageAsync("", false, 
                 Utils.CreateEmbed(
                     Context, 
-                    CreateConfigString(ServerConfig.GetOrCreate(Context.Guild.Id))
+                    CreateConfigString(ServerConfig.Get(Context.Guild))
                     )
                 );
         }
@@ -74,7 +74,7 @@ namespace SIVA.Core.Discord.Modules
             await Context.Channel.SendMessageAsync("",
                 false,
                 Utils.CreateEmbed(Context,
-                    $"{CreateDebug(CreateConfigString(ServerConfig.GetOrCreate(Context.Guild.Id)))}" +
+                    $"{CreateDebug(CreateConfigString(ServerConfig.Get(Context.Guild)))}" +
                     "\n\nTake this to the SIVA server for support. Join the server [here](https://greem.xyz/SIVA)."));
         }
 

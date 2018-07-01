@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using SIVA.Core.Discord;
 using SIVA.Core.Discord.Automod;
 using SIVA.Core.Files.Readers;
 
@@ -29,7 +30,7 @@ namespace SIVA.Core.Runtime
 
         public async Task Autorole(SocketGuildUser user)
         {
-            var config = ServerConfig.GetOrCreate(user.Guild.Id);
+            var config = ServerConfig.Get(user.Guild);
             if (!string.IsNullOrEmpty(config.Autorole))
             {
                 var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == config.Autorole);
@@ -52,7 +53,7 @@ namespace SIVA.Core.Runtime
             await Blacklist.CheckMessageForBlacklistedWords(s);
             await Antilink.CheckMessageForInvite(s);
             if (ctx.User.IsBot) return;
-            var config = ServerConfig.GetOrCreate(ctx.Guild.Id);
+            var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
             var prefix = config.CommandPrefix ?? Config.conf.CommandPrefix;
 

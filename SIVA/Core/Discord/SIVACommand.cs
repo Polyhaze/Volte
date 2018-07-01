@@ -3,5 +3,5 @@ using Discord.Commands;
 
 namespace SIVA.Core.Discord
 {
-    public abstract class SIVAModule : ModuleBase<SocketCommandContext> {}
+    public abstract class SIVACommand : ModuleBase<SocketCommandContext> {}
 }

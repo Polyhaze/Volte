@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord.WebSocket;
 using SIVA.Core.Files.Objects;
 using Newtonsoft.Json;
 using SIVA.Core.Runtime;
@@ -26,9 +27,9 @@ namespace SIVA.Core.Files.Readers
             }
         }
 
-        public static Server GetOrCreate(ulong id)
+        public static Server Get(SocketGuild guild)
         {
-            return Config.FirstOrDefault(x => x.ServerId == id) ?? Create(id);
+            return Config.FirstOrDefault(x => x.ServerId == guild.Id) ?? Create(guild.Id);
         }
 
         public static void Save()

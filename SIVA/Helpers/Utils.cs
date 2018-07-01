@@ -8,7 +8,7 @@ namespace SIVA.Helpers
     {
         public static Embed CreateEmbed(SocketCommandContext ctx, string content)
         {
-            var config = ServerConfig.GetOrCreate(ctx.Guild.Id);
+            var config = ServerConfig.Get(ctx.Guild);
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
                 .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))
