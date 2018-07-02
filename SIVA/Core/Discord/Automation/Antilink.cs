@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using SIVA.Core.Runtime;
 
-namespace SIVA.Core.Discord.Automod
+namespace SIVA.Core.Discord.Automation
 {
     public class Antilink
     {

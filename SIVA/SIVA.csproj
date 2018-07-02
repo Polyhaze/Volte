@@ -11,6 +11,5 @@
     <Folder Include="Core\Discord\Modules\Admin" />
     <Folder Include="Core\Discord\Modules\UserRewards" />
     <Folder Include="Core\Discord\Modules\Owner" />
-    <Folder Include="Core\Discord\Support" />
   </ItemGroup>
 </Project>
