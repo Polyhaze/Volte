@@ -8,9 +8,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Discord;
 using SIVA.Core.Discord.Automation;
+using SIVA.Core.Discord.Support;
 using SIVA.Core.Files.Readers;
 
-namespace SIVA.Core.Runtime
+namespace SIVA.Core.Discord
 {
     public class EventHandler
     {
@@ -26,6 +27,7 @@ namespace SIVA.Core.Runtime
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += Autorole;
+            _client.MessageReceived += SupportMessageListener.Check;
         }
 
         public async Task Autorole(SocketGuildUser user)
