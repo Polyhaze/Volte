@@ -13,7 +13,7 @@ namespace SIVA.Core.Discord.Automod
         {
             var msg = (SocketUserMessage)s;
             var author = (SocketGuildUser) msg.Author;
-            var ctx = new SocketCommandContext(Program.Client, msg);
+            var ctx = new SocketCommandContext(DiscordLogin.Client, msg);
             var config = ServerConfig.Get(ctx.Guild);
             if ((msg.Content.Contains("dis.gd/") 
                  || msg.Content.Contains("discord.gg/") 

@@ -19,10 +19,10 @@ namespace SIVA.Core.Runtime
 
         public async Task Init()
         {
-            _client = Program.Client;
+            _client = DiscordLogin.Client;
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
-            _service.Log += Program.Log;
+            _service.Log += DiscordLogin.Log;
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += Autorole;

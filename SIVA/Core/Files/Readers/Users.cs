@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using SIVA.Core.Discord;
 using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Files.Readers
@@ -49,7 +50,7 @@ namespace SIVA.Core.Files.Readers
         {
             var newUser = new DiscordUser
             {
-                Tag = $"{Program.Client.GetUser(id).Username}#{Program.Client.GetUser(id).Discriminator}",
+                Tag = $"{DiscordLogin.Client.GetUser(id).Username}#{DiscordLogin.Client.GetUser(id).Discriminator}",
                 Id = id,
                 Xp = 5,
                 Money = 0
