@@ -12,6 +12,7 @@ namespace SIVA.Core.Files.Objects
             SelfRoles = new List<string>();
             Blacklist = new List<string>();
             CustomCommands = new Dictionary<string, string>();
+            RandomRoles = new List<ulong>();
         }
 
         public ulong ServerId { get; set; }
@@ -44,6 +45,7 @@ namespace SIVA.Core.Files.Objects
         public List<ulong> AntilinkIgnoredChannels { get; set; }
         public List<string> SelfRoles { get; set; }
         public List<string> Blacklist { get; set; }
+        public List<ulong> RandomRoles { get; set; }
         public Dictionary<string, string> CustomCommands { get; set; }
 
         #endregion
