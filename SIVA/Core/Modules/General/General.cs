@@ -107,7 +107,7 @@ namespace SIVA.Core.Modules.General
         public async Task Suggest()
         {
             await ReplyAsync("<https://goo.gl/forms/i6pgYTSnDdMMNLZU2>");
-            await Helpers.SendMessage(Context, msg: "https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
+            // why is this here? await Helpers.SendMessage(Context, msg: "https://goo.gl/forms/i6pgYTSnDdMMNLZU2");
         }
     }
 }
