@@ -20,6 +20,7 @@ namespace SIVA.Core.Files.Objects
         public ulong GuildOwnerId { get; set; }
         public string SupportChannelName { get; set; }
         public ulong SupportChannelId { get; set; }
+        public ulong SupportCategoryId { get; set; }
         public string SupportRole { get; set; }
         public string Autorole { get; set; }
         public string CommandPrefix { get; set; }

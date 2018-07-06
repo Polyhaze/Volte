@@ -28,6 +28,7 @@ namespace SIVA.Core.Discord.Support
         {
             SocketRole supportRole = ctx.Guild.Roles.FirstOrDefault(r => r.Name == config.SupportRole);
             var channel = await ctx.Guild.CreateTextChannelAsync($"{config.SupportChannelName}-{ctx.User.Id}");
+            await channel.ModifyAsync(x => x.CategoryId = config.SupportCategoryId);
             
             await channel.AddPermissionOverwriteAsync(
                 ctx.User,
