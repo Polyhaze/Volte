@@ -38,14 +38,16 @@ namespace SIVA.Core.Discord.Support
                     sendMessages: PermValue.Allow,
                     addReactions: PermValue.Allow, 
                     sendTTSMessages: PermValue.Deny
-                    ));
+                    )
+                );
             await channel.AddPermissionOverwriteAsync(
                 ctx.Guild.EveryoneRole,
                 new 
                     OverwritePermissions(
                     readMessages: PermValue.Deny, 
                     sendMessages: PermValue.Deny
-                    ));
+                    )
+                );
             await channel.AddPermissionOverwriteAsync(
                 supportRole,
                 new 
@@ -54,7 +56,8 @@ namespace SIVA.Core.Discord.Support
                     sendMessages: PermValue.Allow,
                     addReactions: PermValue.Allow,
                     sendTTSMessages: PermValue.Deny
-                    ));
+                    )
+                );
             
             await TicketHandler.OnTicketCreation(ctx, channel, config);
 

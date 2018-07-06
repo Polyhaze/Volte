@@ -32,6 +32,7 @@ namespace SIVA.Core.Files.Readers
             public string Token;
             public string DblToken;
             public string CommandPrefix;
+            public ulong Owner;
             public string Game;
             public string Streamer;
             public uint ErrorEmbedColour;
