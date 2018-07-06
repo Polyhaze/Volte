@@ -9,7 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Discord\Modules\Admin" />
-    <Folder Include="Core\Discord\Modules\UserRewards" />
     <Folder Include="Core\Discord\Modules\Owner" />
   </ItemGroup>
 </Project>
