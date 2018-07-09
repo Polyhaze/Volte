@@ -13,24 +13,19 @@ namespace SIVA.Core.Discord.Modules
 {
     public class ScarszDebug : SIVACommand
     {
-        internal static string CreateDebug(string config)
+        private static string CreateDebug(string config)
         {
-            var files = new Dictionary<string, Dictionary<string, string>>
+            Dictionary<string, Dictionary<string, string>> files = new Dictionary<string, Dictionary<string, string>>
             {
                 {
-                    "1-Info.txt",
-                    new Dictionary<string, string>
+                    "1-Info.txt", new Dictionary<string, string>
                     {
-                        {
-                            "content",
-                            "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr\n\nSupport Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: http://code.greem.xyz/SIVA-Developers/SIVA"
-                        },
+                        {"content", "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nWebsite: https://scarsz.me\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr\n\nSupport Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: http://code.greem.xyz/SIVA-Developers/SIVA"},
                         {"description", "Thanks Scarsz for this amazing utility!"}
                     }
                 },
                 {
-                    "2-Server.conf",
-                    new Dictionary<string, string>
+                    "2-Server.conf", new Dictionary<string, string>
                     {
                         {"content", $"{config}"},
                         {"description", "Server config for debug purposes."}
@@ -43,14 +38,14 @@ namespace SIVA.Core.Discord.Modules
                 description = "Discord server settings for support.",
                 files
             };
-            var payloadJson = JsonConvert.SerializeObject(payload);
+            var jsonPayload = JsonConvert.SerializeObject(payload);
 
             var httpClient = new RestClient("https://debug.scarsz.me") {UserAgent = "SIVA/V2"};
             var req = new RestRequest("post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();
-            req.AddParameter("application/json", payloadJson, ParameterType.RequestBody);
+            req.AddParameter("application/json", jsonPayload, ParameterType.RequestBody);
             var resJson = httpClient.Execute(req);
             var res = (JObject) JsonConvert.DeserializeObject(resJson.Content);
             return res.GetValue("url").ToString().Replace("scarsz.me", "greem.xyz");
