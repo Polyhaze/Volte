@@ -11,3 +11,6 @@ SIVA/data/SIVA.db
 *.vspscc
 *.vssscc
 *.log
+SIVA/data/users.json
+SIVA/data/serverconfigs.json
+SIVA/data/config.json
