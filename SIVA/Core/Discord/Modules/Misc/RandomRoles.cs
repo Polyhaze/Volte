@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Other
+namespace SIVA.Core.Discord.Modules.Misc
 {
     public class RandomRoles : SIVACommand
     {

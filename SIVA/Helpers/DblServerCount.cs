@@ -9,6 +9,13 @@ namespace SIVA.Helpers
 {
     internal class DblServerCount
     {
+        
+        /// <summary>
+        ///     Send the bot's user count to DBL. (Discord Bot List)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>Response Content as System.String</returns>
+        
         internal static async Task<string> UpdateServerCount(DiscordSocketClient client)
         {
             var webclient = new HttpClient();
