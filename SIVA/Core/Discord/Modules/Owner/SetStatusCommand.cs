@@ -1,43 +1,12 @@
-﻿using System.Collections;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using SIVA.Core.Files.Readers;
-using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Owner
 {
-    public class SelfCommands : SIVACommand
+    public class SetStatusCommand : SIVACommand
     {
-        [Command("SetGame")]
-        public async Task SetGame([Remainder]string game)
-        {
-            if (!Utils.IsBotOwner(Context.User))
-            {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
-                return;
-            }
-            await DiscordLogin.Client.SetGameAsync(game);
-            await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set the bot's game to **{game}**."));
-        }
-
-        [Command("SetStream")]
-        public async Task SetStream(string twitchUrl, [Remainder] string streamName)
-        {
-            if (!Utils.IsBotOwner(Context.User))
-            {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
-                return;
-            }
-            var twitchStreamer = twitchUrl.Split(".tv/").ToList().Last();
-            await DiscordLogin.Client.SetGameAsync(streamName, twitchUrl, ActivityType.Streaming);
-            await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
-                    $"Set the bot's stream to **{streamName}**, and the twitch URL to [{twitchStreamer}]({twitchUrl})."));
-        }
-
         [Command("SetStatus")]
         public async Task SetStatus([Remainder]string status)
         {

@@ -1,30 +1,12 @@
-﻿using System.Linq;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
+using System.Linq;
+using Discord.Commands;
 
 namespace SIVA.Helpers
 {
-    public static class Utils
+    public class UserUtils
     {
-        /// <summary>
-        ///     Creates an embed.
-        /// </summary>
-        /// <param name="ctx">So we can set the Author and Embed Colour of the embed.</param>
-        /// <param name="content">Embed content.</param>
-        /// <returns>Built EmbedBuilder</returns>
-        
-        public static Embed CreateEmbed(SocketCommandContext ctx, string content)
-        {
-            var config = ServerConfig.Get(ctx.Guild);
-            return new EmbedBuilder()
-                .WithAuthor(ctx.Message.Author)
-                .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))
-                .WithDescription(content)
-                .Build();
-        }
-
         /// <summary>
         ///     Checks if the user given is the bot owner.
         /// </summary>
@@ -43,7 +25,7 @@ namespace SIVA.Helpers
         /// <param name="role"></param>
         /// <returns></returns>
         
-        public static bool UserHasRole(SocketGuildUser user, SocketRole role)
+        public static bool HasRole(SocketGuildUser user, SocketRole role)
         {
             return user.Roles.Contains(role);
         }
@@ -55,9 +37,16 @@ namespace SIVA.Helpers
         /// <param name="roleId"></param>
         /// <returns></returns>
         
-        public static bool UserHasRole(SocketGuildUser user, ulong roleId)
+        public static bool HasRole(SocketGuildUser user, ulong roleId)
         {
             return user.Roles.Contains(user.Guild.Roles.First(r => r.Id == roleId));
+        }
+
+        public static bool IsAdmin(SocketCommandContext ctx)
+        {
+            var config = ServerConfig.Get(ctx.Guild);
+            var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
+            return adminRole != null && ((SocketGuildUser)ctx.User).Roles.Contains(adminRole);
         }
     }
 }

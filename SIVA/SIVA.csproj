@@ -8,6 +8,6 @@
     <PackageReference Include="RestSharp" Version="106.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Discord\Modules\Admin" />
+    <Folder Include="Core\Discord\Modules\Admin\Configuration" />
   </ItemGroup>
 </Project>
