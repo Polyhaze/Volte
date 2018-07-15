@@ -2,11 +2,11 @@
 {
     public static class Version
     {
-        private static int Major = 2;
-        private static int Minor = 0;
-        private static int Patch = 0;
-        private static int Hotfix = 0;
-        private static string ReleaseType = "beta";
+        private static readonly int Major = 2;
+        private static readonly int Minor = 0;
+        private static readonly int Patch = 0;
+        private static readonly int Hotfix = 0;
+        private static readonly ReleaseType ReleaseType = ReleaseType.Development;
 
         public static string GetFullVersion()
         {
@@ -33,9 +33,18 @@
             return Hotfix;
         }
 
-        public static string GetReleaseType()
+        public static ReleaseType GetReleaseType()
         {
             return ReleaseType;
         }
+    }
+
+    public enum ReleaseType
+    {
+        Development,
+        Alpha,
+        Beta,
+        Prerelease,
+        Release
     }
 }
