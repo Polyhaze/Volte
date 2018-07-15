@@ -79,18 +79,19 @@ namespace SIVA.Core.Discord
 
             var argPos = 0;
 
-            var msgStrip = ctx.Message.Content.Replace(prefix, string.Empty);
-
-            foreach (var command in config.CustomCommands)
-            {
-                if (msg.HasStringPrefix(prefix + command.Key, ref argPos))
-                {
-                    await ctx.Channel.SendMessageAsync(command.Value);
-                }
-            }
+            var msgStrip = msg.Content.Replace(prefix, string.Empty);
+            
 
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
+                if (config.CustomCommands.ContainsKey(msgStrip))
+                {
+                    await ctx.Channel.SendMessageAsync(
+                        config.CustomCommands.FirstOrDefault(c => c.Key.ToLower() == msgStrip.ToLower()).Value
+                    );
+                
+                }
+                
                 var result = await _service.ExecuteAsync(ctx, argPos);
                 
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
