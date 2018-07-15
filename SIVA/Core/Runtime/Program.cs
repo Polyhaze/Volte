@@ -1,6 +1,5 @@
 ﻿using System;
 using Discord;
-using SIVA.Core.Discord;
 
 namespace SIVA.Core.Runtime
 {
@@ -12,7 +11,7 @@ namespace SIVA.Core.Runtime
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Currently running SIVA Version {Version.GetFullVersion()}.");
-            DiscordLogin.LoginAsync().GetAwaiter().GetResult();
+            new Discord.SIVA();
         }
     }
 }
