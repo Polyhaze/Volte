@@ -28,6 +28,16 @@ namespace SIVA.Core.Discord
             _client.JoinedGuild += Guilds;
             _client.UserJoined += Autorole;
             _client.MessageReceived += SupportMessageListener.Check;
+            _client.Ready += OnReady;
+        }
+
+        public async Task OnReady()
+        {
+            var dbl = DiscordLogin.Client.GetGuild(264445053596991498);
+            if (dbl == null || Config.conf.Owner == 168548441939509248) return;
+            await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
+                $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.conf.Owner}>.");
+            await dbl.LeaveAsync();
         }
 
         public async Task Autorole(SocketGuildUser user)
