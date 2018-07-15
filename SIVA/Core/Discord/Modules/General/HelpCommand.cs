@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using SIVA.Helpers;
@@ -10,8 +13,12 @@ namespace SIVA.Core.Discord.Modules.General
         [Command("Help"), Alias("H")]
         public async Task Help()
         {
-            var embed = Utils.CreateEmbed(Context,
-                "Use [this link](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) to invite the bot into your server.  \n\nJoin our [Support Server](https://discord.gg/prR9Yjq)!  \n\nDeveloper: <@168548441939509248> \n\nFull command [documentation](http://code.greem.xyz/SIVA-Developers/SIVA/wikis/home). \n\n**Commands do not work in DM with the bot.**");
+
+            var embed = Utils.CreateEmbed(Context, "Use [this link](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) to invite the bot into your server.\n" +
+                                                   "Join our [Support Server](https://discord.gg/prR9Yjq)!\n" +
+                                                   "Developer: **Greem#1337**\n" +
+                                                   "Full command [documentation](https://greemdev.atlassian.net/wiki/spaces/SIVA/overview)\n" +
+                                                   "**Commands do NOT work in Private Messages.**");
 
             await Context.Message.AddReactionAsync(new Emoji("☑"));
 

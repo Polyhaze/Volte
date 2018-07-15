@@ -13,7 +13,7 @@ using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord
 {
-    public class EventHandler
+    public class SIVAHandler
     {
         private DiscordSocketClient _client;
         private CommandService _service;

@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord
     public class DiscordLogin
     {
         public static DiscordSocketClient Client;
-        public static EventHandler Handler = new EventHandler();
+        private static readonly SIVAHandler Handler = new SIVAHandler();
         
         public static async Task LoginAsync()
         {
