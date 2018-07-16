@@ -5,6 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Files.Objects;
 using SIVA.Core.Files.Readers;
+using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Support
 {
@@ -26,8 +27,33 @@ namespace SIVA.Core.Discord.Support
 
         public static async Task CreateSupportChannel(SocketCommandContext ctx, Server config)
         {
-            SocketRole supportRole = ctx.Guild.Roles.FirstOrDefault(r => r.Name == config.SupportRole);
+            SocketRole supportRole = ctx.Guild.Roles.FirstOrDefault(r => r.Name.ToLower() == config.SupportRole.ToLower());
             var channel = await ctx.Guild.CreateTextChannelAsync($"{config.SupportChannelName}-{ctx.User.Id}");
+            if (supportRole == null)
+            {
+                await SIVA.Instance.GetUser(ctx.Guild.OwnerId).GetOrCreateDMChannelAsync().GetAwaiter().GetResult()
+                    .SendMessageAsync("", false,
+                        Utils.CreateEmbed(ctx,
+                            "**Hey there!**\n\n" +
+                            "Your support system configuration is messed up. " +
+                            "The role you set to manage Support Tickets doesn't exist. " +
+                            $"To fix this, either create another role named **{config.SupportRole}**, " +
+                            $"or run the command `{config.CommandPrefix}supportrole RoleNameHere`. " +
+                            "Until you do this, only the ticket creator and admins can see the ticket."));
+            }
+            else
+            {
+                await channel.AddPermissionOverwriteAsync(
+                    supportRole,
+                    new 
+                        OverwritePermissions(
+                            readMessages: PermValue.Allow,
+                            sendMessages: PermValue.Allow,
+                            addReactions: PermValue.Allow,
+                            sendTTSMessages: PermValue.Deny
+                        )
+                );
+            }
             await channel.ModifyAsync(x => x.CategoryId = config.SupportCategoryId);
             
             await channel.AddPermissionOverwriteAsync(
@@ -46,16 +72,6 @@ namespace SIVA.Core.Discord.Support
                     OverwritePermissions(
                     readMessages: PermValue.Deny, 
                     sendMessages: PermValue.Deny
-                    )
-                );
-            await channel.AddPermissionOverwriteAsync(
-                supportRole,
-                new 
-                    OverwritePermissions(
-                    readMessages: PermValue.Allow,
-                    sendMessages: PermValue.Allow,
-                    addReactions: PermValue.Allow,
-                    sendTTSMessages: PermValue.Deny
                     )
                 );
             

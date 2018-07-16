@@ -19,10 +19,16 @@ namespace SIVA.Core.Discord
 
         public async Task Init()
         {
+            var config = new CommandServiceConfig
+            {
+                IgnoreExtraArgs = true,
+                DefaultRunMode = RunMode.Async,
+                CaseSensitiveCommands = false,
+                LogLevel = LogSeverity.Verbose
+            };
             _client = DiscordLogin.Client;
-            _service = new CommandService();
+            _service = new CommandService(config);
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
-            _service.Log += DiscordLogin.Log;
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += Autorole;
@@ -66,7 +72,7 @@ namespace SIVA.Core.Discord
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
-            var prefix = config.CommandPrefix ?? Config.GetCommandPrefix();
+            var prefix = config.CommandPrefix == string.Empty ? Config.GetCommandPrefix() : config.CommandPrefix;
 
             if (config.EmbedColourR == 0 && config.EmbedColourG == 0 && config.EmbedColourB == 0)
             {
@@ -76,22 +82,15 @@ namespace SIVA.Core.Discord
                 ServerConfig.Save();
             }
 
-            var argPos = 0; //i'd get rid of this but because of Discord.Net being finnicky i can't.
+            int argPos = 0; //i'd get rid of this but because of Discord.Net being finnicky i can't.
 
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             
 
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                if (config.CustomCommands.ContainsKey(msgStrip))
-                {
-                    await ctx.Channel.SendMessageAsync(
-                        config.CustomCommands.FirstOrDefault(c => c.Key.ToLower() == msgStrip.ToLower()).Value
-                    );
                 
-                }
-                
-                var result = await _service.ExecuteAsync(ctx, 0);
+                var result = await _service.ExecuteAsync(ctx, argPos);
                 
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
                 {
@@ -169,12 +168,20 @@ namespace SIVA.Core.Discord
                 catch (FileNotFoundException)
                 {
                     Console.WriteLine("The Commands.log file wasn't found, creating it now.");
-                    File.WriteAllText("Commands.log", "");
+                    File.Create("Commands.log");
                 }
                 
                 if (config.DeleteMessageOnCommand)
                 {
                     await ctx.Message.DeleteAsync();
+                }
+                
+                if (config.CustomCommands.ContainsKey(msgStrip))
+                {
+                    await ctx.Channel.SendMessageAsync(
+                        config.CustomCommands.FirstOrDefault(c => c.Key.ToLower() == msgStrip.ToLower()).Value
+                    );
+                
                 }
             }
             else
