@@ -17,6 +17,13 @@ namespace SIVA.Helpers
         {
             return user.Id == Config.GetOwner();
         }
+        
+        /// <summary>
+        ///     Checks if a SocketUser is the owner of the given SocketGuild.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="guild"></param>
+        /// <returns>true; if the SocketUser is the owner of the SocketGuild</returns>
 
         public static bool IsServerOwner(SocketUser user, SocketGuild guild)
         {

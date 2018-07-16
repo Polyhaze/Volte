@@ -16,7 +16,6 @@ namespace SIVA.Core.Files.Objects
         }
 
         public ulong ServerId { get; set; }
-        public bool CanCloseOwnTicket { get; set; }
         public ulong GuildOwnerId { get; set; }
         public string SupportChannelName { get; set; }
         public ulong SupportChannelId { get; set; }
@@ -39,10 +38,7 @@ namespace SIVA.Core.Files.Objects
         public bool VerifiedGuild { get; set; }
         public ulong ModRole { get; set; }
         public ulong AdminRole { get; set; }
-        public bool IsTodEnabled { get; set; }
         public bool DeleteMessageOnCommand { get; set; }
-        public ulong ServerLoggingChannel { get; set; }
-        public bool IsServerLoggingEnabled { get; set; }
         public List<ulong> AntilinkIgnoredChannels { get; set; }
         public List<string> SelfRoles { get; set; }
         public List<string> Blacklist { get; set; }

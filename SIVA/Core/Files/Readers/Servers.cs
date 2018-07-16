@@ -48,7 +48,6 @@ namespace SIVA.Core.Files.Readers
                 Autorole = string.Empty,
                 SupportChannelName = string.Empty,
                 SupportRole = "Support",
-                CanCloseOwnTicket = true,
                 SupportChannelId = ulong.MinValue,
                 CommandPrefix = "$",
                 WelcomeChannel = ulong.MinValue,

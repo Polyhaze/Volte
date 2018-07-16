@@ -105,8 +105,8 @@ namespace SIVA.Core.Discord.Modules
                                $"    CustomCommands: {customCommands}\n" +
                                "\n" +
                                "Support:\n" +
-                               $"    CanCloseOwnTicket: {config.CanCloseOwnTicket}\n" +
                                $"    SupportChannelName: {config.SupportChannelName}\n" +
+                               $"    SupportCategoryId: {config.SupportCategoryId}" +
                                $"    SupportChannelId: {config.SupportChannelId}\n" +
                                $"    SupportRole: {config.SupportRole}\n" +
                                "\n" +
@@ -121,9 +121,6 @@ namespace SIVA.Core.Discord.Modules
                                $"    WelcomeChannel: {config.WelcomeChannel}\n" +
                                "\n" +
                                "Miscellaneous:\n" +
-                               $"    TruthOrDareEnabled: {config.IsTodEnabled}\n" +
-                               $"    IsServerLoggingEnabled: {config.IsServerLoggingEnabled}\n" +
-                               $"    ServerLoggingChannel: {config.ServerLoggingChannel}\n" +
                                $"    ModeratorRole: {config.ModRole}\n" +
                                $"    AdminRole: {config.AdminRole}\n" +
                                $"    CommandPrefix {config.CommandPrefix}\n" +
