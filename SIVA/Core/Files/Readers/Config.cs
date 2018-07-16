@@ -5,7 +5,7 @@ namespace SIVA.Core.Files.Readers
 {
     public class Config
     {
-        public static BotConfig conf;
+        private static readonly BotConfig Bot;
         private const string ConfigFile = "data/config.json";
 
         static Config()
@@ -15,19 +15,63 @@ namespace SIVA.Core.Files.Readers
 
             if (!File.Exists(ConfigFile))
             {
-                conf = new BotConfig();
-                var json = JsonConvert.SerializeObject(conf, Formatting.Indented);
+                Bot = new BotConfig();
+                var json = JsonConvert.SerializeObject(Bot, Formatting.Indented);
                 File.WriteAllText(ConfigFile, json);
             }
             else
             {
                 var json = File.ReadAllText(ConfigFile);
-                conf = JsonConvert.DeserializeObject<BotConfig>(json);
+                Bot = JsonConvert.DeserializeObject<BotConfig>(json);
             }
         }
+
+        public static string GetToken()
+        {
+            return Bot.Token;
+        }
+
+        public static string GetDblToken()
+        {
+            return Bot.DblToken;
+        }
+
+        public static string GetCommandPrefix()
+        {
+            return Bot.CommandPrefix;
+        }
+
+        public static ulong GetOwner()
+        {
+            return Bot.Owner;
+        }
+
+        public static string GetGame()
+        {
+            return Bot.Game;
+        }
+
+        public static string GetStreamer()
+        {
+            return Bot.Streamer;
+        }
+
+        public static uint GetErrorColour()
+        {
+            return Bot.ErrorEmbedColour;
+        }
+
+        public static bool GetLogAllCommands()
+        {
+            return Bot.LogAllCommands;
+        }
+
+        public static ulong[] GetBlacklistedOwners()
+        {
+            return Bot.BlacklistedServerOwners;
+        }
         
-        
-        public struct BotConfig
+        private struct BotConfig
         {
             public string Token;
             public string DblToken;

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
-using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord
 {
@@ -15,9 +14,9 @@ namespace SIVA.Core.Discord
         public static async Task LoginAsync()
         {
             Client = new DiscordSocketClient(new DiscordSocketConfig {LogLevel = LogSeverity.Verbose});
-            await Client.LoginAsync(TokenType.Bot, Config.conf.Token);
+            await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
-            await Client.SetGameAsync(Config.conf.Game, $"https://twitch.tv/{Config.conf.Streamer}", ActivityType.Streaming);
+            await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}", ActivityType.Streaming);
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
             Client.Log += Log;

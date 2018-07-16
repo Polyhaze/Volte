@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using SIVA.Core.Discord;
 using SIVA.Core.Discord.Automation;
 using SIVA.Core.Discord.Support;
 using SIVA.Core.Files.Readers;
@@ -34,9 +33,9 @@ namespace SIVA.Core.Discord
         public async Task OnReady()
         {
             var dbl = DiscordLogin.Client.GetGuild(264445053596991498);
-            if (dbl == null || Config.conf.Owner == 168548441939509248) return;
+            if (dbl == null || Config.GetOwner() == 168548441939509248) return;
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
-                $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.conf.Owner}>.");
+                $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.GetOwner()}>.");
             await dbl.LeaveAsync();
         }
 
@@ -52,7 +51,7 @@ namespace SIVA.Core.Discord
 
         public async Task Guilds(SocketGuild guild)
         {
-            if (Config.conf.BlacklistedServerOwners.Contains(guild.OwnerId))
+            if (Config.GetBlacklistedOwners().Contains(guild.OwnerId))
             {
                 await guild.LeaveAsync();
             }
@@ -67,7 +66,7 @@ namespace SIVA.Core.Discord
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
-            var prefix = config.CommandPrefix ?? Config.conf.CommandPrefix;
+            var prefix = config.CommandPrefix ?? Config.GetCommandPrefix();
 
             if (config.EmbedColourR == 0 && config.EmbedColourG == 0 && config.EmbedColourB == 0)
             {
@@ -77,7 +76,7 @@ namespace SIVA.Core.Discord
                 ServerConfig.Save();
             }
 
-            var argPos = 0;
+            var argPos = 0; //i'd get rid of this but because of Discord.Net being finnicky i can't.
 
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             
@@ -92,7 +91,7 @@ namespace SIVA.Core.Discord
                 
                 }
                 
-                var result = await _service.ExecuteAsync(ctx, argPos);
+                var result = await _service.ExecuteAsync(ctx, 0);
                 
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
                 {
@@ -102,17 +101,6 @@ namespace SIVA.Core.Discord
                         case "The server responded with error 403: Forbidden":
                             reason =
                                 "I'm not allowed to do that. Either I don't have permission or the requested user is higher than me in the role heirarchy.";
-                            break;
-                        case "Sequence contains no elements":
-                            try
-                            {
-                                reason = $"{msg.MentionedUsers.FirstOrDefault().Mention} doesn't have any.";
-                            }
-                            catch (NullReferenceException)
-                            {
-                                reason = "List has no elements.";
-                            }
-
                             break;
                         case "Failed to parse Boolean":
                             reason = "You can only input `true` or `false` for this command.";
@@ -132,7 +120,7 @@ namespace SIVA.Core.Discord
                         embed.AddField("Weird error?",
                             "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
                         embed.WithAuthor(ctx.User);
-                        embed.WithColor(Config.conf.ErrorEmbedColour);
+                        embed.WithColor(Config.GetErrorColour());
                         await ctx.Channel.SendMessageAsync("", false, embed.Build());
                     }
                     else
@@ -143,14 +131,14 @@ namespace SIVA.Core.Discord
                         embed.AddField("Weird error?",
                             "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
                         embed.WithAuthor(ctx.User);
-                        embed.WithColor(Config.conf.ErrorEmbedColour);
+                        embed.WithColor(Config.GetErrorColour());
                         await ctx.Channel.SendMessageAsync("", false, embed.Build());
                     }
                 }
 
                 if (result.ErrorReason == "Unknown command.") return;
 
-                if (Config.conf.LogAllCommands)
+                if (Config.GetLogAllCommands())
                 {
                     Console.WriteLine($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
                     Console.WriteLine($"--|     -Command Issued: {msg.Content}");

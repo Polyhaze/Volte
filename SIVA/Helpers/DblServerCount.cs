@@ -20,7 +20,7 @@ namespace SIVA.Helpers
         {
             var webclient = new HttpClient();
             var content = new StringContent($"{{ \"server_count\": {client.Guilds.Count} }}", Encoding.UTF8, "application/json");
-            webclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Config.conf.DblToken);
+            webclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Config.GetDblToken());
             var resp = await webclient.PostAsync($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats", content);
             return resp.Content.ReadAsStringAsync().ToString();
         }

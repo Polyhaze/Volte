@@ -15,7 +15,12 @@ namespace SIVA.Helpers
         
         public static bool IsBotOwner(SocketUser user)
         {
-            return user.Id == Config.conf.Owner;
+            return user.Id == Config.GetOwner();
+        }
+
+        public static bool IsServerOwner(SocketUser user, SocketGuild guild)
+        {
+            return guild.OwnerId.Equals(user.Id);
         }
 
         /// <summary>

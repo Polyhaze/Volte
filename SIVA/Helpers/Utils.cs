@@ -33,7 +33,7 @@ namespace SIVA.Helpers
         
         public static bool IsBotOwner(SocketUser user)
         {
-            return user.Id == Config.conf.Owner;
+            return user.Id == Config.GetOwner();
         }
 
         /// <summary>
