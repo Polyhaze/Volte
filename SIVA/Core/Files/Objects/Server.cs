@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SIVA.Core.Files.Objects
 {
-    public class Server
+    public class Server : Object
     {
         #region JsonValueDeclaration
 
@@ -19,7 +20,7 @@ namespace SIVA.Core.Files.Objects
         public ulong GuildOwnerId { get; set; }
         public string SupportChannelName { get; set; }
         public ulong SupportChannelId { get; set; }
-        public ulong SupportCategoryId { get; set; }
+        public ulong? SupportCategoryId { get; set; }
         public string SupportRole { get; set; }
         public string Autorole { get; set; }
         public string CommandPrefix { get; set; }

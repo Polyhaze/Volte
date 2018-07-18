@@ -28,23 +28,50 @@ namespace SIVA.Core.Files.Readers
             }
         }
 
+        /// <summary>
+        ///     Checks if a config with the given guild id exists.
+        /// </summary>
+        /// <param name="guild"></param>
+        /// <returns>System.Boolean</returns>
+        
+        public static bool Exists(SocketGuild guild)
+        {
+            return Config.Any(c => c.ServerId == guild.Id);
+        }
+        
+        /// <summary>
+        ///     Gets a server config, if it exists. If it doesn't, then it creates one.
+        /// </summary>
+        /// <param name="guild"></param>
+        /// <returns>SIVA.Core.Files.Objects.Server</returns>
+
         public static Server Get(SocketGuild guild)
         {
-            return Config.FirstOrDefault(x => x.ServerId == guild.Id) ?? Create(guild.Id);
+            return Config.FirstOrDefault(x => x.ServerId == guild.Id) ?? Create(guild);
         }
+        
+        /// <summary>
+        ///     Write all the config changes to the disk.
+        /// </summary>
 
         public static void Save()
         {
             var json = JsonConvert.SerializeObject(Config, Formatting.Indented);
             File.WriteAllText(FilePath, json);
         }
+        
+        /// <summary>
+        ///     Creates a config with the given Discord.WebSocket.SocketGuild.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>SIVA.Core.FIles.Objects.Server</returns>
 
-        public static Server Create(ulong id)
+        public static Server Create(SocketGuild guild)
         {
             var newConf = new Server
             {
-                ServerId = id,
-                GuildOwnerId = DiscordLogin.Client.GetGuild(id).OwnerId,
+                ServerId = guild.Id,
+                GuildOwnerId = Discord.SIVA.Instance.GetGuild(guild.Id).OwnerId,
                 Autorole = string.Empty,
                 SupportChannelName = string.Empty,
                 SupportRole = "Support",

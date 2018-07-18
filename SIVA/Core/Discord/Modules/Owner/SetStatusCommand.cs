@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using SIVA.Core.Files.Readers;
+using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Owner
 {
@@ -10,6 +11,12 @@ namespace SIVA.Core.Discord.Modules.Owner
         [Command("SetStatus")]
         public async Task SetStatus([Remainder]string status)
         {
+            if (!UserUtils.IsBotOwner(Context.User))
+            {
+                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                return;
+            }
+            
             var embed = new EmbedBuilder();
             var config = ServerConfig.Get(Context.Guild);
             embed.WithAuthor(Context.User);

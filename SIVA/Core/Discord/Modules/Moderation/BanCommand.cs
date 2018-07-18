@@ -14,7 +14,7 @@ namespace SIVA.Core.Discord.Modules.Moderation
         public async Task Ban(SocketGuildUser user, [Remainder]string reason = "Banned by a Moderator.")
         {
             var config = ServerConfig.Get(Context.Guild);
-            if (!Utils.UserHasRole(user, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole)))
+            if (!UserUtils.HasRole(user, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole)))
             {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;

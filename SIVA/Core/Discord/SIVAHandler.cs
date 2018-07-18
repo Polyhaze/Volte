@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using SIVA.Core.Discord.Automation;
 using SIVA.Core.Discord.Support;
 using SIVA.Core.Files.Readers;
@@ -16,6 +17,13 @@ namespace SIVA.Core.Discord
     {
         private DiscordSocketClient _client;
         private CommandService _service;
+
+        public IServiceProvider BuildServiceProvider() => new ServiceCollection()
+            .AddSingleton(_client)
+            .AddSingleton(_service)
+            .AddSingleton<SIVAHandler>()
+            .BuildServiceProvider();
+        
 
         public async Task Init()
         {
@@ -28,15 +36,16 @@ namespace SIVA.Core.Discord
             };
             _client = DiscordLogin.Client;
             _service = new CommandService(config);
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += Autorole;
-            _client.MessageReceived += SupportMessageListener.Check;
+            _client.MessageReceived += Support.System.SupportSystem;
             _client.Ready += OnReady;
+            _client.ReactionAdded += ReactionHandler.CheckMessageForEmoji;
         }
 
-        public async Task OnReady()
+        private async Task OnReady()
         {
             var dbl = DiscordLogin.Client.GetGuild(264445053596991498);
             if (dbl == null || Config.GetOwner() == 168548441939509248) return;
@@ -69,6 +78,7 @@ namespace SIVA.Core.Discord
             var ctx = new SocketCommandContext(_client, msg);
             await Blacklist.CheckMessageForBlacklistedWords(s);
             await Antilink.CheckMessageForInvite(s);
+            await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
@@ -90,7 +100,7 @@ namespace SIVA.Core.Discord
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 
-                var result = await _service.ExecuteAsync(ctx, argPos);
+                var result = await _service.ExecuteAsync(ctx, argPos, BuildServiceProvider());
                 
                 if (result.IsSuccess == false && result.ErrorReason != "Unknown command.")
                 {

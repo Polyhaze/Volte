@@ -2,7 +2,7 @@
 
 namespace SIVA.Core.Files.Objects
 {
-    public class DiscordUser
+    public class DiscordUser : Object
     {
         public string Tag { get; internal set; }
         public ulong Id { get; internal set; }

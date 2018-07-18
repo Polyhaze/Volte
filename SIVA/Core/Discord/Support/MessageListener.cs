@@ -16,8 +16,29 @@ namespace SIVA.Core.Discord.Support
             var msg = (SocketUserMessage)s;
             var ctx = new SocketCommandContext(DiscordLogin.Client, msg);
             var config = ServerConfig.Get(ctx.Guild);
+            
+            if (msg.Content.ToLower() == "setupsupport" && msg.Author.Id != SIVA.Instance.CurrentUser.Id)
+            {
+                if (!UserUtils.IsAdmin(ctx))
+                {
+                    await ctx.Message.AddReactionAsync(new Emoji("❌"));
+                    return;
+                }
+                
+                config.SupportChannelName = ctx.Channel.Name;
+                config.SupportChannelId = ctx.Channel.Id;
+                config.SupportCategoryId = ((INestedChannel)ctx.Channel).CategoryId; //no way I can get the category, automatically, without casting. kinda annoying
+                ServerConfig.Save();
 
-            if (ctx.Channel.Name.Equals(config.SupportChannelName))
+                await ctx.Channel.SendMessageAsync("", false,
+                    Utils.CreateEmbed(ctx,
+                        "To create a support ticket, send a message into this channel. Support tickets will be placed under the " +
+                        $"**{SIVA.Instance.GetGuild(ctx.Guild.Id).GetTextChannel(ctx.Channel.Id).Category.Name}** " +
+                        "channel category.")).ConfigureAwait(false);
+                return;
+            }
+            
+            if (ctx.Channel.Name.Equals(config.SupportChannelName) && msg.Author.Id != SIVA.Instance.CurrentUser.Id)
             {
                 await CreateSupportChannel(ctx, config);
                 await msg.DeleteAsync();
@@ -47,7 +68,7 @@ namespace SIVA.Core.Discord.Support
                     supportRole,
                     new 
                         OverwritePermissions(
-                            readMessages: PermValue.Allow,
+                            viewChannel: PermValue.Allow,
                             sendMessages: PermValue.Allow,
                             addReactions: PermValue.Allow,
                             sendTTSMessages: PermValue.Deny
@@ -60,7 +81,7 @@ namespace SIVA.Core.Discord.Support
                 ctx.User,
                 new 
                     OverwritePermissions(
-                    readMessages: PermValue.Allow, 
+                    viewChannel: PermValue.Allow, 
                     sendMessages: PermValue.Allow,
                     addReactions: PermValue.Allow, 
                     sendTTSMessages: PermValue.Deny
@@ -70,7 +91,7 @@ namespace SIVA.Core.Discord.Support
                 ctx.Guild.EveryoneRole,
                 new 
                     OverwritePermissions(
-                    readMessages: PermValue.Deny, 
+                    viewChannel: PermValue.Deny, 
                     sendMessages: PermValue.Deny
                     )
                 );

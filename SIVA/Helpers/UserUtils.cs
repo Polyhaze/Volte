@@ -11,7 +11,7 @@ namespace SIVA.Helpers
         ///     Checks if the user given is the bot owner.
         /// </summary>
         /// <param name="user">User to check.</param>
-        /// <returns>true; if the user is the bot owner.</returns>
+        /// <returns>System.Boolean</returns>
         
         public static bool IsBotOwner(SocketUser user)
         {
@@ -23,7 +23,7 @@ namespace SIVA.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <param name="guild"></param>
-        /// <returns>true; if the SocketUser is the owner of the SocketGuild</returns>
+        /// <returns>System.Boolean</returns>
 
         public static bool IsServerOwner(SocketUser user, SocketGuild guild)
         {
@@ -35,7 +35,7 @@ namespace SIVA.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <param name="role"></param>
-        /// <returns></returns>
+        /// <returns>System.Boolean</returns>
         
         public static bool HasRole(SocketGuildUser user, SocketRole role)
         {
@@ -47,12 +47,19 @@ namespace SIVA.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <param name="roleId"></param>
-        /// <returns></returns>
+        /// <returns>System.Boolean</returns>
         
         public static bool HasRole(SocketGuildUser user, ulong roleId)
         {
             return user.Roles.Contains(user.Guild.Roles.First(r => r.Id == roleId));
         }
+        
+        /// <summary>
+        ///     Checks if the user is an admin in the given context.
+        ///     If a server owner has not set their admin role, this will always return true.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <returns>System.Boolean</returns>
 
         public static bool IsAdmin(SocketCommandContext ctx)
         {
