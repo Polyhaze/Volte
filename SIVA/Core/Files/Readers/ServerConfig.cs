@@ -5,8 +5,7 @@ using System.Linq;
 using Discord.WebSocket;
 using SIVA.Core.Files.Objects;
 using Newtonsoft.Json;
-using SIVA.Core.Discord;
-using SIVA.Core.Runtime;
+using static SIVA.Core.Discord.SIVA;
 
 namespace SIVA.Core.Files.Readers
 {
@@ -71,7 +70,7 @@ namespace SIVA.Core.Files.Readers
             var newConf = new Server
             {
                 ServerId = guild.Id,
-                GuildOwnerId = Discord.SIVA.Instance.GetGuild(guild.Id).OwnerId,
+                GuildOwnerId = GetInstance.GetGuild(guild.Id).OwnerId,
                 Autorole = string.Empty,
                 SupportChannelName = string.Empty,
                 SupportRole = "Support",

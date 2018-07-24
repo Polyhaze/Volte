@@ -39,8 +39,9 @@ namespace SIVA.Core.Discord
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
-            _client.UserJoined += Autorole;
-            _client.MessageReceived += Support.System.SupportSystem;
+            _client.UserJoined += Welcome.Join;
+            _client.UserLeft += Welcome.Leave;
+            _client.UserJoined += Autorole.Apply;
             _client.Ready += OnReady;
             _client.ReactionAdded += ReactionHandler.CheckMessageForEmoji;
         }
@@ -52,16 +53,6 @@ namespace SIVA.Core.Discord
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
                 $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.GetOwner()}>.");
             await dbl.LeaveAsync();
-        }
-
-        public async Task Autorole(SocketGuildUser user)
-        {
-            var config = ServerConfig.Get(user.Guild);
-            if (!string.IsNullOrEmpty(config.Autorole))
-            {
-                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name == config.Autorole);
-                await user.AddRoleAsync(targetRole);
-            }
         }
 
         public async Task Guilds(SocketGuild guild)

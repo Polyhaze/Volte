@@ -27,7 +27,7 @@ namespace SIVA.Core.Discord.Support
                 var embed = new EmbedBuilder();
                 embed.WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB);
                 embed.WithDescription("To create a support ticket, send a message into this channel. Support tickets will be placed under the " +
-                                      $"**{SIVA.Instance.GetGuild(context.Guild.Id).GetTextChannel(context.Channel.Id).Category.Name}** " +
+                                      $"**{SIVA.GetInstance.GetGuild(context.Guild.Id).GetTextChannel(context.Channel.Id).Category.Name}** " +
                                       "channel category.");
                 embed.WithAuthor(context.Guild.Owner);
                 await context.Channel.SendMessageAsync("", false, embed.Build());
@@ -97,7 +97,7 @@ namespace SIVA.Core.Discord.Support
             var config = ServerConfig.Get(((SocketTextChannel)channel).Guild);
             if (reaction.Emote.Equals(new Emoji("☑"))
                 && Regex.IsMatch(channel.Name, "^" +config.SupportChannelName  +"-[0-9]{18}$")
-                && reaction.UserId != SIVA.Instance.CurrentUser.Id)
+                && reaction.UserId != SIVA.GetInstance.CurrentUser.Id)
             {
                 await channel.SendMessageAsync("", false, new EmbedBuilder()
                     .WithAuthor(reaction.User.Value)

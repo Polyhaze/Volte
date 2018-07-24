@@ -17,7 +17,7 @@ namespace SIVA.Core.Discord.Support
             var ctx = new SocketCommandContext(DiscordLogin.Client, msg);
             var config = ServerConfig.Get(ctx.Guild);
             
-            if (msg.Content.ToLower() == "setupsupport" && msg.Author.Id != SIVA.Instance.CurrentUser.Id)
+            if (msg.Content.ToLower() == "setupsupport" && msg.Author.Id != SIVA.GetInstance.CurrentUser.Id)
             {
                 if (!UserUtils.IsAdmin(ctx))
                 {
@@ -33,12 +33,12 @@ namespace SIVA.Core.Discord.Support
                 await ctx.Channel.SendMessageAsync("", false,
                     Utils.CreateEmbed(ctx,
                         "To create a support ticket, send a message into this channel. Support tickets will be placed under the " +
-                        $"**{SIVA.Instance.GetGuild(ctx.Guild.Id).GetTextChannel(ctx.Channel.Id).Category.Name}** " +
+                        $"**{SIVA.GetInstance.GetGuild(ctx.Guild.Id).GetTextChannel(ctx.Channel.Id).Category.Name}** " +
                         "channel category.")).ConfigureAwait(false);
                 return;
             }
             
-            if (ctx.Channel.Name.Equals(config.SupportChannelName) && msg.Author.Id != SIVA.Instance.CurrentUser.Id)
+            if (ctx.Channel.Name.Equals(config.SupportChannelName) && msg.Author.Id != SIVA.GetInstance.CurrentUser.Id)
             {
                 await CreateSupportChannel(ctx, config);
                 await msg.DeleteAsync();
@@ -52,7 +52,7 @@ namespace SIVA.Core.Discord.Support
             var channel = await ctx.Guild.CreateTextChannelAsync($"{config.SupportChannelName}-{ctx.User.Id}");
             if (supportRole == null)
             {
-                await SIVA.Instance.GetUser(ctx.Guild.OwnerId).GetOrCreateDMChannelAsync().GetAwaiter().GetResult()
+                await SIVA.GetInstance.GetUser(ctx.Guild.OwnerId).GetOrCreateDMChannelAsync().GetAwaiter().GetResult()
                     .SendMessageAsync("", false,
                         Utils.CreateEmbed(ctx,
                             "**Hey there!**\n\n" +
