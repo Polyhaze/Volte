@@ -11,14 +11,14 @@ namespace SIVA.Core.Discord.Automation
         public static async Task Join(SocketGuildUser user)
         {
             var config = ServerConfig.Get(user.Guild);
-
+            if (string.IsNullOrEmpty(config.WelcomeMessage)) return; //we don't want to send an empty join message
             var welcomeMessage = config.WelcomeMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
             
-            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel))
+            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
             {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(config.WelcomeColourR, config.WelcomeColourG, config.WelcomeColourB))
@@ -34,14 +34,14 @@ namespace SIVA.Core.Discord.Automation
         public static async Task Leave(SocketGuildUser user)
         {
             var config = ServerConfig.Get(user.Guild);
-            
+            if (string.IsNullOrEmpty(config.LeavingMessage)) return; //we don't want to send an empty leaving message
             var leavingMessage = config.LeavingMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
             
-            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel))
+            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
             {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(config.WelcomeColourR, config.WelcomeColourG, config.WelcomeColourB))
