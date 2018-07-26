@@ -4,25 +4,20 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Owner
-{
-    public class SetStatusCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Owner {
+    public class SetStatusCommand : SIVACommand {
         [Command("SetStatus")]
-        public async Task SetStatus([Remainder]string status)
-        {
-            if (!UserUtils.IsBotOwner(Context.User))
-            {
+        public async Task SetStatus([Remainder] string status) {
+            if (!UserUtils.IsBotOwner(Context.User)) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }
-            
+
             var embed = new EmbedBuilder();
             var config = ServerConfig.Get(Context.Guild);
             embed.WithAuthor(Context.User);
             embed.WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB);
-            switch (status.ToLower())
-            {
+            switch (status.ToLower()) {
                 case "dnd":
                     await DiscordLogin.Client.SetStatusAsync(UserStatus.DoNotDisturb);
                     embed.WithDescription("Set the status to Do Not Disturb.");
@@ -45,6 +40,7 @@ namespace SIVA.Core.Discord.Modules.Owner
                         "Your option wasn't known, so I set the status to Online.\nAvailable options for this command are `dnd`, `idle`, `invisible`, or `online`.");
                     break;
             }
+
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
     }

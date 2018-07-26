@@ -4,15 +4,11 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Owner
-{
-    public class VerifyCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Owner {
+    public class VerifyCommand : SIVACommand {
         [Command("Verify")]
-        public async Task Verify(ulong guildId = 0)
-        {
-            if (!UserUtils.IsBotOwner(Context.User))
-            {
+        public async Task Verify(ulong guildId = 0) {
+            if (!UserUtils.IsBotOwner(Context.User)) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }

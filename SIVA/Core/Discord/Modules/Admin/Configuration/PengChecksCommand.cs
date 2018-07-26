@@ -4,15 +4,11 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Admin.Configuration
-{
-    public class PengChecksCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Admin.Configuration {
+    public class PengChecksCommand : SIVACommand {
         [Command("PengChecks")]
-        public async Task PengChecks(bool isEnabled)
-        {
-            if (!UserUtils.IsAdmin(Context))
-            {
+        public async Task PengChecks(bool isEnabled) {
+            if (!UserUtils.IsAdmin(Context)) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }

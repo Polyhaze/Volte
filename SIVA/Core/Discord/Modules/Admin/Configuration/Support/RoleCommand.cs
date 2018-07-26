@@ -8,9 +8,9 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
 {
     public class RoleCommand : SIVACommand
     {
-        [Command("SupportRole"), Alias("Sr")]
+        //not registered as a command, as the support system is broken
         public async Task SupportRole([Remainder]string roleName)
-        {
+        {                        
             if (!UserUtils.IsAdmin(Context))
             {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));

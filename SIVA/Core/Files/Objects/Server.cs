@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SIVA.Core.Files.Objects
-{
-    public class Server : Object
-    {
+namespace SIVA.Core.Files.Objects {
+    public class Server : Object {
         #region JsonValueDeclaration
 
-        public Server()
-        {
+        public Server() {
             AntilinkIgnoredChannels = new List<ulong>();
             SelfRoles = new List<string>();
             Blacklist = new List<string>();

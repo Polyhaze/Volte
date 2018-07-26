@@ -3,13 +3,10 @@ using Discord;
 using Discord.Commands;
 using SIVA.Core.Files.Readers;
 
-namespace SIVA.Core.Discord.Modules.General
-{
-    public class InfoCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.General {
+    public class InfoCommand : SIVACommand {
         [Command("Info")]
-        public async Task Info()
-        {
+        public async Task Info() {
             var config = ServerConfig.Get(Context.Guild);
             var embed = new EmbedBuilder()
                 .AddField("Version", "V2.0.0-RELEASE")

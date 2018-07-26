@@ -4,16 +4,12 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Admin.Donator
-{
-    public class EmbedColourCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Admin.Donator {
+    public class EmbedColourCommand : SIVACommand {
         [Command("EmbedColour"), Alias("EmbedColor")]
-        public async Task EmbedColour(int r, int g, int b)
-        {
+        public async Task EmbedColour(int r, int g, int b) {
             var config = ServerConfig.Get(Context.Guild);
-            if (!UserUtils.IsAdmin(Context) || !config.VerifiedGuild)
-            {
+            if (!UserUtils.IsAdmin(Context) || !config.VerifiedGuild) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }
@@ -28,7 +24,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Donator
                     .WithAuthor(Context.User)
                     .WithColor(new Color(r, g, b))
                     .Build()
-                );
+            );
         }
     }
 }

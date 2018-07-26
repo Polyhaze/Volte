@@ -9,40 +9,31 @@ using SIVA.Core.Files.Readers;
 using SIVA.Core.Files.Objects;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules
-{
-    public class ScarszDebug : SIVACommand
-    {
-        private static string CreateDebug(string config)
-        {
-            Dictionary<string, Dictionary<string, string>> files = new Dictionary<string, Dictionary<string, string>>
-            {
+namespace SIVA.Core.Discord.Modules {
+    public class ScarszDebug : SIVACommand {
+        private static string CreateDebug(string config) {
+            var files = new Dictionary<string, Dictionary<string, string>> {
                 {
-                    "1-Info.txt", new Dictionary<string, string>
-                    {
+                    "1-Info.txt", new Dictionary<string, string> {
                         {
-                            "content", "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nWebsite: https://scarsz.me\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr\n\nSupport Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: https://github.com/Greeem/SIVA"
-                        },
-                        {
-                            "description", "Thanks Scarsz for this amazing utility!" 
+                            "content",
+                            "Thanks to Scarsz lol#4227 on Discord for this tool. Without it, we wouldn't be able to do this!\n\nCheck out his stuff here:\nWebsite: https://scarsz.me\nGitHub: https://github.com/Scarsz\nDiscord: https://discord.gg/WdFa6gc\nTwitter: https://twitter.com/ScarszRawr\n\nSupport Server: https://discord.gg/prR9Yjq\nWebsite: https://greem.xyz\nSource Code: https://github.com/Greeem/SIVA"
+                        }, {
+                            "description", "Thanks Scarsz for this amazing utility!"
                         }
                     }
-                },
-                {
-                    "2-Server.conf", new Dictionary<string, string>
-                    {
+                }, {
+                    "2-Server.conf", new Dictionary<string, string> {
                         {
                             "content", $"{config}"
-                        },
-                        {
+                        }, {
                             "description", "Server config for debug purposes."
                         }
                     }
                 }
             };
 
-            var payload = new
-            {
+            var payload = new {
                 description = "Discord server settings for support.",
                 files
             };
@@ -61,19 +52,18 @@ namespace SIVA.Core.Discord.Modules
 
         [Command("ForceDebug")]
         [RequireOwner]
-        public async Task CreateDebugToUrl(ulong serverId)
-        {
-            await Context.Channel.SendMessageAsync("", false, 
+        public async Task CreateDebugToUrl(ulong serverId) {
+            await Context.Channel.SendMessageAsync("", false,
                 Utils.CreateEmbed(
-                    Context, 
+                    Context,
                     CreateConfigString(ServerConfig.Get(Context.Guild))
-                    )
-                );
+                )
+            );
         }
+
         [Command("Debug")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task CreateDebugToUrl()
-        {
+        public async Task CreateDebugToUrl() {
             await Context.Channel.SendMessageAsync("",
                 false,
                 Utils.CreateEmbed(Context,
@@ -81,8 +71,7 @@ namespace SIVA.Core.Discord.Modules
                     "\n\nTake this to the SIVA server for support. Join the server [here](https://greem.xyz/SIVA)."));
         }
 
-        private static string CreateConfigString(Server config)
-        {
+        private static string CreateConfigString(Server config) {
             var customCommands = "";
             var blacklistedWords = "";
             var selfRoles = "";

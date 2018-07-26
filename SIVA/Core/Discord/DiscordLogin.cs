@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
+using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord
 {
@@ -25,7 +27,26 @@ namespace SIVA.Core.Discord
         
         public static async Task Log(LogMessage msg)
         {
-            Console.WriteLine(msg.Message);
+            if (msg.Severity == LogSeverity.Info)
+            {
+                new Log().Info(msg.Message);
+            }
+
+            if (msg.Severity == LogSeverity.Verbose)
+            {
+                new Log().Info(msg.Message);
+            }
+
+            if (msg.Severity == LogSeverity.Warning)
+            {
+                new Log().Warn(msg.Message);
+            }
+
+            if (msg.Severity == LogSeverity.Error)
+            {
+                new Log().Fatal(msg.Message);
+            }
         }
+        
     }
 }

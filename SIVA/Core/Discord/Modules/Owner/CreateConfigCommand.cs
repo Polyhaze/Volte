@@ -4,15 +4,11 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Owner
-{
-    public class CreateConfigCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Owner {
+    public class CreateConfigCommand : SIVACommand {
         [Command("CreateConfig")]
-        public async Task CreateConfig(ulong serverId = 0)
-        {
-            if (!UserUtils.IsBotOwner(Context.User))
-            {
+        public async Task CreateConfig(ulong serverId = 0) {
+            if (!UserUtils.IsBotOwner(Context.User)) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }
@@ -23,7 +19,6 @@ namespace SIVA.Core.Discord.Modules.Owner
 
             ServerConfig.Get(tG);
             ServerConfig.Save();
-
         }
     }
 }

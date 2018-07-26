@@ -4,18 +4,15 @@ using Discord;
 using SIVA.Helpers;
 using System.Linq;
 
-namespace SIVA.Core.Discord.Modules.Owner
-{
-    public class SetStreamCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Owner {
+    public class SetStreamCommand : SIVACommand {
         [Command("SetStream")]
-        public async Task SetStream(string twitchUrl, [Remainder] string streamName)
-        {
-            if (!UserUtils.IsBotOwner(Context.User))
-            {
+        public async Task SetStream(string twitchUrl, [Remainder] string streamName) {
+            if (!UserUtils.IsBotOwner(Context.User)) {
                 await Context.Message.AddReactionAsync(new Emoji("❌"));
                 return;
             }
+
             var twitchStreamer = twitchUrl.Split(".tv/").ToList().Last();
             await DiscordLogin.Client.SetGameAsync(streamName, twitchUrl, ActivityType.Streaming);
             await Context.Channel.SendMessageAsync("", false,

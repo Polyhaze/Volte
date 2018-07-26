@@ -8,7 +8,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
 {
     public class ChannelNameCommand : SIVACommand
     {
-        [Command("SupportChannelName"), Alias("Scn")]
+        //not registered as a command, as the support system is broken
         public async Task SupportChannelName([Remainder]string cName)
         {
             if (!UserUtils.IsAdmin(Context))
