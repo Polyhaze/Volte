@@ -15,7 +15,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
 
             if (serverId == 0) serverId = Context.Guild.Id;
 
-            var tG = DiscordLogin.Client.GetGuild(serverId);
+            var tG = SIVA.GetInstance().GetGuild(serverId);
 
             ServerConfig.Get(tG);
             ServerConfig.Save();

@@ -11,7 +11,7 @@ namespace SIVA.Core.Discord.Support {
             var config = ServerConfig.Get(((SocketTextChannel) channel).Guild);
             if (reaction.Emote.Equals(new Emoji("☑"))
                 && Regex.IsMatch(channel.Name, "^" + config.SupportChannelName + "-[0-9]{18}$")
-                && reaction.UserId != SIVA.GetInstance.CurrentUser.Id) {
+                && reaction.UserId != SIVA.GetInstance().CurrentUser.Id) {
                 await channel.SendMessageAsync("", false, new EmbedBuilder()
                     .WithAuthor(reaction.User.Value)
                     .WithDescription("Closing ticket in 45 seconds...")

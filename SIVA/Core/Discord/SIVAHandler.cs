@@ -30,7 +30,7 @@ namespace SIVA.Core.Discord {
                 CaseSensitiveCommands = false,
                 LogLevel = LogSeverity.Verbose
             };
-            _client = DiscordLogin.Client;
+            _client = SIVA.GetInstance();
             _service = new CommandService(config);
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
@@ -42,7 +42,7 @@ namespace SIVA.Core.Discord {
         }
 
         private async Task OnReady() {
-            var dbl = DiscordLogin.Client.GetGuild(264445053596991498);
+            var dbl = SIVA.GetInstance().GetGuild(264445053596991498);
             if (dbl == null || Config.GetOwner() == 168548441939509248) return;
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
                 $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.GetOwner()}>.");

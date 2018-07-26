@@ -40,7 +40,7 @@ namespace SIVA.Core.Files.Readers {
 
         public static DiscordUser Create(ulong id) {
             var newUser = new DiscordUser {
-                Tag = $"{DiscordLogin.Client.GetUser(id).Username}#{DiscordLogin.Client.GetUser(id).Discriminator}",
+                Tag = $"{Discord.SIVA.GetInstance().GetUser(id).Username}#{Discord.SIVA.GetInstance().GetUser(id).Discriminator}",
                 Id = id,
                 Xp = 5,
                 Money = 0

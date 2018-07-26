@@ -4,12 +4,9 @@ using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord
 {
-    public class SIVA
-    {
-        private static DiscordSocketClient Instance = DiscordLogin.Client;
+    public class SIVA {
 
-        public static DiscordSocketClient GetInstance => Instance;
-        
+        public static DiscordSocketClient GetInstance() => DiscordLogin.Client;
         
         public SIVA() {
             new Log().PrintVersion();

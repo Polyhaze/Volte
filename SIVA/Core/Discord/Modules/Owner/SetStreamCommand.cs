@@ -14,7 +14,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
             }
 
             var twitchStreamer = twitchUrl.Split(".tv/").ToList().Last();
-            await DiscordLogin.Client.SetGameAsync(streamName, twitchUrl, ActivityType.Streaming);
+            await SIVA.GetInstance().SetGameAsync(streamName, twitchUrl, ActivityType.Streaming);
             await Context.Channel.SendMessageAsync("", false,
                 Utils.CreateEmbed(Context,
                     $"Set the bot's stream to **{streamName}**, and the twitch URL to [{twitchStreamer}]({twitchUrl})."));

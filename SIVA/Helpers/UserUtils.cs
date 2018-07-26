@@ -4,7 +4,7 @@ using System.Linq;
 using Discord.Commands;
 
 namespace SIVA.Helpers {
-    public class UserUtils {
+    public static class UserUtils {
         /// <summary>
         ///     Checks if the user given is the bot owner.
         /// </summary>
