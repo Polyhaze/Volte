@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("SetStream")]
         public async Task SetStream(string twitchUrl, [Remainder] string streamName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                 return;
             }
 

@@ -8,7 +8,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Server {
         [Command("ServerName")]
         public async Task ServerName([Remainder] string name) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                 return;
             }
 

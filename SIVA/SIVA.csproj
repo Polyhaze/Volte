@@ -4,7 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00975" />
+    <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00977" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.8.2" />
     <PackageReference Include="RestSharp" Version="106.3.1" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
         {                        
             if (!UserUtils.IsAdmin(Context))
             {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                 return;
             }
 

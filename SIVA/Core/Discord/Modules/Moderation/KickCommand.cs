@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.Moderation {
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
             var config = ServerConfig.Get(Context.Guild);
             if (!UserUtils.HasRole(user, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                 return;
             }
 

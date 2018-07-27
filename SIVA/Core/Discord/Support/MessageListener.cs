@@ -16,7 +16,7 @@ namespace SIVA.Core.Discord.Support {
 
             if (msg.Content.ToLower() == "setupsupport" && msg.Author.Id != SIVA.GetInstance().CurrentUser.Id) {
                 if (!UserUtils.IsAdmin(ctx)) {
-                    await ctx.Message.AddReactionAsync(new Emoji("❌"));
+                    await ctx.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                     return;
                 }
 

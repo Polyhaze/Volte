@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             var config = ServerConfig.Get(Context.Guild);
             var embed = Utils.CreateEmbed(Context, "").ToEmbedBuilder();
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji("❌"));
+                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
                 return;
             }
 
