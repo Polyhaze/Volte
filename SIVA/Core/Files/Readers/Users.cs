@@ -34,8 +34,7 @@ namespace SIVA.Core.Files.Readers {
         }
 
         public static DiscordUser Get(ulong id) {
-            var res = users.FirstOrDefault(x => x.Id == id) ?? Create(id);
-            return res;
+            return users.FirstOrDefault(x => x.Id == id) ?? Create(id);
         }
 
         public static DiscordUser Create(ulong id) {

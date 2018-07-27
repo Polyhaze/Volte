@@ -65,7 +65,7 @@ namespace SIVA.Core.Discord {
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
             var prefix = config.CommandPrefix == string.Empty ? Config.GetCommandPrefix() : config.CommandPrefix;
-
+            
             if (config.EmbedColourR == 0 && config.EmbedColourG == 0 && config.EmbedColourB == 0) {
                 config.EmbedColourR = 112;
                 config.EmbedColourG = 0;
