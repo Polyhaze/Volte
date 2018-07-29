@@ -5,7 +5,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.UserRewards {
-    public class WhatLevelIsCommand : SIVACommand {
+    public class WhatLevelIsCommand : SivaCommand {
         [Command("WhatLevelIs"), Alias("Wli")]
         public async Task WhatLevelIs(uint xp) {
             await Context.Channel.SendMessageAsync("", false,

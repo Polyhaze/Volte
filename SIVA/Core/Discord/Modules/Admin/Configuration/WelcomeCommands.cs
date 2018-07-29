@@ -7,7 +7,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class WelcomeCommands : SIVACommand {
+    public class WelcomeCommands : SivaCommand {
         [Command("WelcomeChannel"), Alias("Wc")]
         public async Task WelcomeChannel(SocketTextChannel channel) {
             if (!UserUtils.IsAdmin(Context)) {
@@ -39,7 +39,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 config.WelcomeMessage = message;
                 ServerConfig.Save();
                 var welcomeChannel =
-                    SIVA.GetInstance().GetGuild(Context.Guild.Id).GetTextChannel(config.WelcomeChannel);
+                    Siva.GetInstance().GetGuild(Context.Guild.Id).GetTextChannel(config.WelcomeChannel);
                 var sendingTest = config.WelcomeChannel == 0 ? "Not sending a test message as you do not have a welcome channel set." : $"Sending a test message to **{welcomeChannel.Name}**.";
                 await Context.Channel.SendMessageAsync("", false,
                     Utils.CreateEmbed(Context,
@@ -101,7 +101,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 config.LeavingMessage = message;
                 ServerConfig.Save();
                 var welcomeChannel =
-                    SIVA.GetInstance().GetGuild(Context.Guild.Id).GetTextChannel(config.WelcomeChannel);
+                    Siva.GetInstance().GetGuild(Context.Guild.Id).GetTextChannel(config.WelcomeChannel);
                 var sendingTest = config.WelcomeChannel == 0 
                     ? "Not sending a test message as you do not have a welcome channel set." 
                     : $"Sending a test message to **{welcomeChannel.Name}**.";

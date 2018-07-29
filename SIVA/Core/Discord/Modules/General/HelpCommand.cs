@@ -4,7 +4,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.General {
-    public class HelpCommand : SIVACommand {
+    public class HelpCommand : SivaCommand {
         [Command("Help"), Alias("H")]
         public async Task Help() {
             var embed = Utils.CreateEmbed(Context,

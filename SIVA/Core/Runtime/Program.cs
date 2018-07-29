@@ -9,12 +9,12 @@ namespace SIVA.Core.Runtime {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
-            if (new Program().InitSIVA()) {
-                new Discord.SIVA();
+            if (new Program().InitSiva()) {
+                new Discord.Siva();
             } 
         }
 
-        private bool InitSIVA() {
+        private bool InitSiva() {
             if (!Directory.Exists("data")) {
                 Directory.CreateDirectory("data");
                 return false;

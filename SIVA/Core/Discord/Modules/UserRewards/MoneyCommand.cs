@@ -4,7 +4,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.UserRewards {
-    public class MoneyCommand : SIVACommand {
+    public class MoneyCommand : SivaCommand {
         [Command("Money"), Alias("$", "Bal")]
         public async Task Money() {
             var userData = Users.Get(Context.User.Id);

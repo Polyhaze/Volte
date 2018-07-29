@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.ManageUsers {
-    public class AddRoleCommand : SIVACommand {
+    public class AddRoleCommand : SivaCommand {
         [Command("AddRole"), Alias("Ar")]
         public async Task AddRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {

@@ -6,7 +6,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class AutoroleCommand : SIVACommand {
+    public class AutoroleCommand : SivaCommand {
         [Command("Autorole")]
         public async Task Autorole([Remainder]string role) {
             if (!UserUtils.IsAdmin(Context)) {

@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class BlacklistCommands : SIVACommand {
+    public class BlacklistCommands : SivaCommand {
         [Command("BlacklistAdd"), Alias("BlAdd")]
         public async Task BlacklistAdd([Remainder] string arg) {
             if (!UserUtils.IsAdmin(Context)) {

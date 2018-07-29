@@ -12,14 +12,14 @@ using SIVA.Core.Discord.Support;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord {
-    public class SIVAHandler {
+    public class SivaHandler {
         private DiscordSocketClient _client;
         private CommandService _service;
 
         public IServiceProvider BuildServiceProvider() => new ServiceCollection()
             .AddSingleton(_client)
             .AddSingleton(_service)
-            .AddSingleton<SIVAHandler>()
+            .AddSingleton<SivaHandler>()
             .BuildServiceProvider();
 
 
@@ -30,7 +30,7 @@ namespace SIVA.Core.Discord {
                 CaseSensitiveCommands = false,
                 LogLevel = LogSeverity.Verbose
             };
-            _client = SIVA.GetInstance();
+            _client = Siva.GetInstance();
             _service = new CommandService(config);
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
@@ -42,7 +42,7 @@ namespace SIVA.Core.Discord {
         }
 
         private async Task OnReady() {
-            var dbl = SIVA.GetInstance().GetGuild(264445053596991498);
+            var dbl = Siva.GetInstance().GetGuild(264445053596991498);
             if (dbl == null || Config.GetOwner() == 168548441939509248) return;
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
                 $"<@168548441939509248>: I am a SIVA not owned by you. Please do not post SIVA to a bot list again, <@{Config.GetOwner()}>.");

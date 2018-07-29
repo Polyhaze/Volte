@@ -10,7 +10,7 @@ using SIVA.Core.Files.Objects;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules {
-    public class ScarszDebug : SIVACommand {
+    public class ScarszDebug : SivaCommand {
         private static string CreateDebug(string config) {
             var files = new Dictionary<string, Dictionary<string, string>> {
                 {

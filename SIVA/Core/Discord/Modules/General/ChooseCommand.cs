@@ -6,7 +6,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.General {
-    public class ChooseCommand : SIVACommand {
+    public class ChooseCommand : SivaCommand {
         [Command("Choose")]
         [Remarks("Usage: choose {option1|option2|option3|...}")]
         public async Task Choose([Remainder] string message) {

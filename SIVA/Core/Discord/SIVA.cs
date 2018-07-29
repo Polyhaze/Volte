@@ -4,11 +4,11 @@ using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord
 {
-    public class SIVA {
+    public class Siva {
 
         public static DiscordSocketClient GetInstance() => DiscordLogin.Client;
         
-        public SIVA() {
+        public Siva() {
             new Log().PrintVersion();
             DiscordLogin
                 .LoginAsync()

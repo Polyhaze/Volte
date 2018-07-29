@@ -6,7 +6,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Support {
-    public class CloseCommand : SIVACommand {
+    public class CloseCommand : SivaCommand {
         [Command("Close")]
         public async Task Close() {
             if (Regex.IsMatch(Context.Channel.Name, "^" +

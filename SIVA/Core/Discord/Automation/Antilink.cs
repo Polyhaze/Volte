@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Automation {
         public async Task CheckMessageForInvite(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var author = (SocketGuildUser) msg.Author;
-            var ctx = new SocketCommandContext(SIVA.GetInstance(), msg);
+            var ctx = new SocketCommandContext(Siva.GetInstance(), msg);
             var config = ServerConfig.Get(ctx.Guild);
             if ((msg.Content.Contains("dis.gd/")
                  || msg.Content.Contains("discord.gg/")

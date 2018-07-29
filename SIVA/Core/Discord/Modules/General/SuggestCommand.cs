@@ -4,7 +4,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.General {
-    public class SuggestCommand : SIVACommand {
+    public class SuggestCommand : SivaCommand {
         [Command("Suggest")]
         public async Task Suggest() {
             await Context.Channel.SendMessageAsync("", false,

@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class AntilinkCommand : SIVACommand {
+    public class AntilinkCommand : SivaCommand {
         [Command("Antilink"), Alias("Al")]
         public async Task Antilink(bool alIsEnabled) {
             if (!UserUtils.IsAdmin(Context)) {

@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.UserRewards {
-    public class LevelCommand : SIVACommand {
+    public class LevelCommand : SivaCommand {
         [Command("Level")]
         public async Task Level(SocketGuildUser user = null) {
             if (user == null) user = (SocketGuildUser) Context.User;

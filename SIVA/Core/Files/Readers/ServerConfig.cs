@@ -5,7 +5,7 @@ using System.Linq;
 using Discord.WebSocket;
 using SIVA.Core.Files.Objects;
 using Newtonsoft.Json;
-using static SIVA.Core.Discord.SIVA;
+using static SIVA.Core.Discord.Siva;
 
 namespace SIVA.Core.Files.Readers {
     public static class ServerConfig {

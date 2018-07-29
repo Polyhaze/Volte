@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class LevelsCommand : SIVACommand {
+    public class LevelsCommand : SivaCommand {
         [Command("Levels")]
         public async Task Levels(bool enabled) {
             if (!UserUtils.IsAdmin(Context)) {

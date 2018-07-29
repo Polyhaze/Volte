@@ -4,7 +4,7 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Modules.General {
-    public class InfoCommand : SIVACommand {
+    public class InfoCommand : SivaCommand {
         [Command("Info")]
         public async Task Info() {
             var config = ServerConfig.Get(Context.Guild);
@@ -15,8 +15,8 @@ namespace SIVA.Core.Discord.Modules.General {
                 .AddField("Server", "https://greem.xyz/discord")
                 .AddField("Server Count", Context.Client.Guilds.Count)
                 .AddField("Invite Me", "https://greem.xyz/bot")
-                .AddField("Ping", SIVA.GetInstance().Latency)
-                .AddField("Client ID", SIVA.GetInstance().CurrentUser.Id)
+                .AddField("Ping", Siva.GetInstance().Latency)
+                .AddField("Client ID", Siva.GetInstance().CurrentUser.Id)
                 .WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png")
                 .WithAuthor(Context.User)
                 .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))

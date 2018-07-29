@@ -7,7 +7,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    class SelfRoleCommands : SIVACommand {
+    class SelfRoleCommands : SivaCommand {
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
                 await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));

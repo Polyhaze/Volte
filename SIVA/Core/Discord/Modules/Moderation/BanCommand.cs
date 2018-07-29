@@ -7,7 +7,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Moderation {
-    public class BanCommand : SIVACommand {
+    public class BanCommand : SivaCommand {
         [Command("Ban")]
         public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.") {
             var config = ServerConfig.Get(Context.Guild);
