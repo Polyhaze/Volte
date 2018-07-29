@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
     class SelfRoleCommands : SIVACommand {
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 
@@ -23,7 +23,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
 
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
 
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 

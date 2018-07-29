@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("Autorole")]
         public async Task Autorole([Remainder]string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 

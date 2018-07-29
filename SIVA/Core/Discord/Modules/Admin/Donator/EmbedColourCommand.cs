@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Donator {
         public async Task EmbedColour(int r, int g, int b) {
             var config = ServerConfig.Get(Context.Guild);
             if (!UserUtils.IsAdmin(Context) || !config.VerifiedGuild) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 

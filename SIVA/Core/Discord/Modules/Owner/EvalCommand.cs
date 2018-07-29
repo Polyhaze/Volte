@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("Eval")]
         public async Task Eval(string code) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
             }
 
             var scriptOptions =

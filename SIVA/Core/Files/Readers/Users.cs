@@ -9,7 +9,7 @@ using SIVA.Core.Runtime;
 namespace SIVA.Core.Files.Readers {
     public static class Users {
         private static readonly List<DiscordUser> users;
-        private static readonly string usersFile = "data/users.json";
+        private const string usersFile = "data/users.json";
 
         static Users() {
             if (File.Exists(usersFile)) {

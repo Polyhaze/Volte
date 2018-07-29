@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("ForceLeave")]
         public async Task ForceLeave([Remainder] string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await Context.Message.AddReactionAsync(new Emoji(new RawEmoji().X));
+                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;
             }
 
