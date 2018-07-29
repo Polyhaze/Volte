@@ -6,7 +6,7 @@ using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
 {
-    public class RoleCommand : SIVACommand
+    public class RoleCommand : SivaCommand
     {
         //not registered as a command, as the support system is broken
         public async Task SupportRole([Remainder]string roleName)

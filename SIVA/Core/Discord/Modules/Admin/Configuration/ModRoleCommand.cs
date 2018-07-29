@@ -6,7 +6,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class ModRoleCommand : SIVACommand {
+    public class ModRoleCommand : SivaCommand {
         [Command("ModRole")]
         public async Task ModRole([Remainder] string roleName) {
             var config = ServerConfig.Get(Context.Guild);

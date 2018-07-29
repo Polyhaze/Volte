@@ -6,7 +6,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class AdminRoleCommand : SIVACommand {
+    public class AdminRoleCommand : SivaCommand {
         [Command("AdminRole")]
         public async Task AdminRole([Remainder] string roleName) {
             var embed = Utils.CreateEmbed(Context, "").ToEmbedBuilder();

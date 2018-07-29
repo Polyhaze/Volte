@@ -4,7 +4,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Server {
-    public class ServerNameCommand : SIVACommand {
+    public class ServerNameCommand : SivaCommand {
         [Command("ServerName")]
         public async Task ServerName([Remainder] string name) {
             if (!UserUtils.IsAdmin(Context)) {

@@ -7,7 +7,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Misc {
-    public class RandomRoles : SIVACommand {
+    public class RandomRoles : SivaCommand {
         [Command("RandomRoleMe")]
         public async Task PickARole() {
             var config = ServerConfig.Get(Context.Guild);

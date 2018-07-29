@@ -8,7 +8,7 @@ using SIVA.Helpers;
 using Utils = SIVA.Helpers.Utils;
 
 namespace SIVA.Core.Discord.Modules.Owner {
-    public class EvalCommand : SIVACommand {
+    public class EvalCommand : SivaCommand {
         [Command("Eval")]
         public async Task Eval(string code) {
             if (!UserUtils.IsBotOwner(Context.User)) {

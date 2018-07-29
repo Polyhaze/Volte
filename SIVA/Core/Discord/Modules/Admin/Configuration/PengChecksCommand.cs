@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class PengChecksCommand : SIVACommand {
+    public class PengChecksCommand : SivaCommand {
         [Command("PengChecks")]
         public async Task PengChecks(bool isEnabled) {
             if (!UserUtils.IsAdmin(Context)) {

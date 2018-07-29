@@ -6,7 +6,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
-    public class CustomCommandCommands : SIVACommand {
+    public class CustomCommandCommands : SivaCommand {
         [Command("CustomCommandAdd"), Alias("Cca")]
         public async Task CustomCommandAdd(string name, [Remainder] string response) {
             if (!UserUtils.IsAdmin(Context)) {

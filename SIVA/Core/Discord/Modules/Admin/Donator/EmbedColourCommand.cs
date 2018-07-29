@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Donator {
-    public class EmbedColourCommand : SIVACommand {
+    public class EmbedColourCommand : SivaCommand {
         [Command("EmbedColour"), Alias("EmbedColor")]
         public async Task EmbedColour(int r, int g, int b) {
             var config = ServerConfig.Get(Context.Guild);

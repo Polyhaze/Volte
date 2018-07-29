@@ -5,7 +5,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Owner {
-    public class ForceLeaveCommand : SIVACommand {
+    public class ForceLeaveCommand : SivaCommand {
         [Command("ForceLeave")]
         public async Task ForceLeave([Remainder] string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
@@ -13,7 +13,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 return;
             }
 
-            var target = SIVA.GetInstance().Guilds.FirstOrDefault(g => g.Name == serverName);
+            var target = Siva.GetInstance().Guilds.FirstOrDefault(g => g.Name == serverName);
             if (target == null) {
                 await Context.Channel.SendMessageAsync("", false,
                     Utils.CreateEmbed(Context, $"I'm not in the guild **{serverName}**."));

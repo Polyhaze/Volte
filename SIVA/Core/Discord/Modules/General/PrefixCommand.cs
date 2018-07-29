@@ -4,7 +4,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.General {
-    public class PrefixCommand : SIVACommand {
+    public class PrefixCommand : SivaCommand {
         [Command("Prefix")]
         public async Task Prefix() {
             await Context.Channel.SendMessageAsync(

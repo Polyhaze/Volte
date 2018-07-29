@@ -5,7 +5,7 @@ using Discord.Commands;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Owner {
-    public class ShutdownCommand : SIVACommand {
+    public class ShutdownCommand : SivaCommand {
         // I'm not sure how well this works.
 
         [Command("Shutdown")]
@@ -15,8 +15,8 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 return;
             }
 
-            await SIVA.GetInstance().LogoutAsync();
-            await SIVA.GetInstance().StopAsync();
+            await Siva.GetInstance().LogoutAsync();
+            await Siva.GetInstance().StopAsync();
             Environment.Exit(0);
         }
     }

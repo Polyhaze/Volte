@@ -7,7 +7,7 @@ using System.Linq;
 using Discord;
 
 namespace SIVA.Core.Discord.Modules.Moderation {
-    public class KickCommand : SIVACommand {
+    public class KickCommand : SivaCommand {
         [Command("Kick")]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
             var config = ServerConfig.Get(Context.Guild);

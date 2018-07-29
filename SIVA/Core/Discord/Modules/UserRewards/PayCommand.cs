@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Modules.UserRewards {
-    public class PayCommand : SIVACommand {
+    public class PayCommand : SivaCommand {
         [Command("Pay")]
         public async Task Pay(SocketGuildUser user, int moneyToPay) {
             var config = ServerConfig.Get(Context.Guild);
