@@ -1,32 +1,60 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.VisualBasic.CompilerServices;
 using SIVA.Helpers;
-using Utils = SIVA.Helpers.Utils;
 
 namespace SIVA.Core.Discord.Modules.Owner {
     public class EvalCommand : SIVACommand {
+
+        private ScriptOptions _scriptOptions;
+        
         [Command("Eval")]
         public async Task Eval(string code) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
             }
 
-            var scriptOptions =
-                ScriptOptions.Default.WithImports("System", "System.Threading.Tasks", "System.Collections.Generic", "System.IO");
+            var result = "No result.";
 
-            var scriptCompleted = CSharpScript.EvaluateAsync(code, scriptOptions).IsCompletedSuccessfully;
-            if (scriptCompleted) {
-                await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"```cs\n{code}``` Executed successfully."));
-            } else {
-                await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"{code} Failed to execute. Check your bot console."));
+            CreateScriptOptions();
+
+            try {
+                var evalRes = await CSharpScript.EvaluateAsync<object>(code, _scriptOptions);
+                result = evalRes.ToString();
             }
-            
+            catch (Exception e) {
+                result = e.ToString();
+            }
+
+            await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context, $"{result}"));
+
+        }
+
+        private void CreateScriptOptions() {
+            var dd = typeof(object).GetTypeInfo().Assembly.Location;
+            var coreDir = Directory.GetParent(dd);
+
+            var references = new List<MetadataReference> {
+                MetadataReference.CreateFromFile($"{coreDir.FullName}{Path.DirectorySeparatorChar}mscorlib.dll"),
+                MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location)
+            };
+
+            var referencedAssemblies = Assembly.GetEntryAssembly().GetReferencedAssemblies();
+            foreach (var referenced in referencedAssemblies) {
+                var loadedAssembly = Assembly.Load(referenced);
+                references.Add(MetadataReference.CreateFromFile(loadedAssembly.Location));
+            }
+
+            _scriptOptions = ScriptOptions.Default
+                .AddImports("System", "System.Linq", "System.Text", "Discord", "Discord.WebSocket")
+                .AddReferences(references);
         }
     }
 }
