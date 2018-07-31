@@ -12,12 +12,12 @@ namespace SIVA.Helpers {
         /// <param name="ctx">So we can set the Author and Embed Colour of the embed.</param>
         /// <param name="content">Embed content.</param>
         /// <returns>Built EmbedBuilder</returns>
-        public static Embed CreateEmbed(SocketCommandContext ctx, string content) {
+        public static Embed CreateEmbed(SocketCommandContext ctx, object content) {
             var config = ServerConfig.Get(ctx.Guild);
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
                 .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))
-                .WithDescription(content)
+                .WithDescription(content.ToString())
                 .Build();
         }
     }

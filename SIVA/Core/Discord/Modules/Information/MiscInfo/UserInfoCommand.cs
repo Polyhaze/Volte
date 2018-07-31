@@ -6,11 +6,13 @@ using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Modules.Information.MiscInfo {
     public class UserInfoCommand : SIVACommand {
-        [Command("UserInfo"), Alias("UI", "UserI", "UInfo")]
+        [Command("UserInfo"), Alias("UI")]
         public async Task UserInfo(SocketGuildUser user = null) {
             var config = ServerConfig.Get(Context.Guild);
             var actualUser = user ?? (SocketGuildUser)Context.User;
-            var embed = new EmbedBuilder()
+            
+
+            await Context.Channel.SendMessageAsync("", false, new EmbedBuilder()
                 .WithAuthor(Context.User)
                 .WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB)
                 .WithThumbnailUrl(actualUser.GetAvatarUrl())
@@ -21,9 +23,8 @@ namespace SIVA.Core.Discord.Modules.Information.MiscInfo {
                 .AddField("Created At",
                     $"Month: {actualUser.CreatedAt.Month}\nDay: {actualUser.CreatedAt.Day}\nYear: {actualUser.CreatedAt.Year}")
                 .AddField("Status", actualUser.Status)
-                .AddField("Is Bot", actualUser.IsBot);
-
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                .AddField("Is Bot", actualUser.IsBot)
+            .Build());
 
 
         }

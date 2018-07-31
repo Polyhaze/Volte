@@ -11,7 +11,7 @@ namespace SIVA.Core.Discord
     public class DiscordLogin
     {
         public static DiscordSocketClient Client;
-        private static readonly SIVAHandler Handler = new SIVAHandler();
+        public static readonly SIVAHandler Handler = new SIVAHandler();
         
         public static async Task LoginAsync()
         {
