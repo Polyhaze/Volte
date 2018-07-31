@@ -14,9 +14,7 @@ namespace SIVA.Core.Files.Readers {
             File.Create($"data/users/{user.Id}.json");
             var fileContent = new DiscordUser {
                 Id = user.Id,
-                Money = 0,
-                Tag = $"{user.Username}#{user.Discriminator}",
-                Xp = 0
+                Tag = $"{user.Username}#{user.Discriminator}"
             };
             
             File.WriteAllText($"data/users/{user.Id}.json", JsonConvert.SerializeObject(fileContent, Formatting.Indented));
