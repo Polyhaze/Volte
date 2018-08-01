@@ -32,7 +32,7 @@ namespace SIVA.Core.Discord {
             };
             _client = SIVA.GetInstance();
             _service = new CommandService(config);
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += new Welcome().Join;
@@ -61,7 +61,7 @@ namespace SIVA.Core.Discord {
             await new Blacklist().CheckMessageForBlacklistedWords(s);
             await new Antilink().CheckMessageForInvite(s);
             await new Economy().Give(ctx);
-            await SupportMessageListener.Check(s);
+            //await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);

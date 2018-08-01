@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿/*using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -61,7 +61,7 @@ namespace SIVA.Core.Discord.Support {
                     supportRole,
                     new
                         OverwritePermissions(
-                            viewChannel: PermValue.Allow,
+                            readMessages: PermValue.Allow,
                             sendMessages: PermValue.Allow,
                             addReactions: PermValue.Allow,
                             sendTTSMessages: PermValue.Deny
@@ -75,7 +75,7 @@ namespace SIVA.Core.Discord.Support {
                 ctx.User,
                 new
                     OverwritePermissions(
-                        viewChannel: PermValue.Allow,
+                        readMessages: PermValue.Allow,
                         sendMessages: PermValue.Allow,
                         addReactions: PermValue.Allow,
                         sendTTSMessages: PermValue.Deny
@@ -85,7 +85,7 @@ namespace SIVA.Core.Discord.Support {
                 ctx.Guild.EveryoneRole,
                 new
                     OverwritePermissions(
-                        viewChannel: PermValue.Deny,
+                        readMessages: PermValue.Deny,
                         sendMessages: PermValue.Deny
                     )
             );
@@ -93,4 +93,4 @@ namespace SIVA.Core.Discord.Support {
             await TicketHandler.OnTicketCreation(ctx, channel, config);
         }
     }
-}
+}*/
