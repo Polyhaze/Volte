@@ -60,6 +60,7 @@ namespace SIVA.Core.Discord {
             var ctx = new SocketCommandContext(_client, msg);
             await new Blacklist().CheckMessageForBlacklistedWords(s);
             await new Antilink().CheckMessageForInvite(s);
+            await new Economy().Give(ctx);
             await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
