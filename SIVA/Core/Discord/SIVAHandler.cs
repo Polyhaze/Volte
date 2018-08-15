@@ -8,13 +8,14 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using SIVA.Core.Discord.Automation;
-using SIVA.Core.Discord.Support;
 using SIVA.Core.Files.Readers;
+using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
     public class SIVAHandler {
         private DiscordSocketClient _client;
         private CommandService _service;
+        private Log _logger = new Log();
 
         public IServiceProvider BuildServiceProvider() => new ServiceCollection()
             .AddSingleton(_client)
@@ -82,7 +83,7 @@ namespace SIVA.Core.Discord {
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
                 var result = await _service.ExecuteAsync(ctx, argPos, BuildServiceProvider());
 
-                if (result.IsSuccess == false && result.ErrorReason != "Unknown command.") {
+                if (!result.IsSuccess && result.ErrorReason != "Unknown command.") {
                     string reason;
                     switch (result.ErrorReason) {
                         case "The server responded with error 403: Forbidden":
@@ -123,46 +124,7 @@ namespace SIVA.Core.Discord {
 
                 if (result.ErrorReason == "Unknown command.") return;
 
-                if (Config.GetLogAllCommands()) {
-                    if (result.IsSuccess.Equals(false)) {
-                        Console.WriteLine($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                        Console.WriteLine($"--|     -Command Issued: {msg.Content}");
-                        Console.WriteLine($"--|           -In Guild: {ctx.Guild.Name}");
-                        Console.WriteLine($"--|         -In Channel: #{ctx.Channel.Name}");
-                        Console.WriteLine($"--|        -Time Issued: {DateTime.Now}");
-                        Console.WriteLine(
-                            $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}");
-                        Console.WriteLine("-------------------------------------------------");
-                    }
-                    else {
-                        Console.WriteLine($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                        Console.WriteLine($"--|     -Command Issued: {msg.Content}");
-                        Console.WriteLine($"--|           -In Guild: {ctx.Guild.Name}");
-                        Console.WriteLine($"--|         -In Channel: #{ctx.Channel.Name}");
-                        Console.WriteLine($"--|        -Time Issued: {DateTime.Now}");
-                        Console.WriteLine($"--|           -Executed: {result.IsSuccess}");
-                        Console.WriteLine("-------------------------------------------------");
-                    }
-                }
-
-                try {
-                    File.AppendAllText("Commands.log",
-                        $"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})\n");
-                    File.AppendAllText("Commands.log", $"--|     -Command Issued: {msg.Content} ({msg.Id})\n");
-                    File.AppendAllText("Commands.log",
-                        $"--|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})\n");
-                    File.AppendAllText("Commands.log",
-                        $"--|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})\n");
-                    File.AppendAllText("Commands.log", $"--|        -Time Issued: {DateTime.Now}\n");
-                    File.AppendAllText("Commands.log", result.IsSuccess
-                        ? $"--|           -Executed: {result.IsSuccess}\n"
-                        : $"--|           -Executed: {result.IsSuccess} | Reason: {result.ErrorReason}\n");
-                    File.AppendAllText("Commands.log", "-------------------------------------------------\n");
-                }
-                catch (FileNotFoundException) {
-                    Console.WriteLine("The Commands.log file wasn't found, creating it now.");
-                    File.Create("Commands.log");
-                }
+                OnCommand(result, ctx);
 
                 if (config.DeleteMessageOnCommand) {
                     await ctx.Message.DeleteAsync();
@@ -178,6 +140,48 @@ namespace SIVA.Core.Discord {
                 if (msg.Content.Contains($"<@{_client.CurrentUser.Id}>")) {
                     await ctx.Channel.SendMessageAsync("<:whO_PENG:437088256291504130>");
                 }
+            }
+        }
+
+        private void OnCommand(IResult res, SocketCommandContext ctx) {
+            if (Config.GetLogAllCommands()) {
+                if (res.IsSuccess) {
+                    _logger.Info($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    _logger.Info($"--|     -Command Issued: {ctx.Message.Content}");
+                    _logger.Info($"--|           -In Guild: {ctx.Guild.Name}");
+                    _logger.Info($"--|         -In Channel: #{ctx.Channel.Name}");
+                    _logger.Info($"--|        -Time Issued: {DateTime.Now}");
+                    _logger.Info($"--|           -Executed: {res.IsSuccess} ");
+                    _logger.Info("-------------------------------------------------");
+                }
+                else {
+                    _logger.Error($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    _logger.Error($"--|     -Command Issued: {ctx.Message.Content}");
+                    _logger.Error($"--|           -In Guild: {ctx.Guild.Name}");
+                    _logger.Error($"--|         -In Channel: #{ctx.Channel.Name}");
+                    _logger.Error($"--|        -Time Issued: {DateTime.Now}");
+                    _logger.Error($"--|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
+                    _logger.Error("-------------------------------------------------");
+                }
+            }
+            
+            try {
+                File.AppendAllText("Commands.log",
+                    $"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})\n");
+                File.AppendAllText("Commands.log", $"--|     -Command Issued: {ctx.Message.Content} ({ctx.Message.Id})\n");
+                File.AppendAllText("Commands.log",
+                    $"--|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})\n");
+                File.AppendAllText("Commands.log",
+                    $"--|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})\n");
+                File.AppendAllText("Commands.log", $"--|        -Time Issued: {DateTime.Now}\n");
+                File.AppendAllText("Commands.log", res.IsSuccess
+                    ? $"--|           -Executed: {res.IsSuccess}\n"
+                    : $"--|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}\n");
+                File.AppendAllText("Commands.log", "-------------------------------------------------\n");
+            }
+            catch (FileNotFoundException) {
+                _logger.Error("The Commands.log file doesn't exist. Creating it now.");
+                File.Create("Commands.log");
             }
         }
     }

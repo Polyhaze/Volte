@@ -5,13 +5,14 @@ using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using RestSharp.Authenticators;
 using SIVA.Core.Files.Readers;
 using SIVA.Core.Files.Objects;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules {
     public class ScarszDebug : SIVACommand {
-        private static string CreateDebug(string config) {
+        public string Execute(string config) {
             var files = new Dictionary<string, Dictionary<string, string>> {
                 {
                     "1-Info.txt", new Dictionary<string, string> {
@@ -34,28 +35,24 @@ namespace SIVA.Core.Discord.Modules {
             };
 
             var payload = new {
-                description = "Discord server settings for support.",
-                files
+                description = "Discord server settings for support.", files
             };
-            var jsonPayload = JsonConvert.SerializeObject(payload);
 
-            var httpClient = new RestClient("https://debug.scarsz.me") {UserAgent = "SIVA/V2"};
+            var httpClient = new RestClient("https://debug.scarsz.me") { UserAgent = "SIVA/V2" };
             var req = new RestRequest("post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();
-            req.AddParameter("application/json", jsonPayload, ParameterType.RequestBody);
+            req.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
             var resJson = httpClient.Execute(req);
-            var res = (JObject) JsonConvert.DeserializeObject(resJson.Content);
-            return res.GetValue("url").ToString();
+            return ((JObject) JsonConvert.DeserializeObject(resJson.Content)).GetValue("url").ToString();
         }
 
         [Command("ForceDebug")]
         [RequireOwner]
-        public async Task CreateDebugToUrl(ulong serverId) {
+        public async Task ForceDebug(ulong serverId) {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(
-                    Context,
+                Utils.CreateEmbed(Context,
                     CreateConfigString(ServerConfig.Get(Context.Guild))
                 )
             );
@@ -63,11 +60,11 @@ namespace SIVA.Core.Discord.Modules {
 
         [Command("Debug")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task CreateDebugToUrl() {
+        public async Task Debug() {
             await Context.Channel.SendMessageAsync("",
                 false,
                 Utils.CreateEmbed(Context,
-                    $"{CreateDebug(CreateConfigString(ServerConfig.Get(Context.Guild)))}" +
+                    $"{Execute(CreateConfigString(ServerConfig.Get(Context.Guild)))}" +
                     "\n\nTake this to the SIVA server for support. Join the server [here](https://greem.xyz/SIVA)."));
         }
 

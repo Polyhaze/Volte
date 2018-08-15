@@ -2,7 +2,9 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
+using SIVA.Core.Exceptions;
 using SIVA.Core.Files.Readers;
 using SIVA.Core.Runtime;
 
@@ -12,6 +14,7 @@ namespace SIVA.Core.Discord
     {
         public static DiscordSocketClient Client;
         public static readonly SIVAHandler Handler = new SIVAHandler();
+        public static readonly Log Logger = new Log();
         
         public static async Task LoginAsync()
         {
@@ -25,28 +28,28 @@ namespace SIVA.Core.Discord
             await Task.Delay(-1);
         }
         
-        public static async Task Log(LogMessage msg)
+        private static async Task Log(LogMessage msg)
         {
-            if (msg.Severity == LogSeverity.Info)
-            {
-                new Log().Info(msg.Message);
-            }
-
-            if (msg.Severity == LogSeverity.Verbose)
-            {
-                new Log().Info(msg.Message);
-            }
-
-            if (msg.Severity == LogSeverity.Warning)
-            {
-                new Log().Warn(msg.Message);
-            }
-
-            if (msg.Severity == LogSeverity.Error)
-            {
-                new Log().Fatal(msg.Message);
+            switch (msg.Severity) {
+                case LogSeverity.Info:
+                case LogSeverity.Verbose:
+                    Logger.Info(msg.Message);
+                    break;
+                case LogSeverity.Warning:
+                    Logger.Warn(msg.Message);
+                    break;
+                case LogSeverity.Error:
+                    Logger.Error(msg.Message);
+                    break;
+                case LogSeverity.Critical:
+                    Logger.Error(msg.Message);
+                    break;
+                case LogSeverity.Debug:
+                    Logger.Debug(msg.Message);
+                    break;
+                default:
+                    throw new WhatException();
             }
         }
-        
     }
 }
