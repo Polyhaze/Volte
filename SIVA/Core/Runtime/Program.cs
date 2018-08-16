@@ -4,7 +4,7 @@ using Discord;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Runtime {
-    internal class Program {
+    internal static class Program {
         private static void Main() {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
