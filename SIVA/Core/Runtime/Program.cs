@@ -9,16 +9,18 @@ namespace SIVA.Core.Runtime {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
-            if (new Program().InitSIVA()) {
+            if (InitSIVA()) {
                 new Discord.SIVA();
             } 
         }
 
-        private bool InitSIVA() {
+        private static bool InitSIVA() {
             if (!Directory.Exists("data")) {
+                new Log().Fatal("The \"data\" directory has been created. Please fill in the config.");
                 Directory.CreateDirectory("data");
                 return false;
             }
+
             if (string.IsNullOrEmpty(Config.GetToken())) {
                 new Log().Fatal(
                     "You haven't setup SIVA's config. " +
@@ -26,6 +28,7 @@ namespace SIVA.Core.Runtime {
                     "A file under the \"data\" directory has been created for you.");
                 return false;
             }
+
             return true;
         }
     }
