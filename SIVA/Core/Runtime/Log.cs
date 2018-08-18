@@ -36,6 +36,7 @@ namespace SIVA.Core.Runtime {
         }
 
         public void PrintVersion() {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Currently running SIVA V{Version.GetFullVersion()}!");
         }
     }
