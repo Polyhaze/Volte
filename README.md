@@ -10,10 +10,10 @@
 
  [Issue Tracker](https://greemdev.atlassian.net/secure/RapidBoard.jspa?rapidView=2&projectKey=SIVA&view=planning.nodetail)
 
- [Discord Server](https://greem.xyz/discord)
+ [Discord Server](https://greem.me/discord)
 
  [SIVA Twitter](https://twitter.com/Discord_SIVA)
 
- [Website](https://greem.xyz)
+ [Website](https://siva.greem.me)
 
  [Source Code](https://github.com/Greeem/SIVA)

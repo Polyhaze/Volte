@@ -2,6 +2,7 @@
 using System.IO;
 using Discord;
 using SIVA.Core.Files.Readers;
+using SIVA.Plugins;
 
 namespace SIVA.Core.Runtime {
     internal static class Program {
@@ -9,6 +10,8 @@ namespace SIVA.Core.Runtime {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
+            PluginRegistry<IPlugin>.LoadPlugins();
+            
             if (InitSIVA()) {
                 new Discord.SIVA();
             } 
