@@ -41,8 +41,9 @@ namespace SIVA.Plugins {
                 }
 
                 try {
-                    Assembly.LoadFrom(PluginsDir + assembly.GetName().Name + ".dll");
-                    new Log().Info($"Successfully loaded the plugin \"{assembly.GetName().Name}\"");
+                    var loadedAssembly = Assembly.LoadFrom(PluginsDir + assembly.GetName().Name + ".dll");
+                    new Log().Info($"Successfully loaded the plugin \"{loadedAssembly.GetName().Name}\"," +
+                                   $" located at \"{PluginsDir}{loadedAssembly.GetName().Name}.dll\".");
                 }
                 catch {
                     throw new PluginLoadException(assembly.GetName().Name);
@@ -52,7 +53,7 @@ namespace SIVA.Plugins {
 
             var plugins = new List<T>(pluginTypes.Count);
             foreach (var type in pluginTypes) {
-                var plugin = (T) Activator.CreateInstance(type);
+                var plugin = (T)Activator.CreateInstance(type);
                 plugins.Add(plugin);
             }
         }

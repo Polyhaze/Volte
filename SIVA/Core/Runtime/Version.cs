@@ -10,25 +10,15 @@
             return $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         }
 
-        public static int GetMajorVersion() {
-            return Major;
-        }
+        public static int GetMajorVersion() => Major;
 
-        public static int GetMinorVersion() {
-            return Minor;
-        }
+        public static int GetMinorVersion() => Minor;
 
-        public static int GetPatchVersion() {
-            return Patch;
-        }
+        public static int GetPatchVersion() => Patch;
 
-        public static int GetHotfixVersion() {
-            return Hotfix;
-        }
+        public static int GetHotfixVersion() => Hotfix;
 
-        public static ReleaseType GetReleaseType() {
-            return ReleaseType;
-        }
+        public static ReleaseType GetReleaseType() => ReleaseType;
     }
 
     public enum ReleaseType {
