@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace SIVA.Plugins {
@@ -22,9 +23,7 @@ namespace SIVA.Plugins {
             dllFileNames = Directory.GetFiles(PluginsDir, "*.dll");
 
             var assemblies = new List<Assembly>(dllFileNames.Length);
-            foreach (var dllFile in dllFileNames) {
-                assemblies.Add(Assembly.Load(AssemblyName.GetAssemblyName(dllFile)));
-            }
+            assemblies.AddRange(dllFileNames.Select(dllFile => Assembly.Load(AssemblyName.GetAssemblyName(dllFile))));
 
             var pluginType = typeof(T);
             var pluginTypes = new List<Type>();

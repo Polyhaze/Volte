@@ -11,6 +11,7 @@ namespace SIVA.Core.Runtime {
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
             PluginRegistry<IPlugin>.LoadPlugins();
+            //new WebServer.WebServer().Start();
             
             if (InitSIVA()) {
                 new Discord.SIVA();
