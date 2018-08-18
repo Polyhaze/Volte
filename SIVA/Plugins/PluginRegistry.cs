@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SIVA.Core.Exceptions;
 using SIVA.Core.Runtime;
 
 namespace SIVA.Plugins {
@@ -38,9 +39,14 @@ namespace SIVA.Plugins {
                         }
                     }
                 }
-                
-                Assembly.LoadFrom(PluginsDir + assembly.GetName().Name + ".dll");
-                new Log().Info($"Successfully loaded the plugin \"{assembly.GetName().Name}\"");
+
+                try {
+                    Assembly.LoadFrom(PluginsDir + assembly.GetName().Name + ".dll");
+                    new Log().Info($"Successfully loaded the plugin \"{assembly.GetName().Name}\"");
+                }
+                catch {
+                    throw new PluginLoadException(assembly.GetName().Name);
+                }
                 
             }
 
