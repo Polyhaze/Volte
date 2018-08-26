@@ -9,7 +9,8 @@ namespace SIVA.Core.Runtime {
             Console.Title = "SIVA";
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
-            //new WebServer.WebServer().Start();
+
+            Console.WriteLine();
             
             if (InitSIVA()) {
                 new Discord.SIVA();
@@ -17,6 +18,7 @@ namespace SIVA.Core.Runtime {
         }
 
         private static bool InitSIVA() {
+            
             if (!Directory.Exists("data")) {
                 new Log().Fatal("The \"data\" directory has been created. Please fill in the config.");
                 Directory.CreateDirectory("data");

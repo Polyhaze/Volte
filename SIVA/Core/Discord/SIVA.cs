@@ -1,6 +1,5 @@
 using Discord.WebSocket;
 using SIVA.Core.Runtime;
-using SIVA.Plugins;
 
 namespace SIVA.Core.Discord
 {
@@ -13,7 +12,6 @@ namespace SIVA.Core.Discord
         
         public SIVA() {
             Logger.PrintVersion();
-            PluginRegistry<IPlugin>.LoadPlugins();
             DiscordLogin
                 .LoginAsync()
                 .GetAwaiter()
