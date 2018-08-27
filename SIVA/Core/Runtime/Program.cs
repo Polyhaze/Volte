@@ -6,11 +6,9 @@ using SIVA.Core.Files.Readers;
 namespace SIVA.Core.Runtime {
     internal static class Program {
         private static void Main() {
-            Console.Title = "SIVA";
+            Console.Title = "SIVA"; 
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.WriteLine();
             
             if (InitSIVA()) {
                 new Discord.SIVA();
