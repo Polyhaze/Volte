@@ -28,7 +28,7 @@ namespace SIVA.Core.Discord.Support {
                 ServerConfig.Save();
 
                 await ctx.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(ctx,
+                    CreateEmbed(ctx,
                         "To create a support ticket, send a message into this channel. Support tickets will be placed under the " +
                         $"**{SIVA.GetInstance().GetGuild(ctx.Guild.Id).GetTextChannel(ctx.Channel.Id).Category.Name}** " +
                         "channel category.")).ConfigureAwait(false);
@@ -48,7 +48,7 @@ namespace SIVA.Core.Discord.Support {
             if (supportRole == null) {
                 await SIVA.GetInstance().GetUser(ctx.Guild.OwnerId).GetOrCreateDMChannelAsync().GetAwaiter().GetResult()
                     .SendMessageAsync("", false,
-                        Utils.CreateEmbed(ctx,
+                        CreateEmbed(ctx,
                             "**Hey there!**\n\n" +
                             "Your support system configuration is messed up. " +
                             "The role you set to manage Support Tickets doesn't exist. " +

@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.UserRewards {
 
             var userData = Users.Get(Context.User.Id);
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"User {user.Mention} is level **{userData.Level}**."));
+                CreateEmbed(Context, $"User {user.Mention} is level **{userData.Level}**."));
         }
     }
 }

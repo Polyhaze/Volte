@@ -17,11 +17,11 @@ namespace SIVA.Core.Discord.Modules.Moderation {
             }
 
             await user.GetOrCreateDMChannelAsync().GetAwaiter().GetResult().SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"You've been banned from {Context.Guild.Name} for **{reason}**."));
+                CreateEmbed(Context, $"You've been banned from {Context.Guild.Name} for **{reason}**."));
             await Context.Guild.AddBanAsync(
                 user, 0, $"Banned by {Context.User.Username}#{Context.User.Discriminator}");
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"Successfully banned **{user.Username}#{user.Discriminator}** from this server."));
         }
     }

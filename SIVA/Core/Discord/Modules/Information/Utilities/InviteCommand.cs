@@ -7,7 +7,7 @@ namespace SIVA.Core.Discord.Modules.Information.Utilities {
         [Command("Invite")]
         public async Task Invite() {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     "Do you like SIVA? If you do, that\'s awesome! If not then I\'m sorry :( \n\n" +
                     $"[Invite Me](https://discordapp.com/oauth2/authorize?client_id={SIVA.GetInstance().CurrentUser.Id}&scope=bot&permissions=8)\n" +
                     "[Support Server Invite](https://greem.xyz/discord)\n\n" +

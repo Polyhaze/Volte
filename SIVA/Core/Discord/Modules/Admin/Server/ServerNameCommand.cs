@@ -14,7 +14,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Server {
 
             await Context.Guild.ModifyAsync(g => g.Name = name);
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set this server's name to **{name}**."));
+                CreateEmbed(Context, $"Set this server's name to **{name}**."));
         }
     }
 }

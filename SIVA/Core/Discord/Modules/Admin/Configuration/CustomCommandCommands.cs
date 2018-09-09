@@ -18,7 +18,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.CustomCommands.Add(name, response);
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, "")
+                CreateEmbed(Context, "")
                     .ToEmbedBuilder()
                     .AddField("Command Name", name)
                     .AddField("Command Response", response)
@@ -58,7 +58,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
 
             var config = ServerConfig.Get(Context.Guild);
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"Cleared the blacklist, containing {config.CustomCommands.Count} commands."));
             config.CustomCommands.Clear();
             ServerConfig.Save();

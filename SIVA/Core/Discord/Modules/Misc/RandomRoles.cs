@@ -13,7 +13,7 @@ namespace SIVA.Core.Discord.Modules.Misc {
             var config = ServerConfig.Get(Context.Guild);
             if (config.RandomRoles.Count == 0) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, "This server doesn't have random roles setup/enabled."));
+                    CreateEmbed(Context, "This server doesn't have random roles setup/enabled."));
             }
 
             var r = new Random().Next(0, config.RandomRoles.Count);
@@ -22,13 +22,13 @@ namespace SIVA.Core.Discord.Modules.Misc {
 
             if (targetRole == null) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"Something went wrong. Ping the developer of this bot to report."));
+                    CreateEmbed(Context, $"Something went wrong. Ping the developer of this bot to report."));
             }
 
             await ((SocketGuildUser) Context.User).AddRoleAsync(targetRole);
 
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Chose a random role for you....your role is **{targetRole.Name}**."));
+                CreateEmbed(Context, $"Chose a random role for you....your role is **{targetRole.Name}**."));
         }
     }
 }

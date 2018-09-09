@@ -21,7 +21,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
             config.SupportRole = roleName;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set the support role for this server to **{roleName}**."));
+                CreateEmbed(Context, $"Set the support role for this server to **{roleName}**."));
         }
     }
 }

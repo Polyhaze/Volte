@@ -19,7 +19,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.WelcomeChannel = channel.Id;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set this server's welcome channel to **{channel.Name}**"));
+                CreateEmbed(Context, $"Set this server's welcome channel to **{channel.Name}**"));
         }
 
         [Command("WelcomeMessage"), Alias("Wmsg")]
@@ -33,7 +33,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             
             if (message.Equals("")) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"The current welcome message for this server is ```\n{config.WelcomeMessage}```"));
+                    CreateEmbed(Context, $"The current welcome message for this server is ```\n{config.WelcomeMessage}```"));
             }
             else {
                 config.WelcomeMessage = message;
@@ -42,7 +42,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                     SIVA.GetInstance().GetGuild(Context.Guild.Id).GetTextChannel(config.WelcomeChannel);
                 var sendingTest = config.WelcomeChannel == 0 ? "Not sending a test message as you do not have a welcome channel set." : $"Sending a test message to **{welcomeChannel.Name}**.";
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context,
+                    CreateEmbed(Context,
                         $"Set this server's welcome message to ```{message}```\n\n{sendingTest}"));
 
                 if (config.WelcomeChannel != 0) {
@@ -69,7 +69,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
 
             if (r > 255 || g > 255 || b > 255) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context,
+                    CreateEmbed(Context,
                         "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value."));
                 return;
             }
@@ -80,7 +80,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.WelcomeColourB = b;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!"));
         }
 
@@ -95,7 +95,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             
             if (message.Equals("")) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"The current leaving message for this server is ```\n{config.WelcomeMessage}```"));
+                    CreateEmbed(Context, $"The current leaving message for this server is ```\n{config.WelcomeMessage}```"));
             }
             else {
                 config.LeavingMessage = message;
@@ -106,7 +106,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                     ? "Not sending a test message as you do not have a welcome channel set." 
                     : $"Sending a test message to **{welcomeChannel.Name}**.";
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context,
+                    CreateEmbed(Context,
                         $"Set this server's leaving message to ```{message}```\n\n{sendingTest}"));
 
                 if (config.WelcomeChannel != 0) {

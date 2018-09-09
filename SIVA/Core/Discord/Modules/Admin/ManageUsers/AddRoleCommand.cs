@@ -18,12 +18,12 @@ namespace SIVA.Core.Discord.Modules.Admin.ManageUsers {
             if (targetRole != null) {
                 await user.AddRoleAsync(targetRole);
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"Added the role **{role}** to {user.Mention}!"));
+                    CreateEmbed(Context, $"Added the role **{role}** to {user.Mention}!"));
                 return;
             }
 
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
+                CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
         }
     }
 }

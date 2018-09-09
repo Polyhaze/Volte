@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("ModRole")]
         public async Task ModRole([Remainder] string roleName) {
             var config = ServerConfig.Get(Context.Guild);
-            var embed = Utils.CreateEmbed(Context, "").ToEmbedBuilder();
+            var embed = CreateEmbed(Context, "").ToEmbedBuilder();
             if (!UserUtils.IsAdmin(Context)) {
                 await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
                 return;

@@ -6,7 +6,7 @@ namespace SIVA.Core.Discord.Modules.General {
     public class SayCommand : SIVACommand {
         [Command("Say")]
         public async Task Say([Remainder] string msg) {
-            await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context, msg));
+            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, msg));
         }
     }
 }

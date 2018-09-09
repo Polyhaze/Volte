@@ -16,7 +16,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.DeleteMessageOnCommand = arg;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set the DeleteMessageOnCommand setting to {arg}."));
+                CreateEmbed(Context, $"Set the DeleteMessageOnCommand setting to {arg}."));
         }
     }
 }

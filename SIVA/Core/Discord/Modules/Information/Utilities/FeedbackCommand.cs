@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Information.Utilities {
         [Command("Feedback"), Alias("Fb")]
         public async Task Feedback([Remainder]string feedback) {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Feedback sent! Message: ```{feedback}```"));
+                CreateEmbed(Context, $"Feedback sent! Message: ```{feedback}```"));
 
             var config = ServerConfig.Get(Context.Guild);
             var embed = new EmbedBuilder()

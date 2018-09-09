@@ -5,13 +5,13 @@ namespace SIVA.Core.Discord
 {
     public class SIVA {
 
-        public static string PatreonLink => "https://patreon.com/_SIVA";
-        public static Log Logger => Log.GetLogger();
-        public static SIVAHandler EventHandler => DiscordLogin.Handler;
+        public static string GetPatreonLink() => "https://patreon.com/_SIVA";
+        public static Log GetLogger() => Log.GetLogger();
+        public static SIVAHandler GetEventHandler() => DiscordLogin.Handler;
         public static DiscordSocketClient GetInstance() => DiscordLogin.Client;
         
         public SIVA() {
-            Logger.PrintVersion();
+            GetLogger().PrintVersion();
             DiscordLogin
                 .LoginAsync()
                 .GetAwaiter()

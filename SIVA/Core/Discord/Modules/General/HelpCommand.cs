@@ -7,7 +7,7 @@ namespace SIVA.Core.Discord.Modules.General {
     public class HelpCommand : SIVACommand {
         [Command("Help"), Alias("H")]
         public async Task Help() {
-            var embed = Utils.CreateEmbed(Context,
+            var embed = CreateEmbed(Context,
                 "Use [this link](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8) to invite the bot into your server.\n" +
                 "Join our [Support Server](https://discord.gg/prR9Yjq)!\n" +
                 "Developer: **Greem#1337**\n" +

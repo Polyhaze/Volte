@@ -7,7 +7,7 @@ namespace SIVA.Core.Discord.Modules.Information.Utilities {
         [Command("Ping")]
         public async Task Ping() {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"{SIVA.GetInstance().Latency}ms"));
+                CreateEmbed(Context, $"{SIVA.GetInstance().Latency}ms"));
         }
     }
 }

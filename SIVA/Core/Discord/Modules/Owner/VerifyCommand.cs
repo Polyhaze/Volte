@@ -20,7 +20,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
             config.VerifiedGuild = true;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"Successfully verified the guild **{SIVA.GetInstance().GetGuild(guildId).Name}**."));
         }
     }

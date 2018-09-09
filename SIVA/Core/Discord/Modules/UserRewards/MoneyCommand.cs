@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.UserRewards {
         public async Task Money() {
             var userData = Users.Get(Context.User.Id);
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"You have **${userData.Money}**"));
+                CreateEmbed(Context, $"You have **${userData.Money}**"));
         }
     }
 }

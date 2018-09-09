@@ -15,7 +15,7 @@ namespace SIVA.Core.Discord.Modules.General {
             await Context.Channel.SendMessageAsync(
                 "",
                 false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"I choose `{opt[new Random().Next(0, opt.Length)]}`."
                 )
             );

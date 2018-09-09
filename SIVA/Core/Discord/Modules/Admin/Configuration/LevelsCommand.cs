@@ -16,7 +16,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.Leveling = enabled;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     enabled ? "Enabled Leveling for this server." : "Disabled Leveling for this server."));
 
         }

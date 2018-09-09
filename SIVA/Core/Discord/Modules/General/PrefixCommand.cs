@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.General {
             await Context.Channel.SendMessageAsync(
                 string.Empty,
                 false,
-                Utils.CreateEmbed(
+                CreateEmbed(
                     Context,
                     $"The prefix for this server is `{ServerConfig.Get(Context.Guild).CommandPrefix}`."
                 )

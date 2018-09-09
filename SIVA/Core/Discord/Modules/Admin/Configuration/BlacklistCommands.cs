@@ -17,7 +17,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
 
             config.Blacklist.Add(arg);
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Added **{arg}** to the blacklist."));
+                CreateEmbed(Context, $"Added **{arg}** to the blacklist."));
         }
 
         [Command("BlacklistRemove"), Alias("BlRem")]
@@ -31,11 +31,11 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             if (config.Blacklist.Contains(arg)) {
                 config.Blacklist.Remove(arg);
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"Removed **{arg}** from the word blacklist."));
+                    CreateEmbed(Context, $"Removed **{arg}** from the word blacklist."));
             }
             else {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"**{arg}** doesn't exist in the blacklist."));
+                    CreateEmbed(Context, $"**{arg}** doesn't exist in the blacklist."));
             }
         }
 
@@ -49,7 +49,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             var config = ServerConfig.Get(Context.Guild);
             config.Blacklist.Clear();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, "Cleared the word blacklist."));
+                CreateEmbed(Context, "Cleared the word blacklist."));
         }
     }
 }

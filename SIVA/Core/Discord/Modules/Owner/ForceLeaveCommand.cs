@@ -16,13 +16,13 @@ namespace SIVA.Core.Discord.Modules.Owner {
             var target = SIVA.GetInstance().Guilds.FirstOrDefault(g => g.Name == serverName);
             if (target == null) {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"I'm not in the guild **{serverName}**."));
+                    CreateEmbed(Context, $"I'm not in the guild **{serverName}**."));
                 return;
             }
 
             await target.LeaveAsync();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Successfully left {target.Name}"));
+                CreateEmbed(Context, $"Successfully left {target.Name}"));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SIVA.Core.Discord.Modules.General {
         [Command("Suggest")]
         public async Task Suggest() {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(
+                CreateEmbed(
                     Context,
                     "You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2)."
                 )

@@ -15,7 +15,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             var config = ServerConfig.Get(Context.Guild);
             config.CommandPrefix = prefix;
             await Context.Channel.SendMessageAsync("", false, 
-                Utils.CreateEmbed(Context,  $"Set this server's prefix to **{prefix}**."));
+                CreateEmbed(Context,  $"Set this server's prefix to **{prefix}**."));
         }
     }
 }

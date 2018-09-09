@@ -18,7 +18,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.SelfRoles.Add(roleName.ToLower());
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this server."));
+                CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this server."));
         }
 
         public async Task SelfRoleRem(string roleName) {
@@ -37,11 +37,11 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             if (selfRolesLower.Contains(roleName.ToLower())) {
                 config.SelfRoles.Remove(roleName.ToLower());
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"Removed **{roleName}** from the Self Roles list on this server."));
+                    CreateEmbed(Context, $"Removed **{roleName}** from the Self Roles list on this server."));
             }
             else {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"The Self Roles list for this server doesn't contain **{roleName}**."));
+                    CreateEmbed(Context, $"The Self Roles list for this server doesn't contain **{roleName}**."));
             }
         }
 
@@ -55,7 +55,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 }
             }
 
-            await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context, roleList));
+            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, roleList));
         }
 
         public async Task SelfRoleClear() {
@@ -68,7 +68,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.SelfRoles.Clear();
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, "Successfully cleared all Self Roles for this server."));
+                CreateEmbed(Context, "Successfully cleared all Self Roles for this server."));
         }
     }
 }

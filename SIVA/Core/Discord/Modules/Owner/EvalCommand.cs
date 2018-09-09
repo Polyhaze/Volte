@@ -33,7 +33,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 result = e.ToString();
             }
 
-            await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context, $"{result}"));
+            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, $"{result}"));
 
         }
 

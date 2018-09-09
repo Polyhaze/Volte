@@ -12,7 +12,7 @@ using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules {
     public class ScarszDebug : SIVACommand {
-        public string Execute(string config) {
+        private static string Execute(string config) {
             var files = new Dictionary<string, Dictionary<string, string>> {
                 {
                     "1-Info.txt", new Dictionary<string, string> {
@@ -45,15 +45,15 @@ namespace SIVA.Core.Discord.Modules {
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
             var resJson = httpClient.Execute(req);
-            return ((JObject) JsonConvert.DeserializeObject(resJson.Content)).GetValue("url").ToString();
+            return ((JObject)JsonConvert.DeserializeObject(resJson.Content)).GetValue("url").ToString();
         }
 
         [Command("ForceDebug")]
         [RequireOwner]
         public async Task ForceDebug(ulong serverId) {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context,
-                    CreateConfigString(ServerConfig.Get(Context.Guild))
+                CreateEmbed(Context,
+                    CreateConfigString(ServerConfig.Get(SIVA.GetInstance().GetGuild(serverId)))
                 )
             );
         }
@@ -63,7 +63,7 @@ namespace SIVA.Core.Discord.Modules {
         public async Task Debug() {
             await Context.Channel.SendMessageAsync("",
                 false,
-                Utils.CreateEmbed(Context,
+                CreateEmbed(Context,
                     $"{Execute(CreateConfigString(ServerConfig.Get(Context.Guild)))}" +
                     "\n\nTake this to the SIVA server for support. Join the server [here](https://greem.xyz/SIVA)."));
         }

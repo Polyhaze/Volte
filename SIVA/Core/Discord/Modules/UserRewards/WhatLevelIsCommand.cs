@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.UserRewards {
         [Command("WhatLevelIs"), Alias("Wli")]
         public async Task WhatLevelIs(uint xp) {
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"{xp.ToString()} XP is level {Math.Sqrt(xp / 50)}"));
+                CreateEmbed(Context, $"{xp.ToString()} XP is level {Math.Sqrt(xp / 50)}"));
         }
     }
 }

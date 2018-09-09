@@ -18,12 +18,12 @@ namespace SIVA.Core.Discord.Modules.Admin.ManageUsers {
             if (targetRole != null) {
                 await user.RemoveRoleAsync(targetRole);
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"Removed the role **{role}** from {user.Mention}!"));
+                    CreateEmbed(Context, $"Removed the role **{role}** from {user.Mention}!"));
                 return;
             }
 
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
+                CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
         }
     }
 }

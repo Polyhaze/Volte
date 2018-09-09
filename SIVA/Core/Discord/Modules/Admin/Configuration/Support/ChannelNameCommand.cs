@@ -21,7 +21,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
             config.SupportChannelName = cName;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
-                Utils.CreateEmbed(Context, $"Set the Support Channel name to **{cName}** for this server."));
+                CreateEmbed(Context, $"Set the Support Channel name to **{cName}** for this server."));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             ServerConfig.Save();
 
             var pcIsEnabled = isEnabled ? "Enabled mass ping checks." : "Disabled mass ping checks.";
-            await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context, pcIsEnabled));
+            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, pcIsEnabled));
         }
     }
 }

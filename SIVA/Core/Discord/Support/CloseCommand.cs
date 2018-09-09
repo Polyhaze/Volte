@@ -12,13 +12,13 @@ namespace SIVA.Core.Discord.Support {
             if (Regex.IsMatch(Context.Channel.Name, "^" +
                                                     ServerConfig.Get(Context.Guild).SupportChannelName
                                                     + "-[0-9]{18}$")) {
-                await Context.Channel.SendMessageAsync("", false, Utils.CreateEmbed(Context,
+                await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context,
                     "Closing ticket in 45 seconds..."));
                 await TicketHandler.DeleteTicket(Context.Channel);
             }
             else {
                 await Context.Channel.SendMessageAsync("", false,
-                    Utils.CreateEmbed(Context, $"**#{Context.Channel.Name}** is not a valid support ticket."));
+                    CreateEmbed(Context, $"**#{Context.Channel.Name}** is not a valid support ticket."));
             }
         }
     }
