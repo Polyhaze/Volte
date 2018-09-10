@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("CreateConfig")]
         public async Task CreateConfig(ulong serverId = 0) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

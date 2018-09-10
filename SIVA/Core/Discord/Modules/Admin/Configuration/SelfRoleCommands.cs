@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
     class SelfRoleCommands : SIVACommand {
+        [Command("SelfRoleAdd"), Alias("Sra")]
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -21,9 +23,10 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this server."));
         }
 
+        [Command("SelfRoleRem"), Alias("Srr")]
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -45,6 +48,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             }
         }
 
+        [Command("SelfRoleList"), Alias("Srl")]
         public async Task SelfRoleList() {
             var roleList = "";
             var config = ServerConfig.Get(Context.Guild);
@@ -58,9 +62,10 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, roleList));
         }
 
+        [Command("SelfRoleClear"), Alias("Src")]
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

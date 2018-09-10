@@ -11,7 +11,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("WelcomeChannel"), Alias("Wc")]
         public async Task WelcomeChannel(SocketTextChannel channel) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -25,7 +25,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("WelcomeMessage"), Alias("Wmsg")]
         public async Task WelcomeMessage([Remainder] string message = "") {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("WelcomeColour"), Alias("WelcomeColor", "Wcl")]
         public async Task WelcomeColour(int r, int g, int b) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -87,7 +87,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("LeavingMessage"), Alias("Lmsg")]
         public async Task LeavingMessage([Remainder]string message = "") {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

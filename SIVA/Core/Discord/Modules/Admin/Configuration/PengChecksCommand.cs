@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("PengChecks")]
         public async Task PengChecks(bool isEnabled) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
@@ -18,7 +18,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             ServerConfig.Save();
 
             var pcIsEnabled = isEnabled ? "Enabled mass ping checks." : "Disabled mass ping checks.";
-            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, pcIsEnabled));
+            await Reply(Context.Channel, CreateEmbed(Context, pcIsEnabled));
         }
     }
 }

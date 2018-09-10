@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         public async Task DeleteMessageOnCommand(bool arg) {
             var config = ServerConfig.Get(Context.Guild);
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
             }
 
             config.DeleteMessageOnCommand = arg;

@@ -42,5 +42,9 @@ namespace SIVA.Helpers {
         public static async Task Send(ISocketMessageChannel c, string m) {
             await c.SendMessageAsync(m);
         }
+
+        public static async Task React(SocketUserMessage m, string rawEmoji) {
+            await m.AddReactionAsync(new Emoji(rawEmoji));
+        }
     }
 }

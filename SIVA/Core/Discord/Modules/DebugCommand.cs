@@ -11,7 +11,7 @@ using SIVA.Core.Files.Objects;
 using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules {
-    public class ScarszDebug : SIVACommand {
+    public class DebugCommand : SIVACommand {
         private static string Execute(string config) {
             var files = new Dictionary<string, Dictionary<string, string>> {
                 {
@@ -45,7 +45,10 @@ namespace SIVA.Core.Discord.Modules {
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
             var resJson = httpClient.Execute(req);
-            return ((JObject)JsonConvert.DeserializeObject(resJson.Content)).GetValue("url").ToString();
+            return ((JObject)JsonConvert
+                .DeserializeObject(resJson.Content))
+                .GetValue("url").ToString()
+                .Replace("scarsz.me", "greem.me");
         }
 
         [Command("ForceDebug")]

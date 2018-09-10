@@ -6,9 +6,10 @@ using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Modules.Admin.Configuration {
     public class ServerPrefixCommand : SIVACommand {
+        [Command("ServerPrefix")]
         public async Task ServerPrefix([Remainder]string prefix) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

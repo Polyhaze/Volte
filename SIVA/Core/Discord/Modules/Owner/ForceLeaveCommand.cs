@@ -7,9 +7,9 @@ using SIVA.Helpers;
 namespace SIVA.Core.Discord.Modules.Owner {
     public class ForceLeaveCommand : SIVACommand {
         [Command("ForceLeave")]
-        public async Task ForceLeave([Remainder] string serverName) {
+        public async Task ForceLeave([Remainder]string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

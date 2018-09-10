@@ -12,5 +12,6 @@ namespace SIVA.Core.Discord {
         protected static Embed CreateEmbed(SocketCommandContext ctx, object desc) => Utils.CreateEmbed(ctx, desc);
         protected async Task Reply(ISocketMessageChannel c, Embed e) => await Utils.Send(c, e);
         protected async Task Reply(ISocketMessageChannel c, string m) => await Utils.Send(c, m);
+        protected async Task React(SocketUserMessage m, string r) => await Utils.React(m, r);
     }
 }

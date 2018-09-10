@@ -22,7 +22,7 @@ namespace SIVA.Core.Discord.Modules.Misc {
 
             if (targetRole == null) {
                 await Context.Channel.SendMessageAsync("", false,
-                    CreateEmbed(Context, $"Something went wrong. Ping the developer of this bot to report."));
+                    CreateEmbed(Context, "Something went wrong. Ping the developer of this bot to report."));
             }
 
             await ((SocketGuildUser) Context.User).AddRoleAsync(targetRole);

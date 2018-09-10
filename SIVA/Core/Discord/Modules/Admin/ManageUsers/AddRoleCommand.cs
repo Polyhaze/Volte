@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.ManageUsers {
         [Command("AddRole"), Alias("Ar")]
         public async Task AddRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

@@ -11,7 +11,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         public async Task AdminRole([Remainder] string roleName) {
             var embed = CreateEmbed(Context, "").ToEmbedBuilder();
             if (!UserUtils.IsServerOwner(Context.User, Context.Guild)) {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 
