@@ -4,16 +4,12 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support
-{
-    public class RoleCommand : SIVACommand
-    {
+namespace SIVA.Core.Discord.Modules.Admin.Configuration.Support {
+    public class RoleCommand : SIVACommand {
         //not registered as a command, as the support system is broken
-        public async Task SupportRole([Remainder]string roleName)
-        {                        
-            if (!UserUtils.IsAdmin(Context))
-            {
-                await Context.Message.AddReactionAsync(new Emoji(RawEmoji.X));
+        public async Task SupportRole([Remainder] string roleName) {
+            if (!UserUtils.IsAdmin(Context)) {
+                await React(Context.Message, RawEmoji.X);
                 return;
             }
 

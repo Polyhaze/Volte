@@ -18,16 +18,15 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             var roletoApply = Context.Guild.Roles
                 .FirstOrDefault(r => r.Name.ToLower().Equals(role.ToLower()));
             if (roletoApply == null) {
-                await Context.Channel.SendMessageAsync("", false,
+                await Reply(Context.Channel,
                     CreateEmbed(Context, $"The specified role, **{role}**, doesn't exist on this server."));
                 return;
             }
 
             config.Autorole = roletoApply.Name;
             ServerConfig.Save();
-            await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(Context,
-                    $"Successfully set **{roletoApply.Name}** as the Autorole for this server."));
+            await Reply(Context.Channel, CreateEmbed(Context,
+                $"Successfully set **{roletoApply.Name}** as the Autorole for this server."));
         }
     }
 }

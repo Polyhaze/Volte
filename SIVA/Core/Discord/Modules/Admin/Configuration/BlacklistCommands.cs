@@ -16,8 +16,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             var config = ServerConfig.Get(Context.Guild);
 
             config.Blacklist.Add(arg);
-            await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(Context, $"Added **{arg}** to the blacklist."));
+            await Reply(Context.Channel, CreateEmbed(Context, $"Added **{arg}** to the blacklist."));
         }
 
         [Command("BlacklistRemove"), Alias("BlRem")]

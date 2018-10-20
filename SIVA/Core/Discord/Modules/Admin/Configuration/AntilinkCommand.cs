@@ -17,7 +17,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             config.Antilink = alIsEnabled;
             ServerConfig.Save();
             var isEnabled = alIsEnabled ? "Antilink has been enabled." : "Antilink has been disabled.";
-            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, isEnabled));
+            await Reply(Context.Channel, CreateEmbed(Context, isEnabled));
         }
     }
 }

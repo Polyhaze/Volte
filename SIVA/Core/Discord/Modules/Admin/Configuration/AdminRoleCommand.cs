@@ -26,7 +26,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 embed.WithDescription($"**{roleName}** doesn't exist in this server.");
             }
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Reply(Context.Channel, embed.Build());
         }
     }
 }
