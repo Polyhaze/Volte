@@ -14,3 +14,4 @@ SIVA/data/SIVA.db
 SIVA/data/users.json
 SIVA/data/serverconfigs.json
 SIVA/data/config.json
+push-all.sh
