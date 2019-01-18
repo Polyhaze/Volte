@@ -8,7 +8,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("SetGame")]
         public async Task SetGame([Remainder] string game) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

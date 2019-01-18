@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
@@ -11,12 +12,12 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         public async Task AdminRole([Remainder] string roleName) {
             var embed = CreateEmbed(Context, "").ToEmbedBuilder();
             if (!UserUtils.IsServerOwner(Context.User, Context.Guild)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
             var config = ServerConfig.Get(Context.Guild);
-            if (Context.Guild.Roles.Any(r => r.Name.ToLower() == roleName.ToLower())) {
+            if (Context.Guild.Roles.Any(r => r.Name.ToLower().Equals(roleName.ToLower()))) {
                 var role = Context.Guild.Roles.First(r => r.Name == roleName);
                 config.AdminRole = role.Id;
                 ServerConfig.Save();

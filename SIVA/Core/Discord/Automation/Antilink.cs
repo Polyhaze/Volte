@@ -18,11 +18,7 @@ namespace SIVA.Core.Discord.Automation {
                  || msg.Content.Contains("discordapp.com/invite/"))
                 && config.Antilink
                 && !author
-                    .Roles
-                    .Contains(ctx
-                        .Guild
-                        .Roles
-                        .FirstOrDefault(r => r.Id == config.AdminRole))) {
+                    .Roles.Contains(ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole))) {
                 await msg.DeleteAsync();
             }
         }

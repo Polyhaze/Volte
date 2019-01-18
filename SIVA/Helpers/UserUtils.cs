@@ -1,7 +1,9 @@
 ﻿using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using System.Linq;
+using Discord;
 using Discord.Commands;
+using SIVA.Core.Discord;
 
 namespace SIVA.Helpers {
     public static class UserUtils {
@@ -10,7 +12,7 @@ namespace SIVA.Helpers {
         /// </summary>
         /// <param name="user">User to check.</param>
         /// <returns>System.Boolean</returns>
-        public static bool IsBotOwner(SocketUser user) {
+        public static bool IsBotOwner(IUser user) {
             return user.Id == Config.GetOwner();
         }
 
@@ -20,7 +22,7 @@ namespace SIVA.Helpers {
         /// <param name="user"></param>
         /// <param name="guild"></param>
         /// <returns>System.Boolean</returns>
-        public static bool IsServerOwner(SocketUser user, SocketGuild guild) {
+        public static bool IsServerOwner(IUser user, IGuild guild) {
             return guild.OwnerId.Equals(user.Id);
         }
 
@@ -30,8 +32,8 @@ namespace SIVA.Helpers {
         /// <param name="user"></param>
         /// <param name="role"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(SocketGuildUser user, SocketRole role) {
-            return user.Roles.Contains(role);
+        public static bool HasRole(IGuildUser user, IRole role) {
+            return user.RoleIds.Contains(role.Id);
         }
 
         /// <summary>
@@ -40,8 +42,8 @@ namespace SIVA.Helpers {
         /// <param name="user"></param>
         /// <param name="roleId"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(SocketGuildUser user, ulong roleId) {
-            return user.Roles.Contains(user.Guild.Roles.First(r => r.Id == roleId));
+        public static bool HasRole(IGuildUser user, ulong roleId) {
+            return user.RoleIds.Contains(roleId);
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace SIVA.Helpers {
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns>System.Boolean</returns>
-        public static bool IsAdmin(SocketCommandContext ctx) {
+        public static bool IsAdmin(SIVAContext ctx) {
             var config = ServerConfig.Get(ctx.Guild);
             var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
             return adminRole != null && ((SocketGuildUser) ctx.User).Roles.Contains(adminRole);

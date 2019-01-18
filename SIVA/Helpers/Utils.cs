@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using SIVA.Core.Discord;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Helpers {
@@ -13,7 +14,7 @@ namespace SIVA.Helpers {
         /// <param name="ctx">So we can set the Author and Embed Colour of the embed.</param>
         /// <param name="content">Embed content.</param>
         /// <returns>Built EmbedBuilder</returns>
-        public static Embed CreateEmbed(SocketCommandContext ctx, object content) {
+        public static Embed CreateEmbed(SIVAContext ctx, object content) {
             var config = ServerConfig.Get(ctx.Guild);
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
@@ -29,7 +30,7 @@ namespace SIVA.Helpers {
         /// <param name="c">Channel to send to</param>
         /// <param name="e">Embed to send</param>
         /// <returns></returns>
-        public static async Task Send(ISocketMessageChannel c, Embed e) {
+        public static async Task Send(IMessageChannel c, Embed e) {
             await c.SendMessageAsync(string.Empty, false, e);
         }
 
@@ -39,7 +40,7 @@ namespace SIVA.Helpers {
         /// <param name="c">Channel to send to</param>
         /// <param name="m">Message to send</param>
         /// <returns></returns>
-        public static async Task Send(ISocketMessageChannel c, string m) {
+        public static async Task Send(IMessageChannel c, string m) {
             await c.SendMessageAsync(m);
         }
 

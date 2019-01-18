@@ -11,8 +11,8 @@ namespace SIVA.Core.Discord.Modules.Moderation {
         [Command("Kick")]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
             var config = ServerConfig.Get(Context.Guild);
-            if (!UserUtils.HasRole(user, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
-                await React(Context.Message, RawEmoji.X);
+            if (!UserUtils.HasRole((SocketGuildUser)Context.User, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

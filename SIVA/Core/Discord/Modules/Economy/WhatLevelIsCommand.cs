@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.UserRewards {
+namespace SIVA.Core.Discord.Modules.Economy {
     public class WhatLevelIsCommand : SIVACommand {
         [Command("WhatLevelIs"), Alias("Wli")]
         public async Task WhatLevelIs(uint xp) {

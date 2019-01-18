@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
 using Discord.WebSocket;
 using SIVA.Core.Files.Objects;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace SIVA.Core.Files.Readers {
         /// </summary>
         /// <param name="guild"></param>
         /// <returns>System.Boolean</returns>
-        public static bool Exists(SocketGuild guild) {
+        public static bool Exists(IGuild guild) {
             return Config.Any(c => c.ServerId == guild.Id);
         }
 
@@ -36,7 +37,7 @@ namespace SIVA.Core.Files.Readers {
         /// </summary>
         /// <param name="guild"></param>
         /// <returns>SIVA.Core.Files.Objects.Server</returns>
-        public static Server Get(SocketGuild guild) {
+        public static Server Get(IGuild guild) {
             return Config.FirstOrDefault(x => x.ServerId == guild.Id) ?? Create(guild);
         }
 
@@ -49,11 +50,11 @@ namespace SIVA.Core.Files.Readers {
         }
 
         /// <summary>
-        ///     Creates a config with the given Discord.WebSocket.SocketGuild.
+        ///     Creates a config with the given IGuild.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>SIVA.Core.FIles.Objects.Server</returns>
-        public static Server Create(SocketGuild guild) {
+        /// <param name="guild">Guild to get the ID of.</param>
+        /// <returns>SIVA.Core.Files.Objects.Server</returns>
+        public static Server Create(IGuild guild) {
             var newConf = new Server {
                 ServerId = guild.Id,
                 GuildOwnerId = GetInstance().GetGuild(guild.Id).OwnerId,

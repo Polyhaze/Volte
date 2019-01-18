@@ -5,7 +5,7 @@ using SIVA.Helpers;
 
 namespace SIVA.Core.Discord.Automation {
     public class Economy {
-        public async Task Give(SocketCommandContext ctx) {
+        public async Task Give(SIVAContext ctx) {
             var config = ServerConfig.Get(ctx.Guild);
             var userData = Users.Get(ctx.User.Id);
             if (config.Leveling) {

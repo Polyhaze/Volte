@@ -4,7 +4,7 @@ using Discord.Commands;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.UserRewards {
+namespace SIVA.Core.Discord.Modules.Economy {
     public class MoneyCommand : SIVACommand {
         [Command("Money"), Alias("$", "Bal")]
         public async Task Money() {

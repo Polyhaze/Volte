@@ -13,7 +13,7 @@ namespace SIVA.Core.Discord.Modules.General {
                 .AddField("Author", "<@168548441939509248>")
                 .AddField("Language", "C# - Discord.Net 2.0.0-beta")
                 .AddField("Server", "https://greem.me/discord")
-                .AddField("Server Count", Context.Client.Guilds.Count)
+                .AddField("Server Count", (await Context.Client.GetGuildsAsync()).Count)
                 .AddField("Invite Me", "https://greem.me/bot")
                 .AddField("Ping", SIVA.GetInstance().Latency)
                 .AddField("Client ID", SIVA.GetInstance().CurrentUser.Id)

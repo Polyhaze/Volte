@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Discord;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Runtime {

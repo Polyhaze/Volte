@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("Antilink"), Alias("Al")]
         public async Task Antilink(bool alIsEnabled) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

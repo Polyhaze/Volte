@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("ServerPrefix")]
         public async Task ServerPrefix([Remainder]string prefix) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("BlacklistAdd"), Alias("BlAdd")]
         public async Task BlacklistAdd([Remainder] string arg) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -22,7 +22,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("BlacklistRemove"), Alias("BlRem")]
         public async Task BlacklistRemove([Remainder] string arg) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("BlacklistClear"), Alias("BlCl")]
         public async Task BlacklistClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

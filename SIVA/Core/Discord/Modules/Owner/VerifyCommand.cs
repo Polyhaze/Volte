@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("Verify")]
         public async Task Verify(ulong guildId = 0) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("CustomCommandAdd"), Alias("Cca")]
         public async Task CustomCommandAdd(string name, [Remainder] string response) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -33,7 +33,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
                 .WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB)
                 .WithAuthor(Context.User);
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("CustomCommandClear"), Alias("Ccc")]
         public async Task CustomCommandClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

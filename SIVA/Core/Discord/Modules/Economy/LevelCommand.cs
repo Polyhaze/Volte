@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 using SIVA.Helpers;
 
-namespace SIVA.Core.Discord.Modules.UserRewards {
+namespace SIVA.Core.Discord.Modules.Economy {
     public class LevelCommand : SIVACommand {
         [Command("Level")]
         public async Task Level(SocketGuildUser user = null) {

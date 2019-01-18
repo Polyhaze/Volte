@@ -3,7 +3,6 @@ using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
     public class SIVA {
-        public static string GetPatreonLink() => "https://patreon.com/_SIVA";
         public static Log GetLogger() => Log.GetLogger();
         public static SIVAHandler GetEventHandler() => DiscordLogin.Handler;
         public static DiscordSocketClient GetInstance() => DiscordLogin.Client;
@@ -15,10 +14,7 @@ namespace SIVA.Core.Discord {
         /// </summary>
         public SIVA() {
             GetLogger().PrintVersion();
-            DiscordLogin
-                .LoginAsync()
-                .GetAwaiter()
-                .GetResult();
+            DiscordLogin.LoginAsync().GetAwaiter().GetResult();
         }
     }
 }

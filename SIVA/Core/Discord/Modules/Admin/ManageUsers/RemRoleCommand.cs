@@ -10,7 +10,7 @@ namespace SIVA.Core.Discord.Modules.Admin.ManageUsers {
         [Command("RemRole"), Alias("Rr")]
         public async Task RemRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

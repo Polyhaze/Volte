@@ -9,7 +9,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
         [Command("SetStatus")]
         public async Task SetStatus([Remainder] string status) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

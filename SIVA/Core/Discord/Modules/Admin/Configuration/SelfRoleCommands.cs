@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("SelfRoleAdd"), Alias("Sra")]
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -26,7 +26,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("SelfRoleRem"), Alias("Srr")]
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
         [Command("SelfRoleClear"), Alias("Src")]
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.Message, RawEmoji.X);
+                await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 

@@ -15,14 +15,14 @@ namespace SIVA.Core.Discord {
     public class SIVAHandler {
         private DiscordSocketClient _client;
         private CommandService _service;
-        private Log _logger = new Log();
+        private Log _logger = SIVA.GetLogger();
 
-        public IServiceProvider BuildServiceProvider() => new ServiceCollection()
+        private IServiceProvider BuildServiceProvider() => 
+            new ServiceCollection()
             .AddSingleton(_client)
             .AddSingleton(_service)
             .AddSingleton<SIVAHandler>()
             .BuildServiceProvider();
-
 
         public async Task Init() {
             var config = new CommandServiceConfig {
@@ -33,7 +33,7 @@ namespace SIVA.Core.Discord {
             };
             _client = SIVA.GetInstance();
             _service = new CommandService(config);
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
             _client.UserJoined += new Welcome().Join;
@@ -58,7 +58,7 @@ namespace SIVA.Core.Discord {
 
         public async Task HandleMessageOrCommand(SocketMessage s) {
             var msg = (SocketUserMessage) s;
-            var ctx = new SocketCommandContext(_client, msg);
+            var ctx = new SIVAContext(_client, msg);
             await new Blacklist().CheckMessageForBlacklistedWords(s);
             await new Antilink().CheckMessageForInvite(s);
             await new Economy().Give(ctx);
@@ -81,7 +81,7 @@ namespace SIVA.Core.Discord {
 
 
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
-                var result = await _service.ExecuteAsync(ctx, argPos, BuildServiceProvider());
+                var result = await _service.ExecuteAsync(ctx, argPos, null);
 
                 if (!result.IsSuccess && result.ErrorReason != "Unknown command.") {
                     string reason;
@@ -143,7 +143,7 @@ namespace SIVA.Core.Discord {
             }
         }
 
-        private void OnCommand(IResult res, SocketCommandContext ctx) {
+        private void OnCommand(IResult res, SIVAContext ctx) {
             if (Config.GetLogAllCommands()) {
                 if (res.IsSuccess) {
                     _logger.Info($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
