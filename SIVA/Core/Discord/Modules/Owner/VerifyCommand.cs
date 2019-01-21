@@ -15,13 +15,13 @@ namespace SIVA.Core.Discord.Modules.Owner {
 
             if (guildId == 0) guildId = Context.Guild.Id;
 
-            var config = ServerConfig.Get(SIVA.GetInstance().GetGuild(guildId));
+            var config = ServerConfig.Get(SIVA.Client.GetGuild(guildId));
 
             config.VerifiedGuild = true;
             ServerConfig.Save();
             await Context.Channel.SendMessageAsync("", false,
                 CreateEmbed(Context,
-                    $"Successfully verified the guild **{SIVA.GetInstance().GetGuild(guildId).Name}**."));
+                    $"Successfully verified the guild **{SIVA.Client.GetGuild(guildId).Name}**."));
         }
     }
 }

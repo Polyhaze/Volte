@@ -15,8 +15,8 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 return;
             }
 
-            await SIVA.GetInstance().LogoutAsync();
-            await SIVA.GetInstance().StopAsync();
+            await SIVA.Client.LogoutAsync();
+            await SIVA.Client.StopAsync();
             Environment.Exit(0);
         }
     }

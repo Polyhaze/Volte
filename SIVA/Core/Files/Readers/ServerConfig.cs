@@ -57,7 +57,7 @@ namespace SIVA.Core.Files.Readers {
         public static Server Create(IGuild guild) {
             var newConf = new Server {
                 ServerId = guild.Id,
-                GuildOwnerId = GetInstance().GetGuild(guild.Id).OwnerId,
+                GuildOwnerId = Client.GetGuild(guild.Id).OwnerId,
                 Autorole = string.Empty,
                 SupportChannelName = string.Empty,
                 SupportRole = "Support",

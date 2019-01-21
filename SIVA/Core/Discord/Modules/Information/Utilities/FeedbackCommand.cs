@@ -16,7 +16,7 @@ namespace SIVA.Core.Discord.Modules.Information.Utilities {
                 .WithDescription($"```{feedback}```")
                 .WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB)
                 .WithTitle($"Feedback from {Context.User.Username}#{Context.User.Discriminator}");
-            var channel = SIVA.GetInstance().GetGuild(405806471578648588).GetTextChannel(415182876326232064);
+            var channel = SIVA.Client.GetGuild(405806471578648588).GetTextChannel(415182876326232064);
             await channel.SendMessageAsync("", false, embed.Build());
         }
     }

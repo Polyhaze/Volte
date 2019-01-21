@@ -23,7 +23,7 @@ namespace SIVA.Core.Discord.Automation {
                     .WithThumbnailUrl(user.Guild.IconUrl)
                     .WithCurrentTimestamp();
 
-                await SIVA.GetInstance().GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
+                await SIVA.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
                     .SendMessageAsync("", false, embed.Build());
             }
         }
@@ -45,7 +45,7 @@ namespace SIVA.Core.Discord.Automation {
                     .WithThumbnailUrl(user.Guild.IconUrl)
                     .WithCurrentTimestamp();
 
-                await SIVA.GetInstance().GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
+                await SIVA.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
                     .SendMessageAsync("", false, embed.Build());
             }
         }

@@ -12,7 +12,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 return;
             }
 
-            await SIVA.GetInstance().SetGameAsync(game);
+            await SIVA.Client.SetGameAsync(game);
             await Context.Channel.SendMessageAsync("", false,
                 CreateEmbed(Context, $"Set the bot's game to **{game}**."));
         }

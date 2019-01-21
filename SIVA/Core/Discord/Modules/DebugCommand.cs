@@ -56,7 +56,7 @@ namespace SIVA.Core.Discord.Modules {
         public async Task ForceDebug(ulong serverId) {
             await Context.Channel.SendMessageAsync("", false,
                 CreateEmbed(Context,
-                    CreateConfigString(ServerConfig.Get(SIVA.GetInstance().GetGuild(serverId)))
+                    CreateConfigString(ServerConfig.Get(SIVA.Client.GetGuild(serverId)))
                 )
             );
         }

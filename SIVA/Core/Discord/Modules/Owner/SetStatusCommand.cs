@@ -19,23 +19,23 @@ namespace SIVA.Core.Discord.Modules.Owner {
             embed.WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB);
             switch (status.ToLower()) {
                 case "dnd":
-                    await SIVA.GetInstance().SetStatusAsync(UserStatus.DoNotDisturb);
+                    await SIVA.Client.SetStatusAsync(UserStatus.DoNotDisturb);
                     embed.WithDescription("Set the status to Do Not Disturb.");
                     break;
                 case "idle":
-                    await SIVA.GetInstance().SetStatusAsync(UserStatus.Idle);
+                    await SIVA.Client.SetStatusAsync(UserStatus.Idle);
                     embed.WithDescription("Set the status to Idle.");
                     break;
                 case "invisible":
-                    await SIVA.GetInstance().SetStatusAsync(UserStatus.Invisible);
+                    await SIVA.Client.SetStatusAsync(UserStatus.Invisible);
                     embed.WithDescription("Set the status to Invisible.");
                     break;
                 case "online":
-                    await SIVA.GetInstance().SetStatusAsync(UserStatus.Online);
+                    await SIVA.Client.SetStatusAsync(UserStatus.Online);
                     embed.WithDescription("Set the status to Online.");
                     break;
                 default:
-                    await SIVA.GetInstance().SetStatusAsync(UserStatus.Online);
+                    await SIVA.Client.SetStatusAsync(UserStatus.Online);
                     embed.WithDescription(
                         "Your option wasn't known, so I set the status to Online.\nAvailable options for this command are `dnd`, `idle`, `invisible`, or `online`.");
                     break;
