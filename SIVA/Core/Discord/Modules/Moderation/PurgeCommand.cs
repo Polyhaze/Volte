@@ -10,7 +10,7 @@ using SIVA.Helpers;
 namespace SIVA.Core.Discord.Modules.Moderation {
     public class PurgeCommand : SIVACommand {
 
-        [Command("purge"), Alias("clear", "clean", "")]
+        [Command("Purge"), Alias("clear", "clean")]
         public async Task Purge(int count) {
             var config = ServerConfig.Get(Context.Guild);
             if (!UserUtils.HasRole((SocketGuildUser)Context.User, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
@@ -19,7 +19,7 @@ namespace SIVA.Core.Discord.Modules.Moderation {
             }
 
             var toPurge = new List<ulong>();
-            Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, count)
+            Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, count + 1)
                 .ForEach(m => toPurge.Add(m.First().Id));
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(toPurge);
         }

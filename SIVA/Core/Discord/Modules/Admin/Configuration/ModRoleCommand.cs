@@ -17,7 +17,7 @@ namespace SIVA.Core.Discord.Modules.Admin.Configuration {
             }
 
             if (Context.Guild.Roles.Any(r => r.Name.ToLower() == roleName.ToLower())) {
-                var role = Context.Guild.Roles.First(r => r.Name == roleName);
+                var role = Context.Guild.Roles.First(r => r.Name.ToLower() == roleName.ToLower());
                 config.ModRole = role.Id;
                 ServerConfig.Save();
                 embed.WithDescription($"Set **{role.Name}** as the Moderator role for this server.");

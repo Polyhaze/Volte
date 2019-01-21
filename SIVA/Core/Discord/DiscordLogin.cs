@@ -1,12 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using SIVA.Core.Discord.Automation;
 using SIVA.Core.Files.Readers;
 using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
     public class DiscordLogin {
+        
         public static DiscordSocketClient Client;
         public static readonly SIVAHandler Handler = new SIVAHandler();
         public static readonly Log Logger = new Log();
@@ -45,5 +50,6 @@ namespace SIVA.Core.Discord {
                     throw new InvalidDataException();
             }
         }
+        
     }
 }

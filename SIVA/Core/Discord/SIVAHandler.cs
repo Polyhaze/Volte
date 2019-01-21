@@ -17,35 +17,17 @@ namespace SIVA.Core.Discord {
         private CommandService _service;
         private Log _logger = SIVA.GetLogger();
 
-        private IServiceProvider BuildServiceProvider() =>
-            new ServiceCollection()
-                .AddSingleton<AntilinkService>()
-                .AddSingleton<AutoroleService>()
-                .AddSingleton<BlacklistService>()
-                .AddSingleton<EconomyService>()
-                .AddSingleton<WelcomeService>()
-                .AddSingleton(_client)
-                .AddSingleton(_service)
-                .AddSingleton(this)
-                .BuildServiceProvider();
-
-        public IServiceProvider ServiceProvider => BuildServiceProvider();
+        private readonly IServiceProvider _services = SIVA.ServiceProvider;
 
         public async Task Init() {
-            var config = new CommandServiceConfig {
-                IgnoreExtraArgs = true,
-                DefaultRunMode = RunMode.Async,
-                CaseSensitiveCommands = false,
-                LogLevel = LogSeverity.Verbose
-            };
             _client = SIVA.GetInstance();
-            _service = new CommandService(config);
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
+            _service = SIVA.ServiceProvider.GetRequiredService<CommandService>();
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
-            _client.UserJoined += ServiceProvider.GetRequiredService<WelcomeService>().Join;
-            _client.UserJoined += ServiceProvider.GetRequiredService<AutoroleService>().Apply;
-            _client.UserLeft += ServiceProvider.GetRequiredService<WelcomeService>().Leave;
+            _client.UserJoined += _services.GetRequiredService<WelcomeService>().Join;
+            _client.UserJoined += _services.GetRequiredService<AutoroleService>().Apply;
+            _client.UserLeft += _services.GetRequiredService<WelcomeService>().Leave;
             _client.Ready += OnReady;
         }
 
@@ -66,9 +48,9 @@ namespace SIVA.Core.Discord {
         public async Task HandleMessageOrCommand(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var ctx = new SIVAContext(_client, msg);
-            await ServiceProvider.GetRequiredService<BlacklistService>().CheckMessageForBlacklistedWords(s);
-            await ServiceProvider.GetRequiredService<AntilinkService>().CheckMessageForInvite(s);
-            await ServiceProvider.GetRequiredService<EconomyService>().Give(ctx);
+            await _services.GetRequiredService<BlacklistService>().CheckMessageForBlacklistedWords(s);
+            await _services.GetRequiredService<AntilinkService>().CheckMessageForInvite(s);
+            await _services.GetRequiredService<EconomyService>().Give(ctx);
             //await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
