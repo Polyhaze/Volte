@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Automation {
-    public class Autorole {
+    public class AutoroleService {
         public async Task Apply(SocketGuildUser user) {
             var config = ServerConfig.Get(user.Guild);
             if (!string.IsNullOrEmpty(config.Autorole)) {

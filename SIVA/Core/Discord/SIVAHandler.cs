@@ -17,12 +17,19 @@ namespace SIVA.Core.Discord {
         private CommandService _service;
         private Log _logger = SIVA.GetLogger();
 
-        private IServiceProvider BuildServiceProvider() => 
+        private IServiceProvider BuildServiceProvider() =>
             new ServiceCollection()
-            .AddSingleton(_client)
-            .AddSingleton(_service)
-            .AddSingleton<SIVAHandler>()
-            .BuildServiceProvider();
+                .AddSingleton<AntilinkService>()
+                .AddSingleton<AutoroleService>()
+                .AddSingleton<BlacklistService>()
+                .AddSingleton<EconomyService>()
+                .AddSingleton<WelcomeService>()
+                .AddSingleton(_client)
+                .AddSingleton(_service)
+                .AddSingleton(this)
+                .BuildServiceProvider();
+
+        public IServiceProvider ServiceProvider => BuildServiceProvider();
 
         public async Task Init() {
             var config = new CommandServiceConfig {
@@ -36,9 +43,9 @@ namespace SIVA.Core.Discord {
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), BuildServiceProvider());
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;
-            _client.UserJoined += new Welcome().Join;
-            _client.UserJoined += new Autorole().Apply;
-            _client.UserLeft += new Welcome().Leave;
+            _client.UserJoined += ServiceProvider.GetRequiredService<WelcomeService>().Join;
+            _client.UserJoined += ServiceProvider.GetRequiredService<AutoroleService>().Apply;
+            _client.UserLeft += ServiceProvider.GetRequiredService<WelcomeService>().Leave;
             _client.Ready += OnReady;
         }
 
@@ -59,15 +66,15 @@ namespace SIVA.Core.Discord {
         public async Task HandleMessageOrCommand(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var ctx = new SIVAContext(_client, msg);
-            await new Blacklist().CheckMessageForBlacklistedWords(s);
-            await new Antilink().CheckMessageForInvite(s);
-            await new Economy().Give(ctx);
+            await ServiceProvider.GetRequiredService<BlacklistService>().CheckMessageForBlacklistedWords(s);
+            await ServiceProvider.GetRequiredService<AntilinkService>().CheckMessageForInvite(s);
+            await ServiceProvider.GetRequiredService<EconomyService>().Give(ctx);
             //await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;
             var config = ServerConfig.Get(ctx.Guild);
             Users.Get(s.Author.Id);
             var prefix = config.CommandPrefix == string.Empty ? Config.GetCommandPrefix() : config.CommandPrefix;
-            
+
             if (config.EmbedColourR == 0 && config.EmbedColourG == 0 && config.EmbedColourB == 0) {
                 config.EmbedColourR = 112;
                 config.EmbedColourG = 0;
@@ -164,11 +171,12 @@ namespace SIVA.Core.Discord {
                     _logger.Error("-------------------------------------------------");
                 }
             }
-            
+
             try {
                 File.AppendAllText("Commands.log",
                     $"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})\n");
-                File.AppendAllText("Commands.log", $"--|     -Command Issued: {ctx.Message.Content} ({ctx.Message.Id})\n");
+                File.AppendAllText("Commands.log",
+                    $"--|     -Command Issued: {ctx.Message.Content} ({ctx.Message.Id})\n");
                 File.AppendAllText("Commands.log",
                     $"--|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})\n");
                 File.AppendAllText("Commands.log",

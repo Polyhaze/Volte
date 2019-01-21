@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Automation {
-    public class Welcome {
+    public class WelcomeService {
         public async Task Join(SocketGuildUser user) {
             var config = ServerConfig.Get(user.Guild);
             if (string.IsNullOrEmpty(config.WelcomeMessage)) return; //we don't want to send an empty join message

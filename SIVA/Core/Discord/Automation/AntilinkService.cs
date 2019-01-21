@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using SIVA.Core.Files.Readers;
 
 namespace SIVA.Core.Discord.Automation {
-    public class Antilink {
+    public class AntilinkService {
         public async Task CheckMessageForInvite(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var author = (SocketGuildUser) msg.Author;

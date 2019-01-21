@@ -5,7 +5,7 @@ using SIVA.Core.Files.Readers;
 using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord.Automation {
-    public class Blacklist {
+    public class BlacklistService {
         public async Task CheckMessageForBlacklistedWords(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var ctx = new SocketCommandContext(SIVA.GetInstance(), msg);

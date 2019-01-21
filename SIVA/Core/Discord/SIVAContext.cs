@@ -11,6 +11,7 @@ namespace SIVA.Core.Discord {
         public SIVAContext(DiscordSocketClient client, IUserMessage msg) {
             Client = client;
             Guild = (msg.Channel as SocketGuildChannel)?.Guild;
+            SMessage = msg as SocketUserMessage;
             Channel = msg.Channel as SocketTextChannel;
             User = msg.Author as SocketUser;
             Message = msg;
