@@ -13,15 +13,13 @@ using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
     public class SIVAHandler {
-        private DiscordSocketClient _client;
-        private CommandService _service;
-        private Log _logger = SIVA.GetLogger();
+        private readonly DiscordSocketClient _client = SIVA.Client;
+        private readonly CommandService _service = SIVA.CommandService;
+        private readonly Log _logger = SIVA.GetLogger();
 
         private readonly IServiceProvider _services = SIVA.ServiceProvider;
 
         public async Task Init() {
-            _client = SIVA.Client;
-            _service = SIVA.ServiceProvider.GetRequiredService<CommandService>();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += Guilds;

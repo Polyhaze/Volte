@@ -7,17 +7,16 @@ using System.Linq;
 namespace SIVA.Core.Discord.Modules.Owner {
     public class SetStreamCommand : SIVACommand {
         [Command("SetStream")]
-        public async Task SetStream(string twitchUrl, [Remainder] string streamName) {
+        public async Task SetStream(string streamer, [Remainder] string streamName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
-            var twitchStreamer = twitchUrl.Split(".tv/").ToList().Last();
-            await SIVA.Client.SetGameAsync(streamName, twitchUrl, ActivityType.Streaming);
+            await SIVA.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
             await Context.Channel.SendMessageAsync("", false,
                 CreateEmbed(Context,
-                    $"Set the bot's stream to **{streamName}**, and the twitch URL to [{twitchStreamer}]({twitchUrl})."));
+                    $"Set the bot's stream to **{streamName}**, and the twitch URL to **[{streamer}](https://twitch.tv/{streamer})**."));
         }
     }
 }

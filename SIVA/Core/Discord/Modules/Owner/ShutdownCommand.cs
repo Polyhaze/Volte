@@ -15,6 +15,7 @@ namespace SIVA.Core.Discord.Modules.Owner {
                 return;
             }
 
+            await Reply(Context.Channel, CreateEmbed(Context, $"Goodbye! {RawEmoji.WAVE}"));
             await SIVA.Client.LogoutAsync();
             await SIVA.Client.StopAsync();
             Environment.Exit(0);

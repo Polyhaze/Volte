@@ -11,13 +11,17 @@ using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
     public class SIVA {
-        public static IServiceProvider ServiceProvider = BuildServiceProvider();
+        public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
+
+        public static readonly CommandService CommandService = ServiceProvider.GetRequiredService<CommandService>();
+
         public static Log GetLogger() => Runtime.Log.GetLogger();
-        public static readonly DiscordSocketClient Client = 
-            new DiscordSocketClient(new DiscordSocketConfig {LogLevel = LogSeverity.Verbose});
+
+        public static readonly DiscordSocketClient Client = ServiceProvider.GetRequiredService<DiscordSocketClient>();
+
         public static readonly SIVAHandler Handler = new SIVAHandler();
         public static readonly Log Logger = new Log();
-        
+
         /// <summary>
         ///     WARNING:
         ///     Instantiating this object will start a completely new bot instance.
@@ -27,26 +31,33 @@ namespace SIVA.Core.Discord {
             GetLogger().PrintVersion();
             LoginAsync().GetAwaiter().GetResult();
         }
-        
+
         private static IServiceProvider BuildServiceProvider() {
-            var commandServiceConfig = new CommandServiceConfig {
-                IgnoreExtraArgs = true,
-                DefaultRunMode = RunMode.Async,
-                CaseSensitiveCommands = false,
-                LogLevel = LogSeverity.Verbose
-            };
-            return new ServiceCollection()
-                .AddSingleton<AntilinkService>()
-                .AddSingleton<AutoroleService>()
-                .AddSingleton<BlacklistService>()
-                .AddSingleton<EconomyService>()
-                .AddSingleton<WelcomeService>()
-                .AddSingleton(Handler)
-                .AddSingleton(new CommandService(commandServiceConfig))
-                .AddSingleton(Client)
-                .BuildServiceProvider();
+            
+            var c = new ServiceCollection();
+            c.AddSingleton<AntilinkService>();
+                c.AddSingleton<AutoroleService>();
+                c.AddSingleton<BlacklistService>();
+                c.AddSingleton<EconomyService>();
+                c.AddSingleton<WelcomeService>();
+                c.AddSingleton(typeof(SIVAHandler), new SIVAHandler());
+                
+                c.AddSingleton(typeof(CommandService), 
+                    new CommandService(new CommandServiceConfig {
+                    IgnoreExtraArgs = true,
+                    DefaultRunMode = RunMode.Async,
+                    CaseSensitiveCommands = false,
+                    LogLevel = LogSeverity.Verbose
+                }));
+                
+                c.AddSingleton(typeof(DiscordSocketClient), 
+                    new DiscordSocketClient(new DiscordSocketConfig {
+                        LogLevel = LogSeverity.Verbose
+                    }));
+                
+                return c.BuildServiceProvider();
         }
-        
+
         public static async Task LoginAsync() {
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
