@@ -5,7 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using SIVA.Core.Discord.Automation;
+using SIVA.Core.Services;
 using SIVA.Core.Files.Readers;
 using SIVA.Core.Runtime;
 
@@ -34,23 +34,22 @@ namespace SIVA.Core.Discord {
 
         private static IServiceProvider BuildServiceProvider() {
             
-            var c = new ServiceCollection();
-            c.AddSingleton<AntilinkService>();
-                c.AddSingleton<AutoroleService>();
-                c.AddSingleton<BlacklistService>();
-                c.AddSingleton<EconomyService>();
-                c.AddSingleton<WelcomeService>();
-                c.AddSingleton(typeof(SIVAHandler), new SIVAHandler());
-                
-                c.AddSingleton(typeof(CommandService), 
+            var c = new ServiceCollection()
+                .AddSingleton<AntilinkService>()
+                .AddSingleton<AutoroleService>()
+                .AddSingleton<BlacklistService>()
+                .AddSingleton<EconomyService>()
+                .AddSingleton<WelcomeService>()
+                .AddSingleton<DatabaseService>()
+                .AddSingleton(typeof(SIVAHandler), new SIVAHandler())
+                .AddSingleton(typeof(CommandService), 
                     new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,
                     CaseSensitiveCommands = false,
                     LogLevel = LogSeverity.Verbose
-                }));
-                
-                c.AddSingleton(typeof(DiscordSocketClient), 
+                }))
+                .AddSingleton(typeof(DiscordSocketClient), 
                     new DiscordSocketClient(new DiscordSocketConfig {
                         LogLevel = LogSeverity.Verbose
                     }));

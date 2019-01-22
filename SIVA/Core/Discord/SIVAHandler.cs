@@ -7,8 +7,9 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using SIVA.Core.Discord.Automation;
+using SIVA.Core.Services;
 using SIVA.Core.Files.Readers;
+using SIVA.Core.Modules;
 using SIVA.Core.Runtime;
 
 namespace SIVA.Core.Discord {
@@ -46,8 +47,8 @@ namespace SIVA.Core.Discord {
         public async Task HandleMessageOrCommand(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var ctx = new SIVAContext(_client, msg);
-            await _services.GetRequiredService<BlacklistService>().CheckMessageForBlacklistedWords(s);
-            await _services.GetRequiredService<AntilinkService>().CheckMessageForInvite(s);
+            await _services.GetRequiredService<BlacklistService>().CheckMessage(s);
+            await _services.GetRequiredService<AntilinkService>().CheckMessage(s);
             await _services.GetRequiredService<EconomyService>().Give(ctx);
             //await SupportMessageListener.Check(s);
             if (ctx.User.IsBot) return;

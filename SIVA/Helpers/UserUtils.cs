@@ -4,6 +4,7 @@ using System.Linq;
 using Discord;
 using Discord.Commands;
 using SIVA.Core.Discord;
+using SIVA.Core.Modules;
 
 namespace SIVA.Helpers {
     public static class UserUtils {

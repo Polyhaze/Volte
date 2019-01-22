@@ -5,6 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SIVA.Core.Discord;
 using SIVA.Core.Files.Readers;
+using SIVA.Core.Modules;
 
 namespace SIVA.Helpers {
     public static class Utils {
