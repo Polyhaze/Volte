@@ -33,7 +33,6 @@ namespace SIVA.Core.Discord {
         }
 
         private static IServiceProvider BuildServiceProvider() {
-            
             var c = new ServiceCollection()
                 .AddSingleton<AntilinkService>()
                 .AddSingleton<AutoroleService>()
@@ -41,20 +40,18 @@ namespace SIVA.Core.Discord {
                 .AddSingleton<EconomyService>()
                 .AddSingleton<WelcomeService>()
                 .AddSingleton<DatabaseService>()
-                .AddSingleton(typeof(SIVAHandler), new SIVAHandler())
-                .AddSingleton(typeof(CommandService), 
-                    new CommandService(new CommandServiceConfig {
+                .AddSingleton<SIVAHandler>()
+                .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,
                     CaseSensitiveCommands = false,
                     LogLevel = LogSeverity.Verbose
                 }))
-                .AddSingleton(typeof(DiscordSocketClient), 
-                    new DiscordSocketClient(new DiscordSocketConfig {
-                        LogLevel = LogSeverity.Verbose
-                    }));
-                
-                return c.BuildServiceProvider();
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig {
+                    LogLevel = LogSeverity.Verbose
+                }));
+
+            return c.BuildServiceProvider();
         }
 
         public static async Task LoginAsync() {

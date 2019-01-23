@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SIVA.Core.Files.Objects {
-    public class Server : Object {
-        #region JsonValueDeclaration
+    public class Server : object {
+        #region ValueDeclaration
 
         public Server() {
             AntilinkIgnoredChannels = new List<ulong>();

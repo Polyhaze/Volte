@@ -69,7 +69,7 @@ namespace SIVA.Core.Discord {
 
 
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
-                var result = await _service.ExecuteAsync(ctx, argPos, null);
+                var result = await _service.ExecuteAsync(ctx, argPos, _services);
 
                 if (!result.IsSuccess && result.ErrorReason != "Unknown command.") {
                     string reason;

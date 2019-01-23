@@ -17,5 +17,10 @@ namespace SIVA.Core.Services {
                 
             }
         }
+        public Server GetConfig(ulong id) {
+            return GetConfig(Discord.SIVA.Client.GetGuild(id));
+        }
+        
+        //public void InsertIntoConfig(ulong id, )
     }
 }
