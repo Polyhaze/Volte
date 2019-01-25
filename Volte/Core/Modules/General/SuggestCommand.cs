@@ -4,12 +4,11 @@ using Discord.Commands;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.General {
-    public class SuggestCommand : VolteCommand {
+    public partial class GeneralModule : VolteModule {
         [Command("Suggest")]
         public async Task Suggest() {
-            await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(
-                    Context,
+            await Reply(Context.Channel,
+                CreateEmbed(Context,
                     "You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2)."
                 )
             );

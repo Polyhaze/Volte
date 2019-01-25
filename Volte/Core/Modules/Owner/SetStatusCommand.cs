@@ -6,7 +6,7 @@ using Volte.Core.Files.Readers;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Owner {
-    public class SetStatusCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         [Command("SetStatus")]
         public async Task SetStatus([Remainder] string status) {
             if (!UserUtils.IsBotOwner(Context.User)) {
@@ -15,9 +15,8 @@ namespace Volte.Core.Modules.Owner {
             }
 
             var embed = new EmbedBuilder();
-            var config = ServerConfig.Get(Context.Guild);
+            var config = Db.GetConfig(Context.Guild);
             embed.WithAuthor(Context.User);
-            embed.WithColor(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB);
             switch (status.ToLower()) {
                 case "dnd":
                     await VolteBot.Client.SetStatusAsync(UserStatus.DoNotDisturb);

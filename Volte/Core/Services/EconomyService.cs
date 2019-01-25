@@ -1,25 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Discord;
 using Volte.Core.Files.Readers;
 using Volte.Core.Modules;
 using Volte.Helpers;
 
 namespace Volte.Core.Services {
-    public class EconomyService {
-        public async Task Give(VolteContext ctx) {
-            var config = ServerConfig.Get(ctx.Guild);
-            var userData = Users.Get(ctx.User.Id);
+    internal class EconomyService {
+        internal async Task Give(VolteContext ctx) {
+            var db = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>();
+            var config = db.GetConfig(ctx.Guild.Id);
+            var userData = db.GetUser(ctx.User.Id);
             if (config.Leveling) {
                 var oldLevel = userData.Level;
                 userData.Money += 1;
                 userData.Xp += 5;
-                Users.Save();
-                var newLevel = userData.Level;
+                db.UpdateUser(userData);
 
-                if (oldLevel != newLevel) {
+                if (oldLevel != userData.Level) {
                     var levelUp = await ctx.Channel.SendMessageAsync("", false,
                         Utils.CreateEmbed(ctx,
-                            $"Good job {ctx.User.Mention}! You leveled up to level **{newLevel}**!"));
+                            $"Good job {ctx.User.Mention}! You leveled up to level **{userData.Level}**!"));
                     await Task.Delay(5000);
                     await levelUp.DeleteAsync();
                 }

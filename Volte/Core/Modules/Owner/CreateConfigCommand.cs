@@ -6,7 +6,7 @@ using Volte.Core.Files.Readers;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Owner {
-    public class CreateConfigCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         [Command("CreateConfig")]
         public async Task CreateConfig(ulong serverId = 0) {
             if (!UserUtils.IsBotOwner(Context.User)) {
@@ -16,10 +16,7 @@ namespace Volte.Core.Modules.Owner {
 
             if (serverId == 0) serverId = Context.Guild.Id;
 
-            var tG = VolteBot.Client.GetGuild(serverId);
-
-            ServerConfig.Get(tG);
-            ServerConfig.Save();
+            Db.GetConfig(serverId);
         }
     }
 }

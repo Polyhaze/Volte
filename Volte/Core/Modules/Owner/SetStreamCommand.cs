@@ -6,7 +6,7 @@ using System.Linq;
 using Volte.Core.Discord;
 
 namespace Volte.Core.Modules.Owner {
-    public class SetStreamCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         [Command("SetStream")]
         public async Task SetStream(string streamer, [Remainder] string streamName) {
             if (!UserUtils.IsBotOwner(Context.User)) {

@@ -6,7 +6,7 @@ using Volte.Core.Discord;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Owner {
-    public class ShutdownCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         // I'm not sure how well this works.
 
         [Command("Shutdown")]

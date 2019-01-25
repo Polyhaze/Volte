@@ -16,10 +16,9 @@ namespace Volte.Helpers {
         /// <param name="content">Embed content.</param>
         /// <returns>Built EmbedBuilder</returns>
         public static Embed CreateEmbed(VolteContext ctx, object content) {
-            var config = ServerConfig.Get(ctx.Guild);
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
-                .WithColor(new Color(config.EmbedColourR, config.EmbedColourG, config.EmbedColourB))
+                .WithColor(new Color(Config.GetSuccessColor()))
                 .WithDescription(content.ToString())
                 .Build();
         }

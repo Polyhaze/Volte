@@ -3,8 +3,10 @@ using Volte.Core.Files.Readers;
 using System.Linq;
 using Discord;
 using Discord.Commands;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Modules;
+using Volte.Core.Services;
 
 namespace Volte.Helpers {
     public static class UserUtils {
@@ -49,12 +51,12 @@ namespace Volte.Helpers {
 
         /// <summary>
         ///     Checks if the user is an admin in the given context.
-        ///     If a server owner has not set their admin role, this will always return true.
+        ///     If a server owner has not set their admin role, this will always return false.
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns>System.Boolean</returns>
         public static bool IsAdmin(VolteContext ctx) {
-            var config = ServerConfig.Get(ctx.Guild);
+            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
             return adminRole != null && ((SocketGuildUser) ctx.User).Roles.Contains(adminRole);
         }

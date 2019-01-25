@@ -6,7 +6,7 @@ using Discord.Commands;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.General {
-    public class ChooseCommand : VolteCommand {
+    public partial class GeneralModule : VolteModule {
         [Command("Choose")]
         [Remarks("Usage: choose {option1|option2|option3|...}")]
         public async Task Choose([Remainder] string message) {

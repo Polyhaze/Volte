@@ -5,7 +5,7 @@ using Discord.Commands;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Economy {
-    public class WhatLevelIsCommand : VolteCommand {
+    public partial class EconomyModule : VolteModule {
         [Command("WhatLevelIs"), Alias("Wli")]
         public async Task WhatLevelIs(uint xp) {
             await Context.Channel.SendMessageAsync("", false,

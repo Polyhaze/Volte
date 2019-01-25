@@ -2,16 +2,18 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Files.Readers;
+using Volte.Core.Modules;
 
 namespace Volte.Core.Services {
-    public class AntilinkService {
-        public async Task CheckMessage(SocketMessage s) {
+    internal class AntilinkService {
+        internal async Task CheckMessage(SocketMessage s) {
             var msg = (SocketUserMessage) s;
             var author = (SocketGuildUser) msg.Author;
-            var ctx = new SocketCommandContext(VolteBot.Client, msg);
-            var config = ServerConfig.Get(ctx.Guild);
+            var ctx = new VolteContext(VolteBot.Client, msg);
+            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
             if ((msg.Content.Contains("dis.gd/")
                  || msg.Content.Contains("discord.gg/")
                  || msg.Content.Contains("discord.io/")

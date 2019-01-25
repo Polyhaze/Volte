@@ -4,7 +4,7 @@ using Discord.Commands;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.General {
-    public class HelpCommand : VolteCommand {
+    public partial class GeneralModule : VolteModule {
         [Command("Help"), Alias("H")]
         public async Task Help() {
             var embed = CreateEmbed(Context,
@@ -14,8 +14,8 @@ namespace Volte.Core.Modules.General {
                 "Full command [documentation](https://greemdev.atlassian.net/wiki/spaces/SIVA/overview)\n" +
                 "**Commands do NOT work in Private Messages.**");
 
-            await Context.Message.AddReactionAsync(new Emoji("☑"));
-            await Context.User.SendMessageAsync("", false, embed);
+            await React(Context.SMessage, RawEmoji.BALLOT_BOX_WITH_CHECK);
+            await Reply(await Context.User.GetOrCreateDMChannelAsync(), embed);
         }
     }
 }

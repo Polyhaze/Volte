@@ -5,7 +5,7 @@ using Volte.Core.Discord;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Owner {
-    public class SetGameCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         [Command("SetGame")]
         public async Task SetGame([Remainder] string game) {
             if (!UserUtils.IsBotOwner(Context.User)) {

@@ -5,7 +5,7 @@ using Volte.Core.Discord;
 using Volte.Core.Files.Readers;
 
 namespace Volte.Core.Modules.General {
-    public class InfoCommand : VolteCommand {
+    public partial class GeneralModule : VolteModule {
         [Command("Info")]
         public async Task Info() {
             var embed = new EmbedBuilder()
@@ -22,7 +22,7 @@ namespace Volte.Core.Modules.General {
                 .WithColor(Config.GetSuccessColor())
                 .Build();
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await Reply(Context.Channel, embed);
         }
     }
 }

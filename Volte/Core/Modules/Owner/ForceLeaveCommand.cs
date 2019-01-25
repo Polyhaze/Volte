@@ -6,7 +6,7 @@ using Volte.Core.Discord;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Owner {
-    public class ForceLeaveCommand : VolteCommand {
+    public partial class OwnerModule : VolteModule {
         [Command("ForceLeave")]
         public async Task ForceLeave([Remainder]string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {

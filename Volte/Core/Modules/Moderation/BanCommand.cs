@@ -7,16 +7,16 @@ using Volte.Core.Files.Readers;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Moderation {
-    public class BanCommand : VolteCommand {
+    public partial class ModerationModule : VolteModule {
         [Command("Ban")]
         public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.") {
-            var config = ServerConfig.Get(Context.Guild);
-            if (!UserUtils.HasRole(user, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
+            var config = Db.GetConfig(Context.Guild);
+            if (!UserUtils.HasRole((SocketGuildUser)Context.User, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }
 
-            await user.GetOrCreateDMChannelAsync().GetAwaiter().GetResult().SendMessageAsync("", false,
+            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", false,
                 CreateEmbed(Context, $"You've been banned from {Context.Guild.Name} for **{reason}**."));
             await Context.Guild.AddBanAsync(
                 user, 0, $"Banned by {Context.User.Username}#{Context.User.Discriminator}");

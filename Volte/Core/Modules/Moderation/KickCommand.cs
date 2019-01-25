@@ -7,10 +7,10 @@ using System.Linq;
 using Discord;
 
 namespace Volte.Core.Modules.Moderation {
-    public class KickCommand : VolteCommand {
+    public partial class ModerationModule : VolteModule {
         [Command("Kick")]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
-            var config = ServerConfig.Get(Context.Guild);
+            var config = Db.GetConfig(Context.Guild);
             if (!UserUtils.HasRole((SocketGuildUser)Context.User, Context.Guild.Roles.FirstOrDefault(r => r.Id == config.ModRole))) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;

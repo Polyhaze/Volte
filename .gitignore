@@ -3,7 +3,7 @@
 Volte/bin/
 Volte/obj/
 Volte/Properties/
-Volte/data/SIVA.db
+Volte/data/Volte.db
 *.user
 *.vspscc
 *.vssscc
