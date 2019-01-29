@@ -30,17 +30,38 @@ namespace Volte.Helpers {
         }
 
         /// <summary>
-        ///     Checks if the given SocketGuildUser has the given SocketRole.
+        ///     Checks if the given IGuildUser has the given IRole.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="role"></param>
         /// <returns>System.Boolean</returns>
         public static bool HasRole(IGuildUser user, IRole role) {
-            return user.RoleIds.Contains(role.Id);
+            return HasRole(user, role.Id);
+        }
+        
+        /// <summary>
+        ///     Checks if the given IUser (casted to IGuildUser) has the given IRole.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="role"></param>
+        /// <returns>System.Boolean</returns>
+        public static bool HasRole(IUser user, IRole role) {
+            return HasRole((IGuildUser)user, role);
+        }
+        
+        /// <summary>
+        ///     Checks if the given IUser (casted to IGuildUser) has the given IRole Id.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roleId"></param>
+        /// <returns>System.Boolean</returns>
+        public static bool HasRole(IUser user, ulong roleId) {
+            return HasRole((IGuildUser)user, roleId);
         }
 
+
         /// <summary>
-        ///     Checks if the given SocketGuildUser has the given SocketRole Id.
+        ///     Checks if the given IGuildUser has the given IRole Id.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="roleId"></param>
