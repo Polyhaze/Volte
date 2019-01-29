@@ -1,6 +1,7 @@
-![SIVA Header](https://assets.greemdev.net/siva-header-0.png)
+![Volte Header](https://assets.greemdev.net/siva-header-0.png)
+[![Build status](https://greem.visualstudio.com/Volte/_apis/build/status/Volte-CI)](https://greem.visualstudio.com/Volte/_build/latest?definitionId=-1)
 
-# SIVA
+# Volte
 
 ## Quick Links 
 
