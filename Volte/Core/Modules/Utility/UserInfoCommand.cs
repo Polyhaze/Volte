@@ -7,6 +7,8 @@ using Volte.Core.Files.Readers;
 namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("UserInfo"), Alias("UI")]
+        [Summary("Shows info for the mentioned user or yourself if none is provided.")]
+        [Remarks("Usage: $userinfo [@user]")]
         public async Task UserInfo(SocketGuildUser user = null) {
             var actualUser = user ?? (SocketGuildUser)Context.User;
             

@@ -9,6 +9,8 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetAvatar")]
+        [Summary("Sets the bot's avatar.")]
+        [Remarks("Usage: $setavatar {url}")]
         public async Task SetAvatar(string url) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);

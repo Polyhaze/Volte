@@ -7,6 +7,7 @@ using Volte.Core.Files.Readers;
 namespace Volte.Core.Modules.General {
     public partial class GeneralModule : VolteModule {
         [Command("Info")]
+        [Summary("Provides basic information about this instance of Volte.")]
         public async Task Info() {
             var embed = new EmbedBuilder()
                 .AddField("Version", "V2.0.0-RELEASE")
@@ -14,7 +15,8 @@ namespace Volte.Core.Modules.General {
                 .AddField("Language", "C# - Discord.Net 2.0.1")
                 .AddField("Server", "https://greemdev.net/discord")
                 .AddField("Server Count", (await Context.Client.GetGuildsAsync()).Count)
-                .AddField("Invite Me", "https://greemdev.net/bot")
+                .AddField("Invite Me", 
+                    $"https://discordapp.com/oauth2/authorize?client_id={VolteBot.Client.CurrentUser.Id}&scope=bot&permissions=8")
                 .AddField("Ping", VolteBot.Client.Latency)
                 .AddField("Client ID", VolteBot.Client.CurrentUser.Id)
                 .WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png")

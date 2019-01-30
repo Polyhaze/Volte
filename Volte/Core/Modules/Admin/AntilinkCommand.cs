@@ -7,6 +7,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("Antilink"), Alias("Al")]
+        [Summary("Enable/Disable Antilink for the current guild.")]
+        [Remarks("Usage: |prefix|antilink {true|false}")]
         public async Task Antilink(bool alIsEnabled) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);

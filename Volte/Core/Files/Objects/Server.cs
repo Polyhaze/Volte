@@ -19,10 +19,10 @@ namespace Volte.Core.Files.Objects {
         public ulong WelcomeChannel { get; set; }
         public string WelcomeMessage { get; set; }
         public string LeavingMessage { get; set; }
-        public int WelcomeColourR { get; set; }
-        public int WelcomeColourG { get; set; }
-        public int WelcomeColourB { get; set; }
-        public bool MassPengChecks { get; set; }
+        public int WelcomeColorR { get; set; }
+        public int WelcomeColorG { get; set; }
+        public int WelcomeColorB { get; set; }
+        public bool MassPingChecks { get; set; }
         public bool Antilink { get; set; }
         public bool VerifiedGuild { get; set; }
         public ulong ModRole { get; set; }

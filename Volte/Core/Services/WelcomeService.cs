@@ -21,7 +21,7 @@ namespace Volte.Core.Services {
             if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeColourR, config.WelcomeColourG, config.WelcomeColourB))
+                    .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
                     .WithDescription(welcomeMessage)
                     .WithThumbnailUrl(user.Guild.IconUrl)
                     .WithCurrentTimestamp();
@@ -43,7 +43,7 @@ namespace Volte.Core.Services {
             if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeColourR, config.WelcomeColourG, config.WelcomeColourB))
+                    .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
                     .WithDescription(leavingMessage)
                     .WithThumbnailUrl(user.Guild.IconUrl)
                     .WithCurrentTimestamp();

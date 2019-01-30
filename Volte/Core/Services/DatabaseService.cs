@@ -68,15 +68,15 @@ namespace Volte.Core.Services {
                 WelcomeChannel = ulong.MinValue,
                 WelcomeMessage = string.Empty,
                 LeavingMessage = string.Empty,
-                WelcomeColourR = 112,
-                WelcomeColourG = 0,
-                WelcomeColourB = 251,
+                WelcomeColorR = 112,
+                WelcomeColorG = 0,
+                WelcomeColorB = 251,
                 Antilink = false,
                 VerifiedGuild = false,
                 DeleteMessageOnCommand = false,
                 ModRole = ulong.MinValue,
                 AdminRole = ulong.MinValue,
-                MassPengChecks = false
+                MassPingChecks = false
             };
         }
         

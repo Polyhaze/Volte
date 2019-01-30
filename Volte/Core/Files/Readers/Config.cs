@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Files.Readers {
@@ -11,7 +12,19 @@ namespace Volte.Core.Files.Readers {
                 Directory.CreateDirectory("data");
 
             if (!File.Exists(ConfigFile)) {
-                Bot = new BotConfig();
+                Bot = new BotConfig {
+                    Token = "token here",
+                    CommandPrefix = "$",
+                    Owner = 0,
+                    Game = "in Volte V2 Code!",
+                    Streamer = "GreemDev",
+                    AppId = "",
+                    AppSecret = "",
+                    SuccessEmbedColor = 0x7000FB,
+                    ErrorEmbedColor = 0xFF0000,
+                    LogAllCommands = true,
+                    BlacklistedServerOwners = new ulong[]{}
+                };
                 var json = JsonConvert.SerializeObject(Bot, Formatting.Indented);
                 File.WriteAllText(ConfigFile, json);
             }
@@ -21,53 +34,26 @@ namespace Volte.Core.Files.Readers {
             }
         }
 
-        public static string GetToken() {
-            return Bot.Token;
-        }
-
-        public static string GetDblToken() {
-            return Bot.DblToken;
-        }
-
-        public static string GetCommandPrefix() {
-            return Bot.CommandPrefix;
-        }
-
-        public static ulong GetOwner() {
-            return Bot.Owner;
-        }
-
-        public static string GetGame() {
-            return Bot.Game;
-        }
-
-        public static string GetStreamer() {
-            return Bot.Streamer;
-        }
-
-        public static uint GetSuccessColor() {
-            return Bot.SuccessEmbedColor;
-        }
-        
-        public static uint GetErrorColour() {
-            return Bot.ErrorEmbedColor;
-        }
-
-        public static bool GetLogAllCommands() {
-            return Bot.LogAllCommands;
-        }
-
-        public static ulong[] GetBlacklistedOwners() {
-            return Bot.BlacklistedServerOwners;
-        }
+        public static string GetToken() => Bot.Token;
+        public static string GetCommandPrefix() => Bot.CommandPrefix;
+        public static ulong GetOwner() => Bot.Owner;
+        public static string GetGame() => Bot.Game;
+        public static string GetStreamer()=> Bot.Streamer;
+        public static string GetAppId() => Bot.AppId;
+        public static string GetAppSecret() => Bot.AppSecret;
+        public static uint GetSuccessColor() => Bot.SuccessEmbedColor;
+        public static uint GetErrorColour() => Bot.ErrorEmbedColor;
+        public static bool GetLogAllCommands() => Bot.LogAllCommands;
+        public static ulong[] GetBlacklistedOwners() => Bot.BlacklistedServerOwners;
 
         private struct BotConfig {
             public string Token;
-            public string DblToken;
             public string CommandPrefix;
             public ulong Owner;
             public string Game;
             public string Streamer;
+            public string AppId;
+            public string AppSecret;
             public uint SuccessEmbedColor;
             public uint ErrorEmbedColor;
             public bool LogAllCommands;

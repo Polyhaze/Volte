@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Core.Discord;
 using Volte.Core.Files.Readers;
 using Volte.Core.Modules;
 
@@ -18,7 +16,7 @@ namespace Volte.Helpers {
         public static Embed CreateEmbed(VolteContext ctx, object content) {
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
-                .WithColor(new Color(Config.GetSuccessColor()))
+                .WithColor(Config.GetSuccessColor())
                 .WithDescription(content.ToString())
                 .Build();
         }
@@ -30,8 +28,8 @@ namespace Volte.Helpers {
         /// <param name="c">Channel to send to</param>
         /// <param name="e">Embed to send</param>
         /// <returns></returns>
-        public static async Task Send(IMessageChannel c, Embed e) {
-            await c.SendMessageAsync(string.Empty, false, e);
+        public static async Task<IUserMessage> Send(IMessageChannel c, Embed e) {
+            return await c.SendMessageAsync(string.Empty, false, e);
         }
 
         /// <summary>
@@ -40,8 +38,8 @@ namespace Volte.Helpers {
         /// <param name="c">Channel to send to</param>
         /// <param name="m">Message to send</param>
         /// <returns></returns>
-        public static async Task Send(IMessageChannel c, string m) {
-            await c.SendMessageAsync(m);
+        public static async Task<IUserMessage> Send(IMessageChannel c, string m) {
+            return await c.SendMessageAsync(m);
         }
 
         public static async Task React(SocketUserMessage m, string rawEmoji) {

@@ -7,9 +7,12 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Economy {
     public partial class EconomyModule : VolteModule {
         [Command("WhatLevelIs"), Alias("Wli")]
+        [Summary("Checks what level the given amount of XP is equal to.")]
+        [Remarks("Usage: |prefix|whatlevelis {xpAmount}")]
         public async Task WhatLevelIs(uint xp) {
-            await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(Context, $"{xp.ToString()} XP is level {Math.Sqrt(xp / 50)}"));
+            await Reply(Context.Channel,
+                // ReSharper disable once PossibleLossOfFraction (we don't care about loss of fraction)
+                CreateEmbed(Context, $"{xp} XP is level {Math.Sqrt(xp / 50)}"));
         }
     }
 }

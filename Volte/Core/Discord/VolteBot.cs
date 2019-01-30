@@ -15,12 +15,12 @@ namespace Volte.Core.Discord {
 
         public static readonly CommandService CommandService = ServiceProvider.GetRequiredService<CommandService>();
 
-        public static Log GetLogger() => Logger;
+        public static Logger GetLogger() => Logger;
 
         public static readonly DiscordSocketClient Client = ServiceProvider.GetRequiredService<DiscordSocketClient>();
 
         private static readonly VolteHandler Handler = new VolteHandler();
-        private static readonly Log Logger = new Log();
+        private static readonly Logger Logger = new Logger();
 
         /// <summary>
         ///     WARNING:
@@ -42,6 +42,7 @@ namespace Volte.Core.Discord {
                 .AddSingleton<DatabaseService>()
                 .AddSingleton<VolteHandler>()
                 .AddSingleton<EventService>()
+                .AddSingleton<DebugService>()
                 .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,

@@ -7,6 +7,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("ServerName")]
+        [Summary("Sets the name of this guild.")]
+        [Remarks("Usage: |prefix|servername {newName}")]
         public async Task ServerName([Remainder] string name) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -14,7 +16,7 @@ namespace Volte.Core.Modules.Admin {
             }
 
             await Context.Guild.ModifyAsync(g => g.Name = name);
-            await Context.Channel.SendMessageAsync("", false,
+            await Reply(Context.Channel,
                 CreateEmbed(Context, $"Set this server's name to **{name}**."));
         }
     }

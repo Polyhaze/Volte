@@ -9,8 +9,10 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("AdminRole")]
+        [Summary("Sets the role able to use Admin commands for the current guild.")]
+        [Remarks("Usage: |prefix|adminrole {roleName}")]
         public async Task AdminRole([Remainder] string roleName) {
-            if (!UserUtils.IsServerOwner(Context.User, Context.Guild)) {
+            if (!UserUtils.IsGuildOwner(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }

@@ -6,6 +6,8 @@ using Discord.WebSocket;
 namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Avatar")]
+        [Summary("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
+        [Remarks("Usage: $avatar [@user]")]
         public async Task Avatar(SocketGuildUser user = null) {
             var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
             if (user == null) {
@@ -15,7 +17,7 @@ namespace Volte.Core.Modules.Utility {
                 embed.WithImageUrl(user.GetAvatarUrl());
             }
             
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Reply(Context.Channel, embed.Build());
 
         }
     }

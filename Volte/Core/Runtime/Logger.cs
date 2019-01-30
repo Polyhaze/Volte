@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace Volte.Core.Runtime {
-    public class Log {
-        public static Log GetLogger() {
-            return new Log();
+    public class Logger {
+        public static Logger GetLogger() {
+            return new Logger();
         }
 
         public void Info(string message) {
@@ -37,7 +37,7 @@ namespace Volte.Core.Runtime {
 
         public void PrintVersion() {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Currently running SIVA V{Version.GetFullVersion()}!");
+            Console.WriteLine($"Currently running Volte V{Version.GetFullVersion()}!");
         }
     }
 }

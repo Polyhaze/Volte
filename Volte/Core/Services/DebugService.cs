@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using Volte.Core.Files.Objects;
-using Volte.Helpers;
 
-namespace Volte.Core.Modules.Utility {
-    public partial class UtilityModule : VolteModule {
-        private static string Execute(string config) {
+namespace Volte.Core.Services {
+    public class DebugService {
+        
+        public string Execute(string config) {
             var files = new Dictionary<string, Dictionary<string, string>> {
                 {
                     "1-Info.txt", new Dictionary<string, string> {
@@ -24,7 +21,7 @@ namespace Volte.Core.Modules.Utility {
                 }, {
                     "2-Server.conf", new Dictionary<string, string> {
                         {
-                            "content", $"{config}"
+                            "content", config
                         }, {
                             "description", "Server config for debug purposes."
                         }
@@ -42,40 +39,9 @@ namespace Volte.Core.Modules.Utility {
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
-            var resJson = httpClient.Execute(req);
             return ((JObject) JsonConvert
-                    .DeserializeObject(resJson.Content))
+                    .DeserializeObject(httpClient.Execute(req).Content))
                 .GetValue("url").ToString();
-        }
-
-        [Command("ForceDebug")]
-        public async Task ForceDebug(ulong serverId) {
-            if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
-                return;
-            }
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    Execute(CreateConfigString(Db.GetConfig(Context.Guild)))
-                )
-            );
-        }
-
-        [Command("Debug")]
-        public async Task Debug() {
-            if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
-                return;
-            }
-            
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    $"{Execute(CreateConfigString(Db.GetConfig(Context.Guild)))}" +
-                    "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/discord)."));
-        }
-
-        private string CreateConfigString(Server config) {
-            return JsonConvert.SerializeObject(config, Formatting.Indented);
         }
     }
 }

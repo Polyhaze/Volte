@@ -6,6 +6,7 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.General {
     public partial class GeneralModule : VolteModule {
         [Command("Suggest")]
+        [Summary("Suggest features for Volte.")]
         public async Task Suggest() {
             await Reply(Context.Channel,
                 CreateEmbed(Context,

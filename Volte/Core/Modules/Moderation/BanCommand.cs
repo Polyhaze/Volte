@@ -1,14 +1,14 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Core.Files.Readers;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
         [Command("Ban")]
+        [Summary("Bans the mentioned user.")]
+        [Remarks("Usage: $ban {@user} [reason]")]
         public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.") {
             var config = Db.GetConfig(Context.Guild);
             if (!UserUtils.HasRole(Context.User, config.ModRole)) {
@@ -19,10 +19,10 @@ namespace Volte.Core.Modules.Moderation {
             await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", false,
                 CreateEmbed(Context, $"You've been banned from {Context.Guild.Name} for **{reason}**."));
             await Context.Guild.AddBanAsync(
-                user, 0, $"Banned by {Context.User.Username}#{Context.User.Discriminator}");
-            await Context.Channel.SendMessageAsync("", false,
+                user, 0, reason);
+            await Reply(Context.Channel,
                 CreateEmbed(Context,
-                    $"Successfully banned **{user.Username}#{user.Discriminator}** from this server."));
+                    $"Successfully banned **{user.Username}#{user.Discriminator}** from this guild."));
         }
     }
 }

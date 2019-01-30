@@ -7,6 +7,8 @@ using Volte.Core.Files.Readers;
 namespace Volte.Core.Modules.Economy {
     public partial class EconomyModule : VolteModule {
         [Command("Pay")]
+        [Summary("Pays the given user x amount of money.")]
+        [Remarks("Usage: |prefix|pay {@user} {amount}")]
         public async Task Pay(SocketGuildUser user, int moneyToPay) {
             var embed = CreateEmbed(Context, "")
                 .ToEmbedBuilder()

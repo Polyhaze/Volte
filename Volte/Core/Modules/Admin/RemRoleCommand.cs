@@ -8,6 +8,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("RemRole"), Alias("Rr")]
+        [Summary("Remove a role from the mentioned user.")]
+        [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         public async Task RemRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);

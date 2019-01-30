@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using Volte.Core.Files.Readers;
 using System.Linq;
+using System.Net;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,8 +26,26 @@ namespace Volte.Helpers {
         /// <param name="user"></param>
         /// <param name="guild"></param>
         /// <returns>System.Boolean</returns>
-        public static bool IsServerOwner(IUser user, IGuild guild) {
+        public static bool IsGuildOwner(IUser user, IGuild guild) {
             return guild.OwnerId.Equals(user.Id);
+        }
+
+        /// <summary>
+        ///     Checks if the contextual user is the owner of the contextual guild.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
+        public static bool IsGuildOwner(VolteContext ctx) {
+            return ctx.Guild.OwnerId.Equals(ctx.User.Id);
+        }
+
+        /// <summary>
+        ///     Checks if the contextual user is the bot owner.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
+        public static bool IsBotOwner(VolteContext ctx) {
+            return Config.GetOwner().Equals(ctx.User.Id);
         }
 
         /// <summary>
@@ -47,6 +66,17 @@ namespace Volte.Helpers {
         /// <returns>System.Boolean</returns>
         public static bool HasRole(IUser user, IRole role) {
             return HasRole((IGuildUser)user, role);
+        }
+
+        
+        /// <summary>
+        ///     Checks if the contextual user is a moderator in the contextual guild.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
+        public static bool IsModerator(VolteContext ctx) {
+            var c = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
+            return HasRole(ctx.User, c.ModRole) || IsAdmin(ctx) || IsGuildOwner(ctx);
         }
         
         /// <summary>
@@ -79,7 +109,7 @@ namespace Volte.Helpers {
         public static bool IsAdmin(VolteContext ctx) {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
-            return adminRole != null && ((SocketGuildUser) ctx.User).Roles.Contains(adminRole);
+            return (adminRole != null && ((SocketGuildUser) ctx.User).Roles.Contains(adminRole)) || IsGuildOwner(ctx);
         }
     }
 }

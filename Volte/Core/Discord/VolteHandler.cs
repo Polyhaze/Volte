@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Extensions;
 using Volte.Core.Services;
 using Volte.Core.Files.Readers;
 using Volte.Core.Modules;
@@ -44,55 +45,16 @@ namespace Volte.Core.Discord {
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
                 var result = await _service.ExecuteAsync(ctx, argPos, _services);
-                if (!result.IsSuccess && result.ErrorReason != "Unknown command.") {
-                    string reason;
-                    switch (result.ErrorReason) {
-                        case "The server responded with error 403: Forbidden":
-                            reason =
-                                "I'm not allowed to do that. Either I don't have permission or the requested user is higher than me in the role hierarchy.";
-                            break;
-                        case "Failed to parse Boolean":
-                            reason = "You can only input `true` or `false` for this command.";
-                            break;
-                        default:
-                            reason = result.ErrorReason;
-                            break;
-                    }
-
-                    var embed = new EmbedBuilder();
-
-                    if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
-                        var nm = msg.Content.Replace($"<@{_client.CurrentUser.Id}> ", config.CommandPrefix);
-                        embed.AddField("Error in command:", nm);
-                        embed.AddField("Error reason:", reason);
-                        embed.AddField("Weird error?",
-                            "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
-                        embed.WithAuthor(ctx.User);
-                        embed.WithColor(Config.GetErrorColour());
-                        await ctx.Channel.SendMessageAsync("", false, embed.Build());
-                    }
-                    else {
-                        var nm = msg.Content;
-                        embed.AddField("Error in command:", nm);
-                        embed.AddField("Error reason:", reason);
-                        embed.AddField("Weird error?",
-                            "[Report it in the SIVA-dev server](https://discord.gg/prR9Yjq)");
-                        embed.WithAuthor(ctx.User);
-                        embed.WithColor(Config.GetErrorColour());
-                        await ctx.Channel.SendMessageAsync("", false, embed.Build());
-                    }
+                if (config.CustomCommands.ContainsKey(msgStrip)) {
+                    await ctx.Channel.SendMessageAsync(
+                        config.CustomCommands.FirstOrDefault(c => c.Key.EqualsIgnoreCase(msgStrip)).Value
+                    );
                 }
-
+                
                 if (result.ErrorReason.Equals("Unknown command.")) return;
 
                 if (config.DeleteMessageOnCommand) {
                     await ctx.Message.DeleteAsync();
-                }
-
-                if (config.CustomCommands.ContainsKey(msgStrip)) {
-                    await ctx.Channel.SendMessageAsync(
-                        config.CustomCommands.FirstOrDefault(c => c.Key.ToLower() == msgStrip.ToLower()).Value
-                    );
                 }
             }
             else {

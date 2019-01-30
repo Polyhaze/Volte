@@ -8,6 +8,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Feedback"), Alias("Fb")]
+        [Summary("Submit feedback directly to the Volte guild.")]
+        [Remarks("Usage: $feedback {feedback}")]
         public async Task Feedback([Remainder]string feedback) {
             await Reply(Context.Channel,
                 CreateEmbed(Context, $"Feedback sent! Message: ```{feedback}```"));

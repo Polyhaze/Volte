@@ -6,6 +6,7 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Invite")]
+        [Summary("Get an invite to use Volte in your own guild.")]
         public async Task Invite() {
             await Reply(Context.Channel,
                 CreateEmbed(Context,

@@ -8,6 +8,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("CustomCommandAdd"), Alias("Cca")]
+        [Summary("Add a custom command for this guild.")]
+        [Remarks("Usage: |prefix|customcommandadd {cmdName} {cmdResponse}")]
         public async Task CustomCommandAdd(string name, [Remainder] string response) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -25,8 +27,10 @@ namespace Volte.Core.Modules.Admin {
                     .Build()
             );
         }
-
+        
         [Command("CustomCommandRem"), Alias("Ccr")]
+        [Summary("Remove a custom command from this guild.")]
+        [Remarks("Usage: |prefix|customcommandrem {cmdName}")]
         public async Task CustomCommandRem(string cmdName) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -49,6 +53,8 @@ namespace Volte.Core.Modules.Admin {
         }
 
         [Command("CustomCommandClear"), Alias("Ccc")]
+        [Summary("Clears the custom commands for this guild.")]
+        [Remarks("Usage: |prefix|customcommandclear")]
         public async Task CustomCommandClear() {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);

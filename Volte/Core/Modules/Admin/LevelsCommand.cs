@@ -7,6 +7,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("Levels")]
+        [Summary("Enables/Disables level gaining for this guild.")]
+        [Remarks("Usage: $levels {true|false}")]
         public async Task Levels(bool enabled) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);

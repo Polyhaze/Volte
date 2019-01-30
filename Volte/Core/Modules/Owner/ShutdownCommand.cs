@@ -10,6 +10,7 @@ namespace Volte.Core.Modules.Owner {
         // I'm not sure how well this works.
 
         [Command("Shutdown")]
+        [Summary("Forces the bot to shutdown.")]
         public async Task Shutdown() {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);

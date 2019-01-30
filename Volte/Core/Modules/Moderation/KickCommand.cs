@@ -9,6 +9,8 @@ using Discord;
 namespace Volte.Core.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
         [Command("Kick")]
+        [Summary("Kicks the given user.")]
+        [Remarks("Usage: $kick {@user} [reason]")]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
             var config = Db.GetConfig(Context.Guild);
             if (!UserUtils.HasRole(Context.User, config.ModRole)) {
@@ -16,12 +18,12 @@ namespace Volte.Core.Modules.Moderation {
                 return;
             }
 
-            await user.GetOrCreateDMChannelAsync().GetAwaiter().GetResult().SendMessageAsync("", false,
+            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", false,
                 CreateEmbed(Context, $"You were kicked from **{Context.Guild.Name}** for **{reason}**."));
 
             await user.KickAsync(reason);
-            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context,
-                $"Successfully kicked {user.Username}#{user.Discriminator} from this server."));
+            await Reply(Context.Channel, CreateEmbed(Context,
+                $"Successfully kicked **{Db.GetUser(user).Tag}** from this server."));
         }
     }
 }

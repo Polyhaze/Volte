@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Volte.Core.Files.Readers;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("SelfRoleAdd"), Alias("Sra")]
+        [Summary("Adds a role to the list of self roles for this guild.")]
+        [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -17,13 +17,15 @@ namespace Volte.Core.Modules.Admin {
             }
 
             var config = Db.GetConfig(Context.Guild);
-            config.SelfRoles.Add(roleName.ToLower());
+            config.SelfRoles.Add(roleName);
             Db.UpdateConfig(config);
             await Reply(Context.Channel,
-                CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this server."));
+                CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this guild."));
         }
 
         [Command("SelfRoleRem"), Alias("Srr")]
+        [Summary("Removes a role from the list of self roles for this guild.")]
+        [Remarks("Usage: |prefix|selfrolerem {roleName}")]
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -31,37 +33,22 @@ namespace Volte.Core.Modules.Admin {
             }
 
             var config = Db.GetConfig(Context.Guild);
-            var selfRolesLower = new List<string>();
 
-            foreach (var role in config.SelfRoles) {
-                selfRolesLower.Add(role.ToLower());
-            }
-
-            if (selfRolesLower.Contains(roleName.ToLower())) {
-                config.SelfRoles.Remove(roleName.ToLower());
+            if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName))) {
+                config.SelfRoles.Remove(roleName);
                 await Reply(Context.Channel,
-                    CreateEmbed(Context, $"Removed **{roleName}** from the Self Roles list on this server."));
+                    CreateEmbed(Context, $"Removed **{roleName}** from the Self Roles list on this guild."));
                 Db.UpdateConfig(config);
             }
             else {
                 await Reply(Context.Channel,
-                    CreateEmbed(Context, $"The Self Roles list for this server doesn't contain **{roleName}**."));
+                    CreateEmbed(Context, $"The Self Roles list for this guild doesn't contain **{roleName}**."));
             }
         }
 
-        [Command("SelfRoleList"), Alias("Srl")]
-        public async Task SelfRoleList() {
-            var roleList = "";
-            var config = Db.GetConfig(Context.Guild);
-            config.SelfRoles.ForEach(role => {
-                var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.ToLower().Equals(role.ToLower()));
-                roleList += $"**{currentRole?.Name}**\n";
-            });
-
-            await Reply(Context.Channel, CreateEmbed(Context, roleList));
-        }
-
         [Command("SelfRoleClear"), Alias("Src")]
+        [Summary("Clears the self role list for this guild.")]
+        [Remarks("Usage: |prefix|selfroleclear")]
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);

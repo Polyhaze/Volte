@@ -8,6 +8,8 @@ using Volte.Core.Discord;
 namespace Volte.Core.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetStream")]
+        [Summary("Sets the bot's stream.")]
+        [Remarks("Usage: $setstream {streamer} {streamName}")]
         public async Task SetStream(string streamer, [Remainder] string streamName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -15,7 +17,7 @@ namespace Volte.Core.Modules.Owner {
             }
 
             await VolteBot.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
-            await Context.Channel.SendMessageAsync("", false,
+            await Reply(Context.Channel,
                 CreateEmbed(Context,
                     $"Set the bot's stream to **{streamName}**, and the twitch URL to **[{streamer}](https://twitch.tv/{streamer})**."));
         }

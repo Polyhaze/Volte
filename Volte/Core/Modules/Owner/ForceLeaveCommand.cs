@@ -8,6 +8,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("ForceLeave")]
+        [Summary("Forcefully leaves the guild with the given name.")]
+        [Remarks("Usage: $forceleave {serverName}")]
         public async Task ForceLeave([Remainder]string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);
@@ -23,7 +25,7 @@ namespace Volte.Core.Modules.Owner {
 
             await target.LeaveAsync();
             await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(Context, $"Successfully left {target.Name}"));
+                CreateEmbed(Context, $"Successfully left **{target.Name}**"));
         }
     }
 }

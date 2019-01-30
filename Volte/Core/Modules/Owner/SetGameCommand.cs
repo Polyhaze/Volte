@@ -7,6 +7,8 @@ using Volte.Helpers;
 namespace Volte.Core.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetGame")]
+        [Summary("Sets the bot's game (presence).")]
+        [Remarks("Usage: $setgame {game}")]
         public async Task SetGame([Remainder] string game) {
             if (!UserUtils.IsBotOwner(Context.User)) {
                 await React(Context.SMessage, RawEmoji.X);
