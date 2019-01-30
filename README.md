@@ -3,18 +3,18 @@
 
 # Volte
 
+A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/RogueException/Discord.Net)
+
 ## Quick Links 
 
  [How-To Setup the Bot](https://greemdev.atlassian.net/wiki/spaces/SIVA/pages/19300353/How+To)
 
- [Command Documentation](https://greemdev.atlassian.net/wiki/spaces/SIVA/overview)
+ [Issue Tracker](https://github.com/GreemDev/Volte/issues)
 
- [Issue Tracker](https://greemdev.atlassian.net/secure/RapidBoard.jspa?rapidView=2&projectKey=SIVA&view=planning.nodetail)
+ [Discord Server](https://discord.greemdev.net)
 
- [Discord Server](https://greem.me/discord)
+ [Volte Twitter](https://twitter.com/VolteBot)
 
- [SIVA Twitter](https://twitter.com/Discord_SIVA)
+ [Website](https://volte.greemdev.net)
 
- [Website](https://siva.greem.me)
-
- [Source Code](https://github.com/Greeem/SIVA)
+ [Source Code](https://github.com/GreemDev/Volte)
