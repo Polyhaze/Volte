@@ -4,8 +4,8 @@ using System.Security.Cryptography.X509Certificates;
 using Discord;
 using LiteDB;
 using Volte.Core.Discord;
-using Volte.Core.Files.Objects;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data.Objects;
+using Volte.Core.Data;
 
 namespace Volte.Core.Services {
     public class DatabaseService {

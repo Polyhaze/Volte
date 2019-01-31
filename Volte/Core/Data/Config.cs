@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Volte.Core.Files.Readers {
+namespace Volte.Core.Data {
     public class Config {
         private static readonly BotConfig Bot;
         private const string ConfigFile = "data/config.json";

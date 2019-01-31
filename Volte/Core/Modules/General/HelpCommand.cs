@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Extensions;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data;
 using Volte.Helpers;
 
 namespace Volte.Core.Modules.General {
@@ -14,7 +14,7 @@ namespace Volte.Core.Modules.General {
         [Summary("Shows Volte's Modules and Commands.")]
         public async Task Help(string mdl = null) {
             var config = Db.GetConfig(Context.Guild);
-            var modules = Cs.Modules.Where(x => !x.Name.Contains("Owner")).OrderBy(m => m.Name);
+            var modules = Cs.Modules.OrderBy(m => m.Name);
             var embed = new EmbedBuilder()
                 .WithColor(Config.GetSuccessColor())
                 .WithAuthor(Context.User);
@@ -94,10 +94,9 @@ namespace Volte.Core.Modules.General {
             }
 
             embed.WithTitle($"Commands for {target.Name.Replace("Module", "")}");
-            foreach (var cmd in target.Commands) {
-                desc += $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n";
-                embed.WithDescription(desc);
-            }
+            desc = target.Commands.Aggregate(desc, (current, cmd) 
+                => current + $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n");
+            embed.WithDescription(desc);
 
             await Reply(Context.Channel, embed.Build());
         }

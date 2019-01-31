@@ -20,7 +20,7 @@ namespace Volte.Core.Modules.Owner {
 
             await Reply(Context.Channel,
                 CreateEmbed(Context,
-                    DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild))
+                    DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented)
                     )
                 ));
         }

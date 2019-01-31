@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Volte.Core.Discord;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data;
 
 namespace Volte.Core.Runtime {
     internal static class Program {

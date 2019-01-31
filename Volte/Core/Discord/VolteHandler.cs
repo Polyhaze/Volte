@@ -6,9 +6,9 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Extensions;
 using Volte.Core.Services;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Core.Modules;
 
 namespace Volte.Core.Discord {

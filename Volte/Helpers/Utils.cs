@@ -2,7 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data;
 using Volte.Core.Modules;
 
 namespace Volte.Helpers {

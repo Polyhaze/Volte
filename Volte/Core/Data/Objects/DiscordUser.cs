@@ -1,7 +1,7 @@
 ﻿using System;
 using LiteDB;
 
-namespace Volte.Core.Files.Objects {
+namespace Volte.Core.Data.Objects {
     public class DiscordUser : Object {
         public string Tag { get; internal set; }
         public ObjectId Id { get; set; }

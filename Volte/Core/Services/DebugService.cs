@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Volte.Core.Files.Objects;
+using Volte.Core.Data;
 
 namespace Volte.Core.Services {
     public class DebugService {

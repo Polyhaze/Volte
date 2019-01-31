@@ -3,7 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
-using Volte.Core.Files.Readers;
+using Volte.Core.Data;
 
 namespace Volte.Core.Services {
     internal class BlacklistService {

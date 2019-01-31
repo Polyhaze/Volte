@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
-using Volte.Core.Files.Readers;
 
 namespace Volte.Core.Services {
     internal class WelcomeService {

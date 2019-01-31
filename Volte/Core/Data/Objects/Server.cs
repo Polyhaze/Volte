@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LiteDB;
 
-namespace Volte.Core.Files.Objects {
+namespace Volte.Core.Data.Objects {
     public class Server : object {
         #region ValueDeclaration
 
