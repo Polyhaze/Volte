@@ -40,20 +40,10 @@ namespace Volte.Core.Modules.General {
                 }
 
                 var aliases = c.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
-                
-                if (c.Module.Name.EqualsIgnoreCase("adminmodule") && !UserUtils.IsAdmin(Context)) {
-                    await Reply(Context.Channel,
-                        CreateEmbed(Context, "You don't have permission to use the module that command is from."));
-                    return;
-                }
 
-                if (c.Module.Name.EqualsIgnoreCase("ownermodule") && !UserUtils.IsBotOwner(Context.User)) {
-                    await Reply(Context.Channel,
-                        CreateEmbed(Context, "You don't have permission to use the module that command is from."));
-                    return;
-                }
-
-                if (c.Module.Name.EqualsIgnoreCase("moderationmodule") && !UserUtils.IsModerator(Context)) {
+                if ((c.Module.Name.EqualsIgnoreCase("adminmodule") && !UserUtils.IsAdmin(Context)) || 
+                    (c.Module.Name.EqualsIgnoreCase("ownermodule") && !UserUtils.IsBotOwner(Context.User)) || 
+                    (c.Module.Name.EqualsIgnoreCase("moderationmodule") && !UserUtils.IsModerator(Context))) {
                     await Reply(Context.Channel,
                         CreateEmbed(Context, "You don't have permission to use the module that command is from."));
                     return;
@@ -61,13 +51,13 @@ namespace Volte.Core.Modules.General {
 
                 aliases += ")";
 
-                embed.WithTitle($"Command {c.Name}")
-                    .AddField("Module", c.Module.Name)
-                    .AddField("Summary", c.Summary ?? "No summary provided.")
-                    .AddField("Usage", c.Remarks
-                        .Replace(c.Name.ToLower(), aliases.Replace("|)", ")"))
-                        .Replace("|prefix|", config.CommandPrefix)
-                        .Replace("Usage: ", ""));
+                embed.WithDescription($"**Command**: {c.Name}\n" +
+                                      $"**Module**: {c.Module.Name.Replace("Module", "")}\n" +
+                                      $"**Summary**: {c.Summary ?? "No summary provided."}\n" +
+                                      "**Usage**: " + c.Remarks
+                                          .Replace(c.Name.ToLower(), aliases.Replace("|)", ")"))
+                                          .Replace("|prefix|", config.CommandPrefix)
+                                          .Replace("Usage: ", ""));
                 await Reply(Context.Channel, embed.Build());
                 return;
             }
@@ -78,23 +68,16 @@ namespace Volte.Core.Modules.General {
                 return;
             }
 
-            if (mdl.EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) {
-                await Reply(Context.Channel, CreateEmbed(Context, "You don't have permission to use that module."));
-                return;
-            }
-
-            if (mdl.EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) {
-                await Reply(Context.Channel, CreateEmbed(Context, "You don't have permission to use that module."));
-                return;
-            }
-
-            if (mdl.EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context)) {
-                await Reply(Context.Channel, CreateEmbed(Context, "You don't have permission to use that module."));
+            if ((mdl.EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) || 
+                (mdl.EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) || 
+                (mdl.EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context))) {
+                await Reply(Context.Channel,
+                    CreateEmbed(Context, "You don't have permission to use the module that command is from."));
                 return;
             }
 
             embed.WithTitle($"Commands for {target.Name.Replace("Module", "")}");
-            desc = target.Commands.Aggregate(desc, (current, cmd) 
+            desc = target.Commands.Aggregate(desc, (current, cmd)
                 => current + $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n");
             embed.WithDescription(desc);
 
