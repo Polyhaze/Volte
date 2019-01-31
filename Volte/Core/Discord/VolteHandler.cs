@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using Volte.Core.Extensions;
 using Volte.Core.Services;
 using Volte.Core.Files.Readers;
 using Volte.Core.Modules;
-using Volte.Core.Runtime;
 
 namespace Volte.Core.Discord {
     public class VolteHandler {
@@ -22,6 +20,7 @@ namespace Volte.Core.Discord {
 
         public async Task Init() {
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            //register event listeners
             _service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += _services.GetRequiredService<EventService>().Guilds;
@@ -33,12 +32,15 @@ namespace Volte.Core.Discord {
 
         private async Task HandleMessageOrCommand(SocketMessage s) {
             var argPos = 0; //i'd get rid of this but because Discord.Net requires a ref param i can't.
-            var msg = (SocketUserMessage) s;
+            var msg = (SocketUserMessage)s;
             var ctx = new VolteContext(_client, msg);
+            if (ctx.User.IsBot) return;
+            
+            //pass the message-reliant services what they need
             await _services.GetRequiredService<BlacklistService>().CheckMessage(s);
             await _services.GetRequiredService<AntilinkService>().CheckMessage(s);
             await _services.GetRequiredService<EconomyService>().Give(ctx);
-            if (ctx.User.IsBot) return;
+            
             var config = _services.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             _services.GetRequiredService<DatabaseService>().GetUser(s.Author.Id);
             var prefix = config.CommandPrefix == string.Empty ? Config.GetCommandPrefix() : config.CommandPrefix;
@@ -50,16 +52,11 @@ namespace Volte.Core.Discord {
                         config.CustomCommands.FirstOrDefault(c => c.Key.EqualsIgnoreCase(msgStrip)).Value
                     );
                 }
-                
+
                 if (result.ErrorReason.Equals("Unknown command.")) return;
 
                 if (config.DeleteMessageOnCommand) {
                     await ctx.Message.DeleteAsync();
-                }
-            }
-            else {
-                if (msg.Content.Contains($"<@{_client.CurrentUser.Id}>")) {
-                    await ctx.Channel.SendMessageAsync("<:whO_PENG:437088256291504130>");
                 }
             }
         }

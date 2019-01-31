@@ -8,6 +8,7 @@ namespace Volte.Core.Modules.General {
     public partial class GeneralModule : VolteModule {
         [Command("Info")]
         [Summary("Provides basic information about this instance of Volte.")]
+        [Remarks("Usage: |prefix|info")]
         public async Task Info() {
             var embed = new EmbedBuilder()
                 .AddField("Version", "V2.0.0-RELEASE")

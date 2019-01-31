@@ -1,19 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using Volte.Core.Discord;
 using Volte.Core.Files.Readers;
 
 namespace Volte.Core.Runtime {
     internal static class Program {
-        private static void Main(String[] args) {
+        private static void Main(string[] args) {
             Console.Title = "Volte"; 
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Red;
             
             if (InitVolte()) {
+                // ReSharper disable once ObjectCreationAsStatement
                 new VolteBot();
-            } 
+            }
         }
 
         private static bool InitVolte() {

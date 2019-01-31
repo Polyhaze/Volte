@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Extensions;

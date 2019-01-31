@@ -10,12 +10,11 @@ using Volte.Core.Files.Readers;
 using Volte.Core.Runtime;
 
 namespace Volte.Core.Discord {
+    #pragma warning disable 1998
     public class VolteBot {
         public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
 
         public static readonly CommandService CommandService = ServiceProvider.GetRequiredService<CommandService>();
-
-        public static Logger GetLogger() => Logger;
 
         public static readonly DiscordSocketClient Client = ServiceProvider.GetRequiredService<DiscordSocketClient>();
 
@@ -28,8 +27,8 @@ namespace Volte.Core.Discord {
         ///     Don't do that, unless you're making a restart function!
         /// </summary>
         public VolteBot() {
-            GetLogger().PrintVersion();
-            LoginAsync().GetAwaiter().GetResult();
+            Logger.PrintVersion();
+            LoginAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         private static IServiceProvider BuildServiceProvider() {
@@ -43,20 +42,25 @@ namespace Volte.Core.Discord {
                 .AddSingleton<VolteHandler>()
                 .AddSingleton<EventService>()
                 .AddSingleton<DebugService>()
+                .AddSingleton<EmojiService>()
                 .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,
                     CaseSensitiveCommands = false,
-                    LogLevel = LogSeverity.Verbose
+                    LogLevel = LogSeverity.Verbose,
+                    ThrowOnError = false
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig {
-                    LogLevel = LogSeverity.Verbose
+                    LogLevel = LogSeverity.Verbose,
+                    AlwaysDownloadUsers = true,
+                    ConnectionTimeout = 10000,
+                    MessageCacheSize = 100
                 }));
 
             return c.BuildServiceProvider();
         }
 
-        public static async Task LoginAsync() {
+        private async Task LoginAsync() {
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
             await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}",

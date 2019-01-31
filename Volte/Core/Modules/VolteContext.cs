@@ -15,6 +15,7 @@ namespace Volte.Core.Modules {
             Channel = msg.Channel as SocketTextChannel;
             User = msg.Author as SocketUser;
             Message = msg;
+            GuildUser = msg.Author as IGuildUser;
         }
         public IDiscordClient Client { get; }
         public IGuild Guild { get; }
@@ -22,5 +23,6 @@ namespace Volte.Core.Modules {
         public IMessageChannel Channel { get; }
         public IUser User { get; }
         public IUserMessage Message { get; }
+        public IGuildUser GuildUser { get; }
     }
 }

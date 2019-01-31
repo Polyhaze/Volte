@@ -6,7 +6,7 @@ namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Poll")]
         [Summary("Create a poll.")]
-        [Remarks("Usage: $poll question;option1;option2;...")]
+        [Remarks("Usage: |prefix|poll question;option1;option2;...")]
         public async Task Poll([Remainder] string pollText) {
             var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');

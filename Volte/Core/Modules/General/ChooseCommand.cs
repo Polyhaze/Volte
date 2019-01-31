@@ -9,7 +9,7 @@ namespace Volte.Core.Modules.General {
     public partial class GeneralModule : VolteModule {
         [Command("Choose")]
         [Summary("Choose an item from a | delimited list.")]
-        [Remarks("Usage: choose {option1|option2|option3|...}")]
+        [Remarks("Usage: |prefix|choose {option1|option2|option3|...}")]
         public async Task Choose([Remainder] string message) {
             var opt = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
