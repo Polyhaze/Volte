@@ -16,7 +16,7 @@ namespace Volte.Core.Modules.Moderation {
                 return;
             }
 
-            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", false,
+            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"You've been banned from {Context.Guild.Name} for **{reason}**."));
             await Context.Guild.AddBanAsync(
                 user, 0, reason);

@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Utility {
             var actualUser = user ?? (SocketGuildUser)Context.User;
             
 
-            await Context.Channel.SendMessageAsync("", false, CreateEmbed(Context, "")
+            await Context.Channel.SendMessageAsync(string.Empty, false, CreateEmbed(Context, string.Empty)
                 .ToEmbedBuilder()
                 .WithAuthor(Context.User)
                 .WithThumbnailUrl(actualUser.GetAvatarUrl())

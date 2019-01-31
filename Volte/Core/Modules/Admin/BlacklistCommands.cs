@@ -36,12 +36,12 @@ namespace Volte.Core.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             if (config.Blacklist.Any(p => p.EqualsIgnoreCase(arg))) {
                 config.Blacklist.RemoveAt(config.Blacklist.FindIndex(p => p.EqualsIgnoreCase(arg)));
-                await Context.Channel.SendMessageAsync("", false,
+                await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context, $"Removed **{arg}** from the word blacklist."));
                 Db.UpdateConfig(config);
             }
             else {
-                await Context.Channel.SendMessageAsync("", false,
+                await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context, $"**{arg}** doesn't exist in the blacklist."));
             }
         }

@@ -17,7 +17,7 @@ namespace Volte.Core.Modules.Admin {
             }
 
             var config = Db.GetConfig(Context.Guild);
-            var embed = CreateEmbed(Context, "").ToEmbedBuilder();
+            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
 
             if (Context.Guild.Roles.Any(r => r.Name.ToLower() == roleName.ToLower())) {
                 var role = Context.Guild.Roles.First(r => r.Name.ToLower() == roleName.ToLower());
@@ -29,7 +29,7 @@ namespace Volte.Core.Modules.Admin {
                 embed.WithDescription($"{roleName} doesn't exist in this server.");
             }
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
         }
     }
 }

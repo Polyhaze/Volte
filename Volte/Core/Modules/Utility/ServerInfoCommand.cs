@@ -6,8 +6,7 @@ using Volte.Core.Data;
 
 namespace Volte.Core.Modules.Utility {
     public partial class UtilityModule : VolteModule {
-        [Command("ServerInfo")]
-        [Alias("Si")]
+        [Command("ServerInfo"), Alias("Si")]
         [Summary("Shows some info about the current guild.")]
         [Remarks("Usage: |prefix|serverinfo")]
         public async Task ServerInfo() {

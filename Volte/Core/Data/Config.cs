@@ -18,8 +18,6 @@ namespace Volte.Core.Data {
                     Owner = 0,
                     Game = "in Volte V2 Code!",
                     Streamer = "GreemDev",
-                    AppId = "",
-                    AppSecret = "",
                     SuccessEmbedColor = 0x7000FB,
                     ErrorEmbedColor = 0xFF0000,
                     LogAllCommands = true,
@@ -39,8 +37,6 @@ namespace Volte.Core.Data {
         public static ulong GetOwner() => Bot.Owner;
         public static string GetGame() => Bot.Game;
         public static string GetStreamer()=> Bot.Streamer;
-        public static string GetAppId() => Bot.AppId;
-        public static string GetAppSecret() => Bot.AppSecret;
         public static uint GetSuccessColor() => Bot.SuccessEmbedColor;
         public static uint GetErrorColour() => Bot.ErrorEmbedColor;
         public static bool GetLogAllCommands() => Bot.LogAllCommands;
@@ -52,8 +48,6 @@ namespace Volte.Core.Data {
             public ulong Owner;
             public string Game;
             public string Streamer;
-            public string AppId;
-            public string AppSecret;
             public uint SuccessEmbedColor;
             public uint ErrorEmbedColor;
             public bool LogAllCommands;

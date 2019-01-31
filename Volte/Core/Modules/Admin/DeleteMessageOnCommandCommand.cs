@@ -17,7 +17,7 @@ namespace Volte.Core.Modules.Admin {
 
             config.DeleteMessageOnCommand = arg;
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync("", false,
+            await Context.Channel.SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"Set the DeleteMessageOnCommand setting to **{arg}**."));
         }
     }

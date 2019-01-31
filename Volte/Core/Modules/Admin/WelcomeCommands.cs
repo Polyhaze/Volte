@@ -18,14 +18,14 @@ namespace Volte.Core.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync("", false,
+            await Context.Channel.SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"Set this server's welcome channel to **{channel.Name}**"));
         }
 
         [Command("WelcomeMessage"), Alias("Wmsg")]
         [Summary("Sets or shows the welcome message used to welcome new users for this guild.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
-        public async Task WelcomeMessage([Remainder] string message = "") {
+        public async Task WelcomeMessage([Remainder] string message = null) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
@@ -33,7 +33,7 @@ namespace Volte.Core.Modules.Admin {
 
             var config = Db.GetConfig(Context.Guild);
 
-            if (message.Equals("")) {
+            if (message== null) {
                 await Reply(Context.Channel,
                     CreateEmbed(Context,
                         $"The current welcome message for this server is ```\n{config.WelcomeMessage}```"));
@@ -57,7 +57,7 @@ namespace Volte.Core.Modules.Admin {
                         .Replace("{UserTag}", $"{Context.User.Username}#{Context.User.Discriminator}");
                     var embed = CreateEmbed(Context, welcomeMessage).ToEmbedBuilder()
                         .WithThumbnailUrl(Context.Guild.IconUrl);
-                    await welcomeChannel.SendMessageAsync("", false, embed.Build());
+                    await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Volte.Core.Modules.Admin {
         [Command("LeavingMessage"), Alias("Lmsg")]
         [Summary("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
-        public async Task LeavingMessage([Remainder] string message = "") {
+        public async Task LeavingMessage([Remainder] string message = null) {
             if (!UserUtils.IsAdmin(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
@@ -99,8 +99,8 @@ namespace Volte.Core.Modules.Admin {
 
             var config = Db.GetConfig(Context.Guild);
 
-            if (message.Equals("")) {
-                await Context.Channel.SendMessageAsync("", false,
+            if (message == null) {
+                await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context,
                         $"The current leaving message for this server is ```\n{config.WelcomeMessage}```"));
             }
@@ -126,7 +126,7 @@ namespace Volte.Core.Modules.Admin {
                         .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB)
                         .WithDescription(welcomeMessage)
                         .WithThumbnailUrl(Context.Guild.IconUrl);
-                    await welcomeChannel.SendMessageAsync("", false, embed.Build());
+                    await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
                 }
             }
         }

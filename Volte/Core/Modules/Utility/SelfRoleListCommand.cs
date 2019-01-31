@@ -9,7 +9,7 @@ namespace Volte.Core.Modules.Utility {
         [Summary("Gets a list of self roles available for this guild.")]
         [Remarks("Usage: |prefix|selfrolelist")]
         public async Task SelfRoleList() {
-            var roleList = "";
+            var roleList = string.Empty;
             var config = Db.GetConfig(Context.Guild);
             if (config.SelfRoles.Count > 0) {
                 config.SelfRoles.ForEach(role => {

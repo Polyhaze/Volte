@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Utility {
             var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');
 
-            var embed = CreateEmbed(Context, "").ToEmbedBuilder()
+            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder()
                 .WithTitle(question)
                 .WithAuthor(Context.User)
                 .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png");
@@ -65,7 +65,7 @@ namespace Volte.Core.Modules.Utility {
 
             embed.WithDescription(embedBody);
 
-            var msg = await Context.Channel.SendMessageAsync("", false, embed.Build());
+            var msg = await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
             await Context.Message.DeleteAsync();
 
             switch (choices.Length - 1) {

@@ -42,7 +42,7 @@ namespace Volte.Core.Modules.Owner {
                     break;
             }
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
         }
     }
 }

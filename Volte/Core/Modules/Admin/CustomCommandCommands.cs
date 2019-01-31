@@ -19,8 +19,8 @@ namespace Volte.Core.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.CustomCommands.Add(name, response);
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync("", false,
-                CreateEmbed(Context, "")
+            await Context.Channel.SendMessageAsync(string.Empty, false,
+                CreateEmbed(Context, string.Empty)
                     .ToEmbedBuilder()
                     .AddField("Command Name", name)
                     .AddField("Command Response", response)
@@ -37,7 +37,7 @@ namespace Volte.Core.Modules.Admin {
                 return;
             }
             var config = Db.GetConfig(Context.Guild);
-            var embed = CreateEmbed(Context, "").ToEmbedBuilder()
+            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder()
                 .WithAuthor(Context.User);
             
             if (config.CustomCommands.Keys.Contains(cmdName)) {
@@ -49,7 +49,7 @@ namespace Volte.Core.Modules.Admin {
                 embed.WithDescription($"**{cmdName}** is not a command on this server.");
             }
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
         }
 
         [Command("CustomCommandClear"), Alias("Ccc")]
@@ -62,7 +62,7 @@ namespace Volte.Core.Modules.Admin {
             }
 
             var config = Db.GetConfig(Context.Guild);
-            await Context.Channel.SendMessageAsync("", false,
+            await Context.Channel.SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context,
                     $"Cleared the custom commands, containing **{config.CustomCommands.Count}** words."));
             config.CustomCommands.Clear();

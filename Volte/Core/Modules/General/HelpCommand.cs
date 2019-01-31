@@ -18,11 +18,11 @@ namespace Volte.Core.Modules.General {
             var embed = new EmbedBuilder()
                 .WithColor(Config.GetSuccessColor())
                 .WithAuthor(Context.User);
-            var desc = "";
+            var desc = string.Empty;
             if (mdl == null) {
                 embed.WithTitle("Available Modules");
                 foreach (var module in modules) {
-                    desc += $"**{module.Name.Replace("Module", "")}**\n\n";
+                    desc += $"**{module.Name.Replace("Module", string.Empty)}**\n\n";
                 }
 
                 embed.WithDescription(desc);
@@ -31,7 +31,7 @@ namespace Volte.Core.Modules.General {
             }
 
             if (mdl.StartsWith(config.CommandPrefix)) {
-                var cname = mdl.Replace(config.CommandPrefix, "");
+                var cname = mdl.Replace(config.CommandPrefix, string.Empty);
                 var c = Cs.Commands.FirstOrDefault(x => x.Name.EqualsIgnoreCase(cname));
 
                 if (c == null) {
@@ -52,17 +52,17 @@ namespace Volte.Core.Modules.General {
                 aliases += ")";
 
                 embed.WithDescription($"**Command**: {c.Name}\n" +
-                                      $"**Module**: {c.Module.Name.Replace("Module", "")}\n" +
+                                      $"**Module**: {c.Module.Name.Replace("Module", string.Empty)}\n" +
                                       $"**Summary**: {c.Summary ?? "No summary provided."}\n" +
                                       "**Usage**: " + c.Remarks
                                           .Replace(c.Name.ToLower(), aliases.Replace("|)", ")"))
                                           .Replace("|prefix|", config.CommandPrefix)
-                                          .Replace("Usage: ", ""));
+                                          .Replace("Usage: ", string.Empty));
                 await Reply(Context.Channel, embed.Build());
                 return;
             }
 
-            var target = Cs.Modules.FirstOrDefault(x => x.Name.Replace("Module", "").EqualsIgnoreCase(mdl));
+            var target = Cs.Modules.FirstOrDefault(x => x.Name.Replace("Module", string.Empty).EqualsIgnoreCase(mdl));
             if (target == null) {
                 await Reply(Context.Channel, CreateEmbed(Context, "Specified module not found."));
                 return;
@@ -76,7 +76,7 @@ namespace Volte.Core.Modules.General {
                 return;
             }
 
-            embed.WithTitle($"Commands for {target.Name.Replace("Module", "")}");
+            embed.WithTitle($"Commands for {target.Name.Replace("Module", string.Empty)}");
             desc = target.Commands.Aggregate(desc, (current, cmd)
                 => current + $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n");
             embed.WithDescription(desc);

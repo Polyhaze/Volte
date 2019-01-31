@@ -26,7 +26,7 @@ namespace Volte.Core.Services {
                     .WithCurrentTimestamp();
 
                 await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
-                    .SendMessageAsync("", false, embed.Build());
+                    .SendMessageAsync(string.Empty, false, embed.Build());
             }
         }
 
@@ -48,7 +48,7 @@ namespace Volte.Core.Services {
                     .WithCurrentTimestamp();
 
                 await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
-                    .SendMessageAsync("", false, embed.Build());
+                    .SendMessageAsync(string.Empty, false, embed.Build());
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Volte.Core.Modules.Moderation {
                 return;
             }
 
-            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", false,
+            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"You were kicked from **{Context.Guild.Name}** for **{reason}**."));
 
             await user.KickAsync(reason);

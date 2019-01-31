@@ -16,7 +16,7 @@ namespace Volte.Core.Modules.Admin {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }
-            var embed = CreateEmbed(Context, "").ToEmbedBuilder();
+            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
             var config = Db.GetConfig(Context.Guild);
             if (Context.Guild.Roles.Any(r => r.Name.ToLower().Equals(roleName.ToLower()))) {
                 var role = Context.Guild.Roles.First(r => r.Name == roleName);

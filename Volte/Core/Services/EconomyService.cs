@@ -19,7 +19,7 @@ namespace Volte.Core.Services {
                 db.UpdateUser(userData);
 
                 if (oldLevel != userData.Level) {
-                    var levelUp = await ctx.Channel.SendMessageAsync("", false,
+                    var levelUp = await ctx.Channel.SendMessageAsync(string.Empty, false,
                         Utils.CreateEmbed(ctx,
                             $"Good job {ctx.User.Mention}! You leveled up to level **{userData.Level}**!"));
                     await Task.Delay(5000);

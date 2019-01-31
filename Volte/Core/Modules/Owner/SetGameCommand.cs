@@ -16,7 +16,7 @@ namespace Volte.Core.Modules.Owner {
             }
 
             await VolteBot.Client.SetGameAsync(game);
-            await Context.Channel.SendMessageAsync("", false,
+            await Context.Channel.SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"Set the bot's game to **{game}**."));
         }
     }

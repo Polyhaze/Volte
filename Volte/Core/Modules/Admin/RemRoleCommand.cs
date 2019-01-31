@@ -19,12 +19,12 @@ namespace Volte.Core.Modules.Admin {
             var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.ToLower() == role.ToLower());
             if (targetRole != null) {
                 await user.RemoveRoleAsync(targetRole);
-                await Context.Channel.SendMessageAsync("", false,
+                await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context, $"Removed the role **{role}** from {user.Mention}!"));
                 return;
             }
 
-            await Context.Channel.SendMessageAsync("", false,
+            await Context.Channel.SendMessageAsync(string.Empty, false,
                 CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
         }
     }

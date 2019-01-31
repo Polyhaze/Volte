@@ -52,7 +52,7 @@ namespace Volte.Core.Services {
                 if (ctx.Message.HasMentionPrefix(VolteBot.Client.CurrentUser, ref argPos)) {
                     embed.AddField("Error in Command:", cinfo.Value.Name);
                     embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", ""));
+                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
                     embed.WithAuthor(ctx.User);
                     embed.WithColor(Config.GetErrorColour());
                     await Utils.Send(ctx.Channel, embed.Build());
@@ -60,7 +60,7 @@ namespace Volte.Core.Services {
                 else {
                     embed.AddField("Error in Command:", cinfo.Value.Name);
                     embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", ""));
+                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
                     embed.WithAuthor(ctx.User);
                     embed.WithColor(Config.GetErrorColour());
                     await Utils.Send(ctx.Channel, embed.Build());
@@ -75,7 +75,7 @@ namespace Volte.Core.Services {
                     _logger.Info("--|        -Args Passed: " +
                                  ctx.Message.Content.Replace(
                                      $"{config.CommandPrefix}{cinfo.Value.Name} ",
-                                     "", StringComparison.CurrentCultureIgnoreCase
+                                     string.Empty, StringComparison.CurrentCultureIgnoreCase
                                  ));
                     _logger.Info($"--|           -In Guild: {ctx.Guild.Name}");
                     _logger.Info($"--|         -In Channel: #{ctx.Channel.Name}");
@@ -89,7 +89,7 @@ namespace Volte.Core.Services {
                     _logger.Error("--|        -Args Passed: " +
                                   ctx.Message.Content.Replace(
                                       $"{config.CommandPrefix}{cinfo.Value.Name} ",
-                                      "",
+                                      string.Empty,
                                       StringComparison.CurrentCultureIgnoreCase
                                   ));
                     _logger.Error($"--|           -In Guild: {ctx.Guild.Name}");
