@@ -10,15 +10,16 @@ namespace Volte.Core.Modules.Moderation {
         [Summary("Purges the last x messages.")]
         [Remarks("Usage: $purge {count}")]
         public async Task Purge(int count) {
-            var config = Db.GetConfig(Context.Guild);
-            if (!UserUtils.HasRole(Context.User, config.ModRole)) {
+            if (!UserUtils.IsModerator(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }
             
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(
-                await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, count + 1).FlattenAsync());
-            var msg = await Reply(Context.Channel, CreateEmbed(Context, $"Successfully deleted {count} messages."));
+                await Context.Channel.GetMessagesAsync(count).FlattenAsync());
+            
+            var msg = await Reply(Context.Channel, CreateEmbed(Context, 
+                $"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}"));
             await Task.Delay(5000);
             await msg.DeleteAsync();
         }

@@ -12,8 +12,7 @@ namespace Volte.Core.Modules.Moderation {
         [Summary("Kicks the given user.")]
         [Remarks("Usage: $kick {@user} [reason]")]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
-            var config = Db.GetConfig(Context.Guild);
-            if (!UserUtils.HasRole(Context.User, config.ModRole)) {
+            if (!UserUtils.IsModerator(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }

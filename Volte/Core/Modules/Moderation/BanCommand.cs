@@ -10,8 +10,7 @@ namespace Volte.Core.Modules.Moderation {
         [Summary("Bans the mentioned user.")]
         [Remarks("Usage: $ban {@user} [reason]")]
         public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.") {
-            var config = Db.GetConfig(Context.Guild);
-            if (!UserUtils.HasRole(Context.User, config.ModRole)) {
+            if (!UserUtils.IsModerator(Context)) {
                 await React(Context.SMessage, RawEmoji.X);
                 return;
             }
