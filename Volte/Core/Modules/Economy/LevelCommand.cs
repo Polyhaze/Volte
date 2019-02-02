@@ -10,7 +10,7 @@ namespace Volte.Core.Modules.Economy {
         [Summary("Shows the level for the given user, or for yourself if no user is given.")]
         [Remarks("Usage: |prefix|level [@user]")]
         public async Task Level(SocketGuildUser user = null) {
-            if (user == null) user = (SocketGuildUser) Context.User;
+            if (user is null) user = (SocketGuildUser) Context.User;
 
             var userData = Db.GetUser(Context.User);
             await Reply(Context.Channel,

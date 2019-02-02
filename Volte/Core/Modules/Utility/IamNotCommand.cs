@@ -16,7 +16,7 @@ namespace Volte.Core.Modules.Utility {
             }
             else {
                 var target = Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName));
-                if (target == null) {
+                if (target is null) {
                     await Reply(Context.Channel,
                         CreateEmbed(Context, $"The role **{roleName}** doesn't exist in this guild"));
                 }

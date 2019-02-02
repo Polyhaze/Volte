@@ -33,7 +33,7 @@ namespace Volte.Core.Modules.Admin {
 
             var config = Db.GetConfig(Context.Guild);
 
-            if (message== null) {
+            if (message is null) {
                 await Reply(Context.Channel,
                     CreateEmbed(Context,
                         $"The current welcome message for this server is ```\n{config.WelcomeMessage}```"));
@@ -42,14 +42,14 @@ namespace Volte.Core.Modules.Admin {
                 config.WelcomeMessage = message;
                 Db.UpdateConfig(config);
                 var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeChannel);
-                var sendingTest = config.WelcomeChannel == 0 || welcomeChannel == null
+                var sendingTest = config.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to **{welcomeChannel.Name}**.";
                 await Reply(Context.Channel,
                     CreateEmbed(Context,
                         $"Set this server's welcome message to ```{message}```\n\n{sendingTest}"));
-                if (welcomeChannel == null) return;
+                if (welcomeChannel is null) return;
                 if (config.WelcomeChannel != 0) {
                     var welcomeMessage = config.WelcomeMessage
                         .Replace("{ServerName}", Context.Guild.Name)
@@ -100,7 +100,7 @@ namespace Volte.Core.Modules.Admin {
 
             var config = Db.GetConfig(Context.Guild);
 
-            if (message == null) {
+            if (message is null) {
                 await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context,
                         $"The current leaving message for this server is ```\n{config.WelcomeMessage}```"));
@@ -109,14 +109,14 @@ namespace Volte.Core.Modules.Admin {
                 config.LeavingMessage = message;
                 Db.UpdateConfig(config);
                 var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeChannel);
-                var sendingTest = config.WelcomeChannel == 0 || welcomeChannel == null
+                var sendingTest = config.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to **{welcomeChannel.Mention}**.";
                 await Reply(Context.Channel,
                     CreateEmbed(Context,
                         $"Set this server's leaving message to ```{message}```\n\n{sendingTest}"));
-                if (welcomeChannel == null) return;
+                if (welcomeChannel is null) return;
 
                 if (config.WelcomeChannel != 0) {
                     var welcomeMessage = config.LeavingMessage

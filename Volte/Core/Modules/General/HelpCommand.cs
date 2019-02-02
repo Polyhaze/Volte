@@ -19,7 +19,7 @@ namespace Volte.Core.Modules.General {
                 .WithColor(Config.GetSuccessColor())
                 .WithAuthor(Context.User);
             var desc = string.Empty;
-            if (mdl == null) {
+            if (mdl is null) {
                 embed.WithTitle("Available Modules");
                 foreach (var module in modules) {
                     desc += $"**{module.Name.Replace("Module", string.Empty)}**\n\n";
@@ -34,7 +34,7 @@ namespace Volte.Core.Modules.General {
                 var cname = mdl.Replace(config.CommandPrefix, string.Empty);
                 var c = Cs.Commands.FirstOrDefault(x => x.Name.EqualsIgnoreCase(cname));
 
-                if (c == null) {
+                if (c is null) {
                     await Reply(Context.Channel, CreateEmbed(Context, "No command matching that name was found."));
                     return;
                 }
@@ -63,7 +63,7 @@ namespace Volte.Core.Modules.General {
             }
 
             var target = Cs.Modules.FirstOrDefault(x => x.Name.Replace("Module", string.Empty).EqualsIgnoreCase(mdl));
-            if (target == null) {
+            if (target is null) {
                 await Reply(Context.Channel, CreateEmbed(Context, "Specified module not found."));
                 return;
             }

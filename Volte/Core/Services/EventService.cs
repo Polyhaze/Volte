@@ -17,7 +17,7 @@ namespace Volte.Core.Services {
 
         public async Task OnReady() {
             var dbl = VolteBot.Client.GetGuild(264445053596991498);
-            if (dbl == null || Config.GetOwner() == 168548441939509248) return;
+            if (dbl is null || Config.GetOwner() == 168548441939509248) return;
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
                 $"<@168548441939509248>: I am a Volte not owned by you. Please do not post Volte to a bot list again, <@{Config.GetOwner()}>.");
             await dbl.LeaveAsync();

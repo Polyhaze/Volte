@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -16,6 +17,10 @@ namespace Volte.Core.Modules.Admin {
                 return;
             }
 
+            if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null) {
+                await Reply(Context.Channel, CreateEmbed(Context, "That role doesn't exist in this guild."));
+                return;
+            }
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Add(roleName);
             Db.UpdateConfig(config);

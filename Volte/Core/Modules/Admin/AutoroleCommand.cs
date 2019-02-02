@@ -20,7 +20,7 @@ namespace Volte.Core.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             var roleToApply = Context.Guild.Roles
                 .FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-            if (roleToApply == null) {
+            if (roleToApply is null) {
                 await Reply(Context.Channel,
                     CreateEmbed(Context, $"The specified role, **{role}**, doesn't exist on this guild."));
                 return;

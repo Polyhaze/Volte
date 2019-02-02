@@ -15,7 +15,7 @@ namespace Volte.Core.Services {
         public Server GetConfig(ulong id) {
             using (var db = new LiteDatabase(@"data/Volte.db")) {
                 var conf = db.GetCollection<Server>("serverconfigs").FindOne(g => g.ServerId == id);
-                if (conf == null) {
+                if (conf is null) {
                     var newconf = Create(VolteBot.Client.GetGuild(id));
                     db.GetCollection<Server>("serverconfigs").Insert(newconf);
                     db.Dispose();
@@ -40,7 +40,7 @@ namespace Volte.Core.Services {
         public DiscordUser GetUser(ulong id) {
             using (var db = new LiteDatabase("data/Volte.db")) {
                 var user = db.GetCollection<DiscordUser>("users").FindOne(u => u.UserId == id);
-                if (user == null) {
+                if (user is null) {
                     var newuser = Create(id);
                     db.GetCollection<DiscordUser>("users").Insert(newuser);
                     db.Dispose();

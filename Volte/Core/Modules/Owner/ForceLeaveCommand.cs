@@ -17,7 +17,7 @@ namespace Volte.Core.Modules.Owner {
             }
 
             var target = VolteBot.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
-            if (target == null) {
+            if (target is null) {
                 await Context.Channel.SendMessageAsync(string.Empty, false,
                     CreateEmbed(Context, $"I'm not in the guild **{serverName}**."));
                 return;
