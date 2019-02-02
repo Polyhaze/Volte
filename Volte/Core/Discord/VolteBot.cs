@@ -33,7 +33,7 @@ namespace Volte.Core.Discord {
         }
 
         private static IServiceProvider BuildServiceProvider() {
-            var c = new ServiceCollection()
+            return new ServiceCollection()
                 .AddSingleton<AntilinkService>()
                 .AddSingleton<AutoroleService>()
                 .AddSingleton<BlacklistService>()
@@ -44,6 +44,7 @@ namespace Volte.Core.Discord {
                 .AddSingleton<EventService>()
                 .AddSingleton<DebugService>()
                 .AddSingleton<EmojiService>()
+                .AddSingleton<PingChecksService>()
                 .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,
@@ -56,9 +57,7 @@ namespace Volte.Core.Discord {
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 100
-                }));
-
-            return c.BuildServiceProvider();
+                })).BuildServiceProvider();
         }
 
         private async Task LoginAsync() {

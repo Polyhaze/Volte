@@ -24,7 +24,6 @@ namespace Volte.Core.Data.Objects {
         public int WelcomeColorB { get; set; }
         public bool MassPingChecks { get; set; }
         public bool Antilink { get; set; }
-        public bool VerifiedGuild { get; set; }
         public ulong ModRole { get; set; }
         public ulong AdminRole { get; set; }
         public bool DeleteMessageOnCommand { get; set; }

@@ -10,7 +10,7 @@ namespace Volte.Core.Modules.General {
         [Summary("Shows the bot's uptime in a human-friendly fashion.")]
         [Remarks("Usage: |prefix|uptime")]
         public async Task Uptime() {
-            var time = (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize();
+            var time = (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(2);
             await Reply(Context.Channel, CreateEmbed(Context, $"I've been online for **{time}**!"));
         }
     }

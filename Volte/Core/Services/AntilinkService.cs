@@ -10,13 +10,11 @@ using Volte.Helpers;
 
 namespace Volte.Core.Services {
     internal class AntilinkService {
-        internal async Task CheckMessage(SocketMessage s) {
-            var msg = (SocketUserMessage) s;
-            var ctx = new VolteContext(VolteBot.Client, msg);
+        internal async Task CheckMessage(VolteContext ctx) {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
-            var m = s.Content.Split(" ");
+            var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) {
-                m = new [] {s.Content};
+                m = new [] {ctx.Message.Content};
             }
 
             if (!config.Antilink || UserUtils.IsAdmin(ctx)) return;
@@ -29,7 +27,7 @@ namespace Volte.Core.Services {
                 var first = resp.Headers.FirstOrDefault(x => x.Name.Equals("Content-Security-Policy"));
 
                 if (first != null && first.Value.ToString().Contains("discord.gg")) {
-                    await msg.DeleteAsync();
+                    await ctx.Message.DeleteAsync();
                     var warnMsg = await Utils.Send(ctx.Channel,
                         Utils.CreateEmbed(ctx, "Don't send server invites here."));
                     await Task.Delay(3000);

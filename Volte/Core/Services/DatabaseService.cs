@@ -72,7 +72,6 @@ namespace Volte.Core.Services {
                 WelcomeColorG = 0,
                 WelcomeColorB = 251,
                 Antilink = false,
-                VerifiedGuild = false,
                 DeleteMessageOnCommand = false,
                 ModRole = ulong.MinValue,
                 AdminRole = ulong.MinValue,
