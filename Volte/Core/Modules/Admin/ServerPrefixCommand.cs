@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|serverprefix {newPrefix}")]
         public async Task ServerPrefix([Remainder]string prefix) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

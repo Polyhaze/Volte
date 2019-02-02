@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         public async Task PingChecks(bool isEnabled) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $setstream {streamer} {streamName}")]
         public async Task SetStream(string streamer, [Remainder] string streamName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

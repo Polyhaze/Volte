@@ -5,5 +5,9 @@ namespace Volte.Core.Extensions {
         public static bool EqualsIgnoreCase(this string str, string str2) {
             return str.Equals(str2, StringComparison.CurrentCultureIgnoreCase);
         }
+
+        public static bool ContainsIgnoreCase(this string str, string str2) {
+            return str.Contains(str2, StringComparison.CurrentCultureIgnoreCase);
+        }
     }
 }

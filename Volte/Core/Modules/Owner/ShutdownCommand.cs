@@ -14,7 +14,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: |prefix|shutdown")]
         public async Task Shutdown() {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

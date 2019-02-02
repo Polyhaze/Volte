@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         public async Task AddRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

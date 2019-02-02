@@ -9,7 +9,7 @@ namespace Volte.Core.Modules.Moderation {
         [Remarks("Usage: $idban {id} [reason]")]
         public async Task IdBan(ulong user, [Remainder] string reason = "Banned by a Moderator.") {
             if (!UserUtils.IsModerator(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

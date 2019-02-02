@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $setstatus {dnd|idle|invisible|online}")]
         public async Task SetStatus([Remainder] string status) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|adminrole {roleName}")]
         public async Task AdminRole([Remainder] string roleName) {
             if (!UserUtils.IsGuildOwner(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
             var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();

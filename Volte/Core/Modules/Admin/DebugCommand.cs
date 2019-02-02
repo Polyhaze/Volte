@@ -14,7 +14,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|debug")]
         public async Task Debug() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
             

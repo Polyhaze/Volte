@@ -14,7 +14,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $forcedebug {guildId}")]
         public async Task ForceDebug(ulong serverId) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

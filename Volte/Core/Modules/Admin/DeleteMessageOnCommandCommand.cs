@@ -12,7 +12,8 @@ namespace Volte.Core.Modules.Admin {
         public async Task DeleteMessageOnCommand(bool arg) {
             var config = Db.GetConfig(Context.Guild);
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
+                return;
             }
 
             config.DeleteMessageOnCommand = arg;

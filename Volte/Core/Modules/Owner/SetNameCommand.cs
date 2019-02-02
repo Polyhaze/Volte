@@ -9,7 +9,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("$setname {name}")]
         public async Task SetName([Remainder] string name) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
             await Context.Client.CurrentUser.ModifyAsync(u => u.Username = name);

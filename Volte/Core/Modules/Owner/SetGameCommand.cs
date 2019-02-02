@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $setgame {game}")]
         public async Task SetGame([Remainder] string game) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

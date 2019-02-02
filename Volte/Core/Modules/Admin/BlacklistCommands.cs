@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|blacklistadd {phrase}")]
         public async Task BlacklistAdd([Remainder] string arg) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|blacklistremove {phrase}")]
         public async Task BlacklistRemove([Remainder] string arg) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|blacklistclear")]
         public async Task BlacklistClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

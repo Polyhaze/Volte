@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|autorole {roleName}")]
         public async Task Autorole([Remainder]string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

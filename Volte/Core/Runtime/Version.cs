@@ -4,7 +4,7 @@
         private static readonly int Minor = 0;
         private static readonly int Patch = 0;
         private static readonly int Hotfix = 0;
-        private static readonly ReleaseType ReleaseType = ReleaseType.Development;
+        private static readonly ReleaseType ReleaseType = ReleaseType.Release;
 
         public static string GetFullVersion() {
             return $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";

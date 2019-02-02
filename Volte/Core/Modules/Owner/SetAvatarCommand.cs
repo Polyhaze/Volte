@@ -13,7 +13,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $setavatar {url}")]
         public async Task SetAvatar(string url) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

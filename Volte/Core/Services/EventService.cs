@@ -31,6 +31,7 @@ namespace Volte.Core.Services {
 
 
         public async Task OnCommand(Optional<CommandInfo> cinfo, ICommandContext ctx, IResult res) {
+            if (!cinfo.IsSpecified) return;
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var argPos = 0;
             var embed = new EmbedBuilder();
@@ -39,7 +40,10 @@ namespace Volte.Core.Services {
                 switch (res.ErrorReason) {
                     case "The server responded with error 403: Forbidden":
                         reason =
-                            "I'm not allowed to do that. Either I don't have permission or the requested user is higher than me in the role hierarchy.";
+                            "I'm not allowed to do that. " +
+                            "Either I don't have permission, " +
+                            "or the requested user is higher " +
+                            "than me in the role hierarchy.";
                         break;
                     case "Failed to parse Boolean.":
                         reason = "You can only input `true` or `false` for this command.";

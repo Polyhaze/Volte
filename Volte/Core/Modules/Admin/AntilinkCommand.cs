@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|antilink {true|false}")]
         public async Task Antilink(bool alIsEnabled) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

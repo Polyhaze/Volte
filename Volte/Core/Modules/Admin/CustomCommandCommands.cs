@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|customcommandadd {cmdName} {cmdResponse}")]
         public async Task CustomCommandAdd(string name, [Remainder] string response) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -33,7 +33,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|customcommandrem {cmdName}")]
         public async Task CustomCommandRem(string cmdName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
             var config = Db.GetConfig(Context.Guild);
@@ -57,7 +57,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|customcommandclear")]
         public async Task CustomCommandClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

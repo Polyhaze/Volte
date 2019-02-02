@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         public async Task RemRole(SocketGuildUser user, [Remainder] string role) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

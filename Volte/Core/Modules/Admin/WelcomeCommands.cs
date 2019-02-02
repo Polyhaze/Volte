@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         public async Task WelcomeChannel(SocketTextChannel channel) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -27,7 +27,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         public async Task WelcomeMessage([Remainder] string message = null) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
         public async Task WelcomeColor(int r, int g, int b) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         public async Task LeavingMessage([Remainder] string message = null) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

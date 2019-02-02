@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         public async Task SelfRoleAdd(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -28,7 +28,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|selfrolerem {roleName}")]
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|selfroleclear")]
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

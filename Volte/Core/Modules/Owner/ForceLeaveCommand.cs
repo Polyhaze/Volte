@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $forceleave {serverName}")]
         public async Task ForceLeave([Remainder]string serverName) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Owner {
         [Remarks("Usage: $createconfig [guildId]")]
         public async Task CreateConfig(ulong serverId = 0) {
             if (!UserUtils.IsBotOwner(Context.User)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

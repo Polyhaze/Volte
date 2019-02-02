@@ -11,7 +11,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: $levels {true|false}")]
         public async Task Levels(bool enabled) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 

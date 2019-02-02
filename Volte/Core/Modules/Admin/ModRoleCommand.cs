@@ -12,7 +12,7 @@ namespace Volte.Core.Modules.Admin {
         [Remarks("Usage: |prefix|modrole {roleName}")]
         public async Task ModRole([Remainder] string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
-                await React(Context.SMessage, RawEmoji.X);
+                await Context.ReactFailure();
                 return;
             }
 
