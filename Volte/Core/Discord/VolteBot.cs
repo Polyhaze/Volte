@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Services;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Core.Runtime;
 
 namespace Volte.Core.Discord {
@@ -61,6 +62,7 @@ namespace Volte.Core.Discord {
         }
 
         private async Task LoginAsync() {
+            if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
             await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}",

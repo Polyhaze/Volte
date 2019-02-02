@@ -58,7 +58,7 @@ namespace Volte.Core.Services {
                     embed.AddField("Error Reason:", reason);
                     embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
                     embed.WithAuthor(ctx.User);
-                    embed.WithColor(Config.GetErrorColour());
+                    embed.WithColor(Config.GetErrorColor());
                     await Utils.Send(ctx.Channel, embed.Build());
                 }
                 else {
@@ -66,7 +66,7 @@ namespace Volte.Core.Services {
                     embed.AddField("Error Reason:", reason);
                     embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
                     embed.WithAuthor(ctx.User);
-                    embed.WithColor(Config.GetErrorColour());
+                    embed.WithColor(Config.GetErrorColor());
                     await Utils.Send(ctx.Channel, embed.Build());
                 }
             }

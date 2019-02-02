@@ -1,46 +1,46 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using Volte.Core.Runtime;
 
 namespace Volte.Core.Data {
     public class Config {
-        private static readonly BotConfig Bot;
+        private static BotConfig _bot;
         private const string ConfigFile = "data/config.json";
 
         static Config() {
-            if (!Directory.Exists("data"))
-                Directory.CreateDirectory("data");
-
-            if (!File.Exists(ConfigFile)) {
-                Bot = new BotConfig {
-                    Token = "token here",
-                    CommandPrefix = "$",
-                    Owner = 0,
-                    Game = "in Volte V2 Code!",
-                    Streamer = "GreemDev",
-                    SuccessEmbedColor = 0x7000FB,
-                    ErrorEmbedColor = 0xFF0000,
-                    LogAllCommands = true,
-                    BlacklistedServerOwners = new ulong[]{}
-                };
-                var json = JsonConvert.SerializeObject(Bot, Formatting.Indented);
-                File.WriteAllText(ConfigFile, json);
-            }
-            else {
-                var json = File.ReadAllText(ConfigFile);
-                Bot = JsonConvert.DeserializeObject<BotConfig>(json);
-            }
+            CreateIfNotExists();
+            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) 
+                _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        public static string GetToken() => Bot.Token;
-        public static string GetCommandPrefix() => Bot.CommandPrefix;
-        public static ulong GetOwner() => Bot.Owner;
-        public static string GetGame() => Bot.Game;
-        public static string GetStreamer()=> Bot.Streamer;
-        public static uint GetSuccessColor() => Bot.SuccessEmbedColor;
-        public static uint GetErrorColour() => Bot.ErrorEmbedColor;
-        public static bool GetLogAllCommands() => Bot.LogAllCommands;
-        public static ulong[] GetBlacklistedOwners() => Bot.BlacklistedServerOwners;
+        public static void CreateIfNotExists() {
+            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) return;
+            new Logger().Warn("config.json didn't exist or was empty. Created it for you.");
+            _bot = new BotConfig {
+                Token = "token here",
+                CommandPrefix = "$",
+                Owner = 0,
+                Game = "in Volte V2 Code!",
+                Streamer = "GreemDev",
+                SuccessEmbedColor = 0x7000FB,
+                ErrorEmbedColor = 0xFF0000,
+                LogAllCommands = true,
+                BlacklistedServerOwners = new ulong[]{}
+            };
+            File.WriteAllText(ConfigFile, 
+                JsonConvert.SerializeObject(_bot, Formatting.Indented));
+        }
+
+        public static string GetToken() => _bot.Token;
+        public static string GetCommandPrefix() => _bot.CommandPrefix;
+        public static ulong GetOwner() => _bot.Owner;
+        public static string GetGame() => _bot.Game;
+        public static string GetStreamer()=> _bot.Streamer;
+        public static uint GetSuccessColor() => _bot.SuccessEmbedColor;
+        public static uint GetErrorColor() => _bot.ErrorEmbedColor;
+        public static bool GetLogAllCommands() => _bot.LogAllCommands;
+        public static ulong[] GetBlacklistedOwners() => _bot.BlacklistedServerOwners;
 
         private struct BotConfig {
             public string Token;
