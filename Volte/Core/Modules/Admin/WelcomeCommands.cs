@@ -54,7 +54,8 @@ namespace Volte.Core.Modules.Admin {
                     var welcomeMessage = config.WelcomeMessage
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
-                        .Replace("{UserTag}", $"{Context.User.Username}#{Context.User.Discriminator}");
+                        .Replace("{UserName}", Context.User.Username)
+                        .Replace("{UserTag}", Context.User.Discriminator);
                     var embed = CreateEmbed(Context, welcomeMessage).ToEmbedBuilder()
                         .WithThumbnailUrl(Context.Guild.IconUrl);
                     await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
@@ -121,7 +122,8 @@ namespace Volte.Core.Modules.Admin {
                     var welcomeMessage = config.LeavingMessage
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
-                        .Replace("{UserTag}", $"{Context.User.Username}#{Context.User.Discriminator}");
+                        .Replace("{UserName}", Context.User.Username)
+                        .Replace("{UserTag}", Context.User.Discriminator);
                     var embed = new EmbedBuilder()
                         .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB)
                         .WithDescription(welcomeMessage)
