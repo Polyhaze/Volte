@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -33,6 +34,11 @@ namespace Volte.Core.Services {
         public async Task OnCommand(Optional<CommandInfo> cinfo, ICommandContext ctx, IResult res) {
             if (!cinfo.IsSpecified) return;
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
+            var commandName = ctx.Message.Content.Split(" ")[0];
+            var args = ctx.Message.Content.Replace($"{commandName}", "");
+            if (string.IsNullOrEmpty(args)) {
+                args = "None";
+            }
             var argPos = 0;
             var embed = new EmbedBuilder();
             if (!res.IsSuccess && res.ErrorReason != "Unknown command.") {
@@ -76,11 +82,7 @@ namespace Volte.Core.Services {
                 if (res.IsSuccess) {
                     _logger.Info($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
                     _logger.Info($"--|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Info("--|        -Args Passed: " +
-                                 ctx.Message.Content.Replace(
-                                     $"{config.CommandPrefix}{cinfo.Value.Name} ",
-                                     string.Empty, StringComparison.CurrentCultureIgnoreCase
-                                 ));
+                    _logger.Info($"--|        -Args Passed: {args.Trim()}");
                     _logger.Info($"--|           -In Guild: {ctx.Guild.Name}");
                     _logger.Info($"--|         -In Channel: #{ctx.Channel.Name}");
                     _logger.Info($"--|        -Time Issued: {DateTime.Now}");
@@ -90,12 +92,7 @@ namespace Volte.Core.Services {
                 else {
                     _logger.Error($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
                     _logger.Error($"--|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Error("--|        -Args Passed: " +
-                                  ctx.Message.Content.Replace(
-                                      $"{config.CommandPrefix}{cinfo.Value.Name} ",
-                                      string.Empty,
-                                      StringComparison.CurrentCultureIgnoreCase
-                                  ));
+                    _logger.Error($"--|        -Args Passed: {args.Trim()}");
                     _logger.Error($"--|           -In Guild: {ctx.Guild.Name}");
                     _logger.Error($"--|         -In Channel: #{ctx.Channel.Name}");
                     _logger.Error($"--|        -Time Issued: {DateTime.Now}");

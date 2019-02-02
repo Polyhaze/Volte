@@ -3,7 +3,7 @@
 
 # Volte
 
-A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/RogueException/Discord.Net)
+A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net)
 
 ## Quick Links 
 
