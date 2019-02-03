@@ -22,7 +22,7 @@ namespace Volte.Core.Services {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
                     .WithDescription(welcomeMessage)
-                    .WithThumbnailUrl(user.Guild.IconUrl)
+                    .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
                 await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
@@ -44,7 +44,7 @@ namespace Volte.Core.Services {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
                     .WithDescription(leavingMessage)
-                    .WithThumbnailUrl(user.Guild.IconUrl)
+                    .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
                 await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)

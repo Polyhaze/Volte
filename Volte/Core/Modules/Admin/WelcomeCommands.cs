@@ -18,7 +18,7 @@ namespace Volte.Core.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
+            await Reply(Context.Channel,
                 CreateEmbed(Context, $"Set this server's welcome channel to **{channel.Name}**"));
         }
 
@@ -57,7 +57,7 @@ namespace Volte.Core.Modules.Admin {
                         .Replace("{UserName}", Context.User.Username)
                         .Replace("{UserTag}", Context.User.Discriminator);
                     var embed = CreateEmbed(Context, welcomeMessage).ToEmbedBuilder()
-                        .WithThumbnailUrl(Context.Guild.IconUrl);
+                        .WithThumbnailUrl(Context.User.GetAvatarUrl());
                     await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
                 }
             }
@@ -127,7 +127,7 @@ namespace Volte.Core.Modules.Admin {
                     var embed = new EmbedBuilder()
                         .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB)
                         .WithDescription(welcomeMessage)
-                        .WithThumbnailUrl(Context.Guild.IconUrl);
+                        .WithThumbnailUrl(Context.User.GetAvatarUrl());
                     await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
                 }
             }
