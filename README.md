@@ -1,4 +1,5 @@
-![Volte Logo](https://assets.greemdev.net/Volte.png)
+<img src="https://assets.greemdev.net/Volte.png" width="250" height="250" />
+
 [![Build status](https://greem.visualstudio.com/Volte/_apis/build/status/Volte-CI)](https://greem.visualstudio.com/Volte/_build/latest?definitionId=-1)
 
 # Volte
