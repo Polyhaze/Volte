@@ -3,7 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Data;
-using Volte.Core.Modules;
+using Volte.Core.Commands;
 
 namespace Volte.Helpers {
     public static class Utils {

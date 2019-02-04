@@ -10,7 +10,7 @@ namespace Volte.Core.Data {
 
         static Config() {
             CreateIfNotExists();
-            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) 
+            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile)))
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
@@ -26,9 +26,9 @@ namespace Volte.Core.Data {
                 SuccessEmbedColor = 0x7000FB,
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
-                BlacklistedServerOwners = new ulong[]{}
+                BlacklistedServerOwners = new ulong[] { }
             };
-            File.WriteAllText(ConfigFile, 
+            File.WriteAllText(ConfigFile,
                 JsonConvert.SerializeObject(_bot, Formatting.Indented));
         }
 
@@ -36,7 +36,7 @@ namespace Volte.Core.Data {
         public static string GetCommandPrefix() => _bot.CommandPrefix;
         public static ulong GetOwner() => _bot.Owner;
         public static string GetGame() => _bot.Game;
-        public static string GetStreamer()=> _bot.Streamer;
+        public static string GetStreamer() => _bot.Streamer;
         public static uint GetSuccessColor() => _bot.SuccessEmbedColor;
         public static uint GetErrorColor() => _bot.ErrorEmbedColor;
         public static bool GetLogAllCommands() => _bot.LogAllCommands;

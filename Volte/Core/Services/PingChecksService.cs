@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
+using Volte.Core.Commands;
 using Volte.Core.Extensions;
-using Volte.Core.Modules;
 using Volte.Helpers;
 
 namespace Volte.Core.Services {

@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using Volte.Core.Discord;
-using Volte.Core.Modules;
+using Volte.Core.Commands;
 using Volte.Helpers;
 
 namespace Volte.Core.Services {

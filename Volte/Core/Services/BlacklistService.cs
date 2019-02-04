@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
-using Volte.Core.Data;
+using Volte.Core.Commands;
 using Volte.Core.Extensions;
-using Volte.Core.Modules;
 
 namespace Volte.Core.Services {
     internal class BlacklistService {

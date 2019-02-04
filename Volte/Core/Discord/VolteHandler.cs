@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Services;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
-using Volte.Core.Modules;
+using Volte.Core.Commands;
 
 namespace Volte.Core.Discord {
     public class VolteHandler {

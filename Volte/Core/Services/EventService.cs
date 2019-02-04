@@ -6,8 +6,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Core.Runtime;
 using Volte.Helpers;
 
@@ -31,7 +33,8 @@ namespace Volte.Core.Services {
         }
 
 
-        public async Task OnCommand(Optional<CommandInfo> cinfo, ICommandContext ctx, IResult res) {
+        public async Task OnCommand(Optional<CommandInfo> cinfo, ICommandContext context, IResult res) {
+            var ctx = (VolteContext)context;
             if (!cinfo.IsSpecified) return;
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var commandName = ctx.Message.Content.Split(" ")[0];
@@ -39,9 +42,10 @@ namespace Volte.Core.Services {
             if (string.IsNullOrEmpty(args)) {
                 args = "None";
             }
+            
             var argPos = 0;
             var embed = new EmbedBuilder();
-            if (!res.IsSuccess && res.ErrorReason != "Unknown command.") {
+            if (!res.IsSuccess && res.ErrorReason != "Unknown command." && res.ErrorReason != "Insufficient permission.") {
                 string reason;
                 switch (res.ErrorReason) {
                     case "The server responded with error 403: Forbidden":

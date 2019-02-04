@@ -1,12 +1,11 @@
 ﻿using Discord.WebSocket;
 using Volte.Core.Data;
 using System.Linq;
-using System.Net;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
-using Volte.Core.Modules;
+using Volte.Core.Commands;
 using Volte.Core.Services;
 
 namespace Volte.Helpers {
@@ -17,7 +16,7 @@ namespace Volte.Helpers {
         /// <param name="user">User to check.</param>
         /// <returns>System.Boolean</returns>
         public static bool IsBotOwner(IUser user) {
-            return user.Id == Config.GetOwner();
+            return Config.GetOwner().Equals(user.Id);
         }
 
         /// <summary>
