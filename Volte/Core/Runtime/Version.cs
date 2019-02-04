@@ -2,7 +2,7 @@
     public static class Version {
         private static readonly int Major = 2;
         private static readonly int Minor = 0;
-        private static readonly int Patch = 1;
+        private static readonly int Patch = 2;
         private static readonly int Hotfix = 0;
         private static readonly ReleaseType ReleaseType = ReleaseType.Release;
 
