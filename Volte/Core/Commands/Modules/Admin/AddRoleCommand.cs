@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -14,16 +15,17 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin]
         public async Task AddRole(SocketGuildUser user, [Remainder] string role) {
-            var targetRole = Context.Guild.Roles.FirstOrDefault(r => string.Equals(r.Name, role, StringComparison.CurrentCultureIgnoreCase));
+            var targetRole = Context.Guild.Roles.FirstOrDefault(r =>
+                string.Equals(r.Name, role, StringComparison.CurrentCultureIgnoreCase));
             if (targetRole != null) {
                 await user.AddRoleAsync(targetRole);
-                await Reply(Context.Channel,
-                    CreateEmbed(Context, $"Added the role **{role}** to {user.Mention}!"));
+                await Context.CreateEmbed($"Added the role **{role}** to {user.Mention}!")
+                    .SendTo(Context.Channel);
                 return;
             }
 
-            await Reply(Context.Channel,
-                CreateEmbed(Context, $"**{role}** doesn't exist on this server!"));
+            await Context.CreateEmbed($"**{role}** doesn't exist on this server!")
+                .SendTo(Context.Channel);
         }
     }
 }

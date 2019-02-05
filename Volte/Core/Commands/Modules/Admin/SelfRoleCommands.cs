@@ -15,14 +15,14 @@ namespace Volte.Core.Commands.Modules.Admin {
         [RequireGuildAdmin]
         public async Task SelfRoleAdd(string roleName) {
             if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null) {
-                await Reply(Context.Channel, CreateEmbed(Context, "That role doesn't exist in this guild."));
+                await Context.CreateEmbed("That role doesn't exist in this guild.").SendTo(Context.Channel);
                 return;
             }
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Add(roleName);
             Db.UpdateConfig(config);
-            await Reply(Context.Channel,
-                CreateEmbed(Context, $"Successfully added **{roleName}** to the Self Roles for this guild."));
+            await Context.CreateEmbed($"Successfully added **{roleName}** to the Self Roles for this guild.")
+                .SendTo(Context.Channel);
         }
 
         [Command("SelfRoleRem"), Alias("Srr")]
@@ -38,13 +38,13 @@ namespace Volte.Core.Commands.Modules.Admin {
 
             if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName))) {
                 config.SelfRoles.Remove(roleName);
-                await Reply(Context.Channel,
-                    CreateEmbed(Context, $"Removed **{roleName}** from the Self Roles list on this guild."));
+                await Context.CreateEmbed($"Removed **{roleName}** from the Self Roles list on this guild.")
+                    .SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
             else {
-                await Reply(Context.Channel,
-                    CreateEmbed(Context, $"The Self Roles list for this guild doesn't contain **{roleName}**."));
+                await Context.CreateEmbed($"The Self Roles list for this guild doesn't contain **{roleName}**.")
+                    .SendTo(Context.Channel);
             }
         }
 
@@ -60,8 +60,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Clear();
             Db.UpdateConfig(config);
-            await Reply(Context.Channel,
-                CreateEmbed(Context, "Successfully cleared all Self Roles for this server."));
+            await Context.CreateEmbed("Successfully cleared all Self Roles for this server.").SendTo(Context.Channel);
         }
     }
 }

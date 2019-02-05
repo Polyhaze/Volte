@@ -2,6 +2,7 @@
 using System.Security.Authentication.ExtendedProtection;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Economy {
@@ -10,9 +11,8 @@ namespace Volte.Core.Commands.Modules.Economy {
         [Summary("Checks what level the given amount of XP is equal to.")]
         [Remarks("Usage: |prefix|whatlevelis {xpAmount}")]
         public async Task WhatLevelIs(uint xp) {
-            await Reply(Context.Channel,
-                // ReSharper disable once PossibleLossOfFraction (we don't care about loss of fraction)
-                CreateEmbed(Context, $"{xp} XP is level {Math.Sqrt(xp / 50)}"));
+            // ReSharper disable once PossibleLossOfFraction (we don't care about loss of fraction)
+            await Context.CreateEmbed($"{xp} XP is level {Math.Sqrt(xp / 50)}").SendTo(Context.Channel);
         }
     }
 }

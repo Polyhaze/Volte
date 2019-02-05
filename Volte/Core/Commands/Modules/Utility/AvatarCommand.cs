@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
@@ -10,15 +11,15 @@ namespace Volte.Core.Commands.Modules.Utility {
         [Summary("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
         [Remarks("Usage: $avatar [@user]")]
         public async Task Avatar(SocketGuildUser user = null) {
-            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
+            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
             if (user is null) {
                 embed.WithImageUrl(Context.User.GetAvatarUrl());
             }
             else {
                 embed.WithImageUrl(user.GetAvatarUrl());
             }
-            
-            await Reply(Context.Channel, embed.Build());
+
+            await embed.SendTo(Context.Channel);
 
         }
     }

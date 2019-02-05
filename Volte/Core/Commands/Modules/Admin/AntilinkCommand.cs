@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -11,11 +12,12 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Summary("Enable/Disable Antilink for the current guild.")]
         [Remarks("Usage: |prefix|antilink {true|false}")]
         [RequireGuildAdmin]
-        public async Task Antilink(bool alIsEnabled) {
+        public async Task Antilink(bool arg) {
             var config = Db.GetConfig(Context.Guild);
-            config.Antilink = alIsEnabled;
-            var isEnabled = alIsEnabled ? "Antilink has been enabled." : "Antilink has been disabled.";
-            await Reply(Context.Channel, CreateEmbed(Context, isEnabled));
+            config.Antilink = arg;
+            Db.UpdateConfig(config);
+            await Context.CreateEmbed(arg ? "Antilink has been enabled." : "Antilink has been disabled.")
+                .SendTo(Context.Channel);
         }
     }
 }

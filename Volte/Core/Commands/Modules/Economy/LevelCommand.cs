@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Economy {
@@ -11,10 +12,8 @@ namespace Volte.Core.Commands.Modules.Economy {
         [Remarks("Usage: |prefix|level [@user]")]
         public async Task Level(SocketGuildUser user = null) {
             if (user is null) user = (SocketGuildUser) Context.User;
-
-            var userData = Db.GetUser(Context.User);
-            await Reply(Context.Channel,
-                CreateEmbed(Context, $"User {user.Mention} is level **{userData.Level}**."));
+            await Context.CreateEmbed($"User {user.Mention} is level **{Db.GetUser(Context.User).Level}**.")
+                .SendTo(Context.Channel);
         }
     }
 }

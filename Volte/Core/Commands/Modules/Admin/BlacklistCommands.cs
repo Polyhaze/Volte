@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.Blacklist.Add(arg);
             Db.UpdateConfig(config);
-            await Reply(Context.Channel, CreateEmbed(Context, $"Added **{arg}** to the blacklist."));
+            await Context.CreateEmbed($"Added **{arg}** to the blacklist.").SendTo(Context.Channel);
         }
 
         [Command("BlacklistRemove"), Alias("BlRem")]
@@ -28,13 +28,11 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             if (config.Blacklist.Any(p => p.EqualsIgnoreCase(arg))) {
                 config.Blacklist.RemoveAt(config.Blacklist.FindIndex(p => p.EqualsIgnoreCase(arg)));
-                await Context.Channel.SendMessageAsync(string.Empty, false,
-                    CreateEmbed(Context, $"Removed **{arg}** from the word blacklist."));
+                await Context.CreateEmbed($"Removed **{arg}** from the word blacklist.").SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
             else {
-                await Context.Channel.SendMessageAsync(string.Empty, false,
-                    CreateEmbed(Context, $"**{arg}** doesn't exist in the blacklist."));
+                await Context.CreateEmbed($"**{arg}** doesn't exist in the blacklist.").SendTo(Context.Channel);
             }
         }
 
@@ -44,8 +42,8 @@ namespace Volte.Core.Commands.Modules.Admin {
         [RequireGuildAdmin]
         public async Task BlacklistClear() {
             var config = Db.GetConfig(Context.Guild);
-            await Reply(Context.Channel,
-                CreateEmbed(Context, $"Cleared the custom commands, containing **{config.Blacklist.Count}** words."));
+            await Context.CreateEmbed($"Cleared the custom commands, containing **{config.Blacklist.Count}** words.")
+                .SendTo(Context.Channel);
             config.Blacklist.Clear();
             Db.UpdateConfig(config);
         }

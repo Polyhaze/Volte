@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Owner {
@@ -11,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Owner {
         [RequireBotOwner]
         public async Task SetName([Remainder] string name) {
             await Context.Client.CurrentUser.ModifyAsync(u => u.Username = name);
-            await Reply(Context.Channel, $"Set my name to **{name}**.");
+            await Context.CreateEmbed($"Set my name to **{name}**.").SendTo(Context.Channel);
         }
     }
 }

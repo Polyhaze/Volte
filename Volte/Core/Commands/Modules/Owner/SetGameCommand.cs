@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Owner {
@@ -13,8 +14,7 @@ namespace Volte.Core.Commands.Modules.Owner {
         [RequireBotOwner]
         public async Task SetGame([Remainder] string game) {
             await VolteBot.Client.SetGameAsync(game);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context, $"Set the bot's game to **{game}**."));
+            await Context.CreateEmbed($"Set the bot's game to **{game}**.").SendTo(Context.Channel);
         }
     }
 }

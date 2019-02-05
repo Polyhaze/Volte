@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Remarks("Usage: |prefix|adminrole {roleName}")]
         [RequireGuildAdmin]
         public async Task AdminRole([Remainder] string roleName) {
-            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
+            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
             var config = Db.GetConfig(Context.Guild);
             if (Context.Guild.Roles.Any(r => r.Name.ToLower().Equals(roleName.ToLower()))) {
                 var role = Context.Guild.Roles.First(r => r.Name == roleName);

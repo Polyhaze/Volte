@@ -11,18 +11,18 @@ namespace Volte.Core.Commands.Modules.Utility {
         public async Task IamNot([Remainder] string roleName) {
             var config = Db.GetConfig(Context.Guild);
             if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName))) {
-                await Reply(Context.Channel, CreateEmbed(Context, 
-                    $"The role **{roleName}** isn't in the self roles list for this guild."));
+                await Context.CreateEmbed($"The role **{roleName}** isn't in the self roles list for this guild.")
+                    .SendTo(Context.Channel);
             }
             else {
                 var target = Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName));
                 if (target is null) {
-                    await Reply(Context.Channel,
-                        CreateEmbed(Context, $"The role **{roleName}** doesn't exist in this guild"));
+                    await Context.CreateEmbed($"The role **{roleName}** doesn't exist in this guild")
+                        .SendTo(Context.Channel);
                 }
                 else {
                     await Context.GuildUser.RemoveRoleAsync(target);
-                    await Reply(Context.Channel, CreateEmbed(Context, $"Took away your **{roleName}** role."));
+                    await Context.CreateEmbed($"Took away your **{roleName}** role.").SendTo(Context.Channel);
                 }
             }
         }

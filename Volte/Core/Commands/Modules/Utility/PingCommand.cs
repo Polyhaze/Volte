@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
@@ -10,10 +11,10 @@ namespace Volte.Core.Commands.Modules.Utility {
         [Summary("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
         public async Task Ping() {
-            var e = CreateEmbed(Context, "Pinging...").ToEmbedBuilder();
+            var e = Context.CreateEmbed("Pinging...").ToEmbedBuilder();
             var sw = new Stopwatch();
             sw.Start();
-            var msg = await Reply(Context.Channel, e.Build());
+            var msg = await e.SendTo(Context.Channel);
             sw.Stop();
             await msg.ModifyAsync(x => {
                 e.WithDescription(

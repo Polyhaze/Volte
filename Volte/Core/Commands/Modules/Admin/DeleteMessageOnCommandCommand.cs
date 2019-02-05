@@ -4,6 +4,7 @@ using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Helpers;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
@@ -15,8 +16,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.DeleteMessageOnCommand = arg;
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context, $"Set the DeleteMessageOnCommand setting to **{arg}**."));
+            await Context.CreateEmbed(arg ? "Enabled DeleteMessageOnCommand in this server." : "").SendTo(Context.Channel);
         }
     }
 }

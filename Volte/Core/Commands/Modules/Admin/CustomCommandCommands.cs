@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -16,24 +17,22 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.CustomCommands.Add(name, response);
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context, string.Empty)
-                    .ToEmbedBuilder()
-                    .AddField("Command Name", name)
-                    .AddField("Command Response", response)
-                    .Build()
-            );
+            await Context.CreateEmbed(string.Empty)
+                .ToEmbedBuilder()
+                .AddField("Command Name", name)
+                .AddField("Command Response", response)
+                .SendTo(Context.Channel);
         }
-        
+
         [Command("CustomCommandRem"), Alias("Ccr")]
         [Summary("Remove a custom command from this guild.")]
         [Remarks("Usage: |prefix|customcommandrem {cmdName}")]
         [RequireGuildAdmin]
         public async Task CustomCommandRem(string cmdName) {
             var config = Db.GetConfig(Context.Guild);
-            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder()
+            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder()
                 .WithAuthor(Context.User);
-            
+
             if (config.CustomCommands.Keys.Contains(cmdName)) {
                 config.CustomCommands.Remove(cmdName);
                 Db.UpdateConfig(config);
@@ -43,7 +42,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                 embed.WithDescription($"**{cmdName}** is not a command on this server.");
             }
 
-            await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
+            await embed.SendTo(Context.Channel);
         }
 
         [Command("CustomCommandClear"), Alias("Ccc")]
@@ -52,9 +51,9 @@ namespace Volte.Core.Commands.Modules.Admin {
         [RequireGuildAdmin]
         public async Task CustomCommandClear() {
             var config = Db.GetConfig(Context.Guild);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context,
-                    $"Cleared the custom commands, containing **{config.CustomCommands.Count}** words."));
+            await Context
+                .CreateEmbed($"Cleared the custom commands, containing **{config.CustomCommands.Count}** words.")
+                .SendTo(Context.Channel);
             config.CustomCommands.Clear();
             Db.UpdateConfig(config);
         }

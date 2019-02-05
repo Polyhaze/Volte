@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
@@ -15,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Utility {
                 list += $"**{cmd}**\n";
             }
 
-            await Reply(Context.Channel, CreateEmbed(Context, list));
+            await Context.CreateEmbed(list).SendTo(Context.Channel);
         }
     }
 }

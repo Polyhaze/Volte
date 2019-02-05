@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
@@ -11,9 +12,8 @@ namespace Volte.Core.Commands.Modules.Utility {
         [Remarks("Usage: $userinfo [@user]")]
         public async Task UserInfo(SocketGuildUser user = null) {
             var actualUser = user ?? (SocketGuildUser)Context.User;
-            
 
-            await Context.Channel.SendMessageAsync(string.Empty, false, CreateEmbed(Context, string.Empty)
+            await Context.CreateEmbed(string.Empty)
                 .ToEmbedBuilder()
                 .WithAuthor(Context.User)
                 .WithThumbnailUrl(actualUser.GetAvatarUrl())
@@ -25,9 +25,7 @@ namespace Volte.Core.Commands.Modules.Utility {
                     $"Month: {actualUser.CreatedAt.Month}\nDay: {actualUser.CreatedAt.Day}\nYear: {actualUser.CreatedAt.Year}")
                 .AddField("Status", actualUser.Status)
                 .AddField("Is Bot", actualUser.IsBot)
-            .Build());
-
-
+                .SendTo(Context.Channel);
         }
     }
 }

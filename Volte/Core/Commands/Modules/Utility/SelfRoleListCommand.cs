@@ -16,11 +16,11 @@ namespace Volte.Core.Commands.Modules.Utility {
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
                     roleList += $"**{currentRole?.Name}**\n";
                 });
-                await Reply(Context.Channel, CreateEmbed(Context, roleList));
+                await Context.CreateEmbed(roleList).SendTo(Context.Channel);
             }
             else {
                 roleList = "No roles available to self-assign in this guild.";
-                await Reply(Context.Channel, CreateEmbed(Context, roleList));
+                await Context.CreateEmbed(roleList).SendTo(Context.Channel);
             }
 
             

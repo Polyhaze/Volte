@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -11,13 +12,12 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Summary("Enables/Disables level gaining for this guild.")]
         [Remarks("Usage: $levels {true|false}")]
         [RequireGuildAdmin]
-        public async Task Levels(bool enabled) {
+        public async Task Levels(bool arg) {
             var config = Db.GetConfig(Context.Guild);
-            config.Leveling = enabled;
+            config.Leveling = arg;
             Db.UpdateConfig(config);
-            await Context.Channel.SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context,
-                    enabled ? "Enabled Leveling for this server." : "Disabled Leveling for this server."));
+            await Context.CreateEmbed(arg ? "Leveling has been enabled." : "Leveling has been disabled.")
+                .SendTo(Context.Channel);
 
         }
     }

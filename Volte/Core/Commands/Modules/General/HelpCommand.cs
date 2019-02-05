@@ -35,7 +35,7 @@ namespace Volte.Core.Commands.Modules.General {
                 var c = Cs.Commands.FirstOrDefault(x => x.Name.EqualsIgnoreCase(cname));
 
                 if (c is null) {
-                    await Reply(Context.Channel, CreateEmbed(Context, "No command matching that name was found."));
+                    await Context.CreateEmbed("No command matching that name was found.").SendTo(Context.Channel);
                     return;
                 }
 
@@ -44,8 +44,8 @@ namespace Volte.Core.Commands.Modules.General {
                 if ((c.Module.Name.EqualsIgnoreCase("adminmodule") && !UserUtils.IsAdmin(Context)) || 
                     (c.Module.Name.EqualsIgnoreCase("ownermodule") && !UserUtils.IsBotOwner(Context.User)) || 
                     (c.Module.Name.EqualsIgnoreCase("moderationmodule") && !UserUtils.IsModerator(Context))) {
-                    await Reply(Context.Channel,
-                        CreateEmbed(Context, "You don't have permission to use the module that command is from."));
+                    await Context.CreateEmbed("You don't have permission to use the module that command is from.")
+                        .SendTo(Context.Channel);
                     return;
                 }
 
@@ -64,15 +64,15 @@ namespace Volte.Core.Commands.Modules.General {
 
             var target = Cs.Modules.FirstOrDefault(x => x.Name.Replace("Module", string.Empty).EqualsIgnoreCase(mdl));
             if (target is null) {
-                await Reply(Context.Channel, CreateEmbed(Context, "Specified module not found."));
+                await Context.CreateEmbed("Specified module not found.").SendTo(Context.Channel);
                 return;
             }
 
             if ((mdl.EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) || 
                 (mdl.EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) || 
                 (mdl.EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context))) {
-                await Reply(Context.Channel,
-                    CreateEmbed(Context, "You don't have permission to use the module that command is from."));
+                await Context.CreateEmbed("You don't have permission to use the module that command is from.")
+                    .SendTo(Context.Channel);
                 return;
             }
 

@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Owner {
@@ -18,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                 return;
             }
 
-            await Reply(Context.Channel, CreateEmbed(Context, $"Goodbye! {RawEmoji.WAVE}"));
+            await Context.CreateEmbed($"Goodbye! {RawEmoji.WAVE}").SendTo(Context.Channel);
             await VolteBot.Client.LogoutAsync();
             await VolteBot.Client.StopAsync();
             Environment.Exit(0);

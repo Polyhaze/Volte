@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
@@ -10,14 +11,13 @@ namespace Volte.Core.Commands.Modules.Moderation {
         [Remarks("Usage: $softban {@user} [reason]")]
         [RequireGuildModerator]
         public async Task SoftBan(SocketGuildUser user, [Remainder]string reason = "Softbanned by a Moderator.") {
-            await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false,
-                CreateEmbed(Context, $"You've been softbanned from **{Context.Guild.Name}** for **{reason}**."));
+            await Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")
+                .SendTo(user);
             await Context.Guild.AddBanAsync(
                 user, 7, reason);
             await Context.Guild.RemoveBanAsync(user);
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    $"Successfully softbanned **{user.Username}#{user.Discriminator}**."));
+            await Context.CreateEmbed($"Successfully softbanned **{user.Username}#{user.Discriminator}**.")
+                .SendTo(Context.Channel);
         }
     }
 }

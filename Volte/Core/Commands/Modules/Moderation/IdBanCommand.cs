@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Moderation {
@@ -11,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Moderation {
         [RequireGuildModerator]
         public async Task IdBan(ulong user, [Remainder] string reason = "Banned by a Moderator.") {
             await Context.Guild.AddBanAsync(user, 0, reason);
-            await Reply(Context.Channel, CreateEmbed(Context, "Successfully banned that user from this guild."));
+            await Context.CreateEmbed("Successfully banned that user from this guild.").SendTo(Context.Channel);
         }
     }
 }

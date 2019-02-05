@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -15,8 +16,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.CommandPrefix = prefix;
             Db.UpdateConfig(config);
-            await Reply(Context.Channel,
-                CreateEmbed(Context,  $"Set this server's prefix to **{prefix}**."));
+            await Context.CreateEmbed($"Set this server's prefix to **{prefix}**.").SendTo(Context.Channel);
         }
     }
 }

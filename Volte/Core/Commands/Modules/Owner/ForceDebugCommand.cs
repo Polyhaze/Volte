@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Newtonsoft.Json;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Core.Services;
 using Volte.Helpers;
 
@@ -15,12 +16,9 @@ namespace Volte.Core.Commands.Modules.Owner {
         [Remarks("Usage: $forcedebug {guildId}")]
         [RequireBotOwner]
         public async Task ForceDebug(ulong serverId) {
-
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented)
-                    )
-                ));
+            await Context.CreateEmbed(
+                    DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented)))
+                .SendTo(Context.Channel);
         }
     }
 }

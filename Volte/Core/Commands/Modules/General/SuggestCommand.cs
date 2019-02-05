@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.General {
@@ -9,11 +10,8 @@ namespace Volte.Core.Commands.Modules.General {
         [Summary("Suggest features for Volte.")]
         [Remarks("Usage: |prefix|suggest")]
         public async Task Suggest() {
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    "You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2)."
-                )
-            );
+            await Context.CreateEmbed("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).")
+                .SendTo(Context.Channel);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Moderation {
@@ -15,9 +16,10 @@ namespace Volte.Core.Commands.Modules.Moderation {
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(
                 await Context.Channel.GetMessagesAsync(count +1).FlattenAsync()); 
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
-            
-            var msg = await Reply(Context.Channel, CreateEmbed(Context, 
-                $"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}"));
+
+            var msg = await Context
+                .CreateEmbed($"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}")
+                .SendTo(Context.Channel);
             await Task.Delay(5000);
             await msg.DeleteAsync();
         }

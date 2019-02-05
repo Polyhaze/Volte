@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Volte.Core.Extensions;
@@ -11,18 +12,18 @@ namespace Volte.Core.Commands.Modules.Utility {
         public async Task Iam([Remainder] string roleName) {
             var config = Db.GetConfig(Context.Guild);
             if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName))) {
-                await Reply(Context.Channel, CreateEmbed(Context, 
-                    $"The role **{roleName}** isn't in the self roles list for this guild."));
+                await Context.CreateEmbed($"The role **{roleName}** isn't in the self roles list for this guild.")
+                    .SendTo(Context.Channel);
             }
             else {
                 var target = Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName));
                 if (target is null) {
-                    await Reply(Context.Channel,
-                        CreateEmbed(Context, $"The role **{roleName}** doesn't exist in this guild"));
+                    await Context.CreateEmbed($"The role **{roleName}** doesn't exist in this guild")
+                        .SendTo(Context.Channel);
                 }
                 else {
                     await Context.GuildUser.AddRoleAsync(target);
-                    await Reply(Context.Channel, CreateEmbed(Context, $"Gave you the **{roleName}** role."));
+                    await Context.CreateEmbed($"Gave you the **{roleName}** role.").SendTo(Context.Channel);
                 }
             }
         }

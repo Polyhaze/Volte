@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.General {
     public partial class GeneralModule : VolteModule {
@@ -22,10 +23,9 @@ namespace Volte.Core.Commands.Modules.General {
                 .AddField("Client ID", VolteBot.Client.CurrentUser.Id)
                 .WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png")
                 .WithAuthor(Context.User)
-                .WithColor(Config.GetSuccessColor())
-                .Build();
+                .WithColor(Config.GetSuccessColor());
 
-            await Reply(Context.Channel, embed);
+            await embed.SendTo(Context.Channel);
         }
     }
 }

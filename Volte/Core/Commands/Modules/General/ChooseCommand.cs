@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.General {
@@ -13,11 +14,7 @@ namespace Volte.Core.Commands.Modules.General {
         public async Task Choose([Remainder] string message) {
             var opt = message.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    $"I choose `{opt[new Random().Next(0, opt.Length)]}`."
-                )
-            );
+            await Context.CreateEmbed($"I choose `{opt[new Random().Next(0, opt.Length)]}`.").SendTo(Context.Channel);
         }
     }
 }

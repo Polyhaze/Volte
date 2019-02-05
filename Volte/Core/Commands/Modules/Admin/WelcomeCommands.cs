@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -15,8 +16,8 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
-            await Reply(Context.Channel,
-                CreateEmbed(Context, $"Set this server's welcome channel to **{channel.Name}**"));
+            await Context.CreateEmbed($"Set this server's welcome channel to **{channel.Name}**")
+                .SendTo(Context.Channel);
         }
 
         [Command("WelcomeMessage"), Alias("Wmsg")]
@@ -27,9 +28,9 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
 
             if (message is null) {
-                await Reply(Context.Channel,
-                    CreateEmbed(Context,
-                        $"The current welcome message for this server is ```\n{config.WelcomeMessage}```"));
+                await Context
+                    .CreateEmbed($"The current welcome message for this server is ```\n{config.WelcomeMessage}```")
+                    .SendTo(Context.Channel);
             }
             else {
                 config.WelcomeMessage = message;
@@ -39,19 +40,20 @@ namespace Volte.Core.Commands.Modules.Admin {
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to **{welcomeChannel.Name}**.";
-                await Reply(Context.Channel,
-                    CreateEmbed(Context,
-                        $"Set this server's welcome message to ```{message}```\n\n{sendingTest}"));
+                await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
+                    .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;
                 if (config.WelcomeChannel != 0) {
                     var welcomeMessage = config.WelcomeMessage
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
                         .Replace("{UserName}", Context.User.Username)
+                        .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
                         .Replace("{UserTag}", Context.User.Discriminator);
-                    var embed = CreateEmbed(Context, welcomeMessage).ToEmbedBuilder()
-                        .WithThumbnailUrl(Context.User.GetAvatarUrl());
-                    await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
+                    var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
+                        .WithThumbnailUrl(Context.User.GetAvatarUrl())
+                        .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB);
+                    await embed.SendTo(welcomeChannel);
                 }
             }
         }
@@ -62,9 +64,10 @@ namespace Volte.Core.Commands.Modules.Admin {
         [RequireGuildAdmin]
         public async Task WelcomeColor(int r, int g, int b) {
             if (r > 255 || g > 255 || b > 255) {
-                await Reply(Context.Channel,
-                    CreateEmbed(Context,
-                        "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value."));
+                await Context
+                    .CreateEmbed(
+                        "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value.")
+                    .SendTo(Context.Channel);
                 return;
             }
 
@@ -73,9 +76,9 @@ namespace Volte.Core.Commands.Modules.Admin {
             config.WelcomeColorG = g;
             config.WelcomeColorB = b;
             Db.UpdateConfig(config);
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
-                    $"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!"));
+            await Context
+                .CreateEmbed($"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!")
+                .SendTo(Context.Channel);
         }
 
         [Command("LeavingMessage"), Alias("Lmsg")]
@@ -86,9 +89,10 @@ namespace Volte.Core.Commands.Modules.Admin {
             var config = Db.GetConfig(Context.Guild);
 
             if (message is null) {
-                await Context.Channel.SendMessageAsync(string.Empty, false,
-                    CreateEmbed(Context,
-                        $"The current leaving message for this server is ```\n{config.WelcomeMessage}```"));
+                await Context
+                    .CreateEmbed($"The current leaving message for this server is ```\n{config.WelcomeMessage}```")
+                    .SendTo(Context.Channel);
+
             }
             else {
                 config.LeavingMessage = message;
@@ -98,9 +102,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to **{welcomeChannel.Mention}**.";
-                await Reply(Context.Channel,
-                    CreateEmbed(Context,
-                        $"Set this server's leaving message to ```{message}```\n\n{sendingTest}"));
+                await Context.CreateEmbed($"Set this server's leaving message to ```{message}```\n\n{sendingTest}")
+                    .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;
 
                 if (config.WelcomeChannel != 0) {
@@ -108,8 +111,9 @@ namespace Volte.Core.Commands.Modules.Admin {
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
                         .Replace("{UserName}", Context.User.Username)
+                        .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
                         .Replace("{UserTag}", Context.User.Discriminator);
-                    var embed = new EmbedBuilder()
+                    var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
                         .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB)
                         .WithDescription(welcomeMessage)
                         .WithThumbnailUrl(Context.User.GetAvatarUrl());

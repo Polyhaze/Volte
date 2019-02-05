@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -11,13 +12,12 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Summary("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         [RequireGuildAdmin]
-        public async Task PingChecks(bool isEnabled) {
+        public async Task PingChecks(bool arg) {
             var config = Db.GetConfig(Context.Guild);
-            config.MassPingChecks = true;
+            config.MassPingChecks = arg;
             Db.UpdateConfig(config);
-
-            var pcIsEnabled = isEnabled ? "Enabled mass ping checks." : "Disabled mass ping checks.";
-            await Reply(Context.Channel, CreateEmbed(Context, pcIsEnabled));
+            await Context.CreateEmbed(arg ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
+                .SendTo(Context.Channel);
         }
     }
 }

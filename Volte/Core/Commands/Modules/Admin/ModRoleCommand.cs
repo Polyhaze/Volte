@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
@@ -14,10 +15,10 @@ namespace Volte.Core.Commands.Modules.Admin {
         [RequireGuildAdmin]
         public async Task ModRole([Remainder] string roleName) {
             var config = Db.GetConfig(Context.Guild);
-            var embed = CreateEmbed(Context, string.Empty).ToEmbedBuilder();
+            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
 
-            if (Context.Guild.Roles.Any(r => r.Name.ToLower() == roleName.ToLower())) {
-                var role = Context.Guild.Roles.First(r => r.Name.ToLower() == roleName.ToLower());
+            if (Context.Guild.Roles.Any(r => r.Name.EqualsIgnoreCase(roleName))) {
+                var role = Context.Guild.Roles.First(r => r.Name.EqualsIgnoreCase(roleName));
                 config.ModRole = role.Id;
                 Db.UpdateConfig(config);
                 embed.WithDescription($"Set **{role.Name}** as the Moderator role for this server.");
@@ -26,7 +27,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                 embed.WithDescription($"{roleName} doesn't exist in this server.");
             }
 
-            await Context.Channel.SendMessageAsync(string.Empty, false, embed.Build());
+            await embed.SendTo(Context.Channel);
         }
     }
 }

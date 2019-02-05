@@ -4,6 +4,7 @@ using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
 using Volte.Core.Data;
+using Volte.Core.Extensions;
 using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Owner {
@@ -40,7 +41,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                     break;
             }
 
-            await Reply(Context.Channel, embed.Build());
+            await embed.SendTo(Context.Channel);
         }
     }
 }

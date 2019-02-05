@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Newtonsoft.Json;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 using Volte.Core.Services;
 using Volte.Helpers;
 
@@ -15,10 +16,10 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Remarks("Usage: |prefix|debug")]
         [RequireGuildAdmin]
         public async Task Debug() {
-            await Reply(Context.Channel,
-                CreateEmbed(Context,
+            await Context.CreateEmbed(
                     $"{DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented))}" +
-                    "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/discord)."));
+                    "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/discord).")
+                .SendTo(Context.Channel);
         }
     }
 }

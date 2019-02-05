@@ -15,19 +15,19 @@ namespace Volte.Core.Commands.Modules.Owner {
         [RequireBotOwner]
         public async Task SetAvatar(string url) {
             if (string.IsNullOrWhiteSpace(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute)) {
-                await Reply(Context.Channel, CreateEmbed(Context, "That URL is malformed or empty."));
+                await Context.CreateEmbed("That URL is malformed or empty.").SendTo(Context.Channel);
                 return;
             }
 
-            using (var sr = await new HttpClient().GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)) {
+            using (var sr = await new HttpClient().GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead)) {
                 if (!sr.IsImage()) {
-                    await Reply(Context.Channel, CreateEmbed(Context, "Provided URL does not lead to an image."));
+                    await Context.CreateEmbed("Provided URL does not lead to an image.").SendTo(Context.Channel);
                     return;
                 }
 
                 using (var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream()) {
                     await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
-                    await Reply(Context.Channel, CreateEmbed(Context, "Done!"));
+                    await Context.CreateEmbed("Done!").SendTo(Context.Channel);
                 }
             }
         }

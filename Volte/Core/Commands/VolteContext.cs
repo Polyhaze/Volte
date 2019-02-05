@@ -24,6 +24,7 @@ namespace Volte.Core.Commands {
         private readonly EmojiService _emojiService = VolteBot.ServiceProvider.GetRequiredService<EmojiService>();
         public Task ReactFailure() => SMessage.AddReactionAsync(new Emoji(_emojiService.X));
         public Task ReactSuccess() => SMessage.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
+        public Embed CreateEmbed(string content) => Utils.CreateEmbed(this, content);
         public IDiscordClient Client { get; }
         public IGuild Guild { get; }
         public SocketUserMessage SMessage { get; }
