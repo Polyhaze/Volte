@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
@@ -27,8 +28,31 @@ namespace Volte.Core.Services {
         }
 
         public async Task Guilds(SocketGuild guild) {
-            if (Config.GetBlacklistedOwners().Contains(guild.OwnerId)) {
+            /*if (Config.GetBlacklistedOwners().Contains(guild.OwnerId)) {
                 await guild.LeaveAsync();
+                return;
+            }*/
+
+            var embed = new EmbedBuilder()
+                .WithTitle("Hey there!")
+                .WithAuthor(guild.Owner)
+                .WithColor(Config.GetSuccessColor())
+                .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
+                .AddField("Set your admin role", "$adminrole {roleName}", true)
+                .AddField("Set your moderator role", "$modrole {roleName}", true)
+                .AddField("Permissions",
+                    "It is recommended to give me admin permission, to avoid any permission errors that may happen." +
+                    "\nYou *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
+                .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
+            
+            try {
+                await embed.SendTo(guild.Owner);
+            }
+            catch (HttpException e) when (e.DiscordCode.Equals(50007)) {
+                var c = guild.TextChannels?.First();
+                if (c != null) {
+                    await embed.SendTo(c);
+                }
             }
         }
 

@@ -14,6 +14,7 @@ namespace Volte.Core.Services {
             var welcomeMessage = config.WelcomeMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
+                .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
 
@@ -36,6 +37,7 @@ namespace Volte.Core.Services {
             var leavingMessage = config.LeavingMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
+                .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
 
