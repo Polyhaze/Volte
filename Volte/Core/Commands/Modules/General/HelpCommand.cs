@@ -26,7 +26,9 @@ namespace Volte.Core.Commands.Modules.General {
                 }
 
                 embed.WithDescription(desc);
-                await Reply(Context.Channel, embed.Build());
+                embed.WithFooter(
+                    $"Run {config.CommandPrefix}help ModuleName to show commands from a specific module.");
+                await embed.SendTo(Context.Channel);
                 return;
             }
 
@@ -80,8 +82,10 @@ namespace Volte.Core.Commands.Modules.General {
             desc = target.Commands.Aggregate(desc, (current, cmd)
                 => current + $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n");
             embed.WithDescription(desc);
+            embed.WithFooter(
+                $"Run {config.CommandPrefix}help {config.CommandPrefix}CommandName to show info about a specific command.");
 
-            await Reply(Context.Channel, embed.Build());
+            await embed.SendTo(Context.Channel);
         }
     }
 }
