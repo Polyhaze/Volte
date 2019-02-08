@@ -20,16 +20,17 @@ namespace Volte.Core.Discord {
         public static readonly DiscordSocketClient Client = ServiceProvider.GetRequiredService<DiscordSocketClient>();
 
         private static readonly VolteHandler Handler = new VolteHandler();
-        private static readonly Logger Logger = new Logger();
+        private static readonly LoggingService Logger = ServiceProvider.GetRequiredService<LoggingService>();
 
         /// <summary>
         ///     WARNING:
         ///     Instantiating this object will start a completely new bot instance.
         ///     Don't do that, unless you're making a restart function!
         /// </summary>
-        public VolteBot() {
+
+        public static void Start() {
             Logger.PrintVersion();
-            LoginAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            new VolteBot().LoginAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         private static IServiceProvider BuildServiceProvider() {
@@ -45,6 +46,7 @@ namespace Volte.Core.Discord {
                 .AddSingleton<DebugService>()
                 .AddSingleton<EmojiService>()
                 .AddSingleton<PingChecksService>()
+                .AddSingleton<LoggingService>()
                 .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,
@@ -68,31 +70,8 @@ namespace Volte.Core.Discord {
                 ActivityType.Streaming);
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
-            Client.Log += Log;
+            Client.Log += m => ServiceProvider.GetRequiredService<LoggingService>().Log(m);
             await Task.Delay(-1);
-        }
-
-        private static async Task Log(LogMessage msg) {
-            switch (msg.Severity) {
-                case LogSeverity.Info:
-                case LogSeverity.Verbose:
-                    Logger.Info(msg.Message);
-                    break;
-                case LogSeverity.Warning:
-                    Logger.Warn(msg.Message);
-                    break;
-                case LogSeverity.Error:
-                    Logger.Error(msg.Message);
-                    break;
-                case LogSeverity.Critical:
-                    Logger.Error(msg.Message);
-                    break;
-                case LogSeverity.Debug:
-                    Logger.Debug(msg.Message);
-                    break;
-                default:
-                    throw new InvalidDataException();
-            }
         }
     }
 }

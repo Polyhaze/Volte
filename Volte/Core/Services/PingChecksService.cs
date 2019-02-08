@@ -8,9 +8,9 @@ using Volte.Helpers;
 namespace Volte.Core.Services {
     public class PingChecksService {
         public async Task CheckMessage(VolteContext ctx) {
-            var content = ctx.Message.Content;
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             if (!config.MassPingChecks || UserUtils.IsAdmin(ctx)) return;
+            var content = ctx.Message.Content;
             if (content.ContainsIgnoreCase("@everyone") ||
                 content.ContainsIgnoreCase("@here") ||
                 ctx.Message.MentionedUserIds.Count > 10) {

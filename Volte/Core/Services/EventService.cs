@@ -6,6 +6,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
+using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
@@ -17,7 +18,7 @@ using Volte.Helpers;
 #pragma warning disable 1998
 namespace Volte.Core.Services {
     internal class EventService {
-        private readonly Logger _logger = Logger.GetLogger();
+        private readonly LoggingService _logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
 
         public async Task OnReady() {
             var dbl = VolteBot.Client.GetGuild(264445053596991498);
@@ -108,24 +109,44 @@ namespace Volte.Core.Services {
 
             if (Config.GetLogAllCommands()) {
                 if (res.IsSuccess) {
-                    _logger.Info($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Info($"--|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Info($"--|        -Args Passed: {args.Trim()}");
-                    _logger.Info($"--|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Info($"--|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Info($"--|        -Time Issued: {DateTime.Now}");
-                    _logger.Info($"--|           -Executed: {res.IsSuccess} ");
-                    _logger.Info("-------------------------------------------------");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|     -Command Issued: {cinfo.Value.Name}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|        -Args Passed: {args.Trim()}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|           -In Guild: {ctx.Guild.Name}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|         -In Channel: #{ctx.Channel.Name}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|        -Time Issued: {DateTime.Now}");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        $"|           -Executed: {res.IsSuccess} ");
+                    _logger.Log(LogSeverity.Info, "Module",
+                        "-------------------------------------------------");
+                    
+
+
+
                 }
                 else {
-                    _logger.Error($"--|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Error($"--|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Error($"--|        -Args Passed: {args.Trim()}");
-                    _logger.Error($"--|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Error($"--|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Error($"--|        -Time Issued: {DateTime.Now}");
-                    _logger.Error($"--|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
-                    _logger.Error("-------------------------------------------------");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|     -Command Issued: {cinfo.Value.Name}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|        -Args Passed: {args.Trim()}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|           -In Guild: {ctx.Guild.Name}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|         -In Channel: #{ctx.Channel.Name}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|        -Time Issued: {DateTime.Now}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        $"|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
+                    _logger.Log(LogSeverity.Error, "Module",
+                        "-------------------------------------------------");
                 }
             }
         }
