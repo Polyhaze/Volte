@@ -19,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Owner {
 
         [Command("Eval")]
         [Summary("Evaluates C# code.")]
-        [Remarks("Usage: $eval {code}")]
+        [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
         public async Task Eval([Remainder] string code) {
             try {
