@@ -10,6 +10,7 @@ namespace Volte.Core.Commands.Modules.General {
         [Remarks("Usage: |prefix|say {msg}")]
         public async Task Say([Remainder] string msg) {
             await Context.CreateEmbed(msg).SendTo(Context.Channel);
+            await Context.Message.DeleteAsync();
         }
     }
 }
