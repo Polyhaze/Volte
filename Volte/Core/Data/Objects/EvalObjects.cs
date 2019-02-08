@@ -4,7 +4,7 @@ using Volte.Core.Services;
 
 namespace Volte.Core.Data.Objects {
     public class EvalObjects {
-        public VolteContext Ctx { get; set; }
+        public VolteContext Context { get; set; }
         public Server Config { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }

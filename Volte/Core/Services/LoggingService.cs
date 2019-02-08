@@ -37,7 +37,8 @@ namespace Volte.Core.Services {
                 Append(message, Color.White);
 
             if (e != null)
-                Append(e.Message, Color.IndianRed);
+                Append($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
+                
 
             Write(Environment.NewLine);
         }

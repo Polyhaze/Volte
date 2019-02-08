@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -34,7 +35,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                 }
 
                 var objects = new EvalObjects {
-                    Ctx = Context,
+                    Context = Context,
                     CommandService = VolteBot.CommandService,
                     Config = Db.GetConfig(Context.Guild),
                     DatabaseService = Db,
@@ -50,7 +51,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                 sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location)));
 
-                var msg = await embed.WithDescription("Evaluating...").SendTo(Context.Channel);
+                var msg = await embed.WithTitle("Evaluating...").SendTo(Context.Channel);
                 var sw = new Stopwatch();
                 sw.Start();
                 try {
@@ -58,14 +59,16 @@ namespace Volte.Core.Commands.Modules.Owner {
                     sw.Stop();
                     if (res != null) {
                         await msg.DeleteAsync();
-                        await embed.WithDescription("**Eval**")
+                        await embed.WithTitle("Eval")
+                            .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
                             .AddField("Input", Format.Code(code, "cs"))
                             .AddField("Output", Format.Code(code, "cs"))
                             .SendTo(Context.Channel);
                     }
                     else {
                         await msg.DeleteAsync();
-                        await embed.WithDescription("**Eval**")
+                        await embed.WithTitle("Eval")
+                            .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
                             .AddField("Input", Format.Code(code, "cs"))
                             .AddField("Output", "No output.")
                             .SendTo(Context.Channel);
@@ -73,7 +76,13 @@ namespace Volte.Core.Commands.Modules.Owner {
                 }
                 catch (Exception e) {
                     await msg.ModifyAsync(m =>
-                        m.Embed = embed.WithDescription($"Error! {e.Message}\n```{e.StackTrace}```").Build());
+                        m.Embed = embed
+                            .WithDescription($"`{e.Message}`")
+                            .WithTitle("Error")
+                            .Build());
+                    File.WriteAllText("data/EvalError.log", $"{e.Message}\n{e.StackTrace}");
+                    await Context.Channel.SendFileAsync("data/EvalError.log");
+                    File.Delete("data/EvalError.log");
                 }
                 finally {
                     GC.Collect();
