@@ -48,7 +48,7 @@ namespace Volte.Core.Discord {
 
             var config = _services.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             _services.GetRequiredService<DatabaseService>().GetUser(s.Author.Id);
-            var prefix = config.CommandPrefix == string.Empty ? Config.GetCommandPrefix() : config.CommandPrefix;
+            var prefix = string.IsNullOrEmpty(config.CommandPrefix) ? Config.GetCommandPrefix() : config.CommandPrefix;
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
                 var result = await _service.ExecuteAsync(ctx, argPos, _services);
