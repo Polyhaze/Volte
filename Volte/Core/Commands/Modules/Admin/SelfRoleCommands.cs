@@ -9,9 +9,9 @@ using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("SelfRoleAdd"), Alias("Sra")]
+        [Command("SelfRole Add"), Alias("Sr A")]
         [Summary("Adds a role to the list of self roles for this guild.")]
-        [Remarks("Usage: |prefix|selfroleadd {roleName}")]
+        [Remarks("Usage: |prefix|selfrole add {roleName}")]
         [RequireGuildAdmin]
         public async Task SelfRoleAdd(string roleName) {
             if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null) {
@@ -25,9 +25,9 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("SelfRoleRem"), Alias("Srr")]
+        [Command("SelfRole Remove"), Alias("Sr R")]
         [Summary("Removes a role from the list of self roles for this guild.")]
-        [Remarks("Usage: |prefix|selfrolerem {roleName}")]
+        [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         public async Task SelfRoleRem(string roleName) {
             if (!UserUtils.IsAdmin(Context)) {
                 await Context.ReactFailure();
@@ -48,9 +48,9 @@ namespace Volte.Core.Commands.Modules.Admin {
             }
         }
 
-        [Command("SelfRoleClear"), Alias("Src")]
+        [Command("SelfRole Clear"), Alias("Sr C")]
         [Summary("Clears the self role list for this guild.")]
-        [Remarks("Usage: |prefix|selfroleclear")]
+        [Remarks("Usage: |prefix|selfrole clear")]
         public async Task SelfRoleClear() {
             if (!UserUtils.IsAdmin(Context)) {
                 await Context.ReactFailure();

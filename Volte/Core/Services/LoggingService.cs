@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Color = System.Drawing.Color;
 using static Colorful.Console;
 using Discord;
+using Volte.Core.Data.Objects;
+using LogMessage = Discord.LogMessage;
 using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Services {
@@ -10,22 +12,23 @@ namespace Volte.Core.Services {
 
         private readonly object _lock = new object();
 
-        internal Task Log(LogMessage m) {
+        internal Task Log(LogMessage msg) {
+            var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
             Log(m.Severity, m.Source, m.Message, m.Exception);
             return Task.CompletedTask;
         }
 
         internal void PrintVersion() {
-            Log(LogSeverity.Info, "Volte", $"Currently running Volte V{Version.GetFullVersion()}");
+            Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.GetFullVersion()}");
         }
 
-        public void Log(LogSeverity s, string src, string message, Exception e = null) {
+        public void Log(LogSeverity s, LogSource src, string message, Exception e = null) {
             lock (_lock) {
                 DoLog(s, src, message, e);   
             }
         }
 
-        public void DoLog(LogSeverity s, string src, string message, Exception e) {
+        public void DoLog(LogSeverity s, LogSource src, string message, Exception e) {
 
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);
@@ -48,18 +51,18 @@ namespace Volte.Core.Services {
             Write(m);
         }
 
-        private (Color, string) VerifySource(string source) {
+        private (Color, string) VerifySource(LogSource source) {
             switch (source) {
-                case "Discord":
-                case "Gateway":
+                case LogSource.Discord:
+                case LogSource.Gateway:
                     return (Color.RoyalBlue, "DSCD");
-                case "Volte":
+                case LogSource.Volte:
                     return (Color.Crimson, "CORE");
-                case "Service":
+                case LogSource.Service:
                     return (Color.Gold, "SERV");
-                case "Module":
+                case LogSource.Module:
                     return (Color.LimeGreen, "MDLE");
-                case "Rest":
+                case LogSource.Rest:
                     return (Color.Tomato, "REST");
                 default:
                     return (Color.Teal, "UNKN");

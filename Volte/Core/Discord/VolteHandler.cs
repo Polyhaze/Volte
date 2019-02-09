@@ -52,11 +52,6 @@ namespace Volte.Core.Discord {
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
                 var result = await _service.ExecuteAsync(ctx, argPos, _services);
-                if (config.CustomCommands.ContainsKey(msgStrip)) {
-                    await ctx.Channel.SendMessageAsync(
-                        config.CustomCommands.FirstOrDefault(c => c.Key.EqualsIgnoreCase(msgStrip)).Value
-                    );
-                }
 
                 if (result.ErrorReason.Equals("Unknown command.")) return;
 

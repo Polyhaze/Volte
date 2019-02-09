@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Data;
+using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 using Volte.Core.Runtime;
 using Volte.Helpers;
@@ -88,10 +89,18 @@ namespace Volte.Core.Services {
                         break;
                 }
                 
+                var aliases = cinfo.Value.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
+
+                aliases += ")";
+                aliases = aliases.Replace("|)", ")");
+                
                 if (ctx.Message.HasMentionPrefix(VolteBot.Client.CurrentUser, ref argPos)) {
                     embed.AddField("Error in Command:", cinfo.Value.Name);
                     embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
+                    embed.AddField("Correct Usage", cinfo.Value.Remarks
+                        .Replace("Usage: ", string.Empty)
+                        .Replace("|prefix|", config.CommandPrefix)
+                        .Replace($"{cinfo.Value.Name.ToLower()}", aliases));
                     embed.WithAuthor(ctx.User);
                     embed.WithColor(Config.GetErrorColor());
                     await Utils.Send(ctx.Channel, embed.Build());
@@ -99,7 +108,10 @@ namespace Volte.Core.Services {
                 else {
                     embed.AddField("Error in Command:", cinfo.Value.Name);
                     embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks.Replace("Usage: ", string.Empty));
+                    embed.AddField("Correct Usage", cinfo.Value.Remarks
+                        .Replace("Usage: ", string.Empty)
+                        .Replace("|prefix|", config.CommandPrefix)
+                        .Replace($"{cinfo.Value.Name.ToLower()}", aliases));
                     embed.WithAuthor(ctx.User);
                     embed.WithColor(Config.GetErrorColor());
                     await Utils.Send(ctx.Channel, embed.Build());
@@ -109,21 +121,21 @@ namespace Volte.Core.Services {
 
             if (Config.GetLogAllCommands()) {
                 if (res.IsSuccess) {
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|           -Executed: {res.IsSuccess} ");
-                    _logger.Log(LogSeverity.Info, "Module",
+                    _logger.Log(LogSeverity.Info, LogSource.Module,
                         "-------------------------------------------------");
                     
 
@@ -131,21 +143,21 @@ namespace Volte.Core.Services {
 
                 }
                 else {
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
-                    _logger.Log(LogSeverity.Error, "Module",
+                    _logger.Log(LogSeverity.Error, LogSource.Module,
                         "-------------------------------------------------");
                 }
             }

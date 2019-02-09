@@ -8,7 +8,7 @@ namespace Volte.Core.Data.Objects {
         public Server() {
             SelfRoles = new List<string>();
             Blacklist = new List<string>();
-            CustomCommands = new Dictionary<string, string>();
+            Tags = new List<Tag>();
         }
         public ObjectId Id { get; set; }
         public ulong ServerId { get; set; }
@@ -29,7 +29,7 @@ namespace Volte.Core.Data.Objects {
         public bool DeleteMessageOnCommand { get; set; }
         public List<string> SelfRoles { get; set; }
         public List<string> Blacklist { get; set; }
-        public Dictionary<string, string> CustomCommands { get; set; }
+        public List<Tag> Tags { get; set; }
 
         #endregion
     }

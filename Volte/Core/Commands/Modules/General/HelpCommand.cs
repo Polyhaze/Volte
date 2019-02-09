@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.General {
 
         [Command("Help", RunMode = RunMode.Async), Alias("H")]
         [Summary("Shows Volte's Modules and Commands.")]
-        public async Task Help(string mdl = null) {
+        public async Task Help([Remainder]string mdl = null) {
             var config = Db.GetConfig(Context.Guild);
             var modules = Cs.Modules.OrderBy(m => m.Name);
             var embed = new EmbedBuilder()

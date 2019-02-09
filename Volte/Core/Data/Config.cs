@@ -3,6 +3,7 @@ using System.IO;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
 using Volte.Core.Runtime;
 using Volte.Core.Services;
@@ -21,7 +22,7 @@ namespace Volte.Core.Data {
         public static void CreateIfNotExists() {
             if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) return;
             var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
-            logger.Log(LogSeverity.Warning, "Volte", "config.json didn't exist or was empty. Created it for you.");
+            logger.Log(LogSeverity.Warning, LogSource.Volte, "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig {
                 Token = "token here",
                 CommandPrefix = "$",

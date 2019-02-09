@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
 using Volte.Core.Services;
 using Volte.Helpers;
@@ -15,7 +16,7 @@ namespace Volte.Core.Commands.Preconditions {
             if (!UserUtils.IsBotOwner(ctx)) {
                 await ctx.ReactFailure();
                 VolteBot.ServiceProvider.GetRequiredService<LoggingService>()
-                    .Log(LogSeverity.Warning, "Module",
+                    .Log(LogSeverity.Warning, LogSource.Module,
                         $"{ctx.User.Username}#{ctx.User.Discriminator} tried running the owner-only command \"{command.Name}\"");
                 return PreconditionResult.FromError("Insufficient permission.");
             }

@@ -91,7 +91,7 @@ namespace Volte.Core.Commands.Modules.Owner {
 
             }
             catch (Exception e) {
-                Logger.Log(LogSeverity.Error, "Module", string.Empty, e);
+                Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
             }
         }
         
