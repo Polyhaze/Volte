@@ -8,7 +8,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("Tag Create"), Alias("Tag Add", "Tag New")]
+        [Command("Tag Create"), Alias("Tag Add", "Tag New"), Priority(1)]
         [Summary("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tag create {name} {response}")]
         [RequireGuildAdmin]
@@ -43,7 +43,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("Tag Delete"), Alias("Tag Del", "Tag Rem")]
+        [Command("Tag Delete"), Alias("Tag Del", "Tag Rem"), Priority(1)]
         [Summary("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tag delete {name}")]
         public async Task TagDelete([Remainder]string name) {
