@@ -47,6 +47,7 @@ namespace Volte.Core.Discord {
                 .AddSingleton<EmojiService>()
                 .AddSingleton<PingChecksService>()
                 .AddSingleton<LoggingService>()
+                .AddSingleton<GuildService>()
                 .AddSingleton(new CommandService(new CommandServiceConfig {
                     IgnoreExtraArgs = true,
                     DefaultRunMode = RunMode.Async,

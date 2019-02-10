@@ -27,7 +27,8 @@ namespace Volte.Core.Discord {
             //register event listeners
             _service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
             _client.MessageReceived += HandleMessageOrCommand;
-            _client.JoinedGuild += _services.GetRequiredService<EventService>().Guilds;
+            _client.JoinedGuild += _services.GetRequiredService<GuildService>().OnJoin;
+            _client.LeftGuild += _services.GetRequiredService<GuildService>().OnLeave;
             _client.UserJoined += _services.GetRequiredService<WelcomeService>().Join;
             _client.UserJoined += _services.GetRequiredService<AutoroleService>().Apply;
             _client.UserLeft += _services.GetRequiredService<WelcomeService>().Leave;

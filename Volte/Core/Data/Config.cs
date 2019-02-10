@@ -32,6 +32,7 @@ namespace Volte.Core.Data {
                 SuccessEmbedColor = 0x7000FB,
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
+                JoinLeaveLog = new JoinLeaveLog(),
                 BlacklistedServerOwners = new ulong[] { }
             };
             File.WriteAllText(ConfigFile,
@@ -46,6 +47,7 @@ namespace Volte.Core.Data {
         public static uint GetSuccessColor() => _bot.SuccessEmbedColor;
         public static uint GetErrorColor() => _bot.ErrorEmbedColor;
         public static bool GetLogAllCommands() => _bot.LogAllCommands;
+        public static JoinLeaveLog GetJoinLeaveLog() => _bot.JoinLeaveLog;
         public static ulong[] GetBlacklistedOwners() => _bot.BlacklistedServerOwners;
 
         private struct BotConfig {
@@ -57,6 +59,7 @@ namespace Volte.Core.Data {
             public uint SuccessEmbedColor;
             public uint ErrorEmbedColor;
             public bool LogAllCommands;
+            public JoinLeaveLog JoinLeaveLog;
             public ulong[] BlacklistedServerOwners;
         }
     }
