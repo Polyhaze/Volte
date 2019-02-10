@@ -19,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Utility {
                 .WithColor(Config.GetSuccessColor())
                 .WithThumbnailUrl(Context.Guild.IconUrl)
                 .AddField("Name", Context.Guild.Name)
-                .AddField("Created", $"{cAt.Humanize()}")
+                .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", (await Context.Guild.GetUsersAsync()).Count, true)
                 .AddField("Roles", Context.Guild.Roles.Count, true)
