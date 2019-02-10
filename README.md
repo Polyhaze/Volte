@@ -13,7 +13,7 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
  [How-To Setup the Bot](https://greemdev.atlassian.net/wiki/spaces/SIVA/pages/19300353/How+To)
  
- [Invite the bot]()
+ [Invite the bot](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8)
 
  [Issue Tracker](https://github.com/GreemDev/Volte/issues)
 
