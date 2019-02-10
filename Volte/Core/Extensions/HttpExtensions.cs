@@ -6,7 +6,7 @@ namespace Volte.Core.Extensions {
             var mime = msg.Content.Headers.ContentType.MediaType;
             return mime.EqualsIgnoreCase("image/png")
                    || mime.EqualsIgnoreCase("image/jpeg")
-                   || mime.EqualsIgnoreCase("image.gif");
+                   || mime.EqualsIgnoreCase("image/gif");
         }
     }
 }
