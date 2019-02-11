@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Preconditions {
             var ctx = (VolteContext)context;
             if (!UserUtils.IsBotOwner(ctx)) {
                 await ctx.ReactFailure();
-                VolteBot.ServiceProvider.GetRequiredService<LoggingService>()
+                await services.GetRequiredService<LoggingService>()
                     .Log(LogSeverity.Warning, LogSource.Module,
                         $"{ctx.User.Username}#{ctx.User.Discriminator} tried running the owner-only command \"{command.Name}\"");
                 return PreconditionResult.FromError("Insufficient permission.");

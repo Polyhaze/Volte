@@ -18,6 +18,8 @@ using Volte.Core.Services;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
 
+        public LoggingService Logger { get; set; }
+
         [Command("Eval")]
         [Summary("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
@@ -40,7 +42,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                     Config = Db.GetConfig(Context.Guild),
                     DatabaseService = Db,
                     DebugService = VolteBot.ServiceProvider.GetRequiredService<DebugService>(),
-                    Logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>()
+                    Logger = Logger
                 };
 
                 var imports = new[] {
@@ -91,7 +93,7 @@ namespace Volte.Core.Commands.Modules.Owner {
 
             }
             catch (Exception e) {
-                Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
+                await Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
             }
         }
         

@@ -91,21 +91,21 @@ namespace Volte.Core.Services {
 
             if (Config.GetLogAllCommands()) {
                 if (res.IsSuccess) {
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         $"|           -Executed: {res.IsSuccess} ");
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
                         "-------------------------------------------------");
                     
 
@@ -113,21 +113,21 @@ namespace Volte.Core.Services {
 
                 }
                 else {
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|     -Command Issued: {cinfo.Value.Name}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|           -In Guild: {ctx.Guild.Name}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         "-------------------------------------------------");
                 }
             }

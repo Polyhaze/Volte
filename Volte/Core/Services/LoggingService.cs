@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Color = System.Drawing.Color;
 using static Colorful.Console;
@@ -9,27 +10,24 @@ using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Services {
     public class LoggingService {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        private readonly object _lock = new object();
-
-        internal Task Log(LogMessage msg) {
+        internal async Task Log(LogMessage msg) {
             var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
-            Log(m.Severity, m.Source, m.Message, m.Exception);
-            return Task.CompletedTask;
+            await Log(m.Severity, m.Source, m.Message, m.Exception);
         }
 
-        internal void PrintVersion() {
-            Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.GetFullVersion()}");
+        internal async Task PrintVersion() {
+            await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.GetFullVersion()}");
         }
 
-        public void Log(LogSeverity s, LogSource src, string message, Exception e = null) {
-            lock (_lock) {
-                DoLog(s, src, message, e);   
-            }
+        public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null) {
+            await _semaphore.WaitAsync();
+            DoLog(s, src, message, e);
+            _semaphore.Release();
         }
 
-        public void DoLog(LogSeverity s, LogSource src, string message, Exception e) {
-
+        private void DoLog(LogSeverity s, LogSource src, string message, Exception e) {
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);
 
@@ -41,7 +39,7 @@ namespace Volte.Core.Services {
 
             if (e != null)
                 Append($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
-                
+
 
             Write(Environment.NewLine);
         }
@@ -64,8 +62,10 @@ namespace Volte.Core.Services {
                     return (Color.LimeGreen, "MDLE");
                 case LogSource.Rest:
                     return (Color.Tomato, "REST");
-                default:
+                case LogSource.Unknown:
                     return (Color.Teal, "UNKN");
+                default:
+                    throw new ArgumentNullException(nameof(source), "source cannot be null.");
             }
         }
 

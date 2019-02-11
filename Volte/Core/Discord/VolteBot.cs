@@ -29,7 +29,7 @@ namespace Volte.Core.Discord {
         /// </summary>
 
         public static void Start() {
-            Logger.PrintVersion();
+            Logger.PrintVersion().GetAwaiter().GetResult();
             new VolteBot().LoginAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
@@ -71,7 +71,7 @@ namespace Volte.Core.Discord {
                 ActivityType.Streaming);
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
-            Client.Log += m => ServiceProvider.GetRequiredService<LoggingService>().Log(m);
+            Client.Log += async m => await ServiceProvider.GetRequiredService<LoggingService>().Log(m);
             await Task.Delay(-1);
         }
     }

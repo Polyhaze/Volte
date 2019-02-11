@@ -46,7 +46,7 @@ namespace Volte.Core.Services {
                 var joinLeave = Config.GetJoinLeaveLog();
                 var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0)) {
-                    logger.Log(LogSeverity.Error, LogSource.Service,
+                    await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
                     return;
@@ -76,7 +76,7 @@ namespace Volte.Core.Services {
                     }
                 }
                 catch (NullReferenceException ex) {
-                    logger.Log(LogSeverity.Error, LogSource.Service,
+                    await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
                 }
             }
@@ -87,7 +87,7 @@ namespace Volte.Core.Services {
                 var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
                 var joinLeave = Config.GetJoinLeaveLog();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0)) {
-                    logger.Log(LogSeverity.Error, LogSource.Service,
+                    await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
                     return;
@@ -105,7 +105,7 @@ namespace Volte.Core.Services {
                         .SendTo(channel);
                 }
                 catch (NullReferenceException e) {
-                    logger.Log(LogSeverity.Error, LogSource.Service,
+                    await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
                 }
             }
