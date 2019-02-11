@@ -19,6 +19,7 @@ namespace Volte.Core.Discord {
         private readonly AntilinkService _antilink = _services.GetRequiredService<AntilinkService>();
         private readonly EconomyService _economy = _services.GetRequiredService<EconomyService>();
         private readonly PingChecksService _pingchecks = _services.GetRequiredService<PingChecksService>();
+        private readonly DatabaseService _db = _services.GetRequiredService<DatabaseService>();
 
         private static readonly IServiceProvider _services = VolteBot.ServiceProvider;
 
@@ -47,8 +48,8 @@ namespace Volte.Core.Discord {
             await _economy.Give(ctx);
             await _pingchecks.CheckMessage(ctx);
 
-            var config = _services.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
-            _services.GetRequiredService<DatabaseService>().GetUser(s.Author.Id);
+            var config = _db.GetConfig(ctx.Guild);
+            _db.GetUser(s.Author.Id);
             var prefix = string.IsNullOrEmpty(config.CommandPrefix) ? Config.GetCommandPrefix() : config.CommandPrefix;
             var msgStrip = msg.Content.Replace(prefix, string.Empty);
             if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
