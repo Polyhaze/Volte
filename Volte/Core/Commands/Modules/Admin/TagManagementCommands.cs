@@ -60,7 +60,9 @@ namespace Volte.Core.Commands.Modules.Admin {
             config.Tags.Remove(tag);
             Db.UpdateConfig(config);
             await Context.CreateEmbed(
-                    $"Deleted the tag **{tag.Name}**, created by {(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** uses")
+                    $"Deleted the tag **{tag.Name}**, created by " +
+                    $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
+                    $"{(tag.Uses != 1 ? "uses" : "use")}.")
                 .SendTo(Context.Channel);
         }
     }
