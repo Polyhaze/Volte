@@ -5,6 +5,7 @@ using Volte.Helpers;
 using Volte.Core.Data;
 using System.Linq;
 using Discord;
+using Discord.Net;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
@@ -13,9 +14,14 @@ namespace Volte.Core.Commands.Modules.Moderation {
         [Command("Kick")]
         [Summary("Kicks the given user.")]
         [Remarks("Usage: $kick {@user} [reason]")]
+        [RequireBotPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.") {
-            await Context.CreateEmbed($"You were kicked from **{Context.Guild.Name}** for **{reason}**.").SendTo(user);
+            try {
+                await Context.CreateEmbed($"You were kicked from **{Context.Guild.Name}** for **{reason}**.")
+                    .SendTo(user);
+            } catch (HttpException ignored) when (ignored.DiscordCode == 50007) {}
+            
 
             await user.KickAsync(reason);
             await Context.CreateEmbed($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.")
