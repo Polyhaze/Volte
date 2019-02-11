@@ -37,7 +37,7 @@ namespace Volte.Core.Discord {
 
         private async Task HandleMessageOrCommand(SocketMessage s) {
             var argPos = 0; //i'd get rid of this but because Discord.Net requires a ref param i can't.
-            var msg = (SocketUserMessage) s;
+            if (!(s is SocketUserMessage msg)) return;
             var ctx = new VolteContext(_client, msg);
             if (ctx.User.IsBot) return;
 
