@@ -1,89 +1,21 @@
-﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Extensions;
-using Volte.Core.Data;
-using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands.Modules.Help {
-    public class HelpModule : VolteModule {
-        public CommandService Cs { get; set; }
-
-        [Command("Help", RunMode = RunMode.Async), Alias("H")]
-        [Summary("Shows Volte's Modules and Commands.")]
-        public async Task Help([Remainder]string mdl = null) {
+    public partial class HelpModule : VolteModule {
+        [Command("Help")]
+        [Summary("Shows the commands used for module listing, command listing, and command info.")]
+        [Remarks("Usage: |prefix|help")]
+        public async Task Help() {
             var config = Db.GetConfig(Context.Guild);
-            var modules = Cs.Modules.OrderBy(m => m.Name);
-            var embed = new EmbedBuilder()
-                .WithColor(Config.GetSuccessColor())
-                .WithAuthor(Context.User);
-            var desc = string.Empty;
-            if (mdl is null) {
-                embed.WithTitle("Available Modules");
-                foreach (var module in modules) {
-                    desc += $"**{module.Name.Replace("Module", string.Empty)}**\n\n";
-                }
-
-                embed.WithDescription(desc);
-                embed.WithFooter(
-                    $"Run {config.CommandPrefix}help ModuleName to show commands from a specific module.");
-                await embed.SendTo(Context.Channel);
-                return;
-            }
-
-            if (mdl.StartsWith(config.CommandPrefix)) {
-                var cname = mdl.Replace(config.CommandPrefix, string.Empty);
-                var c = Cs.Commands.FirstOrDefault(x => x.Name.EqualsIgnoreCase(cname));
-
-                if (c is null) {
-                    await Context.CreateEmbed("No command matching that name was found.").SendTo(Context.Channel);
-                    return;
-                }
-
-                var aliases = c.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
-
-                if ((c.Module.Name.EqualsIgnoreCase("adminmodule") && !UserUtils.IsAdmin(Context)) || 
-                    (c.Module.Name.EqualsIgnoreCase("ownermodule") && !UserUtils.IsBotOwner(Context.User)) || 
-                    (c.Module.Name.EqualsIgnoreCase("moderationmodule") && !UserUtils.IsModerator(Context))) {
-                    await Context.CreateEmbed("You don't have permission to use the module that command is from.")
-                        .SendTo(Context.Channel);
-                    return;
-                }
-
-                aliases += ")";
-
-                embed.WithDescription($"**Command**: {c.Name}\n" +
-                                      $"**Module**: {c.Module.Name.Replace("Module", string.Empty)}\n" +
-                                      $"**Summary**: {c.Summary ?? "No summary provided."}\n" +
-                                      "**Usage**: " + c.Remarks
-                                          .Replace(c.Name.ToLower(), aliases.Replace("|)", ")"))
-                                          .Replace("|prefix|", config.CommandPrefix)
-                                          .Replace("Usage: ", string.Empty));
-                await Reply(Context.Channel, embed.Build());
-                return;
-            }
-
-            var target = Cs.Modules.FirstOrDefault(x => x.Name.Replace("Module", string.Empty).EqualsIgnoreCase(mdl));
-            if (target is null) {
-                await Context.CreateEmbed("Specified module not found.").SendTo(Context.Channel);
-                return;
-            }
-
-            if ((mdl.EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) || 
-                (mdl.EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) || 
-                (mdl.EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context))) {
-                await Context.CreateEmbed("You don't have permission to use the module that command is from.")
-                    .SendTo(Context.Channel);
-                return;
-            }
-
-            embed.WithTitle($"Commands for {target.Name.Replace("Module", string.Empty)}");
-            desc = target.Commands.Aggregate(desc, (current, cmd)
-                => current + $"`{cmd.Name}`, ");
-            embed.WithDescription(desc);
-            embed.WithFooter(
-                $"Run {config.CommandPrefix}help {config.CommandPrefix}CommandName to show info about a specific command.");
+            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder()
+                .AddField("Modules", $"List modules.\nUsage: {config.CommandPrefix}mdls", true)
+                .AddField("Commands", $"Shows commands in a module.\nUsage: {config.CommandPrefix}cmds {{moduleName}}",
+                    true)
+                .AddField("Command", $"Shows info about a command.\nUsage: {config.CommandPrefix}cmd {{cmdName}}",
+                    true);
 
             await embed.SendTo(Context.Channel);
         }

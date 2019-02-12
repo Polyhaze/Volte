@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
@@ -23,7 +24,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                 embed.WithDescription($"**{roleName}** doesn't exist in this server.");
             }
 
-            await Reply(Context.Channel, embed.Build());
+            await embed.SendTo(Context.Channel);
         }
     }
 }

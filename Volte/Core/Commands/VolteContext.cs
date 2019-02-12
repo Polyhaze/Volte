@@ -8,7 +8,7 @@ using Volte.Core.Services;
 using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands {
-    
+    /// <inheritdoc />
     public class VolteContext : ICommandContext {
         public VolteContext(IDiscordClient client, IUserMessage msg) {
             Client = client;
