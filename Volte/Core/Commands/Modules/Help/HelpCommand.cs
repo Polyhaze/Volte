@@ -4,7 +4,7 @@ using Discord;
 using Discord.Commands;
 using Volte.Core.Extensions;
 using Volte.Core.Data;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands.Modules.Help {
     public class HelpModule : VolteModule {

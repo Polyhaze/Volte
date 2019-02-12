@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {

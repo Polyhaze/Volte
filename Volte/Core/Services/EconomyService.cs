@@ -3,7 +3,7 @@ using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Commands;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Services {
     internal class EconomyService {

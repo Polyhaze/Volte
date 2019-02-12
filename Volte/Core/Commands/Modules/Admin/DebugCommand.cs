@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {

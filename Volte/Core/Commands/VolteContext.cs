@@ -4,9 +4,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
-using Volte.Core.Runtime;
 using Volte.Core.Services;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands {
     

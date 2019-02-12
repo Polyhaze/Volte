@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Commands;
 using Volte.Core.Extensions;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Services {
     public class PingChecksService {

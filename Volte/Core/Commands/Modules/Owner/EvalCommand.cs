@@ -18,7 +18,7 @@ using Volte.Core.Services;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
 
-        public LoggingService Logger { get; set; }
+        public new LoggingService Logger { get; set; }
 
         [Command("Eval")]
         [Summary("Evaluates C# code.")]
@@ -26,7 +26,6 @@ namespace Volte.Core.Commands.Modules.Owner {
         [RequireBotOwner]
         public async Task Eval([Remainder] string code) {
             try {
-                object res;
                 var sopts = ScriptOptions.Default;
                 var embed = new EmbedBuilder()
                     .WithAuthor(Context.User)
@@ -57,7 +56,7 @@ namespace Volte.Core.Commands.Modules.Owner {
                 var sw = new Stopwatch();
                 sw.Start();
                 try {
-                    res = await CSharpScript.EvaluateAsync(code, sopts, objects, typeof(EvalObjects));
+                    var res = await CSharpScript.EvaluateAsync(code, sopts, objects, typeof(EvalObjects));
                     sw.Stop();
                     if (res != null) {
                         await msg.DeleteAsync();

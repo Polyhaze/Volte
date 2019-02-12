@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Core.Data;
 using Volte.Core.Extensions;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Economy {
     public partial class EconomyModule : VolteModule {

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Volte.Core.Extensions;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.General {
     public partial class GeneralModule : VolteModule {

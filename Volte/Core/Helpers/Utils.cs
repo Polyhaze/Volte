@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Volte.Core.Data;
 using Volte.Core.Commands;
 
-namespace Volte.Helpers {
+namespace Volte.Core.Helpers {
     public static class Utils {
         /// <summary>
         ///     Creates an embed.

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands.Preconditions {
     public class RequireGuildModeratorAttribute : PreconditionAttribute {

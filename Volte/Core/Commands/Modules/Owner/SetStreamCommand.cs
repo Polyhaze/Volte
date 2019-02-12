@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
-using Volte.Helpers;
-using System.Linq;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;

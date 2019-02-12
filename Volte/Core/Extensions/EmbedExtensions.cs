@@ -1,8 +1,7 @@
-using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Extensions {
     public static class EmbedExtensions {

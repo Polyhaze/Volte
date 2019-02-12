@@ -1,20 +1,14 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.Net;
-using Discord.WebSocket;
-using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
-using Volte.Core.Extensions;
-using Volte.Core.Runtime;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 #pragma warning disable 1998
 namespace Volte.Core.Services {

@@ -1,12 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using Volte.Core.Discord;
 using Volte.Core.Commands;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Services {
     internal class AntilinkService {

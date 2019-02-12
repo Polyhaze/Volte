@@ -1,11 +1,9 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
@@ -28,12 +26,8 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Command("SelfRole Remove"), Alias("Sr R")]
         [Summary("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
+        [RequireGuildAdmin]
         public async Task SelfRoleRem(string roleName) {
-            if (!UserUtils.IsAdmin(Context)) {
-                await Context.ReactFailure();
-                return;
-            }
-
             var config = Db.GetConfig(Context.Guild);
 
             if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName))) {
@@ -51,12 +45,8 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Command("SelfRole Clear"), Alias("Sr C")]
         [Summary("Clears the self role list for this guild.")]
         [Remarks("Usage: |prefix|selfrole clear")]
+        [RequireGuildAdmin]
         public async Task SelfRoleClear() {
-            if (!UserUtils.IsAdmin(Context)) {
-                await Context.ReactFailure();
-                return;
-            }
-
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Clear();
             Db.UpdateConfig(config);

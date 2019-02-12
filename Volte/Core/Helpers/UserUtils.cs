@@ -8,7 +8,7 @@ using Volte.Core.Discord;
 using Volte.Core.Commands;
 using Volte.Core.Services;
 
-namespace Volte.Helpers {
+namespace Volte.Core.Helpers {
     public static class UserUtils {
         /// <summary>
         ///     Checks if the user given is the bot owner.

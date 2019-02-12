@@ -1,9 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Helpers;
-using Volte.Core.Data;
-using System.Linq;
 using Discord;
 using Discord.Net;
 using Volte.Core.Commands.Preconditions;

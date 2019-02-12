@@ -2,8 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Volte.Core.Commands.Preconditions;
-using Volte.Helpers;
-using Volte.Core.Data;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {

@@ -4,9 +4,8 @@ using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Data.Objects;
-using Volte.Core.Discord;
 using Volte.Core.Services;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands.Preconditions {
     public class RequireBotOwnerAttribute : PreconditionAttribute {

@@ -5,7 +5,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
-using Volte.Helpers;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
