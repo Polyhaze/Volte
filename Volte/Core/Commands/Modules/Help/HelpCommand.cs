@@ -6,8 +6,8 @@ using Volte.Core.Extensions;
 using Volte.Core.Data;
 using Volte.Helpers;
 
-namespace Volte.Core.Commands.Modules.General {
-    public partial class GeneralModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Help {
+    public class HelpModule : VolteModule {
         public CommandService Cs { get; set; }
 
         [Command("Help", RunMode = RunMode.Async), Alias("H")]
@@ -80,7 +80,7 @@ namespace Volte.Core.Commands.Modules.General {
 
             embed.WithTitle($"Commands for {target.Name.Replace("Module", string.Empty)}");
             desc = target.Commands.Aggregate(desc, (current, cmd)
-                => current + $"**{cmd.Name}**: `{cmd.Summary ?? "No summary specified"}`\n\n");
+                => current + $"`{cmd.Name}`, ");
             embed.WithDescription(desc);
             embed.WithFooter(
                 $"Run {config.CommandPrefix}help {config.CommandPrefix}CommandName to show info about a specific command.");
