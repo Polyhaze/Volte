@@ -1,17 +1,20 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Qmmands;
 using Discord.WebSocket;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Admin {
-    public partial class AdminModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Admin
+{
+    public partial class AdminModule : VolteModule
+    {
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         [RequireGuildAdmin]
-        public async Task WelcomeChannel(SocketTextChannel channel) {
+        public async Task WelcomeChannel(SocketTextChannel channel)
+        {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
@@ -23,15 +26,18 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Description("Sets or shows the welcome message used to welcome new users for this guild.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
-        public async Task WelcomeMessage([Remainder] string message = null) {
+        public async Task WelcomeMessage([Remainder] string message = null)
+        {
             var config = Db.GetConfig(Context.Guild);
 
-            if (message is null) {
+            if (message is null)
+            {
                 await Context
                     .CreateEmbed($"The current welcome message for this server is ```\n{config.WelcomeMessage}```")
                     .SendTo(Context.Channel);
             }
-            else {
+            else
+            {
                 config.WelcomeMessage = message;
                 Db.UpdateConfig(config);
                 var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeChannel);
@@ -42,7 +48,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                 await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
                     .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;
-                if (config.WelcomeChannel != 0) {
+                if (config.WelcomeChannel != 0)
+                {
                     var welcomeMessage = config.WelcomeMessage
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
@@ -61,8 +68,10 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Description("Sets the color used for welcome embeds for this guild.")]
         [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
         [RequireGuildAdmin]
-        public async Task WelcomeColor(int r, int g, int b) {
-            if (r > 255 || g > 255 || b > 255) {
+        public async Task WelcomeColor(int r, int g, int b)
+        {
+            if (r > 255 || g > 255 || b > 255)
+            {
                 await Context
                     .CreateEmbed(
                         "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value.")
@@ -84,16 +93,18 @@ namespace Volte.Core.Commands.Modules.Admin {
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         [RequireGuildAdmin]
-        public async Task LeavingMessage([Remainder] string message = null) {
+        public async Task LeavingMessage([Remainder] string message = null)
+        {
             var config = Db.GetConfig(Context.Guild);
 
-            if (message is null) {
+            if (message is null)
+            {
                 await Context
                     .CreateEmbed($"The current leaving message for this server is ```\n{config.WelcomeMessage}```")
                     .SendTo(Context.Channel);
-
             }
-            else {
+            else
+            {
                 config.LeavingMessage = message;
                 Db.UpdateConfig(config);
                 var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeChannel);
@@ -105,7 +116,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                     .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;
 
-                if (config.WelcomeChannel != 0) {
+                if (config.WelcomeChannel != 0)
+                {
                     var welcomeMessage = config.LeavingMessage
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)

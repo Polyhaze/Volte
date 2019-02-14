@@ -1,9 +1,8 @@
 using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +11,12 @@ using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Services {
-    public class GuildService {
-        public async Task OnJoin(SocketGuild guild) {
+namespace Volte.Core.Services
+{
+    public class GuildService
+    {
+        public async Task OnJoin(SocketGuild guild)
+        {
             /*if (Config.GetBlacklistedOwners().Contains(guild.OwnerId)) {
                 await guild.LeaveAsync();
                 return;
@@ -32,20 +34,22 @@ namespace Volte.Core.Services {
                     "\nYou *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
-            try {
+            try
+            {
                 await embed.SendTo(guild.Owner);
             }
-            catch (HttpException e) when (e.DiscordCode.Equals(50007)) {
+            catch (HttpException e) when (e.DiscordCode.Equals(50007))
+            {
                 var c = guild.TextChannels?.First();
-                if (c != null) {
-                    await embed.SendTo(c);
-                }
+                if (c != null) await embed.SendTo(c);
             }
 
-            if (Config.GetJoinLeaveLog().Enabled) {
+            if (Config.GetJoinLeaveLog().Enabled)
+            {
                 var joinLeave = Config.GetJoinLeaveLog();
                 var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
-                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0)) {
+                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
+                {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
@@ -65,36 +69,40 @@ namespace Volte.Core.Services {
                     .WithCurrentTimestamp()
                     .AddField("Users", users.Count, true)
                     .AddField("Bots", bots.Count, true);
-                try {
-                    if (bots.Count > users.Count) {
+                try
+                {
+                    if (bots.Count > users.Count)
                         await channel.SendMessageAsync(
                             $"<@{Config.GetOwner()}>: Joined a guild with more bots than users.", false,
                             e.WithColor(0x00FF00).Build());
-                    }
-                    else {
+                    else
                         await channel.SendMessageAsync("", false, e.WithColor(0x00FF00).Build());
-                    }
                 }
-                catch (NullReferenceException ex) {
+                catch (NullReferenceException ex)
+                {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
                 }
             }
         }
 
-        public async Task OnLeave(SocketGuild guild) {
-            if (Config.GetJoinLeaveLog().Enabled) {
+        public async Task OnLeave(SocketGuild guild)
+        {
+            if (Config.GetJoinLeaveLog().Enabled)
+            {
                 var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
                 var joinLeave = Config.GetJoinLeaveLog();
-                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0)) {
+                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
+                {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
                     return;
                 }
-                
+
                 var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                try {
+                try
+                {
                     var e = new EmbedBuilder()
                         .WithAuthor(guild.Owner)
                         .WithTitle("Left Guild")
@@ -104,13 +112,12 @@ namespace Volte.Core.Services {
                         .WithColor(0xFF0000)
                         .SendTo(channel);
                 }
-                catch (NullReferenceException e) {
+                catch (NullReferenceException e)
+                {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
                 }
             }
-            
-            
         }
     }
 }

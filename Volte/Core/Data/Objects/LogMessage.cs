@@ -1,21 +1,27 @@
 using System;
 using Discord;
+using Discord.Commands;
 
-namespace Volte.Core.Data.Objects {
-    public class LogMessage {
+namespace Volte.Core.Data.Objects
+{
+    public class LogMessage
+    {
         public LogSeverity Severity { get; private set; }
         public LogSource Source { get; private set; }
         public string Message { get; private set; }
         public Exception Exception { get; private set; }
 
-        public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message) {
-            var s = new LogMessage {
+        public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message)
+        {
+            var s = new LogMessage
+            {
                 Message = message.Message,
                 Severity = message.Severity,
                 Exception = message.Exception
             };
 
-            switch (message.Source) {
+            switch (message.Source)
+            {
                 case "Rest":
                     s.Source = LogSource.Rest;
                     return s;

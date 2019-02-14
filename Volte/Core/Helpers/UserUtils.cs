@@ -1,21 +1,23 @@
-﻿using Discord.WebSocket;
-using Volte.Core.Data;
-using System.Linq;
+﻿using System.Linq;
 using Discord;
-using Qmmands;
+using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Discord;
 using Volte.Core.Commands;
+using Volte.Core.Data;
+using Volte.Core.Discord;
 using Volte.Core.Services;
 
-namespace Volte.Core.Helpers {
-    public static class UserUtils {
+namespace Volte.Core.Helpers
+{
+    public static class UserUtils
+    {
         /// <summary>
         ///     Checks if the user given is the bot owner.
         /// </summary>
         /// <param name="user">User to check.</param>
         /// <returns>System.Boolean</returns>
-        public static bool IsBotOwner(IUser user) {
+        public static bool IsBotOwner(IUser user)
+        {
             return Config.GetOwner().Equals(user.Id);
         }
 
@@ -25,7 +27,8 @@ namespace Volte.Core.Helpers {
         /// <param name="user"></param>
         /// <param name="guild"></param>
         /// <returns>System.Boolean</returns>
-        public static bool IsGuildOwner(IUser user, IGuild guild) {
+        public static bool IsGuildOwner(IUser user, IGuild guild)
+        {
             return guild.OwnerId.Equals(user.Id);
         }
 
@@ -34,7 +37,8 @@ namespace Volte.Core.Helpers {
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public static bool IsGuildOwner(VolteContext ctx) {
+        public static bool IsGuildOwner(VolteContext ctx)
+        {
             return ctx.Guild.OwnerId.Equals(ctx.User.Id);
         }
 
@@ -43,7 +47,8 @@ namespace Volte.Core.Helpers {
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public static bool IsBotOwner(VolteContext ctx) {
+        public static bool IsBotOwner(VolteContext ctx)
+        {
             return Config.GetOwner().Equals(ctx.User.Id);
         }
 
@@ -53,39 +58,43 @@ namespace Volte.Core.Helpers {
         /// <param name="user"></param>
         /// <param name="role"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(IGuildUser user, IRole role) {
+        public static bool HasRole(IGuildUser user, IRole role)
+        {
             return HasRole(user, role.Id);
         }
-        
+
         /// <summary>
         ///     Checks if the given IUser (casted to IGuildUser) has the given IRole.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="role"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(IUser user, IRole role) {
-            return HasRole((IGuildUser)user, role);
+        public static bool HasRole(IUser user, IRole role)
+        {
+            return HasRole((IGuildUser) user, role);
         }
 
-        
+
         /// <summary>
         ///     Checks if the contextual user is a moderator in the contextual guild.
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public static bool IsModerator(VolteContext ctx) {
+        public static bool IsModerator(VolteContext ctx)
+        {
             var c = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             return HasRole(ctx.User, c.ModRole) || IsAdmin(ctx) || IsGuildOwner(ctx);
         }
-        
+
         /// <summary>
         ///     Checks if the given IUser (casted to IGuildUser) has the given IRole Id.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="roleId"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(IUser user, ulong roleId) {
-            return HasRole((IGuildUser)user, roleId);
+        public static bool HasRole(IUser user, ulong roleId)
+        {
+            return HasRole((IGuildUser) user, roleId);
         }
 
 
@@ -95,7 +104,8 @@ namespace Volte.Core.Helpers {
         /// <param name="user"></param>
         /// <param name="roleId"></param>
         /// <returns>System.Boolean</returns>
-        public static bool HasRole(IGuildUser user, ulong roleId) {
+        public static bool HasRole(IGuildUser user, ulong roleId)
+        {
             return user.RoleIds.Contains(roleId);
         }
 
@@ -105,10 +115,11 @@ namespace Volte.Core.Helpers {
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns>System.Boolean</returns>
-        public static bool IsAdmin(VolteContext ctx) {
+        public static bool IsAdmin(VolteContext ctx)
+        {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
-            return (adminRole != null && ((SocketGuildUser) ctx.User).Roles.Contains(adminRole)) || IsGuildOwner(ctx);
+            return adminRole != null && ctx.User.Roles.Contains(adminRole) || IsGuildOwner(ctx);
         }
     }
 }

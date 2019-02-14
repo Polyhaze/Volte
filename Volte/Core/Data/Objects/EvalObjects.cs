@@ -1,9 +1,13 @@
-using Qmmands;
+using Discord;
+using Discord.Commands;
 using Volte.Core.Commands;
 using Volte.Core.Services;
+using CommandService = Qmmands.CommandService;
 
-namespace Volte.Core.Data.Objects {
-    public class EvalObjects {
+namespace Volte.Core.Data.Objects
+{
+    public class EvalObjects
+    {
         public VolteContext Context { get; set; }
         public Server Config { get; set; }
         public LoggingService Logger { get; set; }

@@ -5,16 +5,21 @@ using Qmmands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Utility {
-    public partial class UtilityModule : VolteModule {
-        [Command("Tag"), Priority(0)]
+namespace Volte.Core.Commands.Modules.Utility
+{
+    public partial class UtilityModule : VolteModule
+    {
+        [Command("Tag")]
+        [Qmmands.Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("Usage: |prefix|tag {name}")]
-        public async Task Tag([Remainder] string name) {
+        public async Task Tag([Remainder] string name)
+        {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
-            if (tag == null) {
+            if (tag == null)
+            {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
                     .SendTo(Context.Channel);
                 return;
@@ -33,14 +38,17 @@ namespace Volte.Core.Commands.Modules.Utility {
             Db.UpdateConfig(config);
         }
 
-        [Command("TagStats"), Priority(1)]
+        [Command("TagStats")]
+        [Qmmands.Priority(1)]
         [Description("Shows stats for a tag.")]
         [Remarks("Usage: |prefix|tagstats {name}")]
-        public async Task TagStats([Remainder]string name) {
+        public async Task TagStats([Remainder] string name)
+        {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
-            if (tag == null) {
+            if (tag == null)
+            {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
                     .SendTo(Context.Channel);
                 return;

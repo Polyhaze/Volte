@@ -6,16 +6,21 @@ using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Admin {
-    public partial class AdminModule : VolteModule {
-        [Command("TagCreate", "TagAdd", "TagNew"), Priority(1)]
+namespace Volte.Core.Commands.Modules.Admin
+{
+    public partial class AdminModule : VolteModule
+    {
+        [Command("TagCreate", "TagAdd", "TagNew")]
+        [Priority(1)]
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tagcreate {name} {response}")]
         [RequireGuildAdmin]
-        public async Task TagCreate(string name, [Remainder]string response) {
+        public async Task TagCreate(string name, [Remainder] string response)
+        {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag != null) {
+            if (tag != null)
+            {
                 var user = Context.Client.GetUser(tag.CreatorId);
                 await Context
                     .CreateEmbed(
@@ -24,14 +29,15 @@ namespace Volte.Core.Commands.Modules.Admin {
                 return;
             }
 
-            var newTag = new Tag {
+            var newTag = new Tag
+            {
                 Name = name,
                 Response = response,
                 CreatorId = Context.User.Id,
                 GuildId = Context.Guild.Id,
                 Uses = 0
             };
-            
+
             config.Tags.Add(newTag);
             Db.UpdateConfig(config);
 
@@ -43,13 +49,16 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("TagDelete", "TagDel", "TagRem"), Priority(1)]
+        [Command("TagDelete", "TagDel", "TagRem")]
+        [Priority(1)]
         [Description("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tagdelete {name}")]
-        public async Task TagDelete([Remainder]string name) {
+        public async Task TagDelete([Remainder] string name)
+        {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag == null) {
+            if (tag == null)
+            {
                 await Context.CreateEmbed($"Cannot delete the tag **{name}**, as it doesn't exist.")
                     .SendTo(Context.Channel);
                 return;

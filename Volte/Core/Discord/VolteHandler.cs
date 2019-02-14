@@ -4,26 +4,30 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
-using Qmmands;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Services;
+using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Extensions;
+using Volte.Core.Services;
+using CommandService = Qmmands.CommandService;
 
-namespace Volte.Core.Discord {
-    public class VolteHandler {
-        private readonly DiscordSocketClient _client = VolteBot.Client;
-        private readonly CommandService _service = VolteBot.CommandService;
-        private readonly BlacklistService _blacklist = _services.GetRequiredService<BlacklistService>();
+namespace Volte.Core.Discord
+{
+    public class VolteHandler
+    {
+        private static readonly IServiceProvider _services = VolteBot.ServiceProvider;
         private readonly AntilinkService _antilink = _services.GetRequiredService<AntilinkService>();
+        private readonly BlacklistService _blacklist = _services.GetRequiredService<BlacklistService>();
+        private readonly DiscordSocketClient _client = VolteBot.Client;
+        private readonly DatabaseService _db = _services.GetRequiredService<DatabaseService>();
         private readonly EconomyService _economy = _services.GetRequiredService<EconomyService>();
         private readonly PingChecksService _pingchecks = _services.GetRequiredService<PingChecksService>();
-        private readonly DatabaseService _db = _services.GetRequiredService<DatabaseService>();
+        private readonly CommandService _service = VolteBot.CommandService;
 
-        private static readonly IServiceProvider _services = VolteBot.ServiceProvider;
-
-        public Task Init() {
+        public Task Init()
+        {
             _service.AddModules(Assembly.GetEntryAssembly());
             //register event listeners
             //_service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
@@ -37,7 +41,8 @@ namespace Volte.Core.Discord {
             return Task.CompletedTask;
         }
 
-        private async Task HandleMessageOrCommand(SocketMessage s) {
+        private async Task HandleMessageOrCommand(SocketMessage s)
+        {
             if (!(s is SocketUserMessage msg)) return;
             var ctx = new VolteContext(_client, msg);
             if (ctx.User.IsBot) return;
@@ -51,22 +56,24 @@ namespace Volte.Core.Discord {
             var config = _db.GetConfig(ctx.Guild);
             IEnumerable<string> prefixes = new List<string> {config.CommandPrefix, $"{ctx.Client.CurrentUser.Mention}"};
             _db.GetUser(s.Author.Id);
-            if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out var cmd)) {
-                if (ctx.Channel is IDMChannel) {
+            if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+                out var cmd))
+            {
+                if (ctx.Channel is IDMChannel)
+                {
                     await ctx.ReactFailure();
                     return;
                 }
+
                 var result = await _service.ExecuteAsync(cmd, ctx, _services);
 
                 if (result is CommandNotFoundResult) return;
-                var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd)) 
+                var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
                                     ?? _service.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
                 await _services.GetRequiredService<EventService>().OnCommand(targetCommand, result, ctx, _services);
 
-                if (config.DeleteMessageOnCommand) {
-                    await ctx.Message.DeleteAsync();
-                }
+                if (config.DeleteMessageOnCommand) await ctx.Message.DeleteAsync();
             }
         }
     }

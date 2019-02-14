@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Qmmands;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.DependencyInjection;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
@@ -15,27 +15,32 @@ using Volte.Core.Discord;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
 
-namespace Volte.Core.Commands.Modules.Owner {
-    public partial class OwnerModule : VolteModule {
-
+namespace Volte.Core.Commands.Modules.Owner
+{
+    public partial class OwnerModule : VolteModule
+    {
         public new LoggingService Logger { get; set; }
 
         [Command("Eval")]
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
-        public async Task Eval([Remainder] string code) {
-            try {
+        public async Task Eval([Remainder] string code)
+        {
+            try
+            {
                 var sopts = ScriptOptions.Default;
                 var embed = new EmbedBuilder()
                     .WithAuthor(Context.User)
                     .WithColor(Config.GetSuccessColor());
-                if (code.Contains("```cs")) {
+                if (code.Contains("```cs"))
+                {
                     code = code.Remove(code.IndexOf("```cs", StringComparison.Ordinal), 5);
                     code = code.Remove(code.LastIndexOf("```", StringComparison.Ordinal), 3);
                 }
 
-                var objects = new EvalObjects {
+                var objects = new EvalObjects
+                {
                     Context = Context,
                     CommandService = VolteBot.CommandService,
                     Config = Db.GetConfig(Context.Guild),
@@ -44,7 +49,8 @@ namespace Volte.Core.Commands.Modules.Owner {
                     Logger = Logger
                 };
 
-                var imports = new[] {
+                var imports = new[]
+                {
                     "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
                     "System.Diagnostics", "Discord", "Discord.Commands", "Discord.WebSocket"
                 };
@@ -55,10 +61,12 @@ namespace Volte.Core.Commands.Modules.Owner {
                 var msg = await embed.WithTitle("Evaluating...").SendTo(Context.Channel);
                 var sw = new Stopwatch();
                 sw.Start();
-                try {
+                try
+                {
                     var res = await CSharpScript.EvaluateAsync(code, sopts, objects, typeof(EvalObjects));
                     sw.Stop();
-                    if (res != null) {
+                    if (res != null)
+                    {
                         await msg.DeleteAsync();
                         await embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
@@ -66,7 +74,8 @@ namespace Volte.Core.Commands.Modules.Owner {
                             .AddField("Output", Format.Code(code, "cs"))
                             .SendTo(Context.Channel);
                     }
-                    else {
+                    else
+                    {
                         await msg.DeleteAsync();
                         await embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
@@ -75,7 +84,8 @@ namespace Volte.Core.Commands.Modules.Owner {
                             .SendTo(Context.Channel);
                     }
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     await msg.ModifyAsync(m =>
                         m.Embed = embed
                             .WithDescription($"`{e.Message}`")
@@ -85,16 +95,16 @@ namespace Volte.Core.Commands.Modules.Owner {
                     await Context.Channel.SendFileAsync("data/EvalError.log");
                     File.Delete("data/EvalError.log");
                 }
-                finally {
+                finally
+                {
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 await Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
             }
         }
-        
     }
 }

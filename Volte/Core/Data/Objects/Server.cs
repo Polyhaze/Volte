@@ -1,15 +1,21 @@
 ﻿using System.Collections.Generic;
+using Discord;
+using Discord.Commands;
 using LiteDB;
 
-namespace Volte.Core.Data.Objects {
-    public class Server : object {
+namespace Volte.Core.Data.Objects
+{
+    public class Server : object
+    {
         #region ValueDeclaration
 
-        public Server() {
+        public Server()
+        {
             SelfRoles = new List<string>();
             Blacklist = new List<string>();
             Tags = new List<Tag>();
         }
+
         public ObjectId Id { get; set; }
         public ulong ServerId { get; set; }
         public ulong GuildOwnerId { get; set; }

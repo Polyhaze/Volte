@@ -1,16 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Qmmands;
 using Discord.WebSocket;
-using Volte.Core.Data;
+using Qmmands;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Utility {
-    public partial class UtilityModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Utility
+{
+    public partial class UtilityModule : VolteModule
+    {
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("Usage: $userinfo [@user]")]
-        public async Task UserInfo(SocketGuildUser user = null) {
+        public async Task UserInfo(SocketGuildUser user = null)
+        {
             var actualUser = user ?? Context.User;
 
             await Context.CreateEmbed(string.Empty)

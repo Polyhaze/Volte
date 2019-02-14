@@ -1,14 +1,19 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 
-namespace Volte.Core.Services {
-    internal class WelcomeService {
-        private DatabaseService Db = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>();
-        internal async Task Join(SocketGuildUser user) {
+namespace Volte.Core.Services
+{
+    internal class WelcomeService
+    {
+        private readonly DatabaseService Db = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>();
+
+        internal async Task Join(SocketGuildUser user)
+        {
             var config = Db.GetConfig(user.Guild);
             if (string.IsNullOrEmpty(config.WelcomeMessage)) return; //we don't want to send an empty join message
             var welcomeMessage = config.WelcomeMessage
@@ -31,7 +36,8 @@ namespace Volte.Core.Services {
             }
         }
 
-        internal async Task Leave(SocketGuildUser user) {
+        internal async Task Leave(SocketGuildUser user)
+        {
             var config = Db.GetConfig(user.Guild);
             if (string.IsNullOrEmpty(config.LeavingMessage)) return; //we don't want to send an empty leaving message
             var leavingMessage = config.LeavingMessage

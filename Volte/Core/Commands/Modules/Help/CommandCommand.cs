@@ -1,23 +1,30 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Volte.Core.Extensions;
 using Volte.Core.Helpers;
 
-namespace Volte.Core.Commands.Modules.Help {
-    public partial class HelpModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Help
+{
+    public partial class HelpModule : VolteModule
+    {
         [Command("Command", "Cmd")]
         [Description("Shows info about a command.")]
         [Remarks("Usage: |prefix|command {cmdName}")]
-        public async Task Command([Remainder]string name) {
+        public async Task Command([Remainder] string name)
+        {
             var c = Cs.GetAllCommands().FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
-            if (c is null) {
+            if (c is null)
+            {
                 await Context.CreateEmbed("Command not found.").SendTo(Context.Channel);
                 return;
             }
-            if ((c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) || 
-                (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) || 
-                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context))) {
+
+            if ((c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) ||
+                (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) ||
+                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context)))
+            {
                 await Context.CreateEmbed("You don't have permission to use the module that command is from.")
                     .SendTo(Context.Channel);
                 return;
@@ -28,7 +35,6 @@ namespace Volte.Core.Commands.Modules.Help {
                                       $"**Summary**: {c.Description ?? "No summary provided."}\n" +
                                       $"**Usage**: {c.SanitizeRemarks(Context)}")
                 .SendTo(Context.Channel);
-
         }
     }
 }

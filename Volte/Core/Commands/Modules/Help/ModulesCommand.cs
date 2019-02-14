@@ -4,16 +4,18 @@ using Discord;
 using Qmmands;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Help {
-    public partial class HelpModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Help
+{
+    public partial class HelpModule : VolteModule
+    {
         [Command("Modules", "Mdls")]
         [Description("Lists available modules.")]
         [Remarks("Usage: |prefix|modules")]
-        public async Task Modules() {
+        public async Task Modules()
+        {
             var modules = Cs.GetAllModules().Aggregate(string.Empty,
                 (current, module) => current + $"**{module.SanitizeName()}**\n");
             await Context.CreateEmbed(modules).ToEmbedBuilder().WithTitle("Available Modules").SendTo(Context.Channel);
-
         }
     }
 }

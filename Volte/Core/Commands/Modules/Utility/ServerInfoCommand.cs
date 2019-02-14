@@ -1,17 +1,19 @@
-using System;
 using System.Threading.Tasks;
 using Discord;
-using Qmmands;
 using Humanizer;
+using Qmmands;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Utility {
-    public partial class UtilityModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Utility
+{
+    public partial class UtilityModule : VolteModule
+    {
         [Command("ServerInfo", "Si")]
         [Description("Shows some info about the current guild.")]
         [Remarks("Usage: |prefix|serverinfo")]
-        public async Task ServerInfo() {
+        public async Task ServerInfo()
+        {
             var cAt = Context.Guild.CreatedAt;
             var embed = new EmbedBuilder()
                 .WithTitle("Server Info")

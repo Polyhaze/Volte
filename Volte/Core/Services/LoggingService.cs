@@ -1,33 +1,40 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Color = System.Drawing.Color;
 using static Colorful.Console;
 using Discord;
+using Discord.Commands;
 using Volte.Core.Data.Objects;
+using Color = System.Drawing.Color;
 using LogMessage = Discord.LogMessage;
 using Version = Volte.Core.Runtime.Version;
 
-namespace Volte.Core.Services {
-    public class LoggingService {
+namespace Volte.Core.Services
+{
+    public class LoggingService
+    {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        internal async Task Log(LogMessage msg) {
+        internal async Task Log(LogMessage msg)
+        {
             var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
             await Log(m.Severity, m.Source, m.Message, m.Exception);
         }
 
-        internal async Task PrintVersion() {
+        internal async Task PrintVersion()
+        {
             await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.GetFullVersion()}");
         }
 
-        public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null) {
+        public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)
+        {
             await _semaphore.WaitAsync();
             DoLog(s, src, message, e);
             _semaphore.Release();
         }
 
-        private void DoLog(LogSeverity s, LogSource src, string message, Exception e) {
+        private void DoLog(LogSeverity s, LogSource src, string message, Exception e)
+        {
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);
 
@@ -44,13 +51,16 @@ namespace Volte.Core.Services {
             Write(Environment.NewLine);
         }
 
-        private void Append(string m, Color c) {
+        private void Append(string m, Color c)
+        {
             ForegroundColor = c;
             Write(m);
         }
 
-        private (Color, string) VerifySource(LogSource source) {
-            switch (source) {
+        private (Color, string) VerifySource(LogSource source)
+        {
+            switch (source)
+            {
                 case LogSource.Discord:
                 case LogSource.Gateway:
                     return (Color.RoyalBlue, "DSCD");
@@ -69,8 +79,10 @@ namespace Volte.Core.Services {
             }
         }
 
-        private (Color, string) VerifySeverity(LogSeverity s) {
-            switch (s) {
+        private (Color, string) VerifySeverity(LogSeverity s)
+        {
+            switch (s)
+            {
                 case LogSeverity.Critical:
                     return (Color.Maroon, "CRIT");
                 case LogSeverity.Error:

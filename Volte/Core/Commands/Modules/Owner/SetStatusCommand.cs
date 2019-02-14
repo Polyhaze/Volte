@@ -2,21 +2,25 @@
 using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
-using Volte.Core.Discord;
 using Volte.Core.Data;
+using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.Owner {
-    public partial class OwnerModule : VolteModule {
+namespace Volte.Core.Commands.Modules.Owner
+{
+    public partial class OwnerModule : VolteModule
+    {
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
         [Remarks("Usage: $setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
-        public async Task SetStatus([Remainder] string status) {
+        public async Task SetStatus([Remainder] string status)
+        {
             var embed = new EmbedBuilder()
                 .WithAuthor(Context.User)
                 .WithColor(Config.GetSuccessColor());
-            switch (status.ToLower()) {
+            switch (status.ToLower())
+            {
                 case "dnd":
                     await VolteBot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
                     embed.WithDescription("Set the status to Do Not Disturb.");
