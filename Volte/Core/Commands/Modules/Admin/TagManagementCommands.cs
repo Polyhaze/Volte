@@ -1,22 +1,22 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("Tag Create"), Alias("Tag Add", "Tag New"), Priority(1)]
-        [Summary("Creates a tag with the specified name and response.")]
-        [Remarks("Usage: |prefix|tag create {name} {response}")]
+        [Command("TagCreate", "TagAdd", "TagNew"), Priority(1)]
+        [Description("Creates a tag with the specified name and response.")]
+        [Remarks("Usage: |prefix|tagcreate {name} {response}")]
         [RequireGuildAdmin]
         public async Task TagCreate(string name, [Remainder]string response) {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null) {
-                var user = await Context.Client.GetUserAsync(tag.CreatorId);
+                var user = Context.Client.GetUser(tag.CreatorId);
                 await Context
                     .CreateEmbed(
                         $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.")
@@ -43,9 +43,9 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("Tag Delete"), Alias("Tag Del", "Tag Rem"), Priority(1)]
-        [Summary("Deletes a tag if it exists.")]
-        [Remarks("Usage: |prefix|tag delete {name}")]
+        [Command("TagDelete", "TagDel", "TagRem"), Priority(1)]
+        [Description("Deletes a tag if it exists.")]
+        [Remarks("Usage: |prefix|tagdelete {name}")]
         public async Task TagDelete([Remainder]string name) {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -55,7 +55,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                 return;
             }
 
-            var user = await Context.Client.GetUserAsync(tag.CreatorId);
+            var user = Context.Client.GetUser(tag.CreatorId);
 
             config.Tags.Remove(tag);
             Db.UpdateConfig(config);

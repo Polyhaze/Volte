@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
@@ -9,7 +9,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("Shutdown")]
-        [Summary("Forces the bot to shutdown.")]
+        [Description("Forces the bot to shutdown.")]
         [Remarks("Usage: |prefix|shutdown")]
         [RequireBotOwner]
         public async Task Shutdown() {

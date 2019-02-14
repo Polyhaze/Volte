@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Discord;
 using Discord.Net;
@@ -9,7 +9,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
         [Command("Kick")]
-        [Summary("Kicks the given user.")]
+        [Description("Kicks the given user.")]
         [Remarks("Usage: $kick {@user} [reason]")]
         [RequireBotPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]

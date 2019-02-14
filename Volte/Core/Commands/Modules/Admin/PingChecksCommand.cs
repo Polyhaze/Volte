@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("PingChecks")]
-        [Summary("Enable/Disable checking for @everyone and @here for this guild.")]
+        [Description("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         [RequireGuildAdmin]
         public async Task PingChecks(bool arg) {

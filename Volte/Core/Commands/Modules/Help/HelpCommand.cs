@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Help {
     public partial class HelpModule : VolteModule {
         [Command("Help")]
-        [Summary("Shows the commands used for module listing, command listing, and command info.")]
+        [Description("Shows the commands used for module listing, command listing, and command info.")]
         [Remarks("Usage: |prefix|help")]
         public async Task Help() {
             var config = Db.GetConfig(Context.Guild);

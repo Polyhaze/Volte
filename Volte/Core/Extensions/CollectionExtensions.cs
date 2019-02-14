@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,10 @@ namespace Volte.Core.Extensions {
             var memStream = new MemoryStream(bytes as byte[] ?? bytes.ToArray(), false);
             memStream.Seek(0, SeekOrigin.Begin);
             return memStream;
+        }
+
+        public static bool ContainsIgnoreCase(this IEnumerable<string> strings, string s) {
+            return strings.Contains(s, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

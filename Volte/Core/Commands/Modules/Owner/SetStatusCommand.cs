@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
 using Volte.Core.Data;
@@ -9,7 +9,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetStatus")]
-        [Summary("Sets the bot's status.")]
+        [Description("Sets the bot's status.")]
         [Remarks("Usage: $setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
         public async Task SetStatus([Remainder] string status) {

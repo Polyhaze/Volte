@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("BlacklistAdd"), Alias("BlAdd")]
-        [Summary("Adds a given word/phrase to the blacklist for this guild.")]
+        [Command("BlacklistAdd", "BlAdd")]
+        [Description("Adds a given word/phrase to the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistadd {phrase}")]
         [RequireGuildAdmin]
         public async Task BlacklistAdd([Remainder] string arg) {
@@ -18,8 +18,8 @@ namespace Volte.Core.Commands.Modules.Admin {
             await Context.CreateEmbed($"Added **{arg}** to the blacklist.").SendTo(Context.Channel);
         }
 
-        [Command("BlacklistRemove"), Alias("BlRem")]
-        [Summary("Removes a given word/phrase from the blacklist for this guild.")]
+        [Command("BlacklistRemove", "BlRem")]
+        [Description("Removes a given word/phrase from the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistremove {phrase}")]
         [RequireGuildAdmin]
         public async Task BlacklistRemove([Remainder] string arg) {
@@ -34,8 +34,8 @@ namespace Volte.Core.Commands.Modules.Admin {
             }
         }
 
-        [Command("BlacklistClear"), Alias("BlCl")]
-        [Summary("Clears the blacklist for this guild.")]
+        [Command("BlacklistClear", "BlCl")]
+        [Description("Clears the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistclear")]
         [RequireGuildAdmin]
         public async Task BlacklistClear() {

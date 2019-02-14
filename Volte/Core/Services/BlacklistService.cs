@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Commands;

@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Poll")]
-        [Summary("Create a poll.")]
+        [Description("Create a poll.")]
         [Remarks("Usage: |prefix|poll question;option1;option2;...")]
         public async Task Poll([Remainder] string pollText) {
             var question = pollText.Split(';')[0];

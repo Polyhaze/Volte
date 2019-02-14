@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
+using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
-using Volte.Core.Helpers;
+using Volte.Core.Extensions;
 
 #pragma warning disable 1998
 namespace Volte.Core.Services {
@@ -23,94 +23,84 @@ namespace Volte.Core.Services {
             await dbl.LeaveAsync();
         }
 
-        public async Task OnCommand(Optional<CommandInfo> cinfo, ICommandContext context, IResult res) {
-            var ctx = (VolteContext)context;
-            if (!cinfo.IsSpecified) return;
+        public async Task OnCommand(Command c, IResult res, ICommandContext context, IServiceProvider provider) {
+            var ctx = (VolteContext) context;
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var commandName = ctx.Message.Content.Split(" ")[0];
             var args = ctx.Message.Content.Replace($"{commandName}", "");
-            if (string.IsNullOrEmpty(args)) {
-                args = "None";
+            if (string.IsNullOrEmpty(args)) args = "None";
+            if (res is FailedResult failedRes) {
+                await OnCommandFailure(c, failedRes, ctx, config, args);
             }
-            
-            var argPos = 0;
-            var embed = new EmbedBuilder();
-            if (!res.IsSuccess && res.ErrorReason != "Unknown command." && res.ErrorReason != "Insufficient permission.") {
-                string reason;
-                switch (res.ErrorReason) {
-                    case "The server responded with error 403: Forbidden":
-                        reason =
-                            "I'm not allowed to do that. " +
-                            "Either I don't have permission, " +
-                            "or the requested user is higher " +
-                            "than me in the role hierarchy.";
-                        break;
-                    case "Failed to parse Boolean.":
-                        reason = "You can only input `true` or `false` for this command.";
-                        break;
-                    default:
-                        reason = res.ErrorReason;
-                        break;
+            if (Config.GetLogAllCommands()) {
+                if (res.IsSuccessful) {
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|     -Command Issued: {c.Name}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|        -Args Passed: {args.Trim()}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|           -In Guild: {ctx.Guild.Name}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|         -In Channel: #{ctx.Channel.Name}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|        -Time Issued: {DateTime.Now}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|           -Executed: {res.IsSuccessful} ");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        "-------------------------------------------------");
                 }
-                
-                var aliases = cinfo.Value.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
+            }
+        }
+
+        private async Task OnCommandFailure(Command c, FailedResult res, VolteContext ctx, Server config, string args) {
+            var embed = new EmbedBuilder();
+            string reason;
+            switch (res) {
+                case CommandNotFoundResult cnfr:
+                    reason = "Unknown command.";
+                    break;
+                case ExecutionFailedResult _:
+                    reason = "Execution of this command failed.";
+                    break;
+                case ChecksFailedResult cfr:
+                    reason = "Insufficient permission.";
+                    break;
+                case ParameterChecksFailedResult pcfr:
+                    reason = $"Checks failed on parameter *{pcfr.Parameter.Name}**.";
+                    break;
+                case ArgumentParseFailedResult apfr:
+                    reason = $"Parsing for arguments failed on argument **{apfr.Parameter?.Name}**.";
+                    break;
+                case TypeParseFailedResult tpfr:
+                    reason = $"Failed to parse type **{tpfr.Parameter.Type}** from parameter **{tpfr.Parameter.Name}**.";
+                    break;
+                default:
+                    reason = "Unknown error.";
+                    break;
+            }
+
+            if (!res.IsSuccessful && reason != "Insufficient permission." && reason != "Unknown command.") {
+                var aliases = c.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
 
                 aliases += ")";
                 aliases = aliases.Replace("|)", ")");
+
+                embed.AddField("Error in Command:", c.Name);
+                embed.AddField("Error Reason:", reason);
+                embed.AddField("Correct Usage", c.Remarks
+                    .Replace("Usage: ", string.Empty)
+                    .Replace("|prefix|", config.CommandPrefix)
+                    .Replace($"{c.Name.ToLower()}", aliases));
+                embed.WithAuthor(ctx.User);
+                embed.WithColor(Config.GetErrorColor());
+                await embed.SendTo(ctx.Channel);
                 
-                if (ctx.Message.HasMentionPrefix(VolteBot.Client.CurrentUser, ref argPos)) {
-                    embed.AddField("Error in Command:", cinfo.Value.Name);
-                    embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks
-                        .Replace("Usage: ", string.Empty)
-                        .Replace("|prefix|", config.CommandPrefix)
-                        .Replace($"{cinfo.Value.Name.ToLower()}", aliases));
-                    embed.WithAuthor(ctx.User);
-                    embed.WithColor(Config.GetErrorColor());
-                    await Utils.Send(ctx.Channel, embed.Build());
-                }
-                else {
-                    embed.AddField("Error in Command:", cinfo.Value.Name);
-                    embed.AddField("Error Reason:", reason);
-                    embed.AddField("Correct Usage", cinfo.Value.Remarks
-                        .Replace("Usage: ", string.Empty)
-                        .Replace("|prefix|", config.CommandPrefix)
-                        .Replace($"{cinfo.Value.Name.ToLower()}", aliases));
-                    embed.WithAuthor(ctx.User);
-                    embed.WithColor(Config.GetErrorColor());
-                    await Utils.Send(ctx.Channel, embed.Build());
-                }
-            }
-            
-
-            if (Config.GetLogAllCommands()) {
-                if (res.IsSuccess) {
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|     -Command Issued: {cinfo.Value.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|        -Args Passed: {args.Trim()}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|           -In Guild: {ctx.Guild.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|         -In Channel: #{ctx.Channel.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|        -Time Issued: {DateTime.Now}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|           -Executed: {res.IsSuccess} ");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        "-------------------------------------------------");
-                    
-
-
-
-                }
-                else {
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|     -Command Issued: {cinfo.Value.Name}");
+                        $"|     -Command Issued: {c.Name}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
@@ -120,10 +110,10 @@ namespace Volte.Core.Services {
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|           -Executed: {res.IsSuccess} | Reason: {res.ErrorReason}");
+                        $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         "-------------------------------------------------");
-                }
+                
             }
         }
     }

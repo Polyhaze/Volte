@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("AddRole"), Alias("Ar")]
-        [Summary("Grants a role to the mentioned user.")]
+        [Command("AddRole", "Ar")]
+        [Description("Grants a role to the mentioned user.")]
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin]
         public async Task AddRole(SocketGuildUser user, [Remainder] string role) {

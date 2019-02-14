@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("RemRole"), Alias("Rr")]
-        [Summary("Remove a role from the mentioned user.")]
+        [Command("RemRole", "Rr")]
+        [Description("Remove a role from the mentioned user.")]
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         [RequireGuildAdmin]
         public async Task RemRole(SocketGuildUser user, [Remainder] string role) {

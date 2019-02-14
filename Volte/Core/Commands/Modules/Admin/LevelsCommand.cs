@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("Levels")]
-        [Summary("Enables/Disables level gaining for this guild.")]
+        [Description("Enables/Disables level gaining for this guild.")]
         [Remarks("Usage: $levels {true|false}")]
         [RequireGuildAdmin]
         public async Task Levels(bool arg) {

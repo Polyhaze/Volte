@@ -1,13 +1,13 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Iam")]
-        [Summary("Gives yourself a role, if it is in the current guild's self role list.")]
+        [Description("Gives yourself a role, if it is in the current guild's self role list.")]
         [Remarks("Usage: |prefix|iam {roleName}")]
         public async Task Iam([Remainder] string roleName) {
             var config = Db.GetConfig(Context.Guild);
@@ -22,7 +22,7 @@ namespace Volte.Core.Commands.Modules.Utility {
                         .SendTo(Context.Channel);
                 }
                 else {
-                    await Context.GuildUser.AddRoleAsync(target);
+                    await Context.User.AddRoleAsync(target);
                     await Context.CreateEmbed($"Gave you the **{roleName}** role.").SendTo(Context.Channel);
                 }
             }

@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("DeleteMessageOnCommand"), Alias("Dmoc")]
-        [Summary("Enable/Disable deleting the command message upon execution of a command for this guild.")]
+        [Command("DeleteMessageOnCommand", "Dmoc")]
+        [Description("Enable/Disable deleting the command message upon execution of a command for this guild.")]
         [Remarks("Usage: |prefix|deletemessageoncommand {true|false}")]
         [RequireGuildAdmin]
         public async Task DeleteMessageOnCommand(bool arg) {

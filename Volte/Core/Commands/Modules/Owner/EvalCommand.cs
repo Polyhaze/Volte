@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ namespace Volte.Core.Commands.Modules.Owner {
         public new LoggingService Logger { get; set; }
 
         [Command("Eval")]
-        [Summary("Evaluates C# code.")]
+        [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
         public async Task Eval([Remainder] string code) {

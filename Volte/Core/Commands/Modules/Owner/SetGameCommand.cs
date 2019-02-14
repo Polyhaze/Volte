@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+﻿using Qmmands;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Core.Commands.Preconditions;
@@ -8,7 +8,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetGame")]
-        [Summary("Sets the bot's game (presence).")]
+        [Description("Sets the bot's game (presence).")]
         [Remarks("Usage: $setgame {game}")]
         [RequireBotOwner]
         public async Task SetGame([Remainder] string game) {

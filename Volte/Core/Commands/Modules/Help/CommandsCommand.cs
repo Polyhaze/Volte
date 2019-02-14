@@ -1,17 +1,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 using Volte.Core.Helpers;
 
 namespace Volte.Core.Commands.Modules.Help {
     public partial class HelpModule : VolteModule {
-        [Command("Commands"), Alias("Cmds")]
-        [Summary("Shows commands for a module.")]
+        [Command("Commands", "Cmds")]
+        [Description("Shows commands for a module.")]
         [Remarks("Usage: |prefix|commands {module}")]
         public async Task Commands(string module) {
-            var target = Cs.Modules.FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
+            var target = Cs.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
             if (target is null) {
                 await Context.CreateEmbed("Specified module not found.").SendTo(Context.Channel);
                 return;
@@ -24,8 +24,7 @@ namespace Volte.Core.Commands.Modules.Help {
                 return;
             }
 
-            var commands = target.Commands.Aggregate(string.Empty, (current, command) => current + $"`{command.Name.ToLower()}`, ");
-            commands = commands.Remove(commands.LastIndexOf(','));
+            var commands = $"`{string.Join("`, `", target.Commands)}`";
             await Context.CreateEmbed(commands).ToEmbedBuilder().WithTitle($"Commands for {target.SanitizeName()}")
                 .SendTo(Context.Channel);
         }

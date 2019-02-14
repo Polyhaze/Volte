@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("ModRole")]
-        [Summary("Sets the role able to use Moderation commands for the current guild.")]
+        [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("Usage: |prefix|modrole {roleName}")]
         [RequireGuildAdmin]
         public async Task ModRole([Remainder] string roleName) {

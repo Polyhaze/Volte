@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("Autorole")]
-        [Summary("Sets the role to be used for Autorole.")]
+        [Description("Sets the role to be used for Autorole.")]
         [Remarks("Usage: |prefix|autorole {roleName}")]
         [RequireGuildAdmin]
         public async Task Autorole([Remainder] string role) {

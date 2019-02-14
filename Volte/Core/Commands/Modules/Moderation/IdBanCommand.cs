@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
         [Command("IdBan")]
-        [Summary("Bans a user based on their ID.")]
+        [Description("Bans a user based on their ID.")]
         [Remarks("Usage: $idban {id} [reason]")]
         [RequireBotPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]

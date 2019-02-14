@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
@@ -8,7 +8,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Economy {
     public partial class EconomyModule : VolteModule {
         [Command("Pay")]
-        [Summary("Pays the given user x amount of money.")]
+        [Description("Pays the given user x amount of money.")]
         [Remarks("Usage: |prefix|pay {@user} {amount}")]
         public async Task Pay(SocketGuildUser user, int moneyToPay) {
             var embed = Context.CreateEmbed(string.Empty)

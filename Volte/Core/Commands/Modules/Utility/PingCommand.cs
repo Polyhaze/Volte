@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Ping")]
-        [Summary("Show the Gateway latency to Discord.")]
+        [Description("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
         public async Task Ping() {
             var e = Context.CreateEmbed("Pinging...").ToEmbedBuilder();

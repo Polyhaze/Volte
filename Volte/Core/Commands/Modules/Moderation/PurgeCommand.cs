@@ -1,16 +1,15 @@
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
-
-        [Command("Purge"), Alias("clear", "clean")]
-        [Summary("Purges the last x messages.")]
+        [Command("Purge", "clear", "clean")]
+        [Description("Purges the last x messages.")]
         [Remarks("Usage: $purge {count}")]
-        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        [RequireBotPermission(GuildPermission.ManageMessages)]
         [RequireGuildModerator]
         public async Task Purge(int count) {
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(
@@ -20,8 +19,7 @@ namespace Volte.Core.Commands.Modules.Moderation {
             var msg = await Context
                 .CreateEmbed($"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}")
                 .SendTo(Context.Channel);
-            await Task.Delay(5000);
-            await msg.DeleteAsync();
+            await Task.Delay(5000).ContinueWith(_ => msg.DeleteAsync());
         }
         
     }

@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("Invite")]
-        [Summary("Get an invite to use Volte in your own guild.")]
+        [Description("Get an invite to use Volte in your own guild.")]
         [Remarks("Usage: |prefix|invite")]
         public async Task Invite() {
             await Context.CreateEmbed("Do you like Volte? If you do, that's awesome! If not then I'm sorry :( \n\n" +

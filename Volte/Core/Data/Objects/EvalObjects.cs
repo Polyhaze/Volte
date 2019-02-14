@@ -1,4 +1,4 @@
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Services;
 

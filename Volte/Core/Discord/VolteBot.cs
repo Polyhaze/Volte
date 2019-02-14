@@ -1,14 +1,13 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Commands.TypeParsers;
 using Volte.Core.Services;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
-using Volte.Core.Runtime;
 
 namespace Volte.Core.Discord {
     #pragma warning disable 1998
@@ -48,12 +47,12 @@ namespace Volte.Core.Discord {
                 .AddSingleton<PingChecksService>()
                 .AddSingleton<LoggingService>()
                 .AddSingleton<GuildService>()
-                .AddSingleton(new CommandService(new CommandServiceConfig {
-                    IgnoreExtraArgs = true,
-                    DefaultRunMode = RunMode.Async,
-                    CaseSensitiveCommands = false,
-                    LogLevel = LogSeverity.Verbose,
-                    ThrowOnError = false
+                .AddSingleton(new CommandService(new CommandServiceConfiguration {
+                    IgnoreExtraArguments = true,
+                    CaseSensitive = false,
+                    DefaultRunMode = RunMode.Sequential,
+                    SeparatorRequirement = SeparatorRequirement.SeparatorOrWhitespace,
+                    NullableNouns = null
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig {
                     LogLevel = LogSeverity.Verbose,
@@ -64,15 +63,28 @@ namespace Volte.Core.Discord {
         }
 
         private async Task LoginAsync() {
+            Initialize();
             if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
-            await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}",
-                ActivityType.Streaming);
+            if (Config.GetStreamer().EqualsIgnoreCase("streamer here")) {
+                await Client.SetGameAsync(Config.GetGame());
+            }
+            else {
+                await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}",
+                    ActivityType.Streaming);
+            }
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
             Client.Log += async m => await ServiceProvider.GetRequiredService<LoggingService>().Log(m);
             await Task.Delay(-1);
+        }
+
+        private void Initialize() {
+            CommandService.AddTypeParser(new UserParser<SocketGuildUser>());
+            CommandService.AddTypeParser(new UserParser<SocketUser>());
+            CommandService.AddTypeParser(new RoleParser<SocketRole>());
+            CommandService.AddTypeParser(new ChannelParser<SocketTextChannel>());
         }
     }
 }

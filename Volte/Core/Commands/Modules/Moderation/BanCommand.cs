@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.Net;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
@@ -9,7 +9,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Moderation {
     public partial class ModerationModule : VolteModule {
         [Command("Ban")]
-        [Summary("Bans the mentioned user.")]
+        [Description("Bans the mentioned user.")]
         [Remarks("Usage: $ban {@user} [reason]")]
         [RequireBotPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]

@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("SelfRole Add"), Alias("Sr A")]
-        [Summary("Adds a role to the list of self roles for this guild.")]
-        [Remarks("Usage: |prefix|selfrole add {roleName}")]
+        [Command("SelfRoleAdd", "SrAdd")]
+        [Description("Adds a role to the list of self roles for this guild.")]
+        [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         [RequireGuildAdmin]
         public async Task SelfRoleAdd(string roleName) {
             if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null) {
@@ -23,8 +23,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("SelfRole Remove"), Alias("Sr R")]
-        [Summary("Removes a role from the list of self roles for this guild.")]
+        [Command("SelfRoleRemove", "SrRem")]
+        [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         [RequireGuildAdmin]
         public async Task SelfRoleRem(string roleName) {
@@ -42,9 +42,9 @@ namespace Volte.Core.Commands.Modules.Admin {
             }
         }
 
-        [Command("SelfRole Clear"), Alias("Sr C")]
-        [Summary("Clears the self role list for this guild.")]
-        [Remarks("Usage: |prefix|selfrole clear")]
+        [Command("SelfRoleClear", "SrC", "SrClear", "SelfroleC")]
+        [Description("Clears the self role list for this guild.")]
+        [Remarks("Usage: |prefix|selfroleclear")]
         [RequireGuildAdmin]
         public async Task SelfRoleClear() {
             var config = Db.GetConfig(Context.Guild);

@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
         [Command("IamNot")]
-        [Summary("Take a role from yourself, if it is in the current guild's self role list.")]
+        [Description("Take a role from yourself, if it is in the current guild's self role list.")]
         [Remarks("Usage: |prefix|iamnot {roleName}")]
         public async Task IamNot([Remainder] string roleName) {
             var config = Db.GetConfig(Context.Guild);
@@ -21,7 +21,7 @@ namespace Volte.Core.Commands.Modules.Utility {
                         .SendTo(Context.Channel);
                 }
                 else {
-                    await Context.GuildUser.RemoveRoleAsync(target);
+                    await Context.User.RemoveRoleAsync(target);
                     await Context.CreateEmbed($"Took away your **{roleName}** role.").SendTo(Context.Channel);
                 }
             }

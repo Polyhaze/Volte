@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Services;
-using Volte.Core.Data;
-using Volte.Core.Extensions;
 using Volte.Core.Commands;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Discord {
     public class VolteHandler {
@@ -23,10 +23,10 @@ namespace Volte.Core.Discord {
 
         private static readonly IServiceProvider _services = VolteBot.ServiceProvider;
 
-        public async Task Init() {
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+        public Task Init() {
+            _service.AddModules(Assembly.GetEntryAssembly());
             //register event listeners
-            _service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
+            //_service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
             _client.MessageReceived += HandleMessageOrCommand;
             _client.JoinedGuild += _services.GetRequiredService<GuildService>().OnJoin;
             _client.LeftGuild += _services.GetRequiredService<GuildService>().OnLeave;
@@ -34,10 +34,10 @@ namespace Volte.Core.Discord {
             _client.UserJoined += _services.GetRequiredService<AutoroleService>().Apply;
             _client.UserLeft += _services.GetRequiredService<WelcomeService>().Leave;
             _client.Ready += _services.GetRequiredService<EventService>().OnReady;
+            return Task.CompletedTask;
         }
 
         private async Task HandleMessageOrCommand(SocketMessage s) {
-            var argPos = 0; //i'd get rid of this but because Discord.Net requires a ref param i can't.
             if (!(s is SocketUserMessage msg)) return;
             var ctx = new VolteContext(_client, msg);
             if (ctx.User.IsBot) return;
@@ -49,13 +49,20 @@ namespace Volte.Core.Discord {
             await _pingchecks.CheckMessage(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
+            IEnumerable<string> prefixes = new List<string> {config.CommandPrefix, $"{ctx.Client.CurrentUser.Mention}"};
             _db.GetUser(s.Author.Id);
-            var prefix = string.IsNullOrEmpty(config.CommandPrefix) ? Config.GetCommandPrefix() : config.CommandPrefix;
-            var msgStrip = msg.Content.Replace(prefix, string.Empty);
-            if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) {
-                var result = await _service.ExecuteAsync(ctx, argPos, _services);
+            if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out var cmd)) {
+                if (ctx.Channel is IDMChannel) {
+                    await ctx.ReactFailure();
+                    return;
+                }
+                var result = await _service.ExecuteAsync(cmd, ctx, _services);
 
-                if (result.ErrorReason.Equals("Unknown command.")) return;
+                if (result is CommandNotFoundResult) return;
+                var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd)) 
+                                    ?? _service.GetAllCommands()
+                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
+                await _services.GetRequiredService<EventService>().OnCommand(targetCommand, result, ctx, _services);
 
                 if (config.DeleteMessageOnCommand) {
                     await ctx.Message.DeleteAsync();

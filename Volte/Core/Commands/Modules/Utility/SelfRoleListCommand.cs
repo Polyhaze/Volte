@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility {
     public partial class UtilityModule : VolteModule {
-        [Command("SelfRoleList"), Alias("Srl")]
-        [Summary("Gets a list of self roles available for this guild.")]
+        [Command("SelfRoleList", "Srl")]
+        [Description("Gets a list of self roles available for this guild.")]
         [Remarks("Usage: |prefix|selfrolelist")]
         public async Task SelfRoleList() {
             var roleList = string.Empty;

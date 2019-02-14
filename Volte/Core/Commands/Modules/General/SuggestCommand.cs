@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.General {
     public partial class GeneralModule : VolteModule {
         [Command("Suggest")]
-        [Summary("Suggest features for Volte.")]
+        [Description("Suggest features for Volte.")]
         [Remarks("Usage: |prefix|suggest")]
         public async Task Suggest() {
             await Context.CreateEmbed("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).")

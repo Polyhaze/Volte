@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Discord;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
@@ -8,7 +8,7 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetStream")]
-        [Summary("Sets the bot's stream.")]
+        [Description("Sets the bot's stream.")]
         [Remarks("Usage: $setstream {streamer} {streamName}")]
         [RequireBotOwner]
         public async Task SetStream(string streamer, [Remainder] string streamName) {

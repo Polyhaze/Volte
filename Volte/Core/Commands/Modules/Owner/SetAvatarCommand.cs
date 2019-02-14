@@ -2,14 +2,14 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Owner {
     public partial class OwnerModule : VolteModule {
         [Command("SetAvatar")]
-        [Summary("Sets the bot's avatar.")]
+        [Description("Sets the bot's avatar.")]
         [Remarks("Usage: $setavatar {url}")]
         [RequireBotOwner]
         public async Task SetAvatar(string url) {

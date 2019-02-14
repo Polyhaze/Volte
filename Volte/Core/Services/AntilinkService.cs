@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using Volte.Core.Discord;

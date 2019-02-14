@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Discord.Commands;
+using Qmmands;
 using Newtonsoft.Json;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Admin {
         public DebugService DebugService { get; set; }
         
         [Command("Debug")]
-        [Summary("Generates a debug report for this guild.")]
+        [Description("Generates a debug report for this guild.")]
         [Remarks("Usage: |prefix|debug")]
         [RequireGuildAdmin]
         public async Task Debug() {

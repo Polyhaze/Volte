@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
         [Command("ServerPrefix")]
-        [Summary("Sets the command prefix for this guild.")]
+        [Description("Sets the command prefix for this guild.")]
         [Remarks("Usage: |prefix|serverprefix {newPrefix}")]
         [RequireGuildAdmin]
         public async Task ServerPrefix([Remainder]string prefix) {

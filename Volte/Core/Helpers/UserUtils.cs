@@ -2,7 +2,7 @@
 using Volte.Core.Data;
 using System.Linq;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Commands;

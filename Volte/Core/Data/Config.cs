@@ -29,7 +29,7 @@ namespace Volte.Core.Data {
                 CommandPrefix = "$",
                 Owner = 0,
                 Game = "in Volte V2 Code!",
-                Streamer = "GreemDev",
+                Streamer = "streamer here",
                 SuccessEmbedColor = 0x7000FB,
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,

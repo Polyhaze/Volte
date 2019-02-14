@@ -13,7 +13,7 @@ namespace Volte.Core.Services {
             var content = ctx.Message.Content;
             if (content.ContainsIgnoreCase("@everyone") ||
                 content.ContainsIgnoreCase("@here") ||
-                ctx.Message.MentionedUserIds.Count > 10) {
+                ctx.Message.MentionedUsers.Count > 10) {
                 await ctx.Message.DeleteAsync();
             }
         }

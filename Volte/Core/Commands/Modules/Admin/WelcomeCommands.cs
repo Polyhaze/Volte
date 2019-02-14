@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Qmmands;
 using Discord.WebSocket;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Admin {
     public partial class AdminModule : VolteModule {
-        [Command("WelcomeChannel"), Alias("Wc")]
-        [Summary("Sets the channel used for welcoming new users for this guild.")]
+        [Command("WelcomeChannel", "Wc")]
+        [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         [RequireGuildAdmin]
         public async Task WelcomeChannel(SocketTextChannel channel) {
@@ -19,8 +19,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("WelcomeMessage"), Alias("Wmsg")]
-        [Summary("Sets or shows the welcome message used to welcome new users for this guild.")]
+        [Command("WelcomeMessage", "Wmsg")]
+        [Description("Sets or shows the welcome message used to welcome new users for this guild.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
         public async Task WelcomeMessage([Remainder] string message = null) {
@@ -34,7 +34,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             else {
                 config.WelcomeMessage = message;
                 Db.UpdateConfig(config);
-                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeChannel);
+                var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeChannel);
                 var sendingTest = config.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
@@ -47,7 +47,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
                         .Replace("{UserName}", Context.User.Username)
-                        .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
+                        .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
                         .Replace("{UserTag}", Context.User.Discriminator);
                     var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
                         .WithThumbnailUrl(Context.User.GetAvatarUrl())
@@ -57,8 +57,8 @@ namespace Volte.Core.Commands.Modules.Admin {
             }
         }
 
-        [Command("WelcomeColor"), Alias("WelcomeColour", "Wcl")]
-        [Summary("Sets the color used for welcome embeds for this guild.")]
+        [Command("WelcomeColor", "WelcomeColour", "Wcl")]
+        [Description("Sets the color used for welcome embeds for this guild.")]
         [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
         [RequireGuildAdmin]
         public async Task WelcomeColor(int r, int g, int b) {
@@ -80,8 +80,8 @@ namespace Volte.Core.Commands.Modules.Admin {
                 .SendTo(Context.Channel);
         }
 
-        [Command("LeavingMessage"), Alias("Lmsg")]
-        [Summary("Sets or shows the leaving message used to say bye for this guild.")]
+        [Command("LeavingMessage", "Lmsg")]
+        [Description("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         [RequireGuildAdmin]
         public async Task LeavingMessage([Remainder] string message = null) {
@@ -96,7 +96,7 @@ namespace Volte.Core.Commands.Modules.Admin {
             else {
                 config.LeavingMessage = message;
                 Db.UpdateConfig(config);
-                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeChannel);
+                var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeChannel);
                 var sendingTest = config.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
@@ -110,7 +110,7 @@ namespace Volte.Core.Commands.Modules.Admin {
                         .Replace("{ServerName}", Context.Guild.Name)
                         .Replace("{UserMention}", Context.User.Mention)
                         .Replace("{UserName}", Context.User.Username)
-                        .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
+                        .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
                         .Replace("{UserTag}", Context.User.Discriminator);
                     var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
                         .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB)
