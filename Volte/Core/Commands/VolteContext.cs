@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 using Volte.Core.Helpers;
 using Volte.Core.Services;
-using CommandService = Qmmands.CommandService;
-using ICommandContext = Qmmands.ICommandContext;
+using Qmmands;
+using Volte.Core.Data.Objects;
 
 namespace Volte.Core.Commands
 {
@@ -15,13 +14,12 @@ namespace Volte.Core.Commands
     public class VolteContext : ICommandContext
     {
         private readonly CommandService _commandService = VolteBot.ServiceProvider.GetRequiredService<CommandService>();
-
         private readonly EmojiService _emojiService = VolteBot.ServiceProvider.GetRequiredService<EmojiService>();
 
         public VolteContext(IDiscordClient client, IUserMessage msg)
         {
             Client = client as DiscordSocketClient;
-            Guild = (msg.Channel as SocketGuildChannel)?.Guild;
+            Guild = (msg.Channel as SocketTextChannel)?.Guild;
             Channel = msg.Channel as SocketTextChannel;
             User = msg.Author as SocketGuildUser;
             Message = msg as SocketUserMessage;
@@ -29,23 +27,15 @@ namespace Volte.Core.Commands
 
         public DiscordSocketClient Client { get; }
         public SocketGuild Guild { get; }
-        public IMessageChannel Channel { get; }
+        public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }
 
-        public Task ReactFailure()
-        {
-            return Message.AddReactionAsync(new Emoji(_emojiService.X));
-        }
+        public Task ReactFailure() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 
-        public Task ReactSuccess()
-        {
-            return Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
-        }
+        public Task ReactSuccess() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
 
-        public Embed CreateEmbed(string content)
-        {
-            return Utils.CreateEmbed(this, content);
-        }
+        public Embed CreateEmbed(string content) => Utils.CreateEmbed(this, content);
+        public EmbedBuilder CreateEmbedBuilder(string content) => Utils.CreateEmbed(this, content).ToEmbedBuilder();
     }
 }

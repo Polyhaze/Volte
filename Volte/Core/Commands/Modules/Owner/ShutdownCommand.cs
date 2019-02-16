@@ -16,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task Shutdown()
         {
-            await Context.CreateEmbed($"Goodbye! {RawEmoji.WAVE}").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Goodbye! {EmojiService.WAVE}").SendTo(Context.Channel);
             await VolteBot.Client.LogoutAsync();
             await VolteBot.Client.StopAsync();
             Environment.Exit(0);

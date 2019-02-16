@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Remarks("Usage: |prefix|command {cmdName}")]
         public async Task Command([Remainder] string name)
         {
-            var c = Cs.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
+            var c = CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
             if (c is null)
             {
                 await Context.CreateEmbed("Command not found.").SendTo(Context.Channel);

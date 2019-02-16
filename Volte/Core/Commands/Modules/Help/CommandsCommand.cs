@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Remarks("Usage: |prefix|commands {module}")]
         public async Task Commands(string module)
         {
-            var target = Cs.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
+            var target = CommandService.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
             if (target is null)
             {
                 await Context.CreateEmbed("Specified module not found.").SendTo(Context.Channel);

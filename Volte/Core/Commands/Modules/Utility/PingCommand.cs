@@ -22,8 +22,8 @@ namespace Volte.Core.Commands.Modules.Utility
             await msg.ModifyAsync(x =>
             {
                 e.WithDescription(
-                    $"{RawEmoji.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
-                    $"{RawEmoji.OK_HAND} **API**: {VolteBot.Client.Latency}ms");
+                    $"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
+                    $"{EmojiService.OK_HAND} **API**: {VolteBot.Client.Latency}ms");
                 x.Embed = e.Build();
             });
         }

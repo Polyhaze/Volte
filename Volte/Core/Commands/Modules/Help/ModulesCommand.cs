@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Remarks("Usage: |prefix|modules")]
         public async Task Modules()
         {
-            var modules = Cs.GetAllModules().Aggregate(string.Empty,
+            var modules = CommandService.GetAllModules().Aggregate(string.Empty,
                 (current, module) => current + $"**{module.SanitizeName()}**\n");
             await Context.CreateEmbed(modules).ToEmbedBuilder().WithTitle("Available Modules").SendTo(Context.Channel);
         }

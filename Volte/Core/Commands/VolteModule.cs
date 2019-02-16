@@ -1,23 +1,16 @@
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Volte.Core.Helpers;
 using Volte.Core.Services;
-using CommandService = Qmmands.CommandService;
+using Qmmands;
 
 namespace Volte.Core.Commands
 {
-    public abstract class VolteModule : Qmmands.ModuleBase<VolteContext>
+    public abstract class VolteModule : ModuleBase<VolteContext>
     {
-        public DatabaseService Db { get; set; }
-        public CommandService Cs { get; set; }
-        public EmojiService RawEmoji { get; set; }
-        public LoggingService Logger { get; set; }
-
-        protected Task React(SocketUserMessage m, string r)
-        {
-            return Utils.React(m, r);
-        }
+        protected DatabaseService Db { get; set; }
+        protected DebugService DebugService { get; set; }
+        protected CommandService CommandService { get; set; }
+        protected EmojiService EmojiService { get; set; }
+        protected LoggingService Logger { get; set; }
     }
 }

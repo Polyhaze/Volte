@@ -92,7 +92,7 @@ namespace Volte.Core.Commands.Modules.Owner
                             .WithTitle("Error")
                             .Build());
                     File.WriteAllText("data/EvalError.log", $"{e.Message}\n{e.StackTrace}");
-                    await Context.Channel.SendFileAsync("data/EvalError.log");
+                    await Context.Channel.SendFileAsync("data/EvalError.log", string.Empty);
                     File.Delete("data/EvalError.log");
                 }
                 finally

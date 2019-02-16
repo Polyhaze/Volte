@@ -10,13 +10,11 @@ namespace Volte.Core.Commands.Modules.Admin
 {
     public partial class AdminModule : VolteModule
     {
-        public DebugService DebugService { get; set; }
-
         [Command("Debug")]
         [Description("Generates a debug report for this guild.")]
         [Remarks("Usage: |prefix|debug")]
         [RequireGuildAdmin]
-        public async Task Debug()
+        public async Task DebugReport()
         {
             await Context.CreateEmbed(
                     $"{DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented))}" +

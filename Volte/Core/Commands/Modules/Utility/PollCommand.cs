@@ -25,40 +25,40 @@ namespace Volte.Core.Commands.Modules.Utility
             {
                 case 1:
                 {
-                    embedBody = $"{new Emoji(RawEmoji.ONE)} {choices[1]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n\n" +
                                 "Click the number below to vote.";
                     break;
                 }
                 case 2:
                 {
-                    embedBody = $"{new Emoji(RawEmoji.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(RawEmoji.TWO)} {choices[2]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 3:
                 {
-                    embedBody = $"{new Emoji(RawEmoji.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(RawEmoji.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(RawEmoji.THREE)} {choices[3]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 4:
                 {
-                    embedBody = $"{new Emoji(RawEmoji.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(RawEmoji.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(RawEmoji.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(RawEmoji.FOUR)} {choices[4]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
+                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 5:
-                    embedBody = $"{new Emoji(RawEmoji.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(RawEmoji.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(RawEmoji.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(RawEmoji.FOUR)} {choices[4]}\n" +
-                                $"{new Emoji(RawEmoji.FIVE)} {choices[5]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
+                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n" +
+                                $"{new Emoji(EmojiService.FIVE)} {choices[5]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 default:
@@ -83,47 +83,47 @@ namespace Volte.Core.Commands.Modules.Utility
             {
                 case 1:
                 {
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.ONE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     break;
                 }
                 case 2:
                 {
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.ONE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.TWO));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     break;
                 }
                 case 3:
                 {
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.ONE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.TWO));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.THREE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
                     break;
                 }
                 case 4:
                 {
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.ONE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.TWO));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.THREE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.FOUR));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
                     break;
                 }
                 case 5:
                 {
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.ONE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.TWO));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.THREE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.FOUR));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
                     await Task.Delay(500);
-                    await msg.AddReactionAsync(new Emoji(RawEmoji.FIVE));
+                    await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
                     break;
                 }
             }
