@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Utility
     public partial class UtilityModule : VolteModule
     {
         [Command("Tag")]
-        [Qmmands.Priority(0)]
+        [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("Usage: |prefix|tag {name}")]
         public async Task Tag([Remainder] string name)
