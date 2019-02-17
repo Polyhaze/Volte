@@ -31,10 +31,10 @@ namespace Volte.Core.Discord
         ///     Instantiating this object will start a completely new bot instance.
         ///     Don't do that, unless you're making a restart function!
         /// </summary>
-        public static void Start()
+        public static async Task Start()
         {
-            Logger.PrintVersion().GetAwaiter().GetResult();
-            new VolteBot().LoginAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            await Logger.PrintVersion();
+            await new VolteBot().LoginAsync();
         }
 
         private static IServiceProvider BuildServiceProvider()

@@ -12,13 +12,13 @@ namespace Volte.Core.Runtime
 {
     internal static class Program
     {
-        private static void Main()
+        private static async Task Main()
         {
             Console.Title = "Volte";
             Console.CursorVisible = false;
-            InitVolte().GetAwaiter().GetResult();
+            await InitVolte();
             // ReSharper disable once ObjectCreationAsStatement
-            VolteBot.Start();
+            await VolteBot.Start();
         }
 
         private static async Task InitVolte()
