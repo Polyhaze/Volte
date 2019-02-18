@@ -1,5 +1,4 @@
 using Discord;
-using Discord.Commands;
 using LiteDB;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
@@ -8,6 +7,8 @@ namespace Volte.Core.Services
 {
     public class DatabaseService
     {
+        private static readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
+
         public Server GetConfig(IGuild guild)
         {
             return GetConfig(guild.Id);
@@ -15,29 +16,22 @@ namespace Volte.Core.Services
 
         public Server GetConfig(ulong id)
         {
-            using (var db = new LiteDatabase(@"data/Volte.db"))
+            var conf = Database.GetCollection<Server>("serverconfigs").FindOne(g => g.ServerId == id);
+            if (conf is null)
             {
-                var conf = db.GetCollection<Server>("serverconfigs").FindOne(g => g.ServerId == id);
-                if (conf is null)
-                {
-                    var newconf = Create(VolteBot.Client.GetGuild(id));
-                    db.GetCollection<Server>("serverconfigs").Insert(newconf);
-                    db.Dispose();
-                    return newconf;
-                }
-
-                return conf;
+                var newConf = Create(VolteBot.Client.GetGuild(id));
+                Database.GetCollection<Server>("serverconfigs").Insert(newConf);
+                return newConf;
             }
+
+            return conf;
         }
 
         public void UpdateConfig(Server newConfig)
         {
-            using (var db = new LiteDatabase(@"data/Volte.db"))
-            {
-                var collection = db.GetCollection<Server>("serverconfigs");
-                collection.EnsureIndex(s => s.Id, true);
-                collection.Update(newConfig);
-            }
+            var collection = Database.GetCollection<Server>("serverconfigs");
+            collection.EnsureIndex(s => s.Id, true);
+            collection.Update(newConfig);
         }
 
         public DiscordUser GetUser(IUser user)
@@ -47,29 +41,22 @@ namespace Volte.Core.Services
 
         public DiscordUser GetUser(ulong id)
         {
-            using (var db = new LiteDatabase("data/Volte.db"))
+            var user = Database.GetCollection<DiscordUser>("users").FindOne(u => u.UserId == id);
+            if (user is null)
             {
-                var user = db.GetCollection<DiscordUser>("users").FindOne(u => u.UserId == id);
-                if (user is null)
-                {
-                    var newuser = Create(id);
-                    db.GetCollection<DiscordUser>("users").Insert(newuser);
-                    db.Dispose();
-                    return newuser;
-                }
-
-                return user;
+                var newUser = Create(id);
+                Database.GetCollection<DiscordUser>("users").Insert(newUser);
+                return newUser;
             }
+
+            return user;
         }
 
         public void UpdateUser(DiscordUser newUser)
         {
-            using (var db = new LiteDatabase(@"data/Volte.db"))
-            {
-                var collection = db.GetCollection<DiscordUser>("users");
-                collection.EnsureIndex(s => s.Id, true);
-                collection.Update(newUser);
-            }
+            var collection = Database.GetCollection<DiscordUser>("users");
+            collection.EnsureIndex(s => s.Id, true);
+            collection.Update(newUser);
         }
 
         private Server Create(IGuild guild)

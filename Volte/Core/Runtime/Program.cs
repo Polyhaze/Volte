@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
