@@ -43,7 +43,6 @@ namespace Volte.Core.Discord
                 .AddSingleton<AntilinkService>()
                 .AddSingleton<AutoroleService>()
                 .AddSingleton<BlacklistService>()
-                .AddSingleton<EconomyService>()
                 .AddSingleton<WelcomeService>()
                 .AddSingleton<DatabaseService>()
                 .AddSingleton<VolteHandler>()

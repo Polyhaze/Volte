@@ -22,7 +22,6 @@ namespace Volte.Core.Discord
         private readonly BlacklistService _blacklist = _services.GetRequiredService<BlacklistService>();
         private readonly DiscordSocketClient _client = VolteBot.Client;
         private readonly DatabaseService _db = _services.GetRequiredService<DatabaseService>();
-        private readonly EconomyService _economy = _services.GetRequiredService<EconomyService>();
         private readonly PingChecksService _pingchecks = _services.GetRequiredService<PingChecksService>();
         private readonly CommandService _service = VolteBot.CommandService;
 
@@ -50,7 +49,6 @@ namespace Volte.Core.Discord
             //pass the message-reliant services what they need
             await _blacklist.CheckMessage(ctx);
             await _antilink.CheckMessage(ctx);
-            await _economy.Give(ctx);
             await _pingchecks.CheckMessage(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
