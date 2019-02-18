@@ -5,11 +5,11 @@ using LiteDB;
 
 namespace Volte.Core.Data.Objects
 {
-    public class Server : object
+    public class DiscordServer : object
     {
         #region ValueDeclaration
 
-        public Server()
+        public DiscordServer()
         {
             SelfRoles = new List<string>();
             Blacklist = new List<string>();

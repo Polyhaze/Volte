@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -59,7 +60,7 @@ namespace Volte.Core.Services
                 }
         }
 
-        private async Task OnCommandFailure(Command c, FailedResult res, VolteContext ctx, Server config, string args)
+        private async Task OnCommandFailure(Command c, FailedResult res, VolteContext ctx, DiscordServer config, string args)
         {
             var embed = new EmbedBuilder();
             string reason;
@@ -68,8 +69,9 @@ namespace Volte.Core.Services
                 case CommandNotFoundResult cnfr:
                     reason = "Unknown command.";
                     break;
-                case ExecutionFailedResult _:
+                case ExecutionFailedResult efr:
                     reason = "Execution of this command failed.";
+                    await _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
                 case ChecksFailedResult cfr:
                     reason = "Insufficient permission.";

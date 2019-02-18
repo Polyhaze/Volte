@@ -8,9 +8,11 @@ using Qmmands;
 using Volte.Core.Commands.TypeParsers;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
+using Volte.Core.Runtime;
 using Volte.Core.Services;
 using CommandService = Qmmands.CommandService;
 using RunMode = Qmmands.RunMode;
+using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Discord
 {
@@ -62,7 +64,7 @@ namespace Volte.Core.Discord
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = LogSeverity.Verbose,
+                    LogLevel = Version.GetReleaseType() != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 100

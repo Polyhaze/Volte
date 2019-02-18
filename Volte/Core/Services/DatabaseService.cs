@@ -9,27 +9,27 @@ namespace Volte.Core.Services
     {
         private static readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
 
-        public Server GetConfig(IGuild guild)
+        public DiscordServer GetConfig(IGuild guild)
         {
             return GetConfig(guild.Id);
         }
 
-        public Server GetConfig(ulong id)
+        public DiscordServer GetConfig(ulong id)
         {
-            var conf = Database.GetCollection<Server>("serverconfigs").FindOne(g => g.ServerId == id);
+            var conf = Database.GetCollection<DiscordServer>("serverconfigs").FindOne(g => g.ServerId == id);
             if (conf is null)
             {
                 var newConf = Create(VolteBot.Client.GetGuild(id));
-                Database.GetCollection<Server>("serverconfigs").Insert(newConf);
+                Database.GetCollection<DiscordServer>("serverconfigs").Insert(newConf);
                 return newConf;
             }
 
             return conf;
         }
 
-        public void UpdateConfig(Server newConfig)
+        public void UpdateConfig(DiscordServer newConfig)
         {
-            var collection = Database.GetCollection<Server>("serverconfigs");
+            var collection = Database.GetCollection<DiscordServer>("serverconfigs");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);
         }
@@ -59,9 +59,9 @@ namespace Volte.Core.Services
             collection.Update(newUser);
         }
 
-        private Server Create(IGuild guild)
+        private DiscordServer Create(IGuild guild)
         {
-            return new Server
+            return new DiscordServer
             {
                 ServerId = guild.Id,
                 GuildOwnerId = VolteBot.Client.GetGuild(guild.Id).OwnerId,

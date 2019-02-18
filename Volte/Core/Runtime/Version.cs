@@ -9,7 +9,7 @@ namespace Volte.Core.Runtime
         private static readonly int Minor = 2;
         private static readonly int Patch = 0;
         private static readonly int Hotfix = 0;
-        private static readonly ReleaseType ReleaseType = ReleaseType.Release;
+        private static readonly ReleaseType ReleaseType = ReleaseType.Development;
 
         public static string GetFullVersion()
         {
@@ -45,9 +45,6 @@ namespace Volte.Core.Runtime
     public enum ReleaseType
     {
         Development,
-        Alpha,
-        Beta,
-        Prerelease,
         Release
     }
 }

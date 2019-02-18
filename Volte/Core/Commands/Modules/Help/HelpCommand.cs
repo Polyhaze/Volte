@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Help
         public async Task Help()
         {
             var config = Db.GetConfig(Context.Guild);
-            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder()
+            var embed = Context.CreateEmbedBuilder(string.Empty)
                 .WithDescription("Hey, I'm Volte! Here's a list of my commands designed to help you out! " +
                                  $"If you're new here, try out `{config.CommandPrefix}mdls` to list all of my modules!" +
                                  "\n\n" +

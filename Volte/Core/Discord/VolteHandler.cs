@@ -42,9 +42,14 @@ namespace Volte.Core.Discord
 
         private async Task HandleMessageOrCommand(SocketMessage s)
         {
+            if (s.Author.IsBot) return;
+            if (s.Channel is IDMChannel)
+            {
+                await s.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                return;
+            }
             if (!(s is SocketUserMessage msg)) return;
             var ctx = new VolteContext(_client, msg);
-            if (ctx.User.IsBot) return;
 
             //pass the message-reliant services what they need
             await _blacklist.CheckMessage(ctx);
@@ -57,11 +62,6 @@ namespace Volte.Core.Discord
             if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
-                if (ctx.Channel is IDMChannel)
-                {
-                    await ctx.ReactFailure();
-                    return;
-                }
 
                 var result = await _service.ExecuteAsync(cmd, ctx, _services);
 
