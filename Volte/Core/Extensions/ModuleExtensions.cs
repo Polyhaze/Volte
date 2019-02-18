@@ -20,7 +20,7 @@ namespace Volte.Core.Extensions
             var db = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>();
             var aliases = $"({string.Join("|", c.FullAliases)})";
             return (c.Remarks ?? "No usage provided")
-                .Replace(c.Name.ToLower(), aliases)
+                .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
                 .Replace("|prefix|", db.GetConfig(ctx.Guild).CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }

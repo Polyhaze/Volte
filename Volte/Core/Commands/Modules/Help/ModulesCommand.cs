@@ -14,8 +14,9 @@ namespace Volte.Core.Commands.Modules.Help
         public async Task Modules()
         {
             var modules = CommandService.GetAllModules().Aggregate(string.Empty,
-                (current, module) => current + $"**{module.SanitizeName()}**\n");
-            await Context.CreateEmbed(modules).ToEmbedBuilder().WithTitle("Available Modules").SendTo(Context.Channel);
+                (current, module) => current + $"`{module.SanitizeName()}`, ");
+            await Context.CreateEmbedBuilder(modules.Remove(modules.LastIndexOf(","))).WithTitle("Available Modules")
+                .SendTo(Context.Channel);
         }
     }
 }
