@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
         [Remarks("Usage: $ban {@user} [reason]")]
-        [RequireBotPermission(GuildPermission.BanMembers)]
+        [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.")
         {

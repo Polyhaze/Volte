@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Command("Kick")]
         [Description("Kicks the given user.")]
         [Remarks("Usage: $kick {@user} [reason]")]
-        [RequireBotPermission(GuildPermission.KickMembers)]
+        [RequireBotGuildPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
         public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.")
         {

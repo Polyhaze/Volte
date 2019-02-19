@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Command("IdBan")]
         [Description("Bans a user based on their ID.")]
         [Remarks("Usage: $idban {id} [reason]")]
-        [Preconditions.RequireBotPermission(GuildPermission.BanMembers)]
+        [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task IdBan(ulong user, [Remainder] string reason = "Banned by a Moderator.")
         {

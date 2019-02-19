@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Command("Purge", "clear", "clean")]
         [Description("Purges the last x messages.")]
         [Remarks("Usage: $purge {count}")]
-        [RequireBotPermission(GuildPermission.ManageMessages)]
+        [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         [RequireGuildModerator]
         public async Task Purge(int count)
         {
