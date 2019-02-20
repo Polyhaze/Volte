@@ -1,6 +1,4 @@
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
@@ -11,7 +9,7 @@ namespace Volte.Core.Services
 {
     public class PingChecksService
     {
-        public async Task CheckMessage(VolteContext ctx)
+        public async Task CheckMessageAsync(VolteContext ctx)
         {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             if (!config.MassPingChecks || UserUtils.IsAdmin(ctx)) return;

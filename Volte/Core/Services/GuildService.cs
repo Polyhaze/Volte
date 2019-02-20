@@ -15,7 +15,7 @@ namespace Volte.Core.Services
 {
     public class GuildService
     {
-        public async Task OnJoin(SocketGuild guild)
+        public async Task OnJoinAsync(SocketGuild guild)
         {
             /*if (Config.GetBlacklistedOwners().Contains(guild.OwnerId)) {
                 await guild.LeaveAsync();
@@ -86,7 +86,7 @@ namespace Volte.Core.Services
             }
         }
 
-        public async Task OnLeave(SocketGuild guild)
+        public async Task OnLeaveAsync(SocketGuild guild)
         {
             if (Config.GetJoinLeaveLog().Enabled)
             {

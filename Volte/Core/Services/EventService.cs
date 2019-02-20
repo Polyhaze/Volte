@@ -1,9 +1,10 @@
 using System;
-using System.Diagnostics.Tracing;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Humanizer;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
@@ -11,8 +12,6 @@ using Volte.Core.Data;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
-using ICommandContext = Qmmands.ICommandContext;
-using IResult = Qmmands.IResult;
 
 #pragma warning disable 1998
 namespace Volte.Core.Services
@@ -30,37 +29,43 @@ namespace Volte.Core.Services
             await dbl.LeaveAsync();
         }
 
-        public async Task OnCommand(Command c, IResult res, ICommandContext context, IServiceProvider provider)
+        public async Task OnCommand(Command c, IResult res, ICommandContext context, Stopwatch sw)
         {
             var ctx = (VolteContext) context;
-            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             var commandName = ctx.Message.Content.Split(" ")[0];
             var args = ctx.Message.Content.Replace($"{commandName}", "");
             if (string.IsNullOrEmpty(args)) args = "None";
-            if (res is FailedResult failedRes) await OnCommandFailure(c, failedRes, ctx, config, args);
+            if (res is FailedResult failedRes)
+            {
+                await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
+                return;
+            }
+
             if (Config.GetLogAllCommands())
-                if (res.IsSuccessful)
-                {
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|     -Command Issued: {c.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|        -Args Passed: {args.Trim()}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|           -In Guild: {ctx.Guild.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|         -In Channel: #{ctx.Channel.Name}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|        -Time Issued: {DateTime.Now}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|           -Executed: {res.IsSuccessful} ");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
-                        "-------------------------------------------------");
-                }
+            {
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|     -Command Issued: {c.Name}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|        -Args Passed: {args.Trim()}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|           -In Guild: {ctx.Guild.Name}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|         -In Channel: #{ctx.Channel.Name}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|        -Time Issued: {DateTime.Now}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|           -Executed: {res.IsSuccessful} ");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    $"|              -After: {sw.Elapsed.Humanize()}");
+                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    "-------------------------------------------------");
+            }
         }
 
-        private async Task OnCommandFailure(Command c, FailedResult res, VolteContext ctx, DiscordServer config, string args)
+        private async Task OnCommandFailureAsync(Command c, FailedResult res, VolteContext ctx, string args,
+            Stopwatch sw)
         {
             var embed = new EmbedBuilder();
             string reason;
@@ -91,39 +96,35 @@ namespace Volte.Core.Services
                     break;
             }
 
-            if (!res.IsSuccessful && reason != "Insufficient permission." && reason != "Unknown command.")
+            if (reason != "Insufficient permission." && reason != "Unknown command.")
             {
-                var aliases = c.Aliases.Aggregate("(", (current, alias) => current + alias + "|");
-
-                aliases += ")";
-                aliases = aliases.Replace("|)", ")");
-
                 embed.AddField("Error in Command:", c.Name);
                 embed.AddField("Error Reason:", reason);
-                embed.AddField("Correct Usage", c.Remarks
-                    .Replace("Usage: ", string.Empty)
-                    .Replace("|prefix|", config.CommandPrefix)
-                    .Replace($"{c.Name.ToLower()}", aliases));
+                embed.AddField("Correct Usage", c.SanitizeRemarks(ctx));
                 embed.WithAuthor(ctx.User);
                 embed.WithColor(Config.GetErrorColor());
                 await embed.SendTo(ctx.Channel);
-
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|     -Command Issued: {c.Name}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|        -Args Passed: {args.Trim()}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|           -In Guild: {ctx.Guild.Name}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|         -In Channel: #{ctx.Channel.Name}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|        -Time Issued: {DateTime.Now}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
-                    "-------------------------------------------------");
+                if (Config.GetLogAllCommands())
+                {
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|     -Command Issued: {c.Name}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|        -Args Passed: {args.Trim()}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|           -In Guild: {ctx.Guild.Name}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|         -In Channel: #{ctx.Channel.Name}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|        -Time Issued: {DateTime.Now.Humanize()}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
+                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                        $"|              -After: {sw.Elapsed.Humanize()}");
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
+                        "-------------------------------------------------");
+                }
             }
         }
     }

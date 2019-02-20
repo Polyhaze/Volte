@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Preconditions
             var ctx = (VolteContext) context;
             if (!UserUtils.IsAdmin(ctx))
             {
-                await ctx.ReactFailure();
+                await ctx.ReactFailureAsync();
                 return CheckResult.Unsuccessful("Insufficient permission.");
             }
 

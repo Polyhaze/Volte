@@ -1,10 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Qmmands;
 using Volte.Core.Helpers;
-using ICommandContext = Qmmands.ICommandContext;
 
 namespace Volte.Core.Commands.Preconditions
 {
@@ -15,7 +12,7 @@ namespace Volte.Core.Commands.Preconditions
             var ctx = (VolteContext) context;
             if (!UserUtils.IsModerator(ctx))
             {
-                await ctx.ReactFailure();
+                await ctx.ReactFailureAsync();
                 return CheckResult.Unsuccessful("Insufficient permission.");
             }
 

@@ -12,7 +12,7 @@ namespace Volte.Core.Services
 {
     internal class AntilinkService
     {
-        internal async Task CheckMessage(VolteContext ctx)
+        internal async Task CheckMessageAsync(VolteContext ctx)
         {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
             var m = ctx.Message.Content.Split(" ");
@@ -33,8 +33,7 @@ namespace Volte.Core.Services
                     await ctx.Message.DeleteAsync();
                     var warnMsg = await Utils.Send(ctx.Channel,
                         Utils.CreateEmbed(ctx, "Don't send server invites here."));
-                    await Task.Delay(3000);
-                    await warnMsg.DeleteAsync();
+                    await Task.Delay(3000).ContinueWith(_ => warnMsg.DeleteAsync());
                 }
             }
         }

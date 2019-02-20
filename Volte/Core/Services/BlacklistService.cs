@@ -10,7 +10,7 @@ namespace Volte.Core.Services
 {
     internal class BlacklistService
     {
-        internal async Task CheckMessage(VolteContext ctx)
+        internal async Task CheckMessageAsync(VolteContext ctx)
         {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
 

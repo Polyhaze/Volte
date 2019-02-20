@@ -28,6 +28,11 @@ namespace Volte.Core.Discord
         private static readonly VolteHandler Handler = new VolteHandler();
         private static readonly LoggingService Logger = ServiceProvider.GetRequiredService<LoggingService>();
 
+        public static T GetRequiredService<T>()
+        {
+            return ServiceProvider.GetRequiredService<T>();
+        }
+
         /// <summary>
         ///     WARNING:
         ///     Instantiating this object will start a completely new bot instance.

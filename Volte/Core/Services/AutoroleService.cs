@@ -10,7 +10,7 @@ namespace Volte.Core.Services
 {
     internal class AutoroleService
     {
-        internal async Task Apply(SocketGuildUser user)
+        internal async Task ApplyRoleAsync(SocketGuildUser user)
         {
             var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(user.Guild.Id);
             if (!string.IsNullOrEmpty(config.Autorole))

@@ -13,7 +13,6 @@ namespace Volte.Core.Commands
     /// <inheritdoc />
     public class VolteContext : ICommandContext
     {
-        private readonly CommandService _commandService = VolteBot.ServiceProvider.GetRequiredService<CommandService>();
         private readonly EmojiService _emojiService = VolteBot.ServiceProvider.GetRequiredService<EmojiService>();
 
         public VolteContext(IDiscordClient client, IUserMessage msg)
@@ -31,8 +30,8 @@ namespace Volte.Core.Commands
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }
 
-        public Task ReactFailure() => Message.AddReactionAsync(new Emoji(_emojiService.X));
-        public Task ReactSuccess() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
+        public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
+        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
         public Embed CreateEmbed(string content) => Utils.CreateEmbed(this, content);
         public EmbedBuilder CreateEmbedBuilder(string content) => Utils.CreateEmbed(this, content).ToEmbedBuilder();
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
