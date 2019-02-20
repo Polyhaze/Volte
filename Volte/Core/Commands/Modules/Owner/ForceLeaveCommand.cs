@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Forcefully leaves the guild with the given name.")]
         [Remarks("Usage: $forceleave {serverName}")]
         [RequireBotOwner]
-        public async Task ForceLeave([Remainder] string serverName)
+        public async Task ForceLeaveAsync([Remainder] string serverName)
         {
             var target = VolteBot.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
             if (target is null)

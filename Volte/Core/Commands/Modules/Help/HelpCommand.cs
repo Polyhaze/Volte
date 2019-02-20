@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
         [Remarks("Usage: |prefix|help")]
-        public async Task Help()
+        public async Task HelpAsync()
         {
             var config = Db.GetConfig(Context.Guild);
             var embed = Context.CreateEmbedBuilder(string.Empty)

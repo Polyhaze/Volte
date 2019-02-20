@@ -12,10 +12,10 @@ namespace Volte.Core.Commands.Modules.Moderation
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("Usage: $ban {@user} [reason]")]
+        [Remarks("Usage: $ban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task Ban(SocketGuildUser user, [Remainder] string reason = "Banned by a Moderator.")
+        public async Task BanAsync(SocketGuildUser user, int daysToDelete, [Remainder] string reason = "Banned by a Moderator.")
         {
             try
             {
@@ -24,8 +24,7 @@ namespace Volte.Core.Commands.Modules.Moderation
             }
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
-            await Context.Guild.AddBanAsync(
-                user, 0, reason);
+            await user.BanAsync(daysToDelete, reason);
             await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")
                 .SendTo(Context.Channel);
         }

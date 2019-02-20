@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.General
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("Usage: |prefix|info")]
-        public async Task Info()
+        public async Task InfoAsync()
         {
             var embed = new EmbedBuilder()
                 .AddField("Version", "V2.0.0-RELEASE")

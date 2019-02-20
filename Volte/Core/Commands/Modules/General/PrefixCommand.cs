@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.General
         [Command("Prefix")]
         [Description("Shows the command prefix for this guild.")]
         [Remarks("Usage: |prefix|prefix")]
-        public async Task Prefix()
+        public async Task PrefixAsync()
         {
             await Context.CreateEmbed($"The prefix for this server is **{Db.GetConfig(Context.Guild).CommandPrefix}**.")
                 .SendTo(Context.Channel);

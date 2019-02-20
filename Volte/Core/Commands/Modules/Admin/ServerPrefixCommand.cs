@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the command prefix for this guild.")]
         [Remarks("Usage: |prefix|serverprefix {newPrefix}")]
         [RequireGuildAdmin]
-        public async Task ServerPrefix([Remainder] string prefix)
+        public async Task ServerPrefixAsync([Remainder] string prefix)
         {
             var config = Db.GetConfig(Context.Guild);
             config.CommandPrefix = prefix;

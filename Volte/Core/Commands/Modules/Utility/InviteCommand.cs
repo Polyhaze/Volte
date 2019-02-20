@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("Invite")]
         [Description("Get an invite to use Volte in your own guild.")]
         [Remarks("Usage: |prefix|invite")]
-        public async Task Invite()
+        public async Task InviteAsync()
         {
             await Context.CreateEmbed("Do you like Volte? If you do, that's awesome! If not then I'm sorry :( \n\n" +
                                       "[Website](https://volte.greemdev.net)\n" +

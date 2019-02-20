@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("Usage: |prefix|modrole {roleName}")]
         [RequireGuildAdmin]
-        public async Task ModRole([Remainder] string roleName)
+        public async Task ModRoleAsync([Remainder] string roleName)
         {
             var config = Db.GetConfig(Context.Guild);
             var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();

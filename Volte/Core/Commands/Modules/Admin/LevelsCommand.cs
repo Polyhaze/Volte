@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Enables/Disables level gaining for this guild.")]
         [Remarks("Usage: $levels {true|false}")]
         [RequireGuildAdmin]
-        public async Task Levels(bool arg)
+        public async Task LevelsAsync(bool arg)
         {
             var config = Db.GetConfig(Context.Guild);
             config.Leveling = arg;

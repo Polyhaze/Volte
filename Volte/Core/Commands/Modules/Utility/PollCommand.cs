@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("Poll")]
         [Description("Create a poll.")]
         [Remarks("Usage: |prefix|poll question;option1;option2;...")]
-        public async Task Poll([Remainder] string pollText)
+        public async Task PollAsync([Remainder] string pollText)
         {
             var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');
@@ -89,40 +89,30 @@ namespace Volte.Core.Commands.Modules.Utility
                 case 2:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     break;
                 }
                 case 3:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
                     break;
                 }
                 case 4:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
                     break;
                 }
                 case 5:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
-                    await Task.Delay(500);
                     await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
                     break;
                 }

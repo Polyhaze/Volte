@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleAdd(string roleName)
+        public async Task SelfRoleAddAsync(string roleName)
         {
             if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null)
             {
@@ -32,7 +32,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleRem(string roleName)
+        public async Task SelfRoleRemAsync(string roleName)
         {
             var config = Db.GetConfig(Context.Guild);
 
@@ -54,7 +54,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Clears the self role list for this guild.")]
         [Remarks("Usage: |prefix|selfroleclear")]
         [RequireGuildAdmin]
-        public async Task SelfRoleClear()
+        public async Task SelfRoleClearAsync()
         {
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Clear();

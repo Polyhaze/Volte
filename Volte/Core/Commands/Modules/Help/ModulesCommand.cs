@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Command("Modules", "Mdls")]
         [Description("Lists available modules.")]
         [Remarks("Usage: |prefix|modules")]
-        public async Task Modules()
+        public async Task ModulesAsync()
         {
             var modules = CommandService.GetAllModules().Aggregate(string.Empty,
                 (current, module) => current + $"`{module.SanitizeName()}`, ");

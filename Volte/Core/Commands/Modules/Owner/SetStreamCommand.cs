@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Sets the bot's stream.")]
         [Remarks("Usage: $setstream {streamer} {streamName}")]
         [RequireBotOwner]
-        public async Task SetStream(string streamer, [Remainder] string streamName)
+        public async Task SetStreamAsync(string streamer, [Remainder] string streamName)
         {
             await VolteBot.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
             await Context

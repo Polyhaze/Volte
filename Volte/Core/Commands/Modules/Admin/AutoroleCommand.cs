@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("Usage: |prefix|autorole {roleName}")]
         [RequireGuildAdmin]
-        public async Task Autorole([Remainder] string role)
+        public async Task AutoroleAsync([Remainder] string role)
         {
             var config = Db.GetConfig(Context.Guild);
             var roleToApply = Context.Guild.Roles

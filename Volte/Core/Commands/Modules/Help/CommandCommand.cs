@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Command("Command", "Cmd")]
         [Description("Shows info about a command.")]
         [Remarks("Usage: |prefix|command {cmdName}")]
-        public async Task Command([Remainder] string name)
+        public async Task CommandAsync([Remainder] string name)
         {
             var c = CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
             if (c is null)

@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Generates a debug report for this guild.")]
         [Remarks("Usage: |prefix|debug")]
         [RequireGuildAdmin]
-        public async Task DebugReport()
+        public async Task DebugReportAsync()
         {
             await Context.CreateEmbed(
                     $"{DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented))}" +

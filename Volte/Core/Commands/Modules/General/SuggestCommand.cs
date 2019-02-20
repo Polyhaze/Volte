@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.General
         [Command("Suggest")]
         [Description("Suggest features for Volte.")]
         [Remarks("Usage: |prefix|suggest")]
-        public async Task Suggest()
+        public async Task SuggestAsync()
         {
             await Context.CreateEmbed("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).")
                 .SendTo(Context.Channel);

@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         [RequireGuildAdmin]
-        public async Task WelcomeChannel(SocketTextChannel channel)
+        public async Task WelcomeChannelAsync(SocketTextChannel channel)
         {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeChannel = channel.Id;
@@ -26,7 +26,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets or shows the welcome message used to welcome new users for this guild.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
-        public async Task WelcomeMessage([Remainder] string message = null)
+        public async Task WelcomeMessageAsync([Remainder] string message = null)
         {
             var config = Db.GetConfig(Context.Guild);
 
@@ -68,7 +68,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the color used for welcome embeds for this guild.")]
         [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
         [RequireGuildAdmin]
-        public async Task WelcomeColor(int r, int g, int b)
+        public async Task WelcomeColorAsync(int r, int g, int b)
         {
             if (r > 255 || g > 255 || b > 255)
             {
@@ -93,7 +93,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         [RequireGuildAdmin]
-        public async Task LeavingMessage([Remainder] string message = null)
+        public async Task LeavingMessageAsync([Remainder] string message = null)
         {
             var config = Db.GetConfig(Context.Guild);
 

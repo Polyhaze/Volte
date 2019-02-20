@@ -12,10 +12,10 @@ namespace Volte.Core.Commands.Modules.Moderation
     {
         [Command("Softban")]
         [Description("Softbans the mentioned user, kicking them and deleting the last 7 days of messages.")]
-        [Remarks("Usage: $softban {@user} [reason]")]
+        [Remarks("Usage: $softban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task SoftBan(SocketGuildUser user,
+        public async Task SoftBanAsync(SocketGuildUser user, int daysToDelete,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {
             try
@@ -25,8 +25,7 @@ namespace Volte.Core.Commands.Modules.Moderation
             }
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
-            await Context.Guild.AddBanAsync(
-                user, 7, reason);
+            await user.BanAsync(daysToDelete, reason);
             await Context.Guild.RemoveBanAsync(user);
             await Context.CreateEmbed($"Successfully softbanned **{user.Username}#{user.Discriminator}**.")
                 .SendTo(Context.Channel);

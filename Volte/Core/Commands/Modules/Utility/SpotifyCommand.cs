@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
         [Remarks("Usage: |prefix|spotify")]
-        public async Task Spotify()
+        public async Task SpotifyAsync()
         {
             if (Context.User.Activity is SpotifyGame spotify)
             {

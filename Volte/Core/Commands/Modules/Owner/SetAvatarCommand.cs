@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Sets the bot's avatar.")]
         [Remarks("Usage: $setavatar {url}")]
         [RequireBotOwner]
-        public async Task SetAvatar(string url)
+        public async Task SetAvatarAsync(string url)
         {
             if (string.IsNullOrWhiteSpace(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {

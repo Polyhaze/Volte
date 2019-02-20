@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("Usage: $userinfo [@user]")]
-        public async Task UserInfo(SocketGuildUser user = null)
+        public async Task UserInfoAsync(SocketGuildUser user = null)
         {
             var actualUser = user ?? Context.User;
 

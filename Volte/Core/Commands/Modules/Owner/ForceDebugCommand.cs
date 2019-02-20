@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Forces a debug report for the guild with the given ID.")]
         [Remarks("Usage: $forcedebug {guildId}")]
         [RequireBotOwner]
-        public async Task ForceDebug(ulong serverId)
+        public async Task ForceDebugAsync(ulong serverId)
         {
             await Context.CreateEmbed(
                     DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(VolteBot.Client.GetGuild(serverId)),

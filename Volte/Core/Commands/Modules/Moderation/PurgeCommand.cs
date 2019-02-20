@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Remarks("Usage: $purge {count}")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         [RequireGuildModerator]
-        public async Task Purge(int count)
+        public async Task PurgeAsync(int count)
         {
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(
                 await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync());

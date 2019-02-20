@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("ServerInfo", "Si")]
         [Description("Shows some info about the current guild.")]
         [Remarks("Usage: |prefix|serverinfo")]
-        public async Task ServerInfo()
+        public async Task ServerInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;
             var embed = new EmbedBuilder()

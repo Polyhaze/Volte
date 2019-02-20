@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Sets the bot's game (presence).")]
         [Remarks("Usage: $setgame {game}")]
         [RequireBotOwner]
-        public async Task SetGame([Remainder] string game)
+        public async Task SetGameAsync([Remainder] string game)
         {
             await VolteBot.Client.SetGameAsync(game);
             await Context.CreateEmbed($"Set the bot's game to **{game}**.").SendTo(Context.Channel);

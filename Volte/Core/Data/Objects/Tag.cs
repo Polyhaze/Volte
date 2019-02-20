@@ -10,5 +10,12 @@ namespace Volte.Core.Data.Objects
         public ulong CreatorId { get; set; }
         public ulong GuildId { get; set; }
         public long Uses { get; set; }
+
+        public string SanitizeContent()
+        {
+            return Response
+                .Replace("@everyone", "@\u200Beveryone")
+                .Replace("@here", "@\u200Bhere");
+        }
     }
 }

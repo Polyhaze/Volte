@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tagcreate {name} {response}")]
         [RequireGuildAdmin]
-        public async Task TagCreate(string name, [Remainder] string response)
+        public async Task TagCreateAsync(string name, [Remainder] string response)
         {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -53,7 +53,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Priority(1)]
         [Description("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tagdelete {name}")]
-        public async Task TagDelete([Remainder] string name)
+        public async Task TagDeleteAsync([Remainder] string name)
         {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));

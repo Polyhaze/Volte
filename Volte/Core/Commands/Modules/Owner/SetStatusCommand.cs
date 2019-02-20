@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Sets the bot's status.")]
         [Remarks("Usage: $setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
-        public async Task SetStatus([Remainder] string status)
+        public async Task SetStatusAsync([Remainder] string status)
         {
             var embed = new EmbedBuilder()
                 .WithAuthor(Context.User)

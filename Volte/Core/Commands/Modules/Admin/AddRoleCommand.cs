@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Grants a role to the mentioned user.")]
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task AddRole(SocketGuildUser user, [Remainder] string role)
+        public async Task AddRoleAsync(SocketGuildUser user, [Remainder] string role)
         {
             var targetRole = Context.Guild.Roles.FirstOrDefault(r =>
                 string.Equals(r.Name, role, StringComparison.CurrentCultureIgnoreCase));

@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("SelfRoleList", "Srl")]
         [Description("Gets a list of self roles available for this guild.")]
         [Remarks("Usage: |prefix|selfrolelist")]
-        public async Task SelfRoleList()
+        public async Task SelfRoleListAsync()
         {
             var roleList = string.Empty;
             var config = Db.GetConfig(Context.Guild);

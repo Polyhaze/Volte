@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
         [Remarks("Usage: $createconfig [guildId]")]
         [RequireBotOwner]
-        public async Task CreateConfig(ulong serverId = 0)
+        public async Task CreateConfigAsync(ulong serverId = 0)
         {
             if (serverId == 0) serverId = Context.Guild.Id;
 

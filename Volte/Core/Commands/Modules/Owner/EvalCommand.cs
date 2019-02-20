@@ -25,7 +25,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
-        public async Task Eval([Remainder] string code)
+        public async Task EvalAsync([Remainder] string code)
         {
             try
             {

@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Command("IamNot")]
         [Description("Take a role from yourself, if it is in the current guild's self role list.")]
         [Remarks("Usage: |prefix|iamnot {roleName}")]
-        public async Task IamNot([Remainder] string roleName)
+        public async Task IamNotAsync([Remainder] string roleName)
         {
             var config = Db.GetConfig(Context.Guild);
             if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))

@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Remarks("Usage: $idban {id} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task IdBan(ulong user, [Remainder] string reason = "Banned by a Moderator.")
+        public async Task IdBanAsync(ulong user, [Remainder] string reason = "Banned by a Moderator.")
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
             await Context.CreateEmbed("Successfully banned that user from this guild.").SendTo(Context.Channel);

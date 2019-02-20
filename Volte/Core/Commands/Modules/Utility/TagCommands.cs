@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("Usage: |prefix|tag {name}")]
-        public async Task Tag([Remainder] string name)
+        public async Task TagAsync([Remainder] string name)
         {
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -25,21 +25,21 @@ namespace Volte.Core.Commands.Modules.Utility
                 return;
             }
 
-            var response = tag.Response
+            var response = tag.SanitizeContent()
                 .Replace("{ServerName}", Context.Guild.Name)
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
                 .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
                 .Replace("{UserTag}", Context.User.Discriminator);
 
-            await Context.CreateEmbed(response).SendTo(Context.Channel);
+            await Context.ReplyAsync(response);
 
             tag.Uses += 1;
             Db.UpdateConfig(config);
         }
 
         [Command("TagStats")]
-        [Qmmands.Priority(1)]
+        [Priority(1)]
         [Description("Shows stats for a tag.")]
         [Remarks("Usage: |prefix|tagstats {name}")]
         public async Task TagStats([Remainder] string name)

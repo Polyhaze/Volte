@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Help
         [Command("Commands", "Cmds")]
         [Description("Shows commands for a module.")]
         [Remarks("Usage: |prefix|commands {module}")]
-        public async Task Commands(string module)
+        public async Task CommandsAsync(string module)
         {
             var target = CommandService.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
             if (target is null)

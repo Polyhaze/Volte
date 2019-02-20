@@ -57,7 +57,7 @@ namespace Volte.Core.Discord
             await _pingchecks.CheckMessage(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
-            IEnumerable<string> prefixes = new List<string> {config.CommandPrefix, $"{ctx.Client.CurrentUser.Mention}"};
+            IEnumerable<string> prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
             _db.GetUser(s.Author.Id);
             if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))

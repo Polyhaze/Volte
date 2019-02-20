@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Sets the bot's username.")]
         [Remarks("$setname {name}")]
         [RequireBotOwner]
-        public async Task SetName([Remainder] string name)
+        public async Task SetNameAsync([Remainder] string name)
         {
             await Context.Client.CurrentUser.ModifyAsync(u => u.Username = name);
             await Context.CreateEmbed($"Set my name to **{name}**.").SendTo(Context.Channel);

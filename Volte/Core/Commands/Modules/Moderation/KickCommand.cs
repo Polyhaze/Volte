@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Modules.Moderation
         [Remarks("Usage: $kick {@user} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
-        public async Task Kick(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.")
+        public async Task KickAsync(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.")
         {
             try
             {

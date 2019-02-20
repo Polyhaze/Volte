@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the role able to use Admin commands for the current guild.")]
         [Remarks("Usage: |prefix|adminrole {roleName}")]
         [RequireGuildAdmin]
-        public async Task AdminRole([Remainder] string roleName)
+        public async Task AdminRoleAsync([Remainder] string roleName)
         {
             var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
             var config = Db.GetConfig(Context.Guild);
