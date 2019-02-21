@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -12,12 +11,12 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the command prefix for this guild.")]
         [Remarks("Usage: |prefix|serverprefix {newPrefix}")]
         [RequireGuildAdmin]
-        public async Task ServerPrefixAsync([Remainder] string prefix)
+        public async Task ServerPrefixAsync([Remainder] string newPrefix)
         {
             var config = Db.GetConfig(Context.Guild);
-            config.CommandPrefix = prefix;
+            config.CommandPrefix = newPrefix;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Set this server's prefix to **{prefix}**.").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Set this server's prefix to **{newPrefix}**.").SendTo(Context.Channel);
         }
     }
 }
