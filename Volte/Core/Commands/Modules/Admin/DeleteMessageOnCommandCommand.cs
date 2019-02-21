@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;

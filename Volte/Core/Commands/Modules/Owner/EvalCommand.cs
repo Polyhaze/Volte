@@ -42,10 +42,10 @@ namespace Volte.Core.Commands.Modules.Owner
                 var objects = new EvalObjects
                 {
                     Context = Context,
-                    CommandService = VolteBot.CommandService,
+                    CommandService = CommandService,
                     Config = Db.GetConfig(Context.Guild),
                     DatabaseService = Db,
-                    DebugService = VolteBot.ServiceProvider.GetRequiredService<DebugService>(),
+                    DebugService = DebugService,
                     Logger = Logger
                 };
 

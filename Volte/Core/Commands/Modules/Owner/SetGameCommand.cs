@@ -11,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
-        [Remarks("Usage: $setgame {game}")]
+        [Remarks("Usage: |prefix|setgame {game}")]
         [RequireBotOwner]
         public async Task SetGameAsync([Remainder] string game)
         {

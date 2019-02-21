@@ -29,7 +29,7 @@ namespace Volte.Core.Services
             await dbl.LeaveAsync();
         }
 
-        public async Task OnCommand(Command c, IResult res, ICommandContext context, Stopwatch sw)
+        public async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
         {
             var ctx = (VolteContext) context;
             var commandName = ctx.Message.Content.Split(" ")[0];

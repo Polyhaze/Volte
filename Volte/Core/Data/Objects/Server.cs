@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using LiteDB;
+using Newtonsoft.Json;
 
 namespace Volte.Core.Data.Objects
 {
@@ -38,5 +39,10 @@ namespace Volte.Core.Data.Objects
         public List<Tag> Tags { get; set; }
 
         #endregion
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

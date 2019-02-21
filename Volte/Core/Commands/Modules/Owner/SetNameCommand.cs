@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -10,7 +9,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("SetName")]
         [Description("Sets the bot's username.")]
-        [Remarks("$setname {name}")]
+        [Remarks("Usage: |prefix|setname {name}")]
         [RequireBotOwner]
         public async Task SetNameAsync([Remainder] string name)
         {

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -10,9 +9,6 @@ using Volte.Core.Data;
 using Volte.Core.Extensions;
 using Volte.Core.Runtime;
 using Volte.Core.Services;
-using CommandService = Qmmands.CommandService;
-using RunMode = Qmmands.RunMode;
-using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Discord
 {
@@ -69,7 +65,7 @@ namespace Volte.Core.Discord
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = Version.GetReleaseType() != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
+                    LogLevel = Runtime.Version.GetReleaseType() != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 100
@@ -85,12 +81,13 @@ namespace Volte.Core.Discord
             if (Config.GetStreamer().EqualsIgnoreCase("streamer here"))
                 await Client.SetGameAsync(Config.GetGame());
             else
-                await Client.SetGameAsync(Config.GetGame(), $"https://twitch.tv/{Config.GetStreamer()}",
+                await Client.SetGameAsync(Config.GetGame(), 
+                    $"https://twitch.tv/{Config.GetStreamer()}",
                     ActivityType.Streaming);
 
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
-            Client.Log += async m => await ServiceProvider.GetRequiredService<LoggingService>().Log(m);
+            Client.Log += async m => await Logger.Log(m);
             await Task.Delay(-1);
         }
 

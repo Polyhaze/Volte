@@ -1,7 +1,4 @@
-﻿using System;
-using Discord;
-using Discord.Commands;
-using LiteDB;
+﻿using LiteDB;
 
 namespace Volte.Core.Data.Objects
 {

@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using Discord;
 using Volte.Core.Services;
 using Qmmands;
 

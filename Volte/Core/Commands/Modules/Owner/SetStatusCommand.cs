@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
-        [Remarks("Usage: $setstatus {dnd|idle|invisible|online}")]
+        [Remarks("Usage: |prefix|setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
         public async Task SetStatusAsync([Remainder] string status)
         {

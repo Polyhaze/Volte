@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar.")]
-        [Remarks("Usage: $setavatar {url}")]
+        [Remarks("Usage: |prefix|setavatar {url}")]
         [RequireBotOwner]
         public async Task SetAvatarAsync(string url)
         {

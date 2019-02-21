@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
@@ -12,7 +11,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
-        [Remarks("Usage: $forceleave {serverName}")]
+        [Remarks("Usage: |prefix|forceleave {serverName}")]
         [RequireBotOwner]
         public async Task ForceLeaveAsync([Remainder] string serverName)
         {

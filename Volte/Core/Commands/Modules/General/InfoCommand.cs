@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
-using Discord;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Humanizer;
 using Qmmands;
-using Volte.Core.Data;
-using Volte.Core.Discord;
 using Volte.Core.Extensions;
+using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Commands.Modules.General
 {
@@ -14,21 +15,16 @@ namespace Volte.Core.Commands.Modules.General
         [Remarks("Usage: |prefix|info")]
         public async Task InfoAsync()
         {
-            var embed = new EmbedBuilder()
-                .AddField("Version", "V2.0.0-RELEASE")
+            await Context.CreateEmbedBuilder(string.Empty)
+                .AddField("Version", Version.GetFullVersion())
                 .AddField("Author", "<@168548441939509248>")
                 .AddField("Language", "C# - Discord.Net 2.0.1")
-                .AddField("Server", "https://greemdev.net/discord")
                 .AddField("Server Count", Context.Client.Guilds.Count)
-                .AddField("Invite Me",
-                    $"https://discordapp.com/oauth2/authorize?client_id={VolteBot.Client.CurrentUser.Id}&scope=bot&permissions=8")
-                .AddField("Ping", VolteBot.Client.Latency)
-                .AddField("Client ID", VolteBot.Client.CurrentUser.Id)
-                .WithThumbnailUrl("https://pbs.twimg.com/media/Cx0i4LOVQAIyLRU.png")
-                .WithAuthor(Context.User)
-                .WithColor(Config.GetSuccessColor());
-
-            await embed.SendTo(Context.Channel);
+                .AddField("Invite Me", $"`{Db.GetConfig(Context.Guild).CommandPrefix}invite`")
+                .AddField("Operating System", Environment.OSVersion)
+                .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3))
+                .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl())
+                .SendTo(Context.Channel);
         }
     }
 }

@@ -1,10 +1,7 @@
 using System.Threading.Tasks;
-using Discord;
-using Newtonsoft.Json;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
-using Volte.Core.Services;
 
 namespace Volte.Core.Commands.Modules.Admin
 {
@@ -17,8 +14,8 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task DebugReportAsync()
         {
             await Context.CreateEmbed(
-                    $"{DebugService.Execute(JsonConvert.SerializeObject(Db.GetConfig(Context.Guild), Formatting.Indented))}" +
-                    "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/discord).")
+                    $"{DebugService.Execute(Db.GetConfig(Context.Guild).ToString())}" +
+                    "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/Discord).")
                 .SendTo(Context.Channel);
         }
     }

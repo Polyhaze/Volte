@@ -1,8 +1,6 @@
-using Discord;
-using Discord.Commands;
+using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Services;
-using CommandService = Qmmands.CommandService;
 
 namespace Volte.Core.Data.Objects
 {

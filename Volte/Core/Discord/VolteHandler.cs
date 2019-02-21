@@ -5,15 +5,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
-using Volte.Core.Commands.Modules.Utility;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
-using CommandService = Qmmands.CommandService;
 
 namespace Volte.Core.Discord
 {
@@ -77,7 +74,7 @@ namespace Volte.Core.Discord
                                     ?? _service.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
                 sw.Stop();
-                await _services.GetRequiredService<EventService>().OnCommand(targetCommand, result, ctx, sw);
+                await _services.GetRequiredService<EventService>().OnCommandAsync(targetCommand, result, ctx, sw);
 
                 if (config.DeleteMessageOnCommand) await ctx.Message.DeleteAsync();
             }

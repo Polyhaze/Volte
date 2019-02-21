@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Discord;
@@ -11,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
-        [Remarks("Usage: $createconfig [guildId]")]
+        [Remarks("Usage: |prefix|createconfig [guildId]")]
         [RequireBotOwner]
         public async Task CreateConfigAsync(ulong serverId = 0)
         {
