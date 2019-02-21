@@ -97,6 +97,7 @@ namespace Volte.Core.Discord
             CommandService.AddTypeParser(new UserParser<SocketUser>());
             CommandService.AddTypeParser(new RoleParser<SocketRole>());
             CommandService.AddTypeParser(new ChannelParser<SocketTextChannel>());
+            CommandService.AddTypeParser(new EmoteParser());
         }
     }
 }
