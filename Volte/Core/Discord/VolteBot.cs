@@ -59,7 +59,8 @@ namespace Volte.Core.Discord
                     IgnoreExtraArguments = true,
                     CaseSensitive = false,
                     DefaultRunMode = RunMode.Sequential,
-                    SeparatorRequirement = SeparatorRequirement.SeparatorOrWhitespace,
+                    SeparatorRequirement = SeparatorRequirement.Separator,
+                    Separator = "not-a-space-so-we-can-use-spaces-in-command-names",
                     NullableNouns = null
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
@@ -97,6 +98,7 @@ namespace Volte.Core.Discord
             CommandService.AddTypeParser(new RoleParser<SocketRole>());
             CommandService.AddTypeParser(new ChannelParser<SocketTextChannel>());
             CommandService.AddTypeParser(new EmoteParser());
+            CommandService.AddTypeParser(new BooleanParser(), true);
         }
     }
 }

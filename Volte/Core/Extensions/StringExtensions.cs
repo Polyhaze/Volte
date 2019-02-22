@@ -5,15 +5,15 @@ namespace Volte.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static bool EqualsIgnoreCase(this string str, string str2)
-        {
-            return str.Equals(str2, StringComparison.OrdinalIgnoreCase);
-        }
+        public static bool EqualsIgnoreCase(this string str, string otherString) =>
+            str.Equals(otherString, StringComparison.OrdinalIgnoreCase);
 
-        public static bool ContainsIgnoreCase(this string str, string str2)
-        {
-            return str.Contains(str2, StringComparison.OrdinalIgnoreCase);
-        }
+        public static bool ContainsIgnoreCase(this string str, string value) =>
+            value.Contains(value, StringComparison.OrdinalIgnoreCase);
+
+        public static bool IsNullOrWhitespace(this string str) => string.IsNullOrWhiteSpace(str);
+
+        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
 
         public static int[] GetUnicodePoints(this string emoji)
         {

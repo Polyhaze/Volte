@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Discord;
-using Discord.Commands;
 
 namespace Volte.Core.Extensions
 {
@@ -16,9 +14,9 @@ namespace Volte.Core.Extensions
             return memStream;
         }
 
-        public static bool ContainsIgnoreCase(this IEnumerable<string> strings, string s)
+        public static bool ContainsIgnoreCase(this IEnumerable<string> strings, string element)
         {
-            return strings.Contains(s, StringComparer.OrdinalIgnoreCase);
+            return strings.Contains(element, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

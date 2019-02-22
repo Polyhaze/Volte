@@ -31,7 +31,7 @@ namespace Volte.Core.Discord
 
         public Task Init()
         {
-            _service.AddModules(Assembly.GetEntryAssembly());
+            _service.AddModules(Assembly.GetExecutingAssembly());
             //register event listeners
             //_service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
             _client.MessageReceived += HandleMessageOrCommand;

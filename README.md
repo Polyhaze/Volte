@@ -13,15 +13,15 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
  [How-To Setup the Bot](https://greemdev.atlassian.net/wiki/spaces/SIVA/pages/19300353/How+To)
  
- [Invite the bot](https://discordapp.com/oauth2/authorize?client_id=320942091049893888&scope=bot&permissions=8)
+ [Invite the bot](https://greemdev.net/Invite)
 
  [Issue Tracker](https://github.com/GreemDev/Volte/issues)
 
- [Discord Server](https://discord.greemdev.net)
+ [Discord Server](https://greemdev.net/Discord)
 
  [Volte Twitter](https://twitter.com/VolteBot)
 
- [Website](https://volte.greemdev.net)
+ [Website](https://greemdev.net/Volte)
 
  [Source Code](https://github.com/GreemDev/Volte)
 
