@@ -27,6 +27,6 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
  ## Bots made by Cool People
 
- [thecatitude/Mathematica](https://github.com/thecatitude/Mathematica)
- [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
+ * [thecatitude/Mathematica](https://github.com/thecatitude/Mathematica)
+ * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
  
