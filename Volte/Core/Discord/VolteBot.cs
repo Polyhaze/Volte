@@ -17,12 +17,12 @@ namespace Volte.Core.Discord
     {
         public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
 
-        public static readonly CommandService CommandService = ServiceProvider.GetRequiredService<CommandService>();
+        public static readonly CommandService CommandService = GetRequiredService<CommandService>();
 
-        public static readonly DiscordSocketClient Client = ServiceProvider.GetRequiredService<DiscordSocketClient>();
+        public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
 
-        private static readonly VolteHandler Handler = new VolteHandler();
-        private static readonly LoggingService Logger = ServiceProvider.GetRequiredService<LoggingService>();
+        private static readonly VolteHandler Handler = GetRequiredService<VolteHandler>();
+        private static readonly LoggingService Logger = GetRequiredService<LoggingService>();
 
         public static T GetRequiredService<T>()
         {
@@ -40,9 +40,8 @@ namespace Volte.Core.Discord
             await new VolteBot().LoginAsync();
         }
 
-        private static IServiceProvider BuildServiceProvider()
-        {
-            return new ServiceCollection()
+        private static IServiceProvider BuildServiceProvider() => 
+            new ServiceCollection()
                 .AddSingleton<AntilinkService>()
                 .AddSingleton<AutoroleService>()
                 .AddSingleton<BlacklistService>()
@@ -65,12 +64,12 @@ namespace Volte.Core.Discord
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = Runtime.Version.GetReleaseType() != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
+                    LogLevel = Runtime.Version.ReleaseType != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 100
-                })).BuildServiceProvider();
-        }
+                }))
+                .BuildServiceProvider();
 
         private async Task LoginAsync()
         {
@@ -78,7 +77,7 @@ namespace Volte.Core.Discord
             if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
-            if (Config.GetStreamer().EqualsIgnoreCase("streamer here"))
+            if (Config.GetStreamer().EqualsIgnoreCase("streamer here") || string.IsNullOrWhiteSpace(Config.GetStreamer()))
                 await Client.SetGameAsync(Config.GetGame());
             else
                 await Client.SetGameAsync(Config.GetGame(), 

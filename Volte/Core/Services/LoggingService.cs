@@ -23,7 +23,7 @@ namespace Volte.Core.Services
 
         internal async Task PrintVersion()
         {
-            await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.GetFullVersion()}");
+            await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
         }
 
         public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)

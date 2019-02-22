@@ -59,10 +59,9 @@ namespace Volte.Core.Commands.Modules.Owner
                     .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location)));
 
                 var msg = await embed.WithTitle("Evaluating...").SendTo(Context.Channel);
-                var sw = new Stopwatch();
-                sw.Start();
                 try
                 {
+                    var sw = Stopwatch.StartNew();
                     var res = await CSharpScript.EvaluateAsync(code, sopts, objects, typeof(EvalObjects));
                     sw.Stop();
                     if (res != null)
@@ -71,17 +70,13 @@ namespace Volte.Core.Commands.Modules.Owner
                         await embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
                             .AddField("Input", Format.Code(code, "cs"))
-                            .AddField("Output", Format.Code(code, "cs"))
+                            .AddField("Output", Format.Code(res.ToString(), "cs"))
                             .SendTo(Context.Channel);
                     }
                     else
                     {
                         await msg.DeleteAsync();
-                        await embed.WithTitle("Eval")
-                            .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
-                            .AddField("Input", Format.Code(code, "cs"))
-                            .AddField("Output", "No output.")
-                            .SendTo(Context.Channel);
+                        await Context.ReactSuccessAsync();
                     }
                 }
                 catch (Exception e)
@@ -90,7 +85,8 @@ namespace Volte.Core.Commands.Modules.Owner
                         m.Embed = embed
                             .WithDescription($"`{e.Message}`")
                             .WithTitle("Error")
-                            .Build());
+                            .Build()
+                        );
                     File.WriteAllText("data/EvalError.log", $"{e.Message}\n{e.StackTrace}");
                     await Context.Channel.SendFileAsync("data/EvalError.log", string.Empty);
                     File.Delete("data/EvalError.log");

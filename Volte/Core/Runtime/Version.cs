@@ -1,45 +1,13 @@
-﻿using Discord;
-using Discord.Commands;
-
-namespace Volte.Core.Runtime
+﻿namespace Volte.Core.Runtime
 {
     public static class Version
     {
-        private static readonly int Major = 2;
-        private static readonly int Minor = 2;
-        private static readonly int Patch = 0;
-        private static readonly int Hotfix = 0;
-        private static readonly ReleaseType ReleaseType = ReleaseType.Development;
-
-        public static string GetFullVersion()
-        {
-            return $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        }
-
-        public static int GetMajorVersion()
-        {
-            return Major;
-        }
-
-        public static int GetMinorVersion()
-        {
-            return Minor;
-        }
-
-        public static int GetPatchVersion()
-        {
-            return Patch;
-        }
-
-        public static int GetHotfixVersion()
-        {
-            return Hotfix;
-        }
-
-        public static ReleaseType GetReleaseType()
-        {
-            return ReleaseType;
-        }
+        public static int Major { get; } = 2;
+        public static int Minor { get; } = 2;
+        public static int Patch { get; } = 0;
+        public static int Hotfix { get; } = 0;
+        public static ReleaseType ReleaseType { get; } = ReleaseType.Development;
+        public static string FullVersion { get; } = $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
     }
 
     public enum ReleaseType

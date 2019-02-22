@@ -1,5 +1,3 @@
-using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;

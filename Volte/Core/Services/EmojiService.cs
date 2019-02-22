@@ -1,11 +1,8 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Core.Services
 {
-    // ReSharper disable InconsistentNaming
     // ReSharper disable UnusedMember.Global
     // ReSharper disable IdentifierTypo
+    // ReSharper disable InconsistentNaming
     public class EmojiService
     {
         public string A => "\uD83C\uDD70";

@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Utility
         {
             if (Context.User.Activity is SpotifyGame spotify)
             {
-                var e = Context.CreateEmbedBuilder(string.Empty)
+                await Context.CreateEmbedBuilder(string.Empty)
                     .WithDescription($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})\n" +
                                      $"**Album:** {spotify.AlbumTitle}\n" +
                                      $"**Duration:** {spotify.Duration}\n" +
