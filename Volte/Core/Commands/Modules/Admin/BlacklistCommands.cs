@@ -12,30 +12,30 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistadd {phrase}")]
         [RequireGuildAdmin]
-        public async Task BlacklistAddAsync([Remainder] string arg)
+        public async Task BlacklistAddAsync([Remainder] string phrase)
         {
             var config = Db.GetConfig(Context.Guild);
-            config.Blacklist.Add(arg);
+            config.Blacklist.Add(phrase);
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Added **{arg}** to the blacklist.").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Added **{phrase}** to the blacklist.").SendTo(Context.Channel);
         }
 
         [Command("BlacklistRemove", "BlRem")]
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistremove {phrase}")]
         [RequireGuildAdmin]
-        public async Task BlacklistRemoveAsync([Remainder] string arg)
+        public async Task BlacklistRemoveAsync([Remainder] string phrase)
         {
             var config = Db.GetConfig(Context.Guild);
-            if (config.Blacklist.Any(p => p.EqualsIgnoreCase(arg)))
+            if (config.Blacklist.ContainsIgnoreCase(phrase))
             {
-                config.Blacklist.RemoveAt(config.Blacklist.FindIndex(p => p.EqualsIgnoreCase(arg)));
-                await Context.CreateEmbed($"Removed **{arg}** from the word blacklist.").SendTo(Context.Channel);
+                config.Blacklist.RemoveAt(config.Blacklist.FindIndex(p => p.EqualsIgnoreCase(phrase)));
+                await Context.CreateEmbed($"Removed **{phrase}** from the word blacklist.").SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
             else
             {
-                await Context.CreateEmbed($"**{arg}** doesn't exist in the blacklist.").SendTo(Context.Channel);
+                await Context.CreateEmbed($"**{phrase}** doesn't exist in the blacklist.").SendTo(Context.Channel);
             }
         }
 

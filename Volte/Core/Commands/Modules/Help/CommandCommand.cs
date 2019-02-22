@@ -11,12 +11,12 @@ namespace Volte.Core.Commands.Modules.Help
         [Command("Command", "Cmd")]
         [Description("Shows info about a command.")]
         [Remarks("Usage: |prefix|command {cmdName}")]
-        public async Task CommandAsync([Remainder] string name)
+        public async Task CommandAsync([Remainder] string cmdName)
         {
-            var c = CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
+            var c = CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmdName));
             if (c is null)
             {
-                await Context.CreateEmbed("Command not found.").SendTo(Context.Channel);
+                await Context.CreateEmbed($"{EmojiService.X} Command not found.").SendTo(Context.Channel);
                 return;
             }
 
@@ -24,13 +24,13 @@ namespace Volte.Core.Commands.Modules.Help
                 (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) ||
                 (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context)))
             {
-                await Context.CreateEmbed("You don't have permission to use the module that command is from.")
+                await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
                     .SendTo(Context.Channel);
                 return;
             }
 
             await Context.CreateEmbed($"**Command**: {c.Name}\n" +
-                                      $"**Module**: {c.Module.Name.Replace("Module", string.Empty)}\n" +
+                                      $"**Module**: {c.Module.SanitizeName()}\n" +
                                       $"**Summary**: {c.Description ?? "No summary provided."}\n" +
                                       $"**Usage**: {c.SanitizeRemarks(Context)}")
                 .SendTo(Context.Channel);

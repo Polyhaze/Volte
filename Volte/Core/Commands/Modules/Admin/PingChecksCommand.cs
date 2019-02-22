@@ -12,12 +12,12 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         [RequireGuildAdmin]
-        public async Task PingChecksAsync(bool arg)
+        public async Task PingChecksAsync(bool enabled)
         {
             var config = Db.GetConfig(Context.Guild);
-            config.MassPingChecks = arg;
+            config.MassPingChecks = enabled;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed(arg ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
+            await Context.CreateEmbed(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
                 .SendTo(Context.Channel);
         }
     }

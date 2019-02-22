@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -12,12 +11,12 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Enable/Disable Antilink for the current guild.")]
         [Remarks("Usage: |prefix|antilink {true|false}")]
         [RequireGuildAdmin]
-        public async Task AntilinkAsync(bool arg)
+        public async Task AntilinkAsync(bool enabled)
         {
             var config = Db.GetConfig(Context.Guild);
-            config.Antilink = arg;
+            config.Antilink = enabled;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed(arg ? "Antilink has been enabled." : "Antilink has been disabled.")
+            await Context.CreateEmbed(enabled ? "Antilink has been enabled." : "Antilink has been disabled.")
                 .SendTo(Context.Channel);
         }
     }

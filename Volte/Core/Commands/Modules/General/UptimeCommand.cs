@@ -14,8 +14,10 @@ namespace Volte.Core.Commands.Modules.General
         [Remarks("Usage: |prefix|uptime")]
         public async Task UptimeAsync()
         {
-            var time = (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3);
-            await Context.CreateEmbed($"I've been online for **{time}**!").SendTo(Context.Channel);
+            await Context
+                .CreateEmbed(
+                    $"I've been online for **{(DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3)}**!")
+                .SendTo(Context.Channel);
         }
     }
 }

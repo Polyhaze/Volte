@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Help
             var target = CommandService.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
             if (target is null)
             {
-                await Context.CreateEmbed("Specified module not found.").SendTo(Context.Channel);
+                await Context.CreateEmbed($"{EmojiService.X} Specified module not found.").SendTo(Context.Channel);
                 return;
             }
 
@@ -25,13 +25,13 @@ namespace Volte.Core.Commands.Modules.Help
                 (target.SanitizeName().EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) ||
                 (target.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context)))
             {
-                await Context.CreateEmbed("You don't have permission to use the module that command is from.")
+                await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
                     .SendTo(Context.Channel);
                 return;
             }
 
             var commands = $"`{string.Join("`, `", target.Commands)}`";
-            await Context.CreateEmbed(commands).ToEmbedBuilder().WithTitle($"Commands for {target.SanitizeName()}")
+            await Context.CreateEmbedBuilder(commands).WithTitle($"Commands for {target.SanitizeName()}")
                 .SendTo(Context.Channel);
         }
     }

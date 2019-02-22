@@ -16,8 +16,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task AddRoleAsync(SocketGuildUser user, [Remainder] string role)
         {
-            var targetRole = Context.Guild.Roles.FirstOrDefault(r =>
-                string.Equals(r.Name, role, StringComparison.CurrentCultureIgnoreCase));
+            var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
             if (targetRole != null)
             {
                 await user.AddRoleAsync(targetRole);

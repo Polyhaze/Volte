@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
@@ -14,17 +13,21 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Remove a role from the mentioned user.")]
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task RemRoleAsync(SocketGuildUser user, [Remainder] string role)
+        public async Task RemRoleAsync(SocketGuildUser user, [Remainder] string roleName)
         {
-            var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-            if (targetRole != null)
+            var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(roleName));
+            if (targetRole is null)
+            {
+                await Context.CreateEmbed($"**{roleName}** doesn't exist on this server!").SendTo(Context.Channel);
+                
+            }
+            else
             {
                 await user.RemoveRoleAsync(targetRole);
-                await Context.CreateEmbed($"Removed the role **{role}** from {user.Mention}!").SendTo(Context.Channel);
-                return;
+                await Context.CreateEmbed($"Removed the role **{roleName}** from {user.Mention}!").SendTo(Context.Channel);
             }
 
-            await Context.CreateEmbed($"**{role}** doesn't exist on this server!").SendTo(Context.Channel);
+            
         }
     }
 }

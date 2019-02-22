@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Modules.Owner
     {
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
-        [Remarks("Usage: |prefix|createconfig [guildId]")]
+        [Remarks("Usage: |prefix|createconfig [serverId]")]
         [RequireBotOwner]
         public async Task CreateConfigAsync(ulong serverId = 0)
         {

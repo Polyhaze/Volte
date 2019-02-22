@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -16,21 +15,18 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task ModRoleAsync([Remainder] string roleName)
         {
             var config = Db.GetConfig(Context.Guild);
-            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
-
-            if (Context.Guild.Roles.Any(r => r.Name.EqualsIgnoreCase(roleName)))
+            var role = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(roleName));
+            if (role is null)
             {
-                var role = Context.Guild.Roles.First(r => r.Name.EqualsIgnoreCase(roleName));
-                config.ModRole = role.Id;
-                Db.UpdateConfig(config);
-                embed.WithDescription($"Set **{role.Name}** as the Moderator role for this server.");
+                await Context.CreateEmbed($"{roleName} doesn't exist in this server.").SendTo(Context.Channel);
             }
             else
             {
-                embed.WithDescription($"{roleName} doesn't exist in this server.");
+                config.ModRole = role.Id;
+                Db.UpdateConfig(config);
+                await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
+                    .SendTo(Context.Channel);
             }
-
-            await embed.SendTo(Context.Channel);
         }
     }
 }

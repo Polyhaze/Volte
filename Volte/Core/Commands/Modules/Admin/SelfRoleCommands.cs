@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -15,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task SelfRoleAddAsync(string roleName)
         {
-            if (Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName)) is null)
+            if (!Context.Guild.Roles.Any(r => r.Name.EqualsIgnoreCase(roleName)))
             {
                 await Context.CreateEmbed("That role doesn't exist in this guild.").SendTo(Context.Channel);
                 return;

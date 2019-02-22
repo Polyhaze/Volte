@@ -87,7 +87,6 @@ namespace Volte.Core.Discord
 
             await Client.SetStatusAsync(UserStatus.Online);
             await Handler.Init();
-            Client.Log += async m => await Logger.Log(m);
             await Task.Delay(-1);
         }
 

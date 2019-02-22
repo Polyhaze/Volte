@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
+using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
 
@@ -27,24 +28,29 @@ namespace Volte.Core.Discord
         private readonly WelcomeService _welcome = _services.GetRequiredService<WelcomeService>();
         private readonly AutoroleService _autorole = _services.GetRequiredService<AutoroleService>();
         private readonly EventService _event = _services.GetRequiredService<EventService>();
+        private readonly LoggingService _logger = _services.GetRequiredService<LoggingService>();
 
 
-        public Task Init()
+        public async Task Init()
         {
-            _service.AddModules(Assembly.GetExecutingAssembly());
+            var sw = Stopwatch.StartNew();
+            var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
+            sw.Stop();
+            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+                $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
             //register event listeners
-            //_service.CommandExecuted += _services.GetRequiredService<EventService>().OnCommand;
-            _client.MessageReceived += HandleMessageOrCommand;
+            //_service.CommandExecuted += _event.OnCommand;
+            _client.Log += _logger.Log;
+            _client.MessageReceived += HandleMessage;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
             _client.UserJoined += _welcome.JoinAsync;
             _client.UserLeft += _welcome.LeaveAsync;
             _client.UserJoined += _autorole.ApplyRoleAsync;
             _client.Ready += _event.OnReady;
-            return Task.CompletedTask;
         }
 
-        private async Task HandleMessageOrCommand(SocketMessage s)
+        private async Task HandleMessage(SocketMessage s)
         {
             if (s.Author.IsBot) return;
             if (s.Channel is IDMChannel)
@@ -52,6 +58,7 @@ namespace Volte.Core.Discord
                 await s.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
                 return;
             }
+            
             if (!(s is SocketUserMessage msg)) return;
             var ctx = new VolteContext(_client, msg);
 
@@ -61,7 +68,7 @@ namespace Volte.Core.Discord
             await _pingchecks.CheckMessageAsync(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
-            IEnumerable<string> prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
+            var prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
             _db.GetUser(s.Author.Id);
             if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
