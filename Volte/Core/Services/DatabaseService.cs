@@ -7,7 +7,7 @@ namespace Volte.Core.Services
 {
     public class DatabaseService
     {
-        private static readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
+        public readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
 
         public DiscordServer GetConfig(IGuild guild)
         {
