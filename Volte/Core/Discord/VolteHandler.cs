@@ -41,7 +41,7 @@ namespace Volte.Core.Discord
             //register event listeners
             //_service.CommandExecuted += _event.OnCommand;
             _client.Log += _logger.Log;
-            _client.MessageReceived += HandleMessage;
+            _client.MessageReceived += HandleMessageAsync;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
             _client.UserJoined += _welcome.JoinAsync;
@@ -50,7 +50,7 @@ namespace Volte.Core.Discord
             _client.Ready += _event.OnReady;
         }
 
-        private async Task HandleMessage(SocketMessage s)
+        private async Task HandleMessageAsync(SocketMessage s)
         {
             if (s.Author.IsBot) return;
             if (s.Channel is IDMChannel)
@@ -69,7 +69,6 @@ namespace Volte.Core.Discord
 
             var config = _db.GetConfig(ctx.Guild);
             var prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
-            _db.GetUser(s.Author.Id);
             if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {

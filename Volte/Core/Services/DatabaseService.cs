@@ -34,31 +34,6 @@ namespace Volte.Core.Services
             collection.Update(newConfig);
         }
 
-        public DiscordUser GetUser(IUser user)
-        {
-            return GetUser(user.Id);
-        }
-
-        public DiscordUser GetUser(ulong id)
-        {
-            var user = Database.GetCollection<DiscordUser>("users").FindOne(u => u.UserId == id);
-            if (user is null)
-            {
-                var newUser = Create(id);
-                Database.GetCollection<DiscordUser>("users").Insert(newUser);
-                return newUser;
-            }
-
-            return user;
-        }
-
-        public void UpdateUser(DiscordUser newUser)
-        {
-            var collection = Database.GetCollection<DiscordUser>("users");
-            collection.EnsureIndex(s => s.Id, true);
-            collection.Update(newUser);
-        }
-
         private DiscordServer Create(IGuild guild)
         {
             return new DiscordServer
@@ -79,17 +54,6 @@ namespace Volte.Core.Services
                 AdminRole = ulong.MinValue,
                 MassPingChecks = false
             };
-        }
-
-        public static DiscordUser Create(ulong id)
-        {
-            var u = VolteBot.Client.GetUser(id);
-            var newUser = new DiscordUser
-            {
-                Tag = $"{u.Username}#{u.Discriminator}",
-                UserId = id
-            };
-            return newUser;
         }
     }
 }
