@@ -4,9 +4,9 @@ using Qmmands;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.General
+namespace Volte.Core.Commands.Modules.Utility
 {
-    public partial class GeneralModule : VolteModule
+    public partial class UtilityModule : VolteModule
     {
         [Command("Say")]
         [Description("Bot repeats what you tell it to.")]

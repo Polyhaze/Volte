@@ -31,7 +31,7 @@ namespace Volte.Core.Discord
         private readonly LoggingService _logger = _services.GetRequiredService<LoggingService>();
 
 
-        public async Task Init()
+        public async Task InitAsync()
         {
             var sw = Stopwatch.StartNew();
             var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
@@ -41,26 +41,33 @@ namespace Volte.Core.Discord
             //register event listeners
             //_service.CommandExecuted += _event.OnCommand;
             _client.Log += _logger.Log;
-            _client.MessageReceived += HandleMessageAsync;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
             _client.UserJoined += _welcome.JoinAsync;
             _client.UserLeft += _welcome.LeaveAsync;
             _client.UserJoined += _autorole.ApplyRoleAsync;
             _client.Ready += _event.OnReady;
+            _client.MessageReceived += async s =>
+            {
+                if (s.Author.IsBot) return;
+                if (s.Channel is IDMChannel)
+                {
+                    await s.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    return;
+                }
+
+                if (!(s is SocketUserMessage msg)) return;
+
+                var ctx = new VolteContext(_client, msg);
+                await _blacklist.CheckMessageAsync(ctx);
+                await _antilink.CheckMessageAsync(ctx);
+                await _pingchecks.CheckMessageAsync(ctx);
+                await HandleMessageAsync(ctx);
+            };
         }
 
-        private async Task HandleMessageAsync(SocketMessage s)
+        private async Task HandleMessageAsync(VolteContext ctx)
         {
-            if (s.Author.IsBot) return;
-            if (s.Channel is IDMChannel)
-            {
-                await s.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
-                return;
-            }
-            
-            if (!(s is SocketUserMessage msg)) return;
-            var ctx = new VolteContext(_client, msg);
 
             //pass the message-reliant services what they need
             await _blacklist.CheckMessageAsync(ctx);
@@ -69,7 +76,7 @@ namespace Volte.Core.Discord
 
             var config = _db.GetConfig(ctx.Guild);
             var prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
-            if (CommandUtilities.HasAnyPrefix(msg.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+            if (CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
                 var sw = Stopwatch.StartNew();

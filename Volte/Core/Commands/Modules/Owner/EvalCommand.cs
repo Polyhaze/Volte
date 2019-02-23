@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using Discord;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
-using Volte.Core.Discord;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
 
@@ -42,6 +40,7 @@ namespace Volte.Core.Commands.Modules.Owner
                 var objects = new EvalObjects
                 {
                     Context = Context,
+                    Client = Context.Client,
                     CommandService = CommandService,
                     Config = Db.GetConfig(Context.Guild),
                     DatabaseService = Db,
@@ -52,7 +51,7 @@ namespace Volte.Core.Commands.Modules.Owner
                 var imports = new[]
                 {
                     "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
-                    "System.Diagnostics", "Discord", "Discord.Commands", "Discord.WebSocket"
+                    "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO"
                 };
 
                 sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()

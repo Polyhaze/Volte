@@ -8,9 +8,9 @@ using Qmmands;
 using Volte.Core.Extensions;
 using Version = Volte.Core.Runtime.Version;
 
-namespace Volte.Core.Commands.Modules.General
+namespace Volte.Core.Commands.Modules.Utility
 {
-    public partial class GeneralModule : VolteModule
+    public partial class UtilityModule : VolteModule
     {
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]

@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.General
+namespace Volte.Core.Commands.Modules.Utility
 {
-    public partial class GeneralModule : VolteModule
+    public partial class UtilityModule : VolteModule
     {
         [Command("Prefix")]
         [Description("Shows the command prefix for this guild.")]

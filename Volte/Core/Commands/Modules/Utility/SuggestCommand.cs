@@ -2,9 +2,9 @@
 using Qmmands;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.General
+namespace Volte.Core.Commands.Modules.Utility
 {
-    public partial class GeneralModule : VolteModule
+    public partial class UtilityModule : VolteModule
     {
         [Command("Suggest")]
         [Description("Suggest features for Volte.")]

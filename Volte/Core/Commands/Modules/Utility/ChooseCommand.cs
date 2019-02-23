@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Qmmands;
 using Volte.Core.Extensions;
 
-namespace Volte.Core.Commands.Modules.General
+namespace Volte.Core.Commands.Modules.Utility
 {
-    public partial class GeneralModule : VolteModule
+    public partial class UtilityModule : VolteModule
     {
         [Command("Choose")]
         [Description("Choose an item from a | delimited list.")]

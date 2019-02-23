@@ -21,26 +21,20 @@ namespace Volte.Core.Discord
 
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
 
-        private static readonly VolteHandler Handler = GetRequiredService<VolteHandler>();
-        private static readonly LoggingService Logger = GetRequiredService<LoggingService>();
+        private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
 
         public static T GetRequiredService<T>()
         {
             return ServiceProvider.GetRequiredService<T>();
         }
 
-        /// <summary>
-        ///     WARNING:
-        ///     Instantiating this object will start a completely new bot instance.
-        ///     Don't do that, unless you're making a restart function!
-        /// </summary>
-        public static async Task Start()
+        public static async Task StartAsync()
         {
-            await Logger.PrintVersion();
+            await GetRequiredService<LoggingService>().PrintVersion();
             await new VolteBot().LoginAsync();
         }
 
-        private static IServiceProvider BuildServiceProvider() => 
+        private static IServiceProvider BuildServiceProvider() =>
             new ServiceCollection()
                 .AddSingleton<AntilinkService>()
                 .AddSingleton<AutoroleService>()
@@ -60,12 +54,15 @@ namespace Volte.Core.Discord
                     CaseSensitive = false,
                     DefaultRunMode = RunMode.Sequential,
                     SeparatorRequirement = SeparatorRequirement.Separator,
-                    Separator = "not-a-space-so-we-can-use-spaces-in-command-names",
+                    Separator =
+                        "not-a-space-so-we-can-use-spaces-in-command-names; nvm that doesnt work either but we dont need this separator so no one will know i'm gay",
                     NullableNouns = null
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = Runtime.Version.ReleaseType != ReleaseType.Release ? LogSeverity.Debug : LogSeverity.Verbose,
+                    LogLevel = Runtime.Version.ReleaseType != ReleaseType.Release
+                        ? LogSeverity.Debug
+                        : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 100
@@ -74,30 +71,27 @@ namespace Volte.Core.Discord
 
         private async Task LoginAsync()
         {
-            Initialize();
-            if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
-            await Client.LoginAsync(TokenType.Bot, Config.GetToken());
-            await Client.StartAsync();
-            if (Config.GetStreamer().EqualsIgnoreCase("streamer here") || string.IsNullOrWhiteSpace(Config.GetStreamer()))
-                await Client.SetGameAsync(Config.GetGame());
-            else
-                await Client.SetGameAsync(Config.GetGame(), 
-                    $"https://twitch.tv/{Config.GetStreamer()}",
-                    ActivityType.Streaming);
-
-            await Client.SetStatusAsync(UserStatus.Online);
-            await Handler.Init();
-            await Task.Delay(-1);
-        }
-
-        private void Initialize()
-        {
             CommandService.AddTypeParser(new UserParser<SocketGuildUser>());
             CommandService.AddTypeParser(new UserParser<SocketUser>());
             CommandService.AddTypeParser(new RoleParser<SocketRole>());
             CommandService.AddTypeParser(new ChannelParser<SocketTextChannel>());
             CommandService.AddTypeParser(new EmoteParser());
             CommandService.AddTypeParser(new BooleanParser(), true);
+
+            if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
+            await Client.LoginAsync(TokenType.Bot, Config.GetToken());
+            await Client.StartAsync();
+            if (Config.GetStreamer().EqualsIgnoreCase("streamer here") ||
+                string.IsNullOrWhiteSpace(Config.GetStreamer()))
+                await Client.SetGameAsync(Config.GetGame());
+            else
+                await Client.SetGameAsync(Config.GetGame(),
+                    $"https://twitch.tv/{Config.GetStreamer()}",
+                    ActivityType.Streaming);
+
+            await Client.SetStatusAsync(UserStatus.Online);
+            await _handler.InitAsync();
+            await Task.Delay(-1);
         }
     }
 }
