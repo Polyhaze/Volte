@@ -45,11 +45,12 @@ namespace Volte.Core.Commands.Modules.Owner
                     {
                         Context = Context,
                         Client = Context.Client,
-                        CommandService = CommandService,
                         Config = Db.GetConfig(Context.Guild),
-                        DatabaseService = Db,
+                        Logger = Logger,
+                        CommandService = CommandService,
                         DebugService = DebugService,
-                        Logger = Logger
+                        DatabaseService = Db,
+                        EmojiService = EmojiService
                     };
 
                     var imports = new[]
@@ -65,9 +66,9 @@ namespace Volte.Core.Commands.Modules.Owner
                     try
                     {
                         var sw = Stopwatch.StartNew();
-                        var res = await CSharpScript.EvaluateAsync(code, sopts, objects, typeof(EvalObjects));
+                        var res = await CSharpScript.EvaluateAsync(code, sopts, objects);
                         sw.Stop();
-                        if (res != null && res.GetType() != typeof(AsyncTaskMethodBuilder))
+                        if (res != null)
                         {
                             await msg.ModifyAsync(m => m.Embed = embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
