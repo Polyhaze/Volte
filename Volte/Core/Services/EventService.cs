@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Humanizer;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
@@ -16,7 +14,7 @@ using Volte.Core.Extensions;
 #pragma warning disable 1998
 namespace Volte.Core.Services
 {
-    internal class EventService
+    internal class EventService : IService
     {
         private readonly LoggingService _logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
 

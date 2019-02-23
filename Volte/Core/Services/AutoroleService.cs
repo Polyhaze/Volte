@@ -1,14 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
 
 namespace Volte.Core.Services
 {
-    internal class AutoroleService
+    internal class AutoroleService : IService
     {
         internal async Task ApplyRoleAsync(SocketGuildUser user)
         {

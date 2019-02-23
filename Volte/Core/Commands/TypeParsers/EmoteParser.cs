@@ -6,9 +6,13 @@ using Qmmands;
 
 namespace Volte.Core.Commands.TypeParsers
 {
-    class EmoteParser : TypeParser<IEmote>
+    public sealed class EmoteParser : TypeParser<IEmote>
     {
-        public override Task<TypeParserResult<IEmote>> ParseAsync(string value, ICommandContext context, IServiceProvider provider)
+        public override Task<TypeParserResult<IEmote>> ParseAsync(
+            Parameter param,
+            string value, 
+            ICommandContext context, 
+            IServiceProvider provider)
         {
             return Emote.TryParse(value, out var emote)
                 ? Task.FromResult(new TypeParserResult<IEmote>(emote))

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -34,28 +36,17 @@ namespace Volte.Core.Discord
             await new VolteBot().LoginAsync();
         }
 
-        private static IServiceProvider BuildServiceProvider() =>
-            new ServiceCollection()
-                .AddSingleton<AntilinkService>()
-                .AddSingleton<AutoroleService>()
-                .AddSingleton<BlacklistService>()
-                .AddSingleton<WelcomeService>()
-                .AddSingleton<DatabaseService>()
+        private static IServiceProvider BuildServiceProvider()
+        {
+            var provider = new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddSingleton<EventService>()
-                .AddSingleton<DebugService>()
-                .AddSingleton<EmojiService>()
-                .AddSingleton<PingChecksService>()
-                .AddSingleton<LoggingService>()
-                .AddSingleton<GuildService>()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
                     CaseSensitive = false,
                     DefaultRunMode = RunMode.Sequential,
                     SeparatorRequirement = SeparatorRequirement.Separator,
-                    Separator =
-                        "not-a-space-so-we-can-use-spaces-in-command-names; nvm that doesnt work either but we dont need this separator so no one will know i'm gay",
+                    Separator = "irrelevant",
                     NullableNouns = null
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
@@ -65,9 +56,16 @@ namespace Volte.Core.Discord
                         : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
-                    MessageCacheSize = 100
-                }))
-                .BuildServiceProvider();
+                    MessageCacheSize = 50
+                }));
+            foreach (var service in Assembly.GetEntryAssembly().GetTypes()
+                .Where(t => typeof(IService).IsAssignableFrom(t) && !t.IsInterface))
+            {
+                provider.AddSingleton(service);
+            }
+
+            return provider.BuildServiceProvider();
+        }
 
         private async Task LoginAsync()
         {

@@ -11,7 +11,10 @@ namespace Volte.Core.Commands.TypeParsers
     public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : SocketRole
     {
         public override Task<TypeParserResult<TRole>> ParseAsync(
-            string value, ICommandContext context, IServiceProvider provider)
+            Parameter param,
+            string value, 
+            ICommandContext context, 
+            IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
             TRole role = null;

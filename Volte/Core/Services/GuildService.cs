@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    public class GuildService
+    public class GuildService : IService
     {
         public async Task OnJoinAsync(SocketGuild guild)
         {

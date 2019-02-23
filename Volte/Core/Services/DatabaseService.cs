@@ -5,7 +5,7 @@ using Volte.Core.Discord;
 
 namespace Volte.Core.Services
 {
-    public class DatabaseService
+    public class DatabaseService : IService
     {
         public readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
 

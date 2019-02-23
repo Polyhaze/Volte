@@ -11,7 +11,7 @@ using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Services
 {
-    public class LoggingService
+    public class LoggingService : IService
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 

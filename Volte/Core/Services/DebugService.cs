@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using Discord;
-using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace Volte.Core.Services
 {
-    public class DebugService
+    public class DebugService : IService
     {
         public string Execute(string config)
         {

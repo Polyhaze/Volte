@@ -3,7 +3,7 @@ namespace Volte.Core.Services
     // ReSharper disable UnusedMember.Global
     // ReSharper disable IdentifierTypo
     // ReSharper disable InconsistentNaming
-    public class EmojiService
+    public class EmojiService : IService
     {
         public string A => "\uD83C\uDD70";
         public string AB => "\uD83C\uDD8E";

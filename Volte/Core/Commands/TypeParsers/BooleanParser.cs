@@ -5,7 +5,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.TypeParsers
 {
-    public class BooleanParser : TypeParser<bool>
+    public sealed class BooleanParser : TypeParser<bool>
     {
         private readonly string[] _matchingTrueValues =
         {
@@ -17,7 +17,10 @@ namespace Volte.Core.Commands.TypeParsers
             "n", "no", "nah", "na", "nej", "nope", "nop", "negative", "neg", "negatory", "disable", "nay", "negative", "0"
         };
 
-        public override Task<TypeParserResult<bool>> ParseAsync(string value, ICommandContext context,
+        public override Task<TypeParserResult<bool>> ParseAsync(
+            Parameter param,
+            string value, 
+            ICommandContext context, 
             IServiceProvider provider)
         {
             if (_matchingTrueValues.ContainsIgnoreCase(value))

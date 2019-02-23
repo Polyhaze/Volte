@@ -8,10 +8,13 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.TypeParsers
 {
-    public class ChannelParser<TChannel> : TypeParser<TChannel> where TChannel : SocketTextChannel
+    public sealed class ChannelParser<TChannel> : TypeParser<TChannel> where TChannel : SocketTextChannel
     {
         public override Task<TypeParserResult<TChannel>> ParseAsync(
-            string value, ICommandContext context, IServiceProvider provider)
+            Parameter param,
+            string value, 
+            ICommandContext context, 
+            IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
             TChannel channel = null;

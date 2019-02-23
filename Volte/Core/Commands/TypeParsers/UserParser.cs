@@ -12,7 +12,10 @@ namespace Volte.Core.Commands.TypeParsers
     public sealed class UserParser<TUser> : TypeParser<TUser> where TUser : SocketUser
     {
         public override Task<TypeParserResult<TUser>> ParseAsync(
-            string value, ICommandContext context, IServiceProvider provider)
+            Parameter param,
+            string value, 
+            ICommandContext context, 
+            IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
             var type = typeof(TUser);

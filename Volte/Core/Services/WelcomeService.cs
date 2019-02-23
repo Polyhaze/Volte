@@ -7,7 +7,7 @@ using Volte.Core.Discord;
 
 namespace Volte.Core.Services
 {
-    internal class WelcomeService
+    internal class WelcomeService : IService
     {
         private readonly DatabaseService _db = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>();
 

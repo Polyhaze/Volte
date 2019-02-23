@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
@@ -8,7 +6,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    internal class BlacklistService
+    internal class BlacklistService : IService
     {
         internal async Task CheckMessageAsync(VolteContext ctx)
         {
