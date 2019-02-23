@@ -117,10 +117,10 @@ namespace Volte.Core.Services
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|        -Time Issued: {DateTime.Now.Humanize()}");
+                        $"|        -Time Issued: {DateTime.Now}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                    await _logger.Log(LogSeverity.Info, LogSource.Module,
+                    await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|              -After: {sw.Elapsed.Humanize()}");
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         "-------------------------------------------------");
