@@ -20,7 +20,6 @@ namespace Volte.Core.Data.Objects
         public ulong GuildOwnerId { get; set; }
         public string Autorole { get; set; }
         public string CommandPrefix { get; set; }
-        public bool Leveling { get; set; }
         public ulong WelcomeChannel { get; set; }
         public string WelcomeMessage { get; set; }
         public string LeavingMessage { get; set; }
@@ -40,7 +39,7 @@ namespace Volte.Core.Data.Objects
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

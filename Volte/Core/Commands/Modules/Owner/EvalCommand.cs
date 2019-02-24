@@ -50,7 +50,8 @@ namespace Volte.Core.Commands.Modules.Owner
                         CommandService = CommandService,
                         DebugService = DebugService,
                         DatabaseService = Db,
-                        EmojiService = EmojiService
+                        EmojiService = EmojiService,
+                        GitHubService = GitHubService
                     };
 
                     var imports = new[]
@@ -73,7 +74,7 @@ namespace Volte.Core.Commands.Modules.Owner
                             await msg.ModifyAsync(m => m.Embed = embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
                                 .AddField("Input", Format.Code(code, "cs"))
-                                .AddField("Output", Format.Code(res.ToString(), "cs")).Build());
+                                .AddField("Output", Format.Code(res.ToString(), "diff")).Build());
                         }
                         else
                         {

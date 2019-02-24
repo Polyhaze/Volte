@@ -15,5 +15,6 @@ namespace Volte.Core.Data.Objects
         public DebugService DebugService { get; set; }
         public DatabaseService DatabaseService { get; set; }
         public EmojiService EmojiService { get; set; }
+        public GitHubService GitHubService { get; set; }
     }
 }
