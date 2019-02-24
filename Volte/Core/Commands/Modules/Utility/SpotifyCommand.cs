@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Extensions;
 
@@ -9,10 +10,11 @@ namespace Volte.Core.Commands.Modules.Utility
     {
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
-        [Remarks("Usage: |prefix|spotify")]
-        public async Task SpotifyAsync()
+        [Remarks("Usage: |prefix|spotify [user]")]
+        public async Task SpotifyAsync(SocketGuildUser target = null)
         {
-            if (Context.User.Activity is SpotifyGame spotify)
+            var user = target ?? Context.User;
+            if (user.Activity is SpotifyGame spotify)
             {
                 await Context.CreateEmbedBuilder(string.Empty)
                     .WithDescription($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})\n" +
