@@ -1,4 +1,5 @@
 using Discord;
+using Discord.WebSocket;
 using LiteDB;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
@@ -16,11 +17,12 @@ namespace Volte.Core.Services
 
         public DiscordServer GetConfig(ulong id)
         {
-            var conf = Database.GetCollection<DiscordServer>("serverconfigs").FindOne(g => g.ServerId == id);
+            var coll = Database.GetCollection<DiscordServer>("serverconfigs");
+            var conf = coll.FindOne(g => g.ServerId == id);
             if (conf is null)
             {
                 var newConf = Create(VolteBot.Client.GetGuild(id));
-                Database.GetCollection<DiscordServer>("serverconfigs").Insert(newConf);
+                coll.Insert(newConf);
                 return newConf;
             }
 
@@ -34,12 +36,12 @@ namespace Volte.Core.Services
             collection.Update(newConfig);
         }
 
-        private DiscordServer Create(IGuild guild)
+        private DiscordServer Create(SocketGuild guild)
         {
             return new DiscordServer
             {
                 ServerId = guild.Id,
-                GuildOwnerId = VolteBot.Client.GetGuild(guild.Id).OwnerId,
+                GuildOwnerId = guild.OwnerId,
                 Autorole = string.Empty,
                 CommandPrefix = "$",
                 WelcomeChannel = ulong.MinValue,
