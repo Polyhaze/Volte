@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
@@ -14,7 +14,7 @@ namespace Volte.Core.Services
         internal async Task JoinAsync(SocketGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
-            if (string.IsNullOrEmpty(config.WelcomeMessage)) return; //we don't want to send an empty join message
+            if (config.WelcomeMessage.IsNullOrEmpty()) return; //we don't want to send an empty join message
             var welcomeMessage = config.WelcomeMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
@@ -30,7 +30,7 @@ namespace Volte.Core.Services
                     .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
-                await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
+                await user.Guild.GetTextChannel(config.WelcomeChannel)
                     .SendMessageAsync(string.Empty, false, embed.Build());
             }
         }
@@ -38,7 +38,7 @@ namespace Volte.Core.Services
         internal async Task LeaveAsync(SocketGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
-            if (string.IsNullOrEmpty(config.LeavingMessage)) return; //we don't want to send an empty leaving message
+            if (config.LeavingMessage.IsNullOrEmpty()) return; //we don't want to send an empty leaving message
             var leavingMessage = config.LeavingMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)

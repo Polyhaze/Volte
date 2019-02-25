@@ -21,9 +21,9 @@ namespace Volte.Core.Services
         public async Task OnReady()
         {
             var dbl = VolteBot.Client.GetGuild(264445053596991498);
-            if (dbl is null || Config.GetOwner() == 168548441939509248) return;
+            if (dbl is null || Config.Owner == 168548441939509248) return;
             await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
-                $"<@168548441939509248>: I am a Volte not owned by you. Please do not post Volte to a bot list again, <@{Config.GetOwner()}>.");
+                $"<@168548441939509248>: I am a Volte not owned by you. Please do not post Volte to a bot list again, <@{Config.Owner}>.");
             await dbl.LeaveAsync();
         }
 
@@ -39,7 +39,7 @@ namespace Volte.Core.Services
                 return;
             }
 
-            if (Config.GetLogAllCommands())
+            if (Config.LogAllCommands)
             {
                 await _logger.Log(LogSeverity.Info, LogSource.Module,
                     $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
@@ -100,9 +100,9 @@ namespace Volte.Core.Services
                 embed.AddField("Error Reason:", reason);
                 embed.AddField("Correct Usage", c.SanitizeRemarks(ctx));
                 embed.WithAuthor(ctx.User);
-                embed.WithColor(Config.GetErrorColor());
+                embed.WithColor(Config.ErrorColor);
                 await embed.SendTo(ctx.Channel);
-                if (Config.GetLogAllCommands())
+                if (Config.LogAllCommands)
                 {
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");

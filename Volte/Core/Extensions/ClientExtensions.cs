@@ -13,7 +13,7 @@ namespace Volte.Core.Extensions
 
         public static SocketUser GetOwner(this DiscordSocketClient client)
         {
-            return client.GetUser(Config.GetOwner());
+            return client.GetUser(Config.Owner);
         }
 
     }

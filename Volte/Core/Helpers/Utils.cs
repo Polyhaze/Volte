@@ -18,7 +18,7 @@ namespace Volte.Core.Helpers
         {
             return new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
-                .WithColor(Config.GetSuccessColor())
+                .WithColor(Config.SuccessColor)
                 .WithDescription(content.ToString())
                 .Build();
         }

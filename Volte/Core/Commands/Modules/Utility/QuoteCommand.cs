@@ -18,7 +18,7 @@ namespace Volte.Core.Commands.Modules.Utility
             await new EmbedBuilder()
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
-                .WithColor(Config.GetSuccessColor())
+                .WithColor(Config.SuccessColor)
                 .WithDescription($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithFooter(m.Timestamp.Humanize())
                 .SendTo(Context.Channel);

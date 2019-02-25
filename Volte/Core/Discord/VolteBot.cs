@@ -62,15 +62,15 @@ namespace Volte.Core.Discord
         {
             CommandService.AddTypeParsers();
 
-            if (Config.GetToken().IsNullOrEmpty() || Config.GetToken().EqualsIgnoreCase("token here")) return;
-            await Client.LoginAsync(TokenType.Bot, Config.GetToken());
+            if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
+            await Client.LoginAsync(TokenType.Bot, Config.Token);
             await Client.StartAsync();
-            if (Config.GetStreamer().EqualsIgnoreCase("streamer here") ||
-                string.IsNullOrWhiteSpace(Config.GetStreamer()))
-                await Client.SetGameAsync(Config.GetGame());
+            if (Config.Streamer.EqualsIgnoreCase("streamer here") ||
+                Config.Streamer.IsNullOrWhitespace())
+                await Client.SetGameAsync(Config.Game);
             else
-                await Client.SetGameAsync(Config.GetGame(),
-                    $"https://twitch.tv/{Config.GetStreamer()}",
+                await Client.SetGameAsync(Config.Game,
+                    $"https://twitch.tv/{Config.Streamer}",
                     ActivityType.Streaming);
 
             await Client.SetStatusAsync(UserStatus.Online);

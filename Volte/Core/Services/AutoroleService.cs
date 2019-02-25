@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
@@ -11,9 +11,9 @@ namespace Volte.Core.Services
         internal async Task ApplyRoleAsync(SocketGuildUser user)
         {
             var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(user.Guild.Id);
-            if (!string.IsNullOrEmpty(config.Autorole))
+            if (!config.Autorole.IsNullOrWhitespace())
             {
-                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name.ToLower() == config.Autorole.ToLower());
+                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(config.Autorole));
                 await user.AddRoleAsync(targetRole);
             }
         }

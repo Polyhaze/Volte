@@ -23,7 +23,7 @@ namespace Volte.Core.Commands.Modules.Utility
         public async Task SilentSayAsync([Remainder] string msg)
         {
             await new EmbedBuilder()
-                .WithColor(Config.GetSuccessColor())
+                .WithColor(Config.SuccessColor)
                 .WithDescription(msg)
                 .SendTo(Context.Channel);
             await Context.Message.DeleteAsync();

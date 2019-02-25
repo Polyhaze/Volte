@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 using Volte.Core.Services;
 
 namespace Volte.Core.Data
@@ -17,13 +18,13 @@ namespace Volte.Core.Data
         static Config()
         {
             CreateIfNotExists();
-            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile)))
+            if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty())
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
         public static void CreateIfNotExists()
         {
-            if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) return;
+            if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty()) return;
             var logger = VolteBot.GetRequiredService<LoggingService>();
             logger.Log(LogSeverity.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.").GetAwaiter().GetResult();
@@ -44,55 +45,25 @@ namespace Volte.Core.Data
                 JsonConvert.SerializeObject(_bot, Formatting.Indented));
         }
 
-        public static string GetToken()
-        {
-            return _bot.Token;
-        }
+        public static string Token => _bot.Token;
 
-        public static string GetCommandPrefix()
-        {
-            return _bot.CommandPrefix;
-        }
+        public static string CommandPrefix => _bot.CommandPrefix;
 
-        public static ulong GetOwner()
-        {
-            return _bot.Owner;
-        }
+        public static ulong Owner => _bot.Owner;
 
-        public static string GetGame()
-        {
-            return _bot.Game;
-        }
+        public static string Game => _bot.Game;
 
-        public static string GetStreamer()
-        {
-            return _bot.Streamer;
-        }
+        public static string Streamer => _bot.Streamer;
 
-        public static uint GetSuccessColor()
-        {
-            return _bot.SuccessEmbedColor;
-        }
+        public static uint SuccessColor => _bot.SuccessEmbedColor;
 
-        public static uint GetErrorColor()
-        {
-            return _bot.ErrorEmbedColor;
-        }
+        public static uint ErrorColor => _bot.ErrorEmbedColor;
 
-        public static bool GetLogAllCommands()
-        {
-            return _bot.LogAllCommands;
-        }
+        public static bool LogAllCommands => _bot.LogAllCommands;
 
-        public static JoinLeaveLog GetJoinLeaveLog()
-        {
-            return _bot.JoinLeaveLog;
-        }
+        public static JoinLeaveLog JoinLeaveLog => _bot.JoinLeaveLog;
 
-        public static ulong[] GetBlacklistedOwners()
-        {
-            return _bot.BlacklistedServerOwners;
-        }
+        public static ulong[] BlacklistedOwners =>_bot.BlacklistedServerOwners;
 
         private struct BotConfig
         {

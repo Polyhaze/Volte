@@ -32,9 +32,7 @@ namespace Volte.Core.Commands.Modules.Owner
                 try
                 {
                     var sopts = ScriptOptions.Default;
-                    var embed = new EmbedBuilder()
-                        .WithAuthor(Context.User)
-                        .WithColor(Config.GetSuccessColor());
+                    var embed = Context.CreateEmbedBuilder();
                     if (code.Contains("```cs"))
                     {
                         code = code.Remove(code.IndexOf("```cs", StringComparison.Ordinal), 5);
@@ -61,7 +59,7 @@ namespace Volte.Core.Commands.Modules.Owner
                     };
 
                     sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location)));
+                        .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
                     var msg = await embed.WithTitle("Evaluating...").SendTo(Context.Channel);
                     try

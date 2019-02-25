@@ -43,7 +43,7 @@ namespace Volte.Core.Services
             (color, value) = VerifySource(src);
             Append($"{value} -> ", color);
 
-            if (!string.IsNullOrWhiteSpace(message))
+            if (!message.IsNullOrWhitespace())
                 Append(message, Color.White);
 
             if (e != null)

@@ -16,9 +16,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task SetStatusAsync([Remainder] string status)
         {
-            var embed = new EmbedBuilder()
-                .WithAuthor(Context.User)
-                .WithColor(Config.GetSuccessColor());
+            var embed = Context.CreateEmbedBuilder();
             switch (status.ToLower())
             {
                 case "dnd":

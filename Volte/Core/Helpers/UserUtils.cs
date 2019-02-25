@@ -17,7 +17,7 @@ namespace Volte.Core.Helpers
         /// <returns>System.Boolean</returns>
         public static bool IsBotOwner(IUser user)
         {
-            return Config.GetOwner().Equals(user.Id);
+            return Config.Owner.Equals(user.Id);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Volte.Core.Helpers
         /// <returns></returns>
         public static bool IsBotOwner(VolteContext ctx)
         {
-            return Config.GetOwner().Equals(ctx.User.Id);
+            return Config.Owner.Equals(ctx.User.Id);
         }
 
         /// <summary>

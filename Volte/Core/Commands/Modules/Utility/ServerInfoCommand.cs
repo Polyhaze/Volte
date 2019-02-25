@@ -15,10 +15,8 @@ namespace Volte.Core.Commands.Modules.Utility
         public async Task ServerInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;
-            var embed = new EmbedBuilder()
+            var embed = Context.CreateEmbedBuilder()
                 .WithTitle("Server Info")
-                .WithAuthor(Context.User)
-                .WithColor(Config.GetSuccessColor())
                 .WithThumbnailUrl(Context.Guild.IconUrl)
                 .AddField("Name", Context.Guild.Name)
                 .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")

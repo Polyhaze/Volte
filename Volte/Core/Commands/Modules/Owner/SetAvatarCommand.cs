@@ -16,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task SetAvatarAsync(string url)
         {
-            if (string.IsNullOrWhiteSpace(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
                 await Context.CreateEmbed("That URL is malformed or empty.").SendTo(Context.Channel);
                 return;

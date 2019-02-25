@@ -24,7 +24,7 @@ namespace Volte.Core.Services
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
                 .WithAuthor(guild.Owner)
-                .WithColor(Config.GetSuccessColor())
+                .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
                 .AddField("Set your moderator role", "$modrole {roleName}", true)
@@ -43,9 +43,9 @@ namespace Volte.Core.Services
                 if (c != null) await embed.SendTo(c);
             }
 
-            if (Config.GetJoinLeaveLog().Enabled)
+            if (Config.JoinLeaveLog.Enabled)
             {
-                var joinLeave = Config.GetJoinLeaveLog();
+                var joinLeave = Config.JoinLeaveLog;
                 var logger = VolteBot.GetRequiredService<LoggingService>();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
@@ -72,7 +72,7 @@ namespace Volte.Core.Services
                 {
                     if (bots.Count > users.Count)
                         await channel.SendMessageAsync(
-                            $"<@{Config.GetOwner()}>: Joined a guild with more bots than users.", false,
+                            $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
                             e.WithColor(0x00FF00).Build());
                     else
                         await channel.SendMessageAsync("", false, e.WithColor(0x00FF00).Build());
@@ -87,10 +87,10 @@ namespace Volte.Core.Services
 
         public async Task OnLeaveAsync(SocketGuild guild)
         {
-            if (Config.GetJoinLeaveLog().Enabled)
+            if (Config.JoinLeaveLog.Enabled)
             {
                 var logger = VolteBot.GetRequiredService<LoggingService>();
-                var joinLeave = Config.GetJoinLeaveLog();
+                var joinLeave = Config.JoinLeaveLog;
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
