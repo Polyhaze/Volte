@@ -10,7 +10,7 @@ namespace Volte.Core.Services
     {
         internal async Task ApplyRoleAsync(SocketGuildUser user)
         {
-            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(user.Guild.Id);
+            var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(user.Guild.Id);
             if (!string.IsNullOrEmpty(config.Autorole))
             {
                 var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name.ToLower() == config.Autorole.ToLower());

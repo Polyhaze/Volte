@@ -11,7 +11,7 @@ namespace Volte.Core.Services
     {
         public async Task CheckMessageAsync(VolteContext ctx)
         {
-            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
+            var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
             if (!config.MassPingChecks || UserUtils.IsAdmin(ctx)) return;
             var content = ctx.Message.Content;
             if (content.ContainsIgnoreCase("@everyone") ||

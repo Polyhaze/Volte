@@ -13,7 +13,7 @@ namespace Volte.Core.Commands
     /// <inheritdoc />
     public class VolteContext : ICommandContext
     {
-        private readonly EmojiService _emojiService = VolteBot.ServiceProvider.GetRequiredService<EmojiService>();
+        private readonly EmojiService _emojiService = VolteBot.GetRequiredService<EmojiService>();
 
         public VolteContext(IDiscordClient client, IUserMessage msg)
         {

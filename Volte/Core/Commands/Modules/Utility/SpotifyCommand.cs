@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Humanizer;
 using Qmmands;
 using Volte.Core.Extensions;
 
@@ -16,17 +17,18 @@ namespace Volte.Core.Commands.Modules.Utility
             var user = target ?? Context.User;
             if (user.Activity is SpotifyGame spotify)
             {
-                await Context.CreateEmbedBuilder(string.Empty)
+                await Context.CreateEmbedBuilder()
+                    .WithAuthor(user)
                     .WithDescription($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})\n" +
                                      $"**Album:** {spotify.AlbumTitle}\n" +
-                                     $"**Duration:** {spotify.Duration}\n" +
-                                     $"**Artists:** {string.Join(',', spotify.Artists)}")
+                                     $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}\n" +
+                                     $"**Artists:** {string.Join(", ", spotify.Artists)}")
                     .WithThumbnailUrl(spotify.AlbumArtUrl)
                     .SendTo(Context.Channel);
                 return;
 
             }
-            await Context.CreateEmbed("You're not listening to Spotify right now.").SendTo(Context.Channel);
+            await Context.CreateEmbed("Target user isn't listening to Spotify right now.").SendTo(Context.Channel);
         }
     }
 }

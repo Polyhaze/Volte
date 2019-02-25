@@ -5,6 +5,7 @@ using static Colorful.Console;
 using Discord;
 using Discord.Commands;
 using Volte.Core.Data.Objects;
+using Volte.Core.Extensions;
 using Color = System.Drawing.Color;
 using LogMessage = Discord.LogMessage;
 using Version = Volte.Core.Runtime.Version;
@@ -17,6 +18,7 @@ namespace Volte.Core.Services
 
         internal async Task Log(LogMessage msg)
         {
+            if (msg.Message.Contains("handler is blocking")) return;
             var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
             await Log(m.Severity, m.Source, m.Message, m.Exception);
         }

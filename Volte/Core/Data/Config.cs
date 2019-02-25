@@ -24,7 +24,7 @@ namespace Volte.Core.Data
         public static void CreateIfNotExists()
         {
             if (File.Exists(ConfigFile) && !string.IsNullOrEmpty(File.ReadAllText(ConfigFile))) return;
-            var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
+            var logger = VolteBot.GetRequiredService<LoggingService>();
             logger.Log(LogSeverity.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.").GetAwaiter().GetResult();
             _bot = new BotConfig

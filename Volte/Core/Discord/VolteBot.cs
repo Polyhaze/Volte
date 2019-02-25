@@ -1,12 +1,9 @@
 using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
-using Volte.Core.Commands.TypeParsers;
 using Volte.Core.Data;
 using Volte.Core.Extensions;
 using Volte.Core.Runtime;
@@ -38,8 +35,9 @@ namespace Volte.Core.Discord
 
         private static IServiceProvider BuildServiceProvider()
         {
-            var provider = new ServiceCollection()
+            return new ServiceCollection()
                 .AddSingleton<VolteHandler>()
+                .AddVolteServices()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
@@ -57,26 +55,14 @@ namespace Volte.Core.Discord
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50
-                }));
-            foreach (var service in Assembly.GetEntryAssembly().GetTypes()
-                .Where(t => typeof(IService).IsAssignableFrom(t) && !t.IsInterface))
-            {
-                provider.AddSingleton(service);
-            }
-
-            return provider.BuildServiceProvider();
+                })).BuildServiceProvider();
         }
 
         private async Task LoginAsync()
         {
-            CommandService.AddTypeParser(new UserParser<SocketGuildUser>());
-            CommandService.AddTypeParser(new UserParser<SocketUser>());
-            CommandService.AddTypeParser(new RoleParser<SocketRole>());
-            CommandService.AddTypeParser(new ChannelParser<SocketTextChannel>());
-            CommandService.AddTypeParser(new EmoteParser());
-            CommandService.AddTypeParser(new BooleanParser(), true);
+            CommandService.AddTypeParsers();
 
-            if (string.IsNullOrEmpty(Config.GetToken()) || Config.GetToken().EqualsIgnoreCase("token here")) return;
+            if (Config.GetToken().IsNullOrEmpty() || Config.GetToken().EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.GetToken());
             await Client.StartAsync();
             if (Config.GetStreamer().EqualsIgnoreCase("streamer here") ||

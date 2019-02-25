@@ -14,7 +14,7 @@ namespace Volte.Core.Services
     {
         internal async Task CheckMessageAsync(VolteContext ctx)
         {
-            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
+            var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
             var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) m = new[] {ctx.Message.Content};
 

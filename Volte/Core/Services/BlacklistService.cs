@@ -10,7 +10,7 @@ namespace Volte.Core.Services
     {
         internal async Task CheckMessageAsync(VolteContext ctx)
         {
-            var config = VolteBot.ServiceProvider.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
+            var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
 
             foreach (var word in config.Blacklist)
                 if (ctx.Message.Content.ContainsIgnoreCase(word))

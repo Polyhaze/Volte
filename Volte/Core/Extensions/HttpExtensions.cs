@@ -1,6 +1,4 @@
 using System.Net.Http;
-using Discord;
-using Discord.Commands;
 
 namespace Volte.Core.Extensions
 {

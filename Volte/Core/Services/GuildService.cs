@@ -46,7 +46,7 @@ namespace Volte.Core.Services
             if (Config.GetJoinLeaveLog().Enabled)
             {
                 var joinLeave = Config.GetJoinLeaveLog();
-                var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
+                var logger = VolteBot.GetRequiredService<LoggingService>();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
                     await logger.Log(LogSeverity.Error, LogSource.Service,
@@ -89,7 +89,7 @@ namespace Volte.Core.Services
         {
             if (Config.GetJoinLeaveLog().Enabled)
             {
-                var logger = VolteBot.ServiceProvider.GetRequiredService<LoggingService>();
+                var logger = VolteBot.GetRequiredService<LoggingService>();
                 var joinLeave = Config.GetJoinLeaveLog();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
