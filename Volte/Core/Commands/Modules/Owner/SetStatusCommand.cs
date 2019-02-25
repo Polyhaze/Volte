@@ -2,7 +2,6 @@
 using Discord;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
-using Volte.Core.Data;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
 

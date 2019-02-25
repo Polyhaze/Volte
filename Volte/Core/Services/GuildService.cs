@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;
@@ -37,7 +36,7 @@ namespace Volte.Core.Services
             {
                 await embed.SendTo(guild.Owner);
             }
-            catch (HttpException e) when (e.DiscordCode.Equals(50007))
+            catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
             {
                 var c = guild.TextChannels?.First();
                 if (c != null) await embed.SendTo(c);

@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using Discord;
-using Discord.Commands;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Volte.Core.Data.Objects;
 using Volte.Core.Discord;

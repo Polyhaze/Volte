@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
 using Humanizer;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Data;
@@ -69,14 +68,14 @@ namespace Volte.Core.Services
             string reason;
             switch (res)
             {
-                case CommandNotFoundResult cnfr:
+                case CommandNotFoundResult _:
                     reason = "Unknown command.";
                     break;
                 case ExecutionFailedResult efr:
                     reason = "Execution of this command failed.";
                     await _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
-                case ChecksFailedResult cfr:
+                case ChecksFailedResult _:
                     reason = "Insufficient permission.";
                     break;
                 case ParameterChecksFailedResult pcfr:

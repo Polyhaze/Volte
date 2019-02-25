@@ -18,9 +18,7 @@ namespace Volte.Core.Commands.TypeParsers
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            var type = typeof(TUser);
-            List<TUser> users;
-            users = ctx.Guild.Users.OfType<TUser>().ToList();
+            var users = ctx.Guild.Users.OfType<TUser>().ToList();
 
             TUser user = null;
 

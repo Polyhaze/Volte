@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Discord;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Commands;
 using Volte.Core.Data;
 using Volte.Core.Discord;

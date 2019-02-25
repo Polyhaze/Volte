@@ -13,11 +13,8 @@ namespace Volte.Core.Commands.Modules.Utility
         [Remarks("Usage: $avatar [@user]")]
         public async Task AvatarAsync(SocketGuildUser user = null)
         {
-            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
-            if (user is null)
-                embed.WithImageUrl(Context.User.GetAvatarUrl());
-            else
-                embed.WithImageUrl(user.GetAvatarUrl());
+            var embed = Context.CreateEmbedBuilder()
+                .WithImageUrl(user is null ? Context.User.GetAvatarUrl() : user.GetAvatarUrl());
 
             await embed.SendTo(Context.Channel);
         }
