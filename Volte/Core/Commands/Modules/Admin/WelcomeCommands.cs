@@ -3,12 +3,18 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
+using Volte.Core.Data;
 using Volte.Core.Extensions;
+using Volte.Core.Services;
 
 namespace Volte.Core.Commands.Modules.Admin
 {
     public partial class AdminModule : VolteModule
     {
+        public ImageWelcomeService ImageWelcomeService { get; set; }
+        public DefaultWelcomeService DefaultWelcomeService { get; set; }
+
+
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
@@ -23,7 +29,7 @@ namespace Volte.Core.Commands.Modules.Admin
         }
 
         [Command("WelcomeMessage", "Wmsg")]
-        [Description("Sets or shows the welcome message used to welcome new users for this guild.")]
+        [Description("Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
         public async Task WelcomeMessageAsync([Remainder] string message = null)
@@ -50,16 +56,10 @@ namespace Volte.Core.Commands.Modules.Admin
                 if (welcomeChannel is null) return;
                 if (config.WelcomeChannel != 0)
                 {
-                    var welcomeMessage = config.WelcomeMessage
-                        .Replace("{ServerName}", Context.Guild.Name)
-                        .Replace("{UserMention}", Context.User.Mention)
-                        .Replace("{UserName}", Context.User.Username)
-                        .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
-                        .Replace("{UserTag}", Context.User.Discriminator);
-                    var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
-                        .WithThumbnailUrl(Context.User.GetAvatarUrl())
-                        .WithColor(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB);
-                    await embed.SendTo(welcomeChannel);
+                    if (Config.WelcomeApiKey.IsNullOrWhitespace())
+                        await DefaultWelcomeService.JoinAsync(Context.User);
+                    else
+                        await ImageWelcomeService.JoinAsync(Context.User);
                 }
             }
         }

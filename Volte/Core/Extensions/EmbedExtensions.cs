@@ -1,8 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Extensions
 {
@@ -10,22 +9,22 @@ namespace Volte.Core.Extensions
     {
         public static Task<IUserMessage> SendTo(this EmbedBuilder e, IMessageChannel c)
         {
-            return Utils.Send(c, e.Build());
+            return Util.Send(c, e.Build());
         }
 
         public static Task<IUserMessage> SendTo(this Embed e, IMessageChannel c)
         {
-            return Utils.Send(c, e);
+            return Util.Send(c, e);
         }
 
         public static async Task<IUserMessage> SendTo(this EmbedBuilder e, SocketGuildUser c)
         {
-            return await Utils.Send(await c.GetOrCreateDMChannelAsync(), e.Build());
+            return await Util.Send(await c.GetOrCreateDMChannelAsync(), e.Build());
         }
 
         public static async Task<IUserMessage> SendTo(this Embed e, SocketGuildUser c)
         {
-            return await Utils.Send(await c.GetOrCreateDMChannelAsync(), e);
+            return await Util.Send(await c.GetOrCreateDMChannelAsync(), e);
         }
     }
 }

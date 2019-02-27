@@ -4,9 +4,9 @@ using Discord.WebSocket;
 using Volte.Core.Commands;
 using Volte.Core.Data;
 
-namespace Volte.Core.Helpers
+namespace Volte.Core.Utils
 {
-    public static class Utils
+    public static class Util
     {
         /// <summary>
         ///     Creates an embed.

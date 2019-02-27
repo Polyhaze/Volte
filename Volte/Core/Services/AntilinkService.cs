@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using RestSharp;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Services
 {
@@ -15,7 +15,7 @@ namespace Volte.Core.Services
             var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) m = new[] {ctx.Message.Content};
 
-            if (!config.Antilink || UserUtils.IsAdmin(ctx)) return;
+            if (!config.Antilink || UserUtil.IsAdmin(ctx)) return;
 
             foreach (var part in m)
             {
@@ -28,8 +28,8 @@ namespace Volte.Core.Services
                 if (first != null && first.Value.ToString().Contains("discord.gg"))
                 {
                     await ctx.Message.DeleteAsync();
-                    var warnMsg = await Utils.Send(ctx.Channel,
-                        Utils.CreateEmbed(ctx, "Don't send server invites here."));
+                    var warnMsg = await Util.Send(ctx.Channel,
+                        Util.CreateEmbed(ctx, "Don't send server invites here."));
                     await Task.Delay(3000).ContinueWith(_ => warnMsg.DeleteAsync());
                 }
             }

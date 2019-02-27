@@ -2,7 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Volte.Core.Discord;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 using Volte.Core.Services;
 using Qmmands;
 using Volte.Core.Extensions;
@@ -31,9 +31,9 @@ namespace Volte.Core.Commands
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
         public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
-        public Embed CreateEmbed(string content) => Utils.CreateEmbed(this, content);
-        public EmbedBuilder CreateEmbedBuilder(string content) => Utils.CreateEmbed(this, content).ToEmbedBuilder();
-        public EmbedBuilder CreateEmbedBuilder() => Utils.CreateEmbed(this, string.Empty).ToEmbedBuilder();
+        public Embed CreateEmbed(string content) => Util.CreateEmbed(this, content);
+        public EmbedBuilder CreateEmbedBuilder(string content) => Util.CreateEmbed(this, content).ToEmbedBuilder();
+        public EmbedBuilder CreateEmbedBuilder() => Util.CreateEmbed(this, string.Empty).ToEmbedBuilder();
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
         public Task ReplyAsync(Embed embed) => embed.SendTo(Channel);
         public Task ReplyAsync(EmbedBuilder embed) => embed.SendTo(Channel);

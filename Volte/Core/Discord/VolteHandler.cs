@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Commands;
+using Volte.Core.Data;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
@@ -25,7 +26,8 @@ namespace Volte.Core.Discord
         private readonly PingChecksService _pingchecks = _services.GetRequiredService<PingChecksService>();
         private readonly CommandService _service = _services.GetRequiredService<CommandService>();
         private readonly GuildService _guild = _services.GetRequiredService<GuildService>();
-        private readonly WelcomeService _welcome = _services.GetRequiredService<WelcomeService>();
+        private readonly DefaultWelcomeService _defaultWelcome = _services.GetRequiredService<DefaultWelcomeService>();
+        private readonly ImageWelcomeService _imageWelcome = _services.GetRequiredService<ImageWelcomeService>();
         private readonly AutoroleService _autorole = _services.GetRequiredService<AutoroleService>();
         private readonly EventService _event = _services.GetRequiredService<EventService>();
         private readonly LoggingService _logger = _services.GetRequiredService<LoggingService>();
@@ -43,8 +45,14 @@ namespace Volte.Core.Discord
             _client.Log += _logger.Log;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
-            _client.UserJoined += _welcome.JoinAsync;
-            _client.UserLeft += _welcome.LeaveAsync;
+            _client.UserJoined += async user =>
+            {
+                if (Config.WelcomeApiKey.IsNullOrWhitespace())
+                    await _defaultWelcome.JoinAsync(user);
+                else
+                    await _imageWelcome.JoinAsync(user);
+            };
+            _client.UserLeft += _defaultWelcome.LeaveAsync;
             _client.UserJoined += _autorole.ApplyRoleAsync;
             _client.Ready += _event.OnReady;
             _client.MessageReceived += async s =>
@@ -68,7 +76,6 @@ namespace Volte.Core.Discord
 
         private async Task HandleMessageAsync(VolteContext ctx)
         {
-
             //pass the message-reliant services what they need
             await _blacklist.CheckMessageAsync(ctx);
             await _antilink.CheckMessageAsync(ctx);
