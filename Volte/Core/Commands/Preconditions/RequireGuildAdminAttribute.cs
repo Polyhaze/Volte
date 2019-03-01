@@ -1,10 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Qmmands;
-using Volte.Core.Helpers;
-using ICommandContext = Qmmands.ICommandContext;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Commands.Preconditions
 {
@@ -13,7 +10,7 @@ namespace Volte.Core.Commands.Preconditions
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            if (!UserUtils.IsAdmin(ctx))
+            if (!UserUtil.IsAdmin(ctx))
             {
                 await ctx.ReactFailureAsync();
                 return CheckResult.Unsuccessful("Insufficient permission.");

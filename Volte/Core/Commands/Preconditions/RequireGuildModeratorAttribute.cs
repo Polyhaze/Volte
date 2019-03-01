@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Commands.Preconditions
 {
@@ -10,7 +10,7 @@ namespace Volte.Core.Commands.Preconditions
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            if (!UserUtils.IsModerator(ctx))
+            if (!UserUtil.IsModerator(ctx))
             {
                 await ctx.ReactFailureAsync();
                 return CheckResult.Unsuccessful("Insufficient permission.");

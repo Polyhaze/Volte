@@ -81,7 +81,7 @@ namespace Volte.Core.Utils
         public static bool IsModerator(VolteContext ctx)
         {
             var c = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
-            return HasRole(ctx.User, c.ModRole) || IsAdmin(ctx) || IsGuildOwner(ctx);
+            return HasRole(ctx.User, c.ModerationOptions.ModRole) || IsAdmin(ctx) || IsGuildOwner(ctx);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Volte.Core.Utils
         public static bool IsAdmin(VolteContext ctx)
         {
             var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
-            var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.AdminRole);
+            var adminRole = ctx.Guild.Roles.FirstOrDefault(r => r.Id == config.ModerationOptions.AdminRole);
             return adminRole != null && ctx.User.Roles.Contains(adminRole) || IsGuildOwner(ctx);
         }
     }

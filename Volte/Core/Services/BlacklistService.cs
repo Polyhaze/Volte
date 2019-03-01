@@ -11,7 +11,7 @@ namespace Volte.Core.Services
         {
             var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild.Id);
 
-            foreach (var word in config.Blacklist)
+            foreach (var word in config.ModerationOptions.Blacklist)
                 if (ctx.Message.Content.ContainsIgnoreCase(word))
                 {
                     await ctx.Message.DeleteAsync();

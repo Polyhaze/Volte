@@ -53,7 +53,8 @@ namespace Volte.Core.Commands.Modules.Owner
                     var imports = new[]
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
-                        "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO", "System.Threading"
+                        "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO", "System.Threading",
+                        "Volte.Core.Utils"
                     };
 
                     sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()

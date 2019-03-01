@@ -8,7 +8,7 @@ namespace Volte.Core.Services
 {
     public class DatabaseService : IService
     {
-        public readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
+        public static readonly LiteDatabase Database = new LiteDatabase(@"data/Volte.db");
 
         public DiscordServer GetConfig(IGuild guild)
         {
@@ -44,17 +44,22 @@ namespace Volte.Core.Services
                 GuildOwnerId = guild.OwnerId,
                 Autorole = string.Empty,
                 CommandPrefix = "$",
-                WelcomeChannel = ulong.MinValue,
-                WelcomeMessage = string.Empty,
-                LeavingMessage = string.Empty,
-                WelcomeColorR = 112,
-                WelcomeColorG = 0,
-                WelcomeColorB = 251,
-                Antilink = false,
                 DeleteMessageOnCommand = false,
-                ModRole = ulong.MinValue,
-                AdminRole = ulong.MinValue,
-                MassPingChecks = false
+                WelcomeOptions = new WelcomeOptions
+                {
+                    WelcomeChannel = ulong.MinValue,
+                    WelcomeMessage = string.Empty,
+                    WelcomeColorR = 112,
+                    WelcomeColorG = 0,
+                    WelcomeColorB = 251
+                },
+                ModerationOptions = new ModerationOptions
+                {
+                    ModRole = ulong.MinValue,
+                    AdminRole = ulong.MinValue,
+                    MassPingChecks = false,
+                    Antilink = false
+                }
             };
         }
     }

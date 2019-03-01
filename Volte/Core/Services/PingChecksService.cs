@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Services
 {
@@ -11,7 +11,7 @@ namespace Volte.Core.Services
         public async Task CheckMessageAsync(VolteContext ctx)
         {
             var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
-            if (!config.MassPingChecks || UserUtils.IsAdmin(ctx)) return;
+            if (!config.ModerationOptions.MassPingChecks || UserUtil.IsAdmin(ctx)) return;
             var content = ctx.Message.Content;
             if (content.ContainsIgnoreCase("@everyone") ||
                 content.ContainsIgnoreCase("@here") ||

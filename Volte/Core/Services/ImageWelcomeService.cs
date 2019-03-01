@@ -24,7 +24,7 @@ namespace Volte.Core.Services
         private string FormatUrl(SocketGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
-            var c = Color.FromArgb(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB);
+            var c = Color.FromArgb(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG, config.WelcomeOptions.WelcomeColorB);
             var color = string.Concat(c.R.ToString("X2"), c.G.ToString("X2"), c.G.ToString("X2"));
             return _url.Replace("{avatarUrl}", user.GetAvatarUrl())
                 .Replace("{username}%23{discrim}", $"{user.Username}%23{user.Discriminator}")
@@ -41,7 +41,7 @@ namespace Volte.Core.Services
             var img = (await 
                 (await HttpClient.GetAsync(FormatUrl(user), HttpCompletionOption.ResponseHeadersRead)
                 ).Content.ReadAsByteArrayAsync()).ToStream();
-            var channelId = _db.GetConfig(user.Guild).WelcomeChannel;
+            var channelId = _db.GetConfig(user.Guild).WelcomeOptions.WelcomeChannel;
             var c = user.Guild.GetTextChannel(channelId);
             await c.SendFileAsync(img, $"welcome-{user.Id}.png", string.Empty);
         }

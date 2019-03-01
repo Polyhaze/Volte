@@ -22,7 +22,7 @@ namespace Volte.Core.Commands.Modules.Admin
             }
             else
             {
-                config.ModRole = role.Id;
+                config.ModerationOptions.ModRole = role.Id;
                 Db.UpdateConfig(config);
                 await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
                     .SendTo(Context.Channel);

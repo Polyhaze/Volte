@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Core.Extensions;
-using Volte.Core.Helpers;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Commands.Modules.Help
 {
@@ -20,9 +20,9 @@ namespace Volte.Core.Commands.Modules.Help
                 return;
             }
 
-            if ((c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtils.IsAdmin(Context)) ||
-                (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtils.IsBotOwner(Context.User)) ||
-                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtils.IsModerator(Context)))
+            if ((c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context)) ||
+                (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User)) ||
+                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context)))
             {
                 await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
                     .SendTo(Context.Channel);

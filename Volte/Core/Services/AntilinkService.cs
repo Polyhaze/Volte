@@ -15,7 +15,7 @@ namespace Volte.Core.Services
             var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) m = new[] {ctx.Message.Content};
 
-            if (!config.Antilink || UserUtil.IsAdmin(ctx)) return;
+            if (!config.ModerationOptions.Antilink || UserUtil.IsAdmin(ctx)) return;
 
             foreach (var part in m)
             {

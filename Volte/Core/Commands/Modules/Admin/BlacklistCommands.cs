@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task BlacklistAddAsync([Remainder] string phrase)
         {
             var config = Db.GetConfig(Context.Guild);
-            config.Blacklist.Add(phrase);
+            config.ModerationOptions.Blacklist.Add(phrase);
             Db.UpdateConfig(config);
             await Context.CreateEmbed($"Added **{phrase}** to the blacklist.").SendTo(Context.Channel);
         }
@@ -26,9 +26,10 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task BlacklistRemoveAsync([Remainder] string phrase)
         {
             var config = Db.GetConfig(Context.Guild);
-            if (config.Blacklist.ContainsIgnoreCase(phrase))
+            if (config.ModerationOptions.Blacklist.ContainsIgnoreCase(phrase))
             {
-                config.Blacklist.RemoveAt(config.Blacklist.FindIndex(p => p.EqualsIgnoreCase(phrase)));
+                config.ModerationOptions.Blacklist.RemoveAt(
+                    config.ModerationOptions.Blacklist.FindIndex(p => p.EqualsIgnoreCase(phrase)));
                 await Context.CreateEmbed($"Removed **{phrase}** from the word blacklist.").SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
@@ -45,9 +46,11 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task BlacklistClearAsync()
         {
             var config = Db.GetConfig(Context.Guild);
-            await Context.CreateEmbed($"Cleared the custom commands, containing **{config.Blacklist.Count}** words.")
+            await Context
+                .CreateEmbed(
+                    $"Cleared the custom commands, containing **{config.ModerationOptions.Blacklist.Count}** words.")
                 .SendTo(Context.Channel);
-            config.Blacklist.Clear();
+            config.ModerationOptions.Blacklist.Clear();
             Db.UpdateConfig(config);
         }
     }

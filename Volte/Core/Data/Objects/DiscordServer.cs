@@ -6,12 +6,11 @@ namespace Volte.Core.Data.Objects
 {
     public class DiscordServer : object
     {
-        #region ValueDeclaration
-
-        public DiscordServer()
+        internal DiscordServer()
         {
+            ModerationOptions = new ModerationOptions();
+            WelcomeOptions = new WelcomeOptions();
             SelfRoles = new List<string>();
-            Blacklist = new List<string>();
             Tags = new List<Tag>();
         }
 
@@ -20,22 +19,11 @@ namespace Volte.Core.Data.Objects
         public ulong GuildOwnerId { get; set; }
         public string Autorole { get; set; }
         public string CommandPrefix { get; set; }
-        public ulong WelcomeChannel { get; set; }
-        public string WelcomeMessage { get; set; }
-        public string LeavingMessage { get; set; }
-        public int WelcomeColorR { get; set; }
-        public int WelcomeColorG { get; set; }
-        public int WelcomeColorB { get; set; }
-        public bool MassPingChecks { get; set; }
-        public bool Antilink { get; set; }
-        public ulong ModRole { get; set; }
-        public ulong AdminRole { get; set; }
+        public WelcomeOptions WelcomeOptions { get; set; }
+        public ModerationOptions ModerationOptions { get; set; }
         public bool DeleteMessageOnCommand { get; set; }
         public List<string> SelfRoles { get; set; }
-        public List<string> Blacklist { get; set; }
         public List<Tag> Tags { get; set; }
-
-        #endregion
 
         public override string ToString()
         {

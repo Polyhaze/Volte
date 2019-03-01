@@ -14,48 +14,54 @@ namespace Volte.Core.Services
         internal async Task JoinAsync(SocketGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
-            if (config.WelcomeMessage.IsNullOrEmpty()) return; //we don't want to send an empty join message
-            var welcomeMessage = config.WelcomeMessage
+            if (config.WelcomeOptions.WelcomeMessage.IsNullOrEmpty())
+                return; //we don't want to send an empty join message
+            var welcomeMessage = config.WelcomeOptions.WelcomeMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
+            var c = user.Guild.TextChannels.FirstOrDefault(channel =>
+                channel.Id.Equals(config.WelcomeOptions.WelcomeChannel));
 
-            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
+            if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
+                    .WithColor(new Color(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG,
+                        config.WelcomeOptions.WelcomeColorB))
                     .WithDescription(welcomeMessage)
                     .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
-                await user.Guild.GetTextChannel(config.WelcomeChannel)
-                    .SendMessageAsync(string.Empty, false, embed.Build());
+                await embed.SendTo(c);
             }
         }
 
         internal async Task LeaveAsync(SocketGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
-            if (config.LeavingMessage.IsNullOrEmpty()) return; //we don't want to send an empty leaving message
-            var leavingMessage = config.LeavingMessage
+            if (config.WelcomeOptions.LeavingMessage.IsNullOrEmpty()) return;
+            var leavingMessage = config.WelcomeOptions.LeavingMessage
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator);
-
-            if (user.Guild.TextChannels.Any(c => c.Id == config.WelcomeChannel)) //if the channel even exists
+            var c = user.Guild.TextChannels.FirstOrDefault(channel =>
+                channel.Id.Equals(config.WelcomeOptions.WelcomeChannel));
+            if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeColorR, config.WelcomeColorG, config.WelcomeColorB))
+                    .WithColor(new Color(config.WelcomeOptions.WelcomeColorR,
+                        config.WelcomeOptions.WelcomeColorG,
+                        config.WelcomeOptions.WelcomeColorB)
+                    )
                     .WithDescription(leavingMessage)
                     .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
-                await VolteBot.Client.GetGuild(user.Guild.Id).GetTextChannel(config.WelcomeChannel)
-                    .SendMessageAsync(string.Empty, false, embed.Build());
+                await embed.SendTo(c);
             }
         }
     }

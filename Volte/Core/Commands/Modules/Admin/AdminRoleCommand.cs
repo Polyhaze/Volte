@@ -20,7 +20,7 @@ namespace Volte.Core.Commands.Modules.Admin
             var role = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(roleName));
             if (role != null)
             {
-                config.AdminRole = role.Id;
+                config.ModerationOptions.AdminRole = role.Id;
                 Db.UpdateConfig(config);
                 embed.WithDescription($"Set **{role.Name}** as the Admin role for this server.");
             }
