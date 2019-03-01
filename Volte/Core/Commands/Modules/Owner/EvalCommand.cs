@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
@@ -18,8 +17,6 @@ namespace Volte.Core.Commands.Modules.Owner
 {
     public partial class OwnerModule : VolteModule
     {
-        public new LoggingService Logger { get; set; }
-
         [Command("Eval")]
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
@@ -55,8 +52,7 @@ namespace Volte.Core.Commands.Modules.Owner
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
                         "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO",
-                        "System.Threading",
-                        "Volte.Core.Utils"
+                        "System.Threading", "Volte.Core.Utils"
                     };
 
                     sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
@@ -73,7 +69,7 @@ namespace Volte.Core.Commands.Modules.Owner
                             await msg.ModifyAsync(m => m.Embed = embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
                                 .AddField("Input", Format.Code(code, "cs"))
-                                .AddField("Output", Format.Code(res.ToString(), "diff")).Build());
+                                .AddField("Output", Format.Code(res.ToString(), "css")).Build());
                         }
                         else
                         {

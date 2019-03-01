@@ -7,7 +7,7 @@
     <NoWin32Manifest>true</NoWin32Manifest>
     <Authors>GreemDev</Authors>
     <Company>GreemDev</Company>
-    <PackageProjectUrl>https://volte.greemdev.net</PackageProjectUrl>
+    <PackageProjectUrl>https://greemdev.net/Volte</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GreemDev/Volte</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
