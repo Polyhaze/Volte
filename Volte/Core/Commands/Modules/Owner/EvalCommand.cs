@@ -12,6 +12,7 @@ using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 using Volte.Core.Services;
+using Volte.Core.Utils;
 
 namespace Volte.Core.Commands.Modules.Owner
 {
@@ -23,9 +24,9 @@ namespace Volte.Core.Commands.Modules.Owner
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
-        public Task EvalAsync([Remainder] string code)
+        public async Task EvalAsync([Remainder] string code)
         {
-            new Thread(async () =>
+            await ExecutorUtil.ExecuteAsync(async () =>
             {
                 try
                 {
@@ -53,7 +54,8 @@ namespace Volte.Core.Commands.Modules.Owner
                     var imports = new[]
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
-                        "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO", "System.Threading",
+                        "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO",
+                        "System.Threading",
                         "Volte.Core.Utils"
                     };
 
@@ -101,8 +103,7 @@ namespace Volte.Core.Commands.Modules.Owner
                 {
                     await Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
                 }
-            }).Start();
-            return Task.CompletedTask;
+            });
         }
     }
 }
