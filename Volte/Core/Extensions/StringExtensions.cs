@@ -9,7 +9,7 @@ namespace Volte.Core.Extensions
             str.Equals(otherString, StringComparison.OrdinalIgnoreCase);
 
         public static bool ContainsIgnoreCase(this string str, string value) =>
-            value.Contains(value, StringComparison.OrdinalIgnoreCase);
+            str.Contains(value, StringComparison.OrdinalIgnoreCase);
 
         public static bool IsNullOrWhitespace(this string str) => string.IsNullOrWhiteSpace(str);
 

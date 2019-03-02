@@ -11,12 +11,17 @@ namespace Volte.Core.Services
         public async Task CheckMessageAsync(VolteContext ctx)
         {
             var config = VolteBot.GetRequiredService<DatabaseService>().GetConfig(ctx.Guild);
-            if (!config.ModerationOptions.MassPingChecks || UserUtil.IsAdmin(ctx)) return;
-            var content = ctx.Message.Content;
-            if (content.ContainsIgnoreCase("@everyone") ||
-                content.ContainsIgnoreCase("@here") ||
-                ctx.Message.MentionedUsers.Count > 10)
-                await ctx.Message.DeleteAsync();
+            if (config.ModerationOptions.MassPingChecks && !UserUtil.IsAdmin(ctx))
+            {
+                var content = ctx.Message.Content;
+                if (content.ContainsIgnoreCase("@everyone") ||
+                    content.ContainsIgnoreCase("@here") ||
+                    ctx.Message.MentionedUsers.Count > 10)
+                {
+                    await ctx.Message.DeleteAsync();
+                }
+            }
+            
         }
     }
 }
