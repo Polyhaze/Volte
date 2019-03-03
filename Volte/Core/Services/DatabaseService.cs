@@ -59,6 +59,12 @@ namespace Volte.Core.Services
                     AdminRole = ulong.MinValue,
                     MassPingChecks = false,
                     Antilink = false
+                },
+                VerificationOptions = new VerificationOptions
+                {
+                    Enabled = false,
+                    MessageId = ulong.MinValue,
+                    RoleId = ulong.MinValue
                 }
             };
         }

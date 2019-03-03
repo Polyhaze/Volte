@@ -31,6 +31,7 @@ namespace Volte.Core.Discord
         private readonly AutoroleService _autorole = _services.GetRequiredService<AutoroleService>();
         private readonly EventService _event = _services.GetRequiredService<EventService>();
         private readonly LoggingService _logger = _services.GetRequiredService<LoggingService>();
+        private readonly VerificationService _verification = _services.GetRequiredService<VerificationService>();
 
 
         public async Task InitAsync()
@@ -45,6 +46,7 @@ namespace Volte.Core.Discord
             _client.Log += _logger.Log;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
+            _client.ReactionAdded += _verification.CheckReactionAsync;
             _client.UserJoined += async user =>
             {
                 if (Config.WelcomeApiKey.IsNullOrWhitespace())

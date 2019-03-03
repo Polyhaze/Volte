@@ -21,6 +21,7 @@ namespace Volte.Core.Data.Objects
         public string CommandPrefix { get; set; }
         public WelcomeOptions WelcomeOptions { get; set; }
         public ModerationOptions ModerationOptions { get; set; }
+        public VerificationOptions VerificationOptions { get; set; }
         public bool DeleteMessageOnCommand { get; set; }
         public List<string> SelfRoles { get; set; }
         public List<Tag> Tags { get; set; }
