@@ -22,7 +22,8 @@ namespace Volte.Core.Commands.Modules.Help
 
             if ((c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context)) ||
                 (c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User)) ||
-                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context)))
+                (c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context)) ||
+                (c.Module.SanitizeName().EqualsIgnoreCase("serveradmin") && !UserUtil.IsAdmin(Context)))
             {
                 await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
                     .SendTo(Context.Channel);

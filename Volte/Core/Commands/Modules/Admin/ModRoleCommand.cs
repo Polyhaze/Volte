@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -10,17 +11,12 @@ namespace Volte.Core.Commands.Modules.Admin
     {
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
-        [Remarks("Usage: |prefix|modrole {roleName}")]
+        [Remarks("Usage: |prefix|modrole {role}")]
         [RequireGuildAdmin]
-        public async Task ModRoleAsync([Remainder] string roleName)
+        public async Task ModRoleAsync(SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
-            var role = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(roleName));
-            if (role is null)
-            {
-                await Context.CreateEmbed($"{roleName} doesn't exist in this server.").SendTo(Context.Channel);
-            }
-            else
+            if (role != null)
             {
                 config.ModerationOptions.ModRole = role.Id;
                 Db.UpdateConfig(config);
