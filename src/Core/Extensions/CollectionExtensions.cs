@@ -14,9 +14,10 @@ namespace Volte.Core.Extensions
             return memStream;
         }
 
-        public static bool ContainsIgnoreCase(this IEnumerable<string> strings, string element)
-        {
-            return strings.Contains(element, StringComparer.OrdinalIgnoreCase);
-        }
+        public static bool ContainsIgnoreCase(this IEnumerable<string> strings, string element) =>
+            strings.Contains(element, StringComparer.OrdinalIgnoreCase);
+
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> coll, Func<T, TKey> selector) =>
+            coll.GroupBy(selector).Select(x => x.FirstOrDefault());
     }
 }

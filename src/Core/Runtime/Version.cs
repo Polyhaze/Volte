@@ -6,7 +6,7 @@
         public static int Minor { get; } = 2;
         public static int Patch { get; } = 1;
         public static int Hotfix { get; } = 0;
-        public static ReleaseType ReleaseType { get; } = ReleaseType.Release;
+        public static ReleaseType ReleaseType { get; } = ReleaseType.Development;
         public static string FullVersion { get; } = $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
     }
 

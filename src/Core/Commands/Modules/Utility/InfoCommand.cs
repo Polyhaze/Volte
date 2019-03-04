@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,15 +18,18 @@ namespace Volte.Core.Commands.Modules.Utility
         [Remarks("Usage: |prefix|info")]
         public async Task InfoAsync()
         {
-            await Context.CreateEmbedBuilder(string.Empty)
-                .AddField("Version", Version.FullVersion)
-                .AddField("Author", "<@168548441939509248>")
-                .AddField("Language", "C# - Discord.Net 2.0.1")
-                .AddField("Server Count", Context.Client.Guilds.Count)
-                .AddField("Invite Me", $"`{Db.GetConfig(Context.Guild).CommandPrefix}invite`")
-                .AddField(".NET Core Version", GetNetCoreVersion())
-                .AddField("Operating System", Environment.OSVersion)
-                .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3))
+            await Context.CreateEmbedBuilder()
+                .AddField("Version", Version.FullVersion, true)
+                .AddField("Author",
+                    "<@168548441939509248> and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
+                .AddField("RAM Usage", $"{GetRamUsage()}MB", true)
+                .AddField("Language", "C# - Discord.Net 2.0.1", true)
+                .AddField("Servers", Context.Client.Guilds.Count, true)
+                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(), true)
+                .AddField("Invite Me", $"`{Db.GetConfig(Context.Guild).CommandPrefix}invite`", true)
+                .AddField(".NET Core Version", GetNetCoreVersion(), true)
+                .AddField("Operating System", Environment.OSVersion, true)
+                .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl())
                 .SendTo(Context.Channel);
         }
@@ -38,6 +42,11 @@ namespace Volte.Core.Commands.Modules.Utility
                     AppDomain.CurrentDomain.GetAssemblies().First(x => x.GetName().Name == "System.Private.CoreLib")
                         .Location), ".version")
             ).Split('\n')[1];
+        }
+
+        private string GetRamUsage()
+        {
+            return Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 3).ToString(CultureInfo.CurrentCulture);
         }
     }
 }
