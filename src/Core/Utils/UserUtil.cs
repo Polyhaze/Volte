@@ -27,7 +27,7 @@ namespace Volte.Core.Utils
         /// <returns>System.Boolean</returns>
         public static bool IsGuildOwner(IUser user, IGuild guild)
         {
-            return guild.OwnerId.Equals(user.Id);
+            return guild.OwnerId.Equals(user.Id) || Config.Owner.Equals(user.Id);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Volte.Core.Utils
         /// <returns></returns>
         public static bool IsGuildOwner(VolteContext ctx)
         {
-            return ctx.Guild.OwnerId.Equals(ctx.User.Id);
+            return IsGuildOwner(ctx.User, ctx.Guild);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Volte.Core.Utils
         /// <returns>System.Boolean</returns>
         public static bool HasRole(IGuildUser user, IRole role)
         {
-            return HasRole(user, role.Id);
+            return HasRole(user, role.Id) || Config.Owner.Equals(user.Id);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Volte.Core.Utils
         }
 
         /// <summary>
-        ///     Checks if the given IUser (casted to IGuildUser) has the given IRole Id.
+        ///     Checks if the given IUser (cast to IGuildUser) has the given IRole Id.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="roleId"></param>
@@ -104,7 +104,7 @@ namespace Volte.Core.Utils
         /// <returns>System.Boolean</returns>
         public static bool HasRole(IGuildUser user, ulong roleId)
         {
-            return user.RoleIds.Contains(roleId);
+            return user.RoleIds.Contains(roleId) || Config.Owner.Equals(user.Id);
         }
 
         /// <summary>
