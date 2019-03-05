@@ -15,13 +15,11 @@ namespace Volte.Core.Utils
         /// <param name="content">Embed content.</param>
         /// <returns>Built EmbedBuilder</returns>
         public static Embed CreateEmbed(VolteContext ctx, object content)
-        {
-            return new EmbedBuilder()
+            => new EmbedBuilder()
                 .WithAuthor(ctx.Message.Author)
                 .WithColor(Config.SuccessColor)
                 .WithDescription(content.ToString())
                 .Build();
-        }
 
 
         /// <summary>
@@ -31,9 +29,7 @@ namespace Volte.Core.Utils
         /// <param name="e">Embed to send</param>
         /// <returns></returns>
         public static Task<IUserMessage> Send(IMessageChannel c, Embed e)
-        {
-            return c.SendMessageAsync(string.Empty, false, e);
-        }
+            => c.SendMessageAsync(string.Empty, false, e);
 
         /// <summary>
         ///     Sends the passed in String to the passed in SocketMessageChannel.
@@ -42,13 +38,9 @@ namespace Volte.Core.Utils
         /// <param name="m">Message to send</param>
         /// <returns></returns>
         public static Task<IUserMessage> Send(IMessageChannel c, string m)
-        {
-            return c.SendMessageAsync(m);
-        }
+            => c.SendMessageAsync(m);
 
         public static Task React(SocketUserMessage m, string rawEmoji)
-        {
-            return m.AddReactionAsync(new Emoji(rawEmoji));
-        }
+            => m.AddReactionAsync(new Emoji(rawEmoji));
     }
 }

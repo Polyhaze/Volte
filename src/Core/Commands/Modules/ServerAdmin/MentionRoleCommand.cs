@@ -8,8 +8,7 @@ namespace Volte.Core.Commands.Modules.ServerAdmin
     public partial class ServerAdminModule : VolteModule
     {
         [Command("MentionRole", "Menro", "Mr")]
-        [Description(
-            "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
+        [Description("Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [Remarks("Usage: |prefix|mentionrole {role}")]
         [RequireGuildAdmin]
         public async Task MentionRoleAsync([Remainder] SocketRole role)

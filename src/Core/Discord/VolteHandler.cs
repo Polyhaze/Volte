@@ -59,14 +59,13 @@ namespace Volte.Core.Discord
             _client.Ready += _event.OnReady;
             _client.MessageReceived += async s =>
             {
-                if (s.Author.IsBot) return;
-                if (s.Channel is IDMChannel)
+                if (!(s is SocketUserMessage msg)) return;
+                if (msg.Author.IsBot) return;
+                if (msg.Channel is IDMChannel)
                 {
-                    await s.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
                     return;
                 }
-
-                if (!(s is SocketUserMessage msg)) return;
 
                 var ctx = new VolteContext(_client, msg);
                 await _blacklist.CheckMessageAsync(ctx);
@@ -84,7 +83,7 @@ namespace Volte.Core.Discord
             await _pingchecks.CheckMessageAsync(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
-            var prefixes = new List<string> {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
+            var prefixes = new [] {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
             if (CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
@@ -96,7 +95,7 @@ namespace Volte.Core.Discord
                                     ?? _service.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
                 sw.Stop();
-                await _services.GetRequiredService<EventService>().OnCommandAsync(targetCommand, result, ctx, sw);
+                await _event.OnCommandAsync(targetCommand, result, ctx, sw);
 
                 if (config.DeleteMessageOnCommand) await ctx.Message.DeleteAsync();
             }
