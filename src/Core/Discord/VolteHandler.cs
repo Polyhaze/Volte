@@ -42,7 +42,7 @@ namespace Volte.Core.Discord
             await _logger.Log(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
             //register event listeners
-            //_service.CommandExecuted += _event.OnCommand;
+            //_service.CommandExecuted += _event.OnCommandAsync;
             _client.Log += _logger.Log;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
