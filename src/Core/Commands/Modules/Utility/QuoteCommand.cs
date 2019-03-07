@@ -3,7 +3,6 @@ using Discord;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Data;
 using Volte.Core.Extensions;
 
 namespace Volte.Core.Commands.Modules.Utility
@@ -22,11 +21,9 @@ namespace Volte.Core.Commands.Modules.Utility
                     .SendTo(Context.Channel);
                 return;
             }
-            await new EmbedBuilder()
+            await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
-                .WithColor(Config.SuccessColor)
-                .WithDescription($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithFooter(m.Timestamp.Humanize())
                 .SendTo(Context.Channel);
         }
@@ -43,11 +40,9 @@ namespace Volte.Core.Commands.Modules.Utility
                     .SendTo(Context.Channel);
                 return;
             }
-            await new EmbedBuilder()
+            await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
-                .WithColor(Config.SuccessColor)
-                .WithDescription($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithFooter(m.Timestamp.Humanize())
                 .SendTo(Context.Channel);
         }
