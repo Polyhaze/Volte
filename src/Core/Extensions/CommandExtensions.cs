@@ -25,7 +25,6 @@ namespace Volte.Core.Extensions
         internal static void AddTypeParsers(this CommandService service)
         {
             service.AddTypeParser(new UserParser<SocketGuildUser>());
-            service.AddTypeParser(new UserParser<SocketUser>());
             service.AddTypeParser(new RoleParser<SocketRole>());
             service.AddTypeParser(new ChannelParser<SocketTextChannel>());
             service.AddTypeParser(new EmoteParser());
