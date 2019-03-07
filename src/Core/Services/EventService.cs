@@ -13,7 +13,7 @@ using Volte.Core.Extensions;
 #pragma warning disable 1998
 namespace Volte.Core.Services
 {
-    internal class EventService : IService
+    public sealed class EventService : IService
     {
         private readonly LoggingService _logger = VolteBot.GetRequiredService<LoggingService>();
 

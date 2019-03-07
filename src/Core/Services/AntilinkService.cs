@@ -7,7 +7,7 @@ using Volte.Core.Utils;
 
 namespace Volte.Core.Services
 {
-    internal class AntilinkService : IService
+    public sealed class AntilinkService : IService
     {
         internal async Task CheckMessageAsync(VolteContext ctx)
         {

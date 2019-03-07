@@ -7,7 +7,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    public class DefaultWelcomeService : IService
+    public sealed class DefaultWelcomeService : IService
     {
         private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
 

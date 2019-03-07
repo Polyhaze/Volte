@@ -18,21 +18,48 @@ namespace Volte.Core.Discord
 {
     public class VolteHandler
     {
-        private static readonly IServiceProvider _services = VolteBot.ServiceProvider;
-        private readonly AntilinkService _antilink = _services.GetRequiredService<AntilinkService>();
-        private readonly BlacklistService _blacklist = _services.GetRequiredService<BlacklistService>();
-        private readonly DiscordSocketClient _client = VolteBot.Client;
-        private readonly DatabaseService _db = _services.GetRequiredService<DatabaseService>();
-        private readonly PingChecksService _pingchecks = _services.GetRequiredService<PingChecksService>();
-        private readonly CommandService _service = _services.GetRequiredService<CommandService>();
-        private readonly GuildService _guild = _services.GetRequiredService<GuildService>();
-        private readonly DefaultWelcomeService _defaultWelcome = _services.GetRequiredService<DefaultWelcomeService>();
-        private readonly ImageWelcomeService _imageWelcome = _services.GetRequiredService<ImageWelcomeService>();
-        private readonly AutoroleService _autorole = _services.GetRequiredService<AutoroleService>();
-        private readonly EventService _event = _services.GetRequiredService<EventService>();
-        private readonly LoggingService _logger = _services.GetRequiredService<LoggingService>();
-        private readonly VerificationService _verification = _services.GetRequiredService<VerificationService>();
+        private readonly AntilinkService _antilink;
+        private readonly BlacklistService _blacklist;
+        private readonly DiscordSocketClient _client;
+        private readonly DatabaseService _db;
+        private readonly PingChecksService _pingchecks;
+        private readonly CommandService _service;
+        private readonly GuildService _guild;
+        private readonly DefaultWelcomeService _defaultWelcome;
+        private readonly ImageWelcomeService _imageWelcome;
+        private readonly AutoroleService _autorole;
+        private readonly EventService _event;
+        private readonly LoggingService _logger;
+        private readonly VerificationService _verification;
 
+        public VolteHandler(AntilinkService antilinkService,
+                            BlacklistService blacklistService,
+                            DiscordSocketClient client,
+                            DatabaseService databaseService,
+                            PingChecksService pingChecksService,
+                            CommandService commandService,
+                            GuildService guildService,
+                            DefaultWelcomeService defaultWelcomeService,
+                            ImageWelcomeService imageWelcomeService,
+                            AutoroleService autoroleService,
+                            EventService eventService,
+                            LoggingService loggingService,
+                            VerificationService verificationService)
+        {
+            _antilink = antilinkService;
+            _blacklist = blacklistService;
+            _client = client;
+            _db = databaseService;
+            _pingchecks = pingChecksService;
+            _service = commandService;
+            _guild = guildService;
+            _defaultWelcome = defaultWelcomeService;
+            _imageWelcome = imageWelcomeService;
+            _autorole = autoroleService;
+            _event = eventService;
+            _logger = loggingService;
+            _verification = verificationService;
+        }
 
         public async Task InitAsync()
         {
@@ -83,12 +110,12 @@ namespace Volte.Core.Discord
             await _pingchecks.CheckMessageAsync(ctx);
 
             var config = _db.GetConfig(ctx.Guild);
-            var prefixes = new [] {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
+            var prefixes = new[] {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
             if (CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
                 var sw = Stopwatch.StartNew();
-                var result = await _service.ExecuteAsync(cmd, ctx, _services);
+                var result = await _service.ExecuteAsync(cmd, ctx, VolteBot.ServiceProvider);
 
                 if (result is CommandNotFoundResult) return;
                 var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))

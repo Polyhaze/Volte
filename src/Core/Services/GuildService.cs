@@ -11,7 +11,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    public class GuildService : IService
+    public sealed class GuildService : IService
     {
         public async Task OnJoinAsync(SocketGuild guild)
         {

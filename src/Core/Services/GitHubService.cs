@@ -5,7 +5,7 @@ using Octokit;
 
 namespace Volte.Core.Services
 {
-    public class GitHubService : IService
+    public sealed class GitHubService : IService
     {
         public readonly GitHubClient GitHub = new GitHubClient(new ProductHeaderValue("GreemDev"));
 

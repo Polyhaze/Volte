@@ -6,7 +6,7 @@ using Volte.Core.Utils;
 
 namespace Volte.Core.Services
 {
-    public class PingChecksService : IService
+    public sealed class PingChecksService : IService
     {
         public async Task CheckMessageAsync(VolteContext ctx)
         {

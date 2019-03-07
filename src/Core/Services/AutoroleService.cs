@@ -6,7 +6,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    internal class AutoroleService : IService
+    public sealed class AutoroleService : IService
     {
         internal async Task ApplyRoleAsync(SocketGuildUser user)
         {

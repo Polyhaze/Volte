@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using static Colorful.Console;
+using Console = Colorful.Console;
 using Discord;
-using Discord.Commands;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 using Color = System.Drawing.Color;
@@ -12,7 +11,7 @@ using Version = Volte.Core.Runtime.Version;
 
 namespace Volte.Core.Services
 {
-    public class LoggingService : IService
+    public sealed class LoggingService : IService
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
@@ -50,13 +49,13 @@ namespace Volte.Core.Services
                 Append($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
 
 
-            Write(Environment.NewLine);
+            Console.Write(Environment.NewLine);
         }
 
         private void Append(string m, Color c)
         {
-            ForegroundColor = c;
-            Write(m);
+            Console.ForegroundColor = c;
+            Console.Write(m);
         }
 
         private (Color, string) VerifySource(LogSource source)

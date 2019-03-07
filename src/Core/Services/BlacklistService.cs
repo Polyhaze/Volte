@@ -5,7 +5,7 @@ using Volte.Core.Extensions;
 
 namespace Volte.Core.Services
 {
-    internal class BlacklistService : IService
+    public sealed class BlacklistService : IService
     {
         internal async Task CheckMessageAsync(VolteContext ctx)
         {

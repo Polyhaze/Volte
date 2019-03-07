@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace Volte.Core.Services
 {
-    public class DebugService : IService
+    public sealed class DebugService : IService
     {
         public string Execute(string config)
         {
