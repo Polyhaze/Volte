@@ -9,7 +9,7 @@ namespace Volte.Core.Commands.Modules.Admin
 {
     public partial class AdminModule : VolteModule
     {
-        [Command("SelfRoleAdd", "SrAdd")]
+        [Command("SelfRoleAdd", "SrA", "SrAdd")]
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         [RequireGuildAdmin]
@@ -18,11 +18,11 @@ namespace Volte.Core.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Add(role.Name);
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles for this guild.")
+            await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles list for this guild.")
                 .SendTo(Context.Channel);
         }
 
-        [Command("SelfRoleRemove", "SrRem")]
+        [Command("SelfRoleRemove", "SrR", "SrRem")]
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         [RequireGuildAdmin]
