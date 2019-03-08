@@ -83,7 +83,7 @@ namespace Volte.Core.Discord
             };
             _client.UserLeft += _defaultWelcome.LeaveAsync;
             _client.UserJoined += _autorole.ApplyRoleAsync;
-            _client.Ready += _event.OnReady;
+            _client.Ready += async () => await _event.OnReady(_client);
             _client.MessageReceived += async s =>
             {
                 if (!(s is SocketUserMessage msg)) return;

@@ -13,12 +13,22 @@ namespace Volte.Core.Services
 {
     public sealed class GuildService : IService
     {
+        private readonly LoggingService _logger;
+
+        public GuildService(LoggingService loggingService)
+        {
+            _logger = loggingService;
+        }
+
         public async Task OnJoinAsync(SocketGuild guild)
         {
-            /*if (Config.GetBlacklistedOwners().Contains(guild.OwnerId)) {
+            if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+            {
+                await _logger.Log(LogSeverity.Warning, LogSource.Volte,
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
                 await guild.LeaveAsync();
                 return;
-            }*/
+            }
 
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
@@ -38,7 +48,7 @@ namespace Volte.Core.Services
             }
             catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
             {
-                var c = guild.TextChannels?.First();
+                var c = guild.TextChannels?.FirstOrDefault();
                 if (c != null) await embed.SendTo(c);
             }
 

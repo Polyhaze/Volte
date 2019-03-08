@@ -1,13 +1,14 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Commands;
 using Volte.Core.Data;
 using Volte.Core.Data.Objects;
-using Volte.Core.Discord;
 using Volte.Core.Extensions;
 
 #pragma warning disable 1998
@@ -22,13 +23,15 @@ namespace Volte.Core.Services
             _logger = loggingService;
         }
 
-        public async Task OnReady()
+        public async Task OnReady(DiscordSocketClient client)
         {
-            var dbl = VolteBot.Client.GetGuild(264445053596991498);
-            if (dbl is null || Config.Owner == 168548441939509248) return;
-            await dbl.GetTextChannel(265156286406983680).SendMessageAsync(
-                $"<@168548441939509248>: I am a Volte not owned by you. Please do not post Volte to a bot list again, <@{Config.Owner}>.");
-            await dbl.LeaveAsync();
+            foreach (var guild in client.Guilds)
+            {
+                if (!Config.BlacklistedOwners.Contains(guild.OwnerId)) continue;
+                await _logger.Log(LogSeverity.Warning, LogSource.Volte,
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                await guild.LeaveAsync();
+            }
         }
 
         public async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
