@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleAddAsync(SocketRole role)
+        public async Task SelfRoleAddAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Add(role.Name);
@@ -26,7 +26,7 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleRemAsync(SocketRole role)
+        public async Task SelfRoleRemAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
 
