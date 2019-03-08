@@ -1,10 +1,9 @@
 using System;
 using Discord;
-using Discord.Commands;
 
 namespace Volte.Core.Data.Objects
 {
-    public class LogMessage
+    public sealed class LogMessage
     {
         public LogSeverity Severity { get; private set; }
         public LogSource Source { get; private set; }

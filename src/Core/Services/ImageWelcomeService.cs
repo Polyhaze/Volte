@@ -10,16 +10,22 @@ namespace Volte.Core.Services
 {
     public sealed class ImageWelcomeService : IService
     {
-        private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
-        private readonly string _url = "https://ourmainfra.me/api/v2/welcomer/" +
-                                       "?avatar={avatarUrl}" +
-                                       "&user_name={username}%23{discrim}" +
-                                       "&guild_name={serverName}" +
-                                       "&member_count={memberCount}" +
-                                       "&color={hex}" +
-                                       "&type={type}" +
-                                       "&Authorization={auth}";
+        private readonly DatabaseService _db;
+        private readonly string _url;
         private static readonly HttpClient HttpClient = new HttpClient();
+
+        public ImageWelcomeService(DatabaseService databaseService)
+        {
+            _db = databaseService;
+            _url = "https://ourmainfra.me/api/v2/welcomer/" +
+                "?avatar={avatarUrl}" +
+                "&user_name={username}%23{discrim}" +
+                "&guild_name={serverName}" +
+                "&member_count={memberCount}" +
+                "&color={hex}" +
+                "&type={type}" +
+                "&Authorization={auth}";
+        }
 
         private string FormatUrl(SocketGuildUser user)
         {

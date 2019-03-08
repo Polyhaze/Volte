@@ -15,7 +15,12 @@ namespace Volte.Core.Services
 {
     public sealed class EventService : IService
     {
-        private readonly LoggingService _logger = VolteBot.GetRequiredService<LoggingService>();
+        private readonly LoggingService _logger;
+
+        public EventService(LoggingService loggingService)
+        {
+            _logger = loggingService;
+        }
 
         public async Task OnReady()
         {

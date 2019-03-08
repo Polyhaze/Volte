@@ -1,6 +1,6 @@
 namespace Volte.Core.Data.Objects
 {
-    public class JoinLeaveLog
+    public sealed class JoinLeaveLog
     {
         public JoinLeaveLog()
         {

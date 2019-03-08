@@ -5,7 +5,7 @@ using Volte.Core.Services;
 
 namespace Volte.Core.Data.Objects
 {
-    public class EvalObjects
+    public sealed class EvalObjects
     {
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }

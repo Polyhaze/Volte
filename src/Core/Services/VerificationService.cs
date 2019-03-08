@@ -7,8 +7,15 @@ namespace Volte.Core.Services
 {
     public sealed class VerificationService : IService
     {
-        private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
-        private readonly EmojiService _emoji = VolteBot.GetRequiredService<EmojiService>();
+        private readonly DatabaseService _db;
+        private readonly EmojiService _emoji;
+
+        public VerificationService(DatabaseService databaseService,
+                                   EmojiService emojiService)
+        {
+            _db = databaseService;
+            _emoji = emojiService;
+        }
 
         public async Task CheckReactionAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {

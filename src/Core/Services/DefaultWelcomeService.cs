@@ -9,7 +9,9 @@ namespace Volte.Core.Services
 {
     public sealed class DefaultWelcomeService : IService
     {
-        private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
+        private readonly DatabaseService _db;
+
+        public DefaultWelcomeService(DatabaseService databaseService) => _db = databaseService;
 
         internal async Task JoinAsync(SocketGuildUser user)
         {

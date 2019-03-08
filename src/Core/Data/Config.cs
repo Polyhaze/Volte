@@ -9,7 +9,7 @@ using Volte.Core.Services;
 
 namespace Volte.Core.Data
 {
-    public class Config
+    public static class Config
     {
         private const string ConfigFile = "data/config.json";
         private static BotConfig _bot;
@@ -69,17 +69,17 @@ namespace Volte.Core.Data
 
         private struct BotConfig
         {
-            public string Token;
-            public string WelcomeApiKey;
-            public string CommandPrefix;
-            public ulong Owner;
-            public string Game;
-            public string Streamer;
-            public uint SuccessEmbedColor;
-            public uint ErrorEmbedColor;
-            public bool LogAllCommands;
-            public JoinLeaveLog JoinLeaveLog;
-            public ulong[] BlacklistedServerOwners;
+            internal string Token;
+            internal string WelcomeApiKey;
+            internal string CommandPrefix;
+            internal ulong Owner;
+            internal string Game;
+            internal string Streamer;
+            internal uint SuccessEmbedColor;
+            internal uint ErrorEmbedColor;
+            internal bool LogAllCommands;
+            internal JoinLeaveLog JoinLeaveLog;
+            internal ulong[] BlacklistedServerOwners;
         }
     }
 }

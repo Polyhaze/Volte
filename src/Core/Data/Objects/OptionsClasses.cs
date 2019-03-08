@@ -2,14 +2,14 @@
 
 namespace Volte.Core.Data.Objects
 {
-    public sealed class VerificationOptions
+    public sealed class VerificationOptions : object
     {
         public bool Enabled { get; set; }
         public ulong MessageId { get; set; }
         public ulong RoleId { get; set; }
     }
 
-    public sealed class ModerationOptions
+    public sealed class ModerationOptions : object
     {
         internal ModerationOptions()
         {

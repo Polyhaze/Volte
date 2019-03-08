@@ -1,9 +1,6 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Core.Data.Objects
 {
-    public class Tag
+    public sealed class Tag
     {
         public string Name { get; set; }
         public string Response { get; set; }
