@@ -50,7 +50,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
-                    : $"Sending a test message to **{welcomeChannel.Name}**.";
+                    : $"Sending a test message to {welcomeChannel.Mention}.";
                 await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
                     .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;
@@ -111,7 +111,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
-                    : $"Sending a test message to **{welcomeChannel.Mention}**.";
+                    : $"Sending a test message to {welcomeChannel.Mention}.";
                 await Context.CreateEmbed($"Set this server's leaving message to ```{message}```\n\n{sendingTest}")
                     .SendTo(Context.Channel);
                 if (welcomeChannel is null) return;

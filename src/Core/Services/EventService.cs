@@ -11,7 +11,6 @@ using Volte.Core.Data;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
 
-#pragma warning disable 1998
 namespace Volte.Core.Services
 {
     public sealed class EventService : IService

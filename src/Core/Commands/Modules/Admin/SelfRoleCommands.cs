@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
@@ -12,18 +13,12 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfroleadd {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleAddAsync(string roleName)
+        public async Task SelfRoleAddAsync(SocketRole role)
         {
-            if (!Context.Guild.Roles.Any(r => r.Name.EqualsIgnoreCase(roleName)))
-            {
-                await Context.CreateEmbed("That role doesn't exist in this guild.").SendTo(Context.Channel);
-                return;
-            }
-
             var config = Db.GetConfig(Context.Guild);
-            config.SelfRoles.Add(roleName);
+            config.SelfRoles.Add(role.Name);
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Successfully added **{roleName}** to the Self Roles for this guild.")
+            await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles for this guild.")
                 .SendTo(Context.Channel);
         }
 
@@ -31,20 +26,20 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {roleName}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleRemAsync(string roleName)
+        public async Task SelfRoleRemAsync(SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
 
-            if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))
+            if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
             {
-                config.SelfRoles.Remove(roleName);
-                await Context.CreateEmbed($"Removed **{roleName}** from the Self Roles list on this guild.")
+                config.SelfRoles.Remove(role.Name);
+                await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list on this guild.")
                     .SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
             else
             {
-                await Context.CreateEmbed($"The Self Roles list for this guild doesn't contain **{roleName}**.")
+                await Context.CreateEmbed($"The Self Roles list for this guild doesn't contain **{role.Name}**.")
                     .SendTo(Context.Channel);
             }
         }
