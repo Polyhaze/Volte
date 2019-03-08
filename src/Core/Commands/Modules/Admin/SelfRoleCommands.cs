@@ -33,7 +33,7 @@ namespace Volte.Core.Commands.Modules.Admin
             if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
             {
                 config.SelfRoles.Remove(role.Name);
-                await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list on this guild.")
+                await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list for this guild.")
                     .SendTo(Context.Channel);
                 Db.UpdateConfig(config);
             }
@@ -53,7 +53,7 @@ namespace Volte.Core.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Clear();
             Db.UpdateConfig(config);
-            await Context.CreateEmbed("Successfully cleared all Self Roles for this server.").SendTo(Context.Channel);
+            await Context.CreateEmbed("Successfully cleared all Self Roles for this guild.").SendTo(Context.Channel);
         }
     }
 }
