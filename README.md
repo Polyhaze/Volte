@@ -1,9 +1,7 @@
 <img src="https://assets.greemdev.net/Volte.png" width="250" height="250" />
 
-![Lang](https://forthebadge.com/images/badges/made-with-c-sharp.svg)
-![Made By](https://forthebadge.com/images/badges/built-by-developers.svg)
 [![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://greemdev.net/Discord)
-![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)
+[![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
 
 
 # Volte
