@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using RestSharp;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
+using Volte.Core.Extensions;
 using Volte.Core.Utils;
 
 namespace Volte.Core.Services
@@ -15,7 +16,7 @@ namespace Volte.Core.Services
             var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) m = new[] {ctx.Message.Content};
 
-            if (!config.ModerationOptions.Antilink || UserUtil.IsAdmin(ctx)) return;
+            if (!config.ModerationOptions.Antilink || ctx.User.IsAdmin()) return;
 
             foreach (var part in m)
             {

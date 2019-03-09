@@ -13,7 +13,7 @@ namespace Volte.Core.Services
 
         public DefaultWelcomeService(DatabaseService databaseService) => _db = databaseService;
 
-        internal async Task JoinAsync(SocketGuildUser user)
+        internal async Task JoinAsync(IGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
             if (config.WelcomeOptions.WelcomeMessage.IsNullOrEmpty())
@@ -22,10 +22,9 @@ namespace Volte.Core.Services
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
+                .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
                 .Replace("{UserTag}", user.Discriminator);
-            var c = user.Guild.TextChannels.FirstOrDefault(channel =>
-                channel.Id.Equals(config.WelcomeOptions.WelcomeChannel));
+            var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
 
             if (!(c is null))
             {
@@ -40,7 +39,7 @@ namespace Volte.Core.Services
             }
         }
 
-        internal async Task LeaveAsync(SocketGuildUser user)
+        internal async Task LeaveAsync(IGuildUser user)
         {
             var config = _db.GetConfig(user.Guild);
             if (config.WelcomeOptions.LeavingMessage.IsNullOrEmpty()) return;
@@ -48,10 +47,9 @@ namespace Volte.Core.Services
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
+                .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
                 .Replace("{UserTag}", user.Discriminator);
-            var c = user.Guild.TextChannels.FirstOrDefault(channel =>
-                channel.Id.Equals(config.WelcomeOptions.WelcomeChannel));
+            var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()

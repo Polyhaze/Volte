@@ -20,19 +20,21 @@ namespace Volte.Core.Services
             _logger = loggingService;
         }
 
-        public async Task OnJoinAsync(SocketGuild guild)
+        public async Task OnJoinAsync(IGuild guild)
         {
             if (Config.BlacklistedOwners.Contains(guild.OwnerId))
             {
                 await _logger.Log(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {await guild.GetOwnerAsync()}.");
                 await guild.LeaveAsync();
                 return;
             }
 
+            var owner = await guild.GetOwnerAsync();
+
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
-                .WithAuthor(guild.Owner)
+                .WithAuthor(await guild.GetOwnerAsync())
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
@@ -44,11 +46,11 @@ namespace Volte.Core.Services
 
             try
             {
-                await embed.SendToAsync(guild.Owner);
+                await embed.SendToAsync(owner);
             }
             catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
             {
-                var c = guild.TextChannels?.FirstOrDefault();
+                var c = (await guild.GetTextChannelsAsync()).FirstOrDefault();
                 if (c != null) await embed.SendToAsync(c);
             }
 
@@ -65,11 +67,11 @@ namespace Volte.Core.Services
                 }
 
                 var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                var users = guild.Users.Where(u => !u.IsBot).ToList();
-                var bots = guild.Users.Where(u => u.IsBot).ToList();
+                var users = (await guild.GetUsersAsync()).Where(u => !u.IsBot).ToList();
+                var bots = (await guild.GetUsersAsync()).Where(u => u.IsBot).ToList();
 
                 var e = new EmbedBuilder()
-                    .WithAuthor(guild.Owner)
+                    .WithAuthor(owner)
                     .WithTitle("Joined Guild")
                     .AddField("Name", guild.Name, true)
                     .AddField("ID", guild.Id, true)

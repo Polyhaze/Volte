@@ -36,11 +36,11 @@ namespace Volte.Core.Commands.Modules.Help
 
         private bool CanShowCommandInfo(Command c)
         {
-            var admin = c.Module.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context);
-            var owner = c.Module.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User);
-            var moderation = c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context);
-            var serverAdmin = c.Module.SanitizeName().EqualsIgnoreCase("serveradmin") && !UserUtil.IsAdmin(Context);
-            return admin || owner || moderation || serverAdmin;
+            var admin = c.Module.SanitizeName().EqualsIgnoreCase("admin") && !Context.User.IsAdmin();
+            var serverAdmin = c.Module.SanitizeName().EqualsIgnoreCase("serveradmin") && !Context.User.IsAdmin();
+            var owner = c.Module.SanitizeName().EqualsIgnoreCase("owner") && !Context.User.IsBotOwner();
+            var moderation = c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !Context.User.IsModerator();
+            return admin || serverAdmin || owner || moderation;
         }
     }
 }

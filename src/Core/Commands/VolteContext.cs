@@ -10,24 +10,24 @@ using Volte.Core.Extensions;
 namespace Volte.Core.Commands
 {
     /// <inheritdoc />
-    public class VolteContext : ICommandContext
+    public sealed class VolteContext : ICommandContext
     {
         private readonly EmojiService _emojiService = VolteBot.GetRequiredService<EmojiService>();
 
         public VolteContext(IDiscordClient client, IUserMessage msg)
         {
             Client = client as DiscordSocketClient;
-            Guild = (msg.Channel as SocketTextChannel)?.Guild;
-            Channel = msg.Channel as SocketTextChannel;
-            User = msg.Author as SocketGuildUser;
-            Message = msg as SocketUserMessage;
+            Guild = (msg.Channel as ITextChannel)?.Guild;
+            Channel = msg.Channel as ITextChannel;
+            User = msg.Author as IGuildUser;
+            Message = msg;
         }
 
         public DiscordSocketClient Client { get; }
-        public SocketGuild Guild { get; }
-        public SocketTextChannel Channel { get; }
-        public SocketGuildUser User { get; }
-        public SocketUserMessage Message { get; }
+        public IGuild Guild { get; }
+        public ITextChannel Channel { get; }
+        public IGuildUser User { get; }
+        public IUserMessage Message { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
         public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));

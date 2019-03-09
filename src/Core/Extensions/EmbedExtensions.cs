@@ -17,12 +17,12 @@ namespace Volte.Core.Extensions
             return Util.Send(c, e);
         }
 
-        public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, SocketGuildUser c)
+        public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser c)
         {
             return await Util.Send(await c.GetOrCreateDMChannelAsync(), e.Build());
         }
 
-        public static async Task<IUserMessage> SendToAsync(this Embed e, SocketGuildUser c)
+        public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser c)
         {
             return await Util.Send(await c.GetOrCreateDMChannelAsync(), e);
         }

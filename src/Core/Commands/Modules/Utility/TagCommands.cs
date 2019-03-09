@@ -29,7 +29,7 @@ namespace Volte.Core.Commands.Modules.Utility
                 .Replace("{ServerName}", Context.Guild.Name)
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
-                .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
+                .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
                 .Replace("{UserTag}", Context.User.Discriminator);
 
             await Context.ReplyAsync(response);

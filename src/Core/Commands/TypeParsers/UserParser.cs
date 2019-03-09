@@ -10,14 +10,14 @@ namespace Volte.Core.Commands.TypeParsers
 {
     public sealed class UserParser<TUser> : TypeParser<TUser> where TUser : SocketUser
     {
-        public override Task<TypeParserResult<TUser>> ParseAsync(
+        public override async Task<TypeParserResult<TUser>> ParseAsync(
             Parameter param,
-            string value, 
-            ICommandContext context, 
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            var users = ctx.Guild.Users.OfType<TUser>().ToList();
+            var users = (await ctx.Guild.GetUsersAsync()).OfType<TUser>().ToList();
 
             TUser user = null;
 
@@ -30,18 +30,17 @@ namespace Volte.Core.Commands.TypeParsers
             {
                 var match = users.Where(x =>
                     x.Username.EqualsIgnoreCase(value)
-                    || (x as SocketGuildUser).Nickname.EqualsIgnoreCase(value)).ToList();
+                    || (x as IGuildUser).Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<TUser>.Unsuccessful(
-                        "Multiple users found, try mentioning the user or using their ID.")
-                    );
+                    return TypeParserResult<TUser>.Unsuccessful(
+                        "Multiple users found, try mentioning the user or using their ID.");
 
                 user = match.FirstOrDefault();
             }
 
             return user is null
-                ? Task.FromResult(TypeParserResult<TUser>.Unsuccessful("User not found."))
-                : Task.FromResult(TypeParserResult<TUser>.Successful(user));
+                ? TypeParserResult<TUser>.Unsuccessful("User not found.")
+                : TypeParserResult<TUser>.Successful(user);
         }
     }
 }

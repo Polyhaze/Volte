@@ -22,13 +22,13 @@ namespace Volte.Core.Services
             _logger = loggingService;
         }
 
-        public async Task OnReady(DiscordSocketClient client)
+        public async Task OnReady(IDiscordClient client)
         {
-            foreach (var guild in client.Guilds)
+            foreach (var guild in await client.GetGuildsAsync())
             {
                 if (!Config.BlacklistedOwners.Contains(guild.OwnerId)) continue;
                 await _logger.Log(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {await guild.GetOwnerAsync()}.");
                 await guild.LeaveAsync();
             }
         }

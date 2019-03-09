@@ -29,7 +29,8 @@ namespace Volte.Core.Commands.Modules.Admin
         }
 
         [Command("WelcomeMessage", "Wmsg")]
-        [Description("Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
+        [Description(
+            "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
         public async Task WelcomeMessageAsync([Remainder] string message = null)
@@ -39,14 +40,15 @@ namespace Volte.Core.Commands.Modules.Admin
             if (message is null)
             {
                 await Context
-                    .CreateEmbed($"The current welcome message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
+                    .CreateEmbed(
+                        $"The current welcome message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
                     .SendToAsync(Context.Channel);
             }
             else
             {
                 config.WelcomeOptions.WelcomeMessage = message;
                 Db.UpdateConfig(config);
-                var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeOptions.WelcomeChannel);
+                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
@@ -100,14 +102,15 @@ namespace Volte.Core.Commands.Modules.Admin
             if (message is null)
             {
                 await Context
-                    .CreateEmbed($"The current leaving message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
+                    .CreateEmbed(
+                        $"The current leaving message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
                     .SendToAsync(Context.Channel);
             }
             else
             {
                 config.WelcomeOptions.LeavingMessage = message;
                 Db.UpdateConfig(config);
-                var welcomeChannel = Context.Guild.GetTextChannel(config.WelcomeOptions.WelcomeChannel);
+                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
@@ -118,17 +121,10 @@ namespace Volte.Core.Commands.Modules.Admin
 
                 if (config.WelcomeOptions.WelcomeChannel != 0)
                 {
-                    var welcomeMessage = config.WelcomeOptions.LeavingMessage
-                        .Replace("{ServerName}", Context.Guild.Name)
-                        .Replace("{UserMention}", Context.User.Mention)
-                        .Replace("{UserName}", Context.User.Username)
-                        .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
-                        .Replace("{UserTag}", Context.User.Discriminator);
-                    var embed = Context.CreateEmbed(welcomeMessage).ToEmbedBuilder()
-                        .WithColor(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG, config.WelcomeOptions.WelcomeColorB)
-                        .WithDescription(welcomeMessage)
-                        .WithThumbnailUrl(Context.User.GetAvatarUrl());
-                    await welcomeChannel.SendMessageAsync(string.Empty, false, embed.Build());
+                    if (config.WelcomeOptions.WelcomeChannel != 0)
+                    {
+                        await DefaultWelcomeService.JoinAsync(Context.User);
+                    }
                 }
             }
         }

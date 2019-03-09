@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Volte.Core.Discord;
 
 namespace Volte.Core.Services
 {
@@ -20,10 +19,9 @@ namespace Volte.Core.Services
         public async Task CheckReactionAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
             if (channel is IDMChannel) return;
-            var c = channel as IGuildChannel;
-            var config = _db.GetConfig(c?.Guild);
+            if (!(reaction.User.Value is IGuildUser u) || !(channel is IGuildChannel c)) return;
+            var config = _db.GetConfig(c.Guild);
             if (!config.VerificationOptions.Enabled || !reaction.User.IsSpecified) return;
-            var u = reaction.User.Value as IGuildUser;
             if (u.IsBot) return;
             if (message.Id.Equals(config.VerificationOptions.MessageId))
             {

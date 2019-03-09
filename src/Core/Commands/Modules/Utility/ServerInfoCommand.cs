@@ -19,10 +19,10 @@ namespace Volte.Core.Commands.Modules.Utility
                 .AddField("Name", Context.Guild.Name)
                 .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")
                 .AddField("Region", Context.Guild.VoiceRegionId)
-                .AddField("Members", Context.Guild.Users.Count, true)
+                .AddField("Members", (await Context.Guild.GetUsersAsync()).Count, true)
                 .AddField("Roles", Context.Guild.Roles.Count, true)
-                .AddField("Voice Channels", Context.Guild.VoiceChannels.Count, true)
-                .AddField("Text Channels", Context.Guild.TextChannels.Count, true);
+                .AddField("Voice Channels", (await Context.Guild.GetVoiceChannelsAsync()).Count, true)
+                .AddField("Text Channels", (await Context.Guild.GetTextChannelsAsync()).Count, true);
             await embed.SendToAsync(Context.Channel);
         }
     }

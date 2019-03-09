@@ -34,11 +34,11 @@ namespace Volte.Core.Commands.Modules.Help
 
         private bool CanShowModuleInfo(Module m)
         {
-            var admin = m.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context);
-            var owner = m.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User);
-            var moderation = m.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context);
-            var serverAdmin = m.SanitizeName().EqualsIgnoreCase("serveradmin") && !UserUtil.IsAdmin(Context);
-            return admin || owner || moderation || serverAdmin;
+            var admin = m.SanitizeName().EqualsIgnoreCase("admin") && !Context.User.IsAdmin();
+            var serverAdmin = m.SanitizeName().EqualsIgnoreCase("serveradmin") && !Context.User.IsAdmin();
+            var owner = m.SanitizeName().EqualsIgnoreCase("owner") && !Context.User.IsBotOwner();
+            var moderation = m.SanitizeName().EqualsIgnoreCase("moderation") && !Context.User.IsModerator();
+            return admin || serverAdmin || owner || moderation;
         }
     }
 }

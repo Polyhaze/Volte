@@ -14,15 +14,14 @@ namespace Volte.Core.Commands.Preconditions
 
         public RequireBotGuildPermissionAttribute(GuildPermission perm) => _permissions = new[] {perm};
 
-        public override Task<CheckResult> CheckAsync(
+        public override async Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            foreach (var perm in ctx.Guild.CurrentUser.GuildPermissions.ToList())
+            foreach (var perm in (await ctx.Guild.GetCurrentUserAsync()).GuildPermissions.ToList())
                 if (_permissions.Contains(perm))
-                    return Task.FromResult(CheckResult.Successful);
-            return Task.FromResult(
-                CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command."));
+                    return CheckResult.Successful;
+            return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
         }
     }
 }
