@@ -16,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Utility
                     $"**Hex:** {role.Color.ToString().ToUpper()}" +
                     "\n" +
                     $"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"
-                ).SendTo(Context.Channel);
+                ).SendToAsync(Context.Channel);
         }
     }
 }

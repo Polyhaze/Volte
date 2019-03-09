@@ -19,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Owner
             Db.GetConfig(serverId);
             await Context
                 .CreateEmbed($"Created a config for **{VolteBot.Client.GetGuild(serverId).Name}** if it didn't exist.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

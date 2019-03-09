@@ -24,7 +24,7 @@ namespace Volte.Core.Commands.Modules.Help
                                  "\n" +
                                  $"**Show Info about a Command**: {config.CommandPrefix}cmd {{commandName}}");
 
-            await embed.SendTo(Context.Channel);
+            await embed.SendToAsync(Context.Channel);
         }
     }
 }

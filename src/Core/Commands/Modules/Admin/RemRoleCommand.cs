@@ -18,13 +18,13 @@ namespace Volte.Core.Commands.Modules.Admin
             var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(roleName));
             if (targetRole is null)
             {
-                await Context.CreateEmbed($"**{roleName}** doesn't exist on this server!").SendTo(Context.Channel);
+                await Context.CreateEmbed($"**{roleName}** doesn't exist on this server!").SendToAsync(Context.Channel);
                 
             }
             else
             {
                 await user.RemoveRoleAsync(targetRole);
-                await Context.CreateEmbed($"Removed the role **{roleName}** from {user.Mention}!").SendTo(Context.Channel);
+                await Context.CreateEmbed($"Removed the role **{roleName}** from {user.Mention}!").SendToAsync(Context.Channel);
             }
 
             

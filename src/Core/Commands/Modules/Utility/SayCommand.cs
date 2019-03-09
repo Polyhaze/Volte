@@ -13,7 +13,7 @@ namespace Volte.Core.Commands.Modules.Utility
         [Remarks("Usage: |prefix|say {msg}")]
         public async Task SayAsync([Remainder] string msg)
         {
-            await Context.CreateEmbed(msg).SendTo(Context.Channel);
+            await Context.CreateEmbed(msg).SendToAsync(Context.Channel);
             await Context.Message.DeleteAsync();
         }
 
@@ -25,7 +25,7 @@ namespace Volte.Core.Commands.Modules.Utility
             await new EmbedBuilder()
                 .WithColor(Config.SuccessColor)
                 .WithDescription(msg)
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
             await Context.Message.DeleteAsync();
         }
     }

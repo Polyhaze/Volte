@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Utility
             if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))
             {
                 await Context.CreateEmbed($"The role **{roleName}** isn't in the self roles list for this guild.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
             }
             else
             {
@@ -25,12 +25,12 @@ namespace Volte.Core.Commands.Modules.Utility
                 if (target is null)
                 {
                     await Context.CreateEmbed($"The role **{roleName}** doesn't exist in this guild")
-                        .SendTo(Context.Channel);
+                        .SendToAsync(Context.Channel);
                 }
                 else
                 {
                     await Context.User.RemoveRoleAsync(target);
-                    await Context.CreateEmbed($"Took away your **{roleName}** role.").SendTo(Context.Channel);
+                    await Context.CreateEmbed($"Took away your **{roleName}** role.").SendToAsync(Context.Channel);
                 }
             }
         }

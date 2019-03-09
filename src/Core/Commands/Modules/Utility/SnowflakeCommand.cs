@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Utility
                     $"**Date:** {date.FormatDate()}\n" +
                     $"**Time**: {date.FormatFullTime()}"
                 )
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

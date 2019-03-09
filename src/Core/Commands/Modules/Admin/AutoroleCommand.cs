@@ -20,14 +20,14 @@ namespace Volte.Core.Commands.Modules.Admin
             if (role is null)
             {
                 await Context.CreateEmbed($"The specified role, **{roleName}**, doesn't exist in this guild.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
             config.Autorole = role.Name;
             Db.UpdateConfig(config);
             await Context.CreateEmbed($"Successfully set **{role.Name}** as the role to be given to members upon joining this server.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

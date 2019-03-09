@@ -36,7 +36,7 @@ namespace Volte.Core.Services
                     .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
-                await embed.SendTo(c);
+                await embed.SendToAsync(c);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Volte.Core.Services
                     .WithThumbnailUrl(user.GetAvatarUrl())
                     .WithCurrentTimestamp();
 
-                await embed.SendTo(c);
+                await embed.SendToAsync(c);
             }
         }
     }

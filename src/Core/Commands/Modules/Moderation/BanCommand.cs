@@ -20,13 +20,13 @@ namespace Volte.Core.Commands.Modules.Moderation
             try
             {
                 await Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")
-                    .SendTo(user);
+                    .SendToAsync(user);
             }
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             await user.BanAsync(daysToDelete, reason);
             await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

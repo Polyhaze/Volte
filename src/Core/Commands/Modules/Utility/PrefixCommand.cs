@@ -12,7 +12,7 @@ namespace Volte.Core.Commands.Modules.Utility
         public async Task PrefixAsync()
         {
             await Context.CreateEmbed($"The prefix for this server is **{Db.GetConfig(Context.Guild).CommandPrefix}**.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

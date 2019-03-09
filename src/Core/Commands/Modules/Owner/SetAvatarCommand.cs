@@ -18,7 +18,7 @@ namespace Volte.Core.Commands.Modules.Owner
         {
             if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                await Context.CreateEmbed("That URL is malformed or empty.").SendTo(Context.Channel);
+                await Context.CreateEmbed("That URL is malformed or empty.").SendToAsync(Context.Channel);
                 return;
             }
 
@@ -26,14 +26,14 @@ namespace Volte.Core.Commands.Modules.Owner
             {
                 if (!sr.IsImage())
                 {
-                    await Context.CreateEmbed("Provided URL does not lead to an image.").SendTo(Context.Channel);
+                    await Context.CreateEmbed("Provided URL does not lead to an image.").SendToAsync(Context.Channel);
                     return;
                 }
 
                 using (var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream())
                 {
                     await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
-                    await Context.CreateEmbed("Done!").SendTo(Context.Channel);
+                    await Context.CreateEmbed("Done!").SendToAsync(Context.Channel);
                 }
             }
         }

@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Modules.Owner
         {
             await Context.CreateEmbed(
                     DebugService.Execute(Db.GetConfig(serverId).ToString()))
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

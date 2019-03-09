@@ -58,7 +58,7 @@ namespace Volte.Core.Commands.Modules.Owner
                     sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                         .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
-                    var msg = await embed.WithTitle("Evaluating...").SendTo(Context.Channel);
+                    var msg = await embed.WithTitle("Evaluating...").SendToAsync(Context.Channel);
                     try
                     {
                         var sw = Stopwatch.StartNew();

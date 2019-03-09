@@ -16,23 +16,29 @@ namespace Volte.Core.Commands.Modules.Help
             var target = CommandService.GetAllModules().FirstOrDefault(m => m.SanitizeName().EqualsIgnoreCase(module));
             if (target is null)
             {
-                await Context.CreateEmbed($"{EmojiService.X} Specified module not found.").SendTo(Context.Channel);
+                await Context.CreateEmbed($"{EmojiService.X} Specified module not found.").SendToAsync(Context.Channel);
                 return;
             }
 
-            if ((target.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context)) ||
-                (target.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User)) ||
-                (target.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context)) ||
-                (target.SanitizeName().EqualsIgnoreCase("serveradmin") && !UserUtil.IsAdmin(Context)))
+            if (CanShowModuleInfo(target))
             {
                 await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
-            var commands = $"`{string.Join("`, `", target.Commands)}`";
+            var commands = $"`{string.Join("`, `", target.Commands.Select(x => x.FullAliases.First()))}`";
             await Context.CreateEmbedBuilder(commands).WithTitle($"Commands for {target.SanitizeName()}")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
+        }
+
+        private bool CanShowModuleInfo(Module m)
+        {
+            var admin = m.SanitizeName().EqualsIgnoreCase("admin") && !UserUtil.IsAdmin(Context);
+            var owner = m.SanitizeName().EqualsIgnoreCase("owner") && !UserUtil.IsBotOwner(Context.User);
+            var moderation = m.SanitizeName().EqualsIgnoreCase("moderation") && !UserUtil.IsModerator(Context);
+            var serverAdmin = m.SanitizeName().EqualsIgnoreCase("serveradmin") && !UserUtil.IsAdmin(Context);
+            return admin || owner || moderation || serverAdmin;
         }
     }
 }

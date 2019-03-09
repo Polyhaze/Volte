@@ -31,7 +31,7 @@ namespace Volte.Core.Commands.Modules.Utility
                 .AddField("Operating System", Environment.OSVersion, true)
                 .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl())
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         private string GetNetCoreVersion()

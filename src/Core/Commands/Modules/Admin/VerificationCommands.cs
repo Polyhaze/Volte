@@ -20,7 +20,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.VerificationOptions.Enabled = true;
             Db.UpdateConfig(config);
             await Context.CreateEmbed($"Successfully set **{role.Name}** as the role to use for Verification.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("VerificationMessage", "Vm")]
@@ -35,7 +35,7 @@ namespace Volte.Core.Commands.Modules.Admin
             Db.UpdateConfig(config);
             await Context
                 .CreateEmbed($"Successfully set message with ID **{messageId}** as the message used for Verification.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

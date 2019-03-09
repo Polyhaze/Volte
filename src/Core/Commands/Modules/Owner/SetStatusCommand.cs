@@ -41,7 +41,7 @@ namespace Volte.Core.Commands.Modules.Owner
                     break;
             }
 
-            await embed.SendTo(Context.Channel);
+            await embed.SendToAsync(Context.Channel);
         }
     }
 }

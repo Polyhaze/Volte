@@ -8,7 +8,7 @@ namespace Volte.Core.Extensions
     {
         public static Task SendEmbedAsync(this SocketTextChannel tc, Embed e)
         {
-            return e.SendTo(tc);
+            return e.SendToAsync(tc);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.WelcomeOptions.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
             await Context.CreateEmbed($"Set this server's welcome channel to **{channel.Name}**")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("WelcomeMessage", "Wmsg")]
@@ -40,7 +40,7 @@ namespace Volte.Core.Commands.Modules.Admin
             {
                 await Context
                     .CreateEmbed($"The current welcome message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
             }
             else
             {
@@ -52,7 +52,7 @@ namespace Volte.Core.Commands.Modules.Admin
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
                 await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
                 if (config.WelcomeOptions.WelcomeChannel != 0)
                 {
@@ -75,7 +75,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 await Context
                     .CreateEmbed(
                         "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace Volte.Core.Commands.Modules.Admin
             Db.UpdateConfig(config);
             await Context
                 .CreateEmbed($"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("LeavingMessage", "Lmsg")]
@@ -101,7 +101,7 @@ namespace Volte.Core.Commands.Modules.Admin
             {
                 await Context
                     .CreateEmbed($"The current leaving message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
             }
             else
             {
@@ -113,7 +113,7 @@ namespace Volte.Core.Commands.Modules.Admin
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
                 await Context.CreateEmbed($"Set this server's leaving message to ```{message}```\n\n{sendingTest}")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
 
                 if (config.WelcomeOptions.WelcomeChannel != 0)

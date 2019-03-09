@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -22,10 +23,8 @@ namespace Volte.Core.Discord
 
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
 
-        public static T GetRequiredService<T>()
-        {
-            return ServiceProvider.GetRequiredService<T>();
-        }
+        public static T GetRequiredService<T>() 
+            => ServiceProvider.GetRequiredService<T>();
 
         public static async Task StartAsync()
         {
@@ -38,6 +37,7 @@ namespace Volte.Core.Discord
             return new ServiceCollection()
                 .AddSingleton<VolteHandler>()
                 .AddVolteServices()
+                .AddSingleton(new CancellationTokenSource())
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
@@ -75,7 +75,7 @@ namespace Volte.Core.Discord
 
             await Client.SetStatusAsync(UserStatus.Online);
             await _handler.InitAsync();
-            await Task.Delay(-1);
+            await Task.Delay(-1, GetRequiredService<CancellationTokenSource>().Token);
         }
     }
 }

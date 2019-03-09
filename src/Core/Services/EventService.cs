@@ -107,7 +107,7 @@ namespace Volte.Core.Services
                 embed.AddField("Correct Usage", c.SanitizeRemarks(ctx));
                 embed.WithAuthor(ctx.User);
                 embed.WithColor(Config.ErrorColor);
-                await embed.SendTo(ctx.Channel);
+                await embed.SendToAsync(ctx.Channel);
                 if (Config.LogAllCommands)
                 {
                     await _logger.Log(LogSeverity.Error, LogSource.Module,

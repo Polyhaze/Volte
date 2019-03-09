@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.ModerationOptions.Antilink = enabled;
             Db.UpdateConfig(config);
             await Context.CreateEmbed(enabled ? "Antilink has been enabled." : "Antilink has been disabled.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

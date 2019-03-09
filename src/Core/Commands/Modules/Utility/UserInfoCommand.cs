@@ -26,7 +26,7 @@ namespace Volte.Core.Commands.Modules.Utility
                     $"Month: {actualUser.CreatedAt.Month}\nDay: {actualUser.CreatedAt.Day}\nYear: {actualUser.CreatedAt.Year}")
                 .AddField("Status", actualUser.Status)
                 .AddField("Is Bot", actualUser.IsBot)
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

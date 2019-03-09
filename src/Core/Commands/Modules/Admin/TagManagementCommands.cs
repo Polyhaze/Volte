@@ -25,7 +25,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 await Context
                     .CreateEmbed(
                         $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
@@ -46,7 +46,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 .AddField("Name", newTag.Name)
                 .AddField("Response", newTag.Response)
                 .AddField("Creator", Context.User.Mention)
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("TagDelete", "TagDel", "TagRem")]
@@ -60,7 +60,7 @@ namespace Volte.Core.Commands.Modules.Admin
             if (tag == null)
             {
                 await Context.CreateEmbed($"Cannot delete the tag **{name}**, as it doesn't exist.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace Volte.Core.Commands.Modules.Admin
                     $"Deleted the tag **{tag.Name}**, created by " +
                     $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
                     $"{(tag.Uses != 1 ? "uses" : "use")}.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

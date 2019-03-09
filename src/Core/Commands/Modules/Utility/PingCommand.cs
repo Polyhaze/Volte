@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Utility
             var e = Context.CreateEmbed("Pinging...").ToEmbedBuilder();
             var sw = new Stopwatch();
             sw.Start();
-            var msg = await e.SendTo(Context.Channel);
+            var msg = await e.SendToAsync(Context.Channel);
             sw.Stop();
             await msg.ModifyAsync(x =>
             {

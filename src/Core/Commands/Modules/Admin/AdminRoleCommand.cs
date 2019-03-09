@@ -25,7 +25,7 @@ namespace Volte.Core.Commands.Modules.Admin
                 embed.WithDescription($"Set **{role.Name}** as the Admin role for this server.");
             }
 
-            await embed.SendTo(Context.Channel);
+            await embed.SendToAsync(Context.Channel);
         }
     }
 }

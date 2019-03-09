@@ -16,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             config.CommandPrefix = newPrefix;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Set this server's prefix to **{newPrefix}**.").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Set this server's prefix to **{newPrefix}**.").SendToAsync(Context.Channel);
         }
     }
 }

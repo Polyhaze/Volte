@@ -76,7 +76,7 @@ namespace Volte.Core.Commands.Modules.Utility
 
             embed.WithDescription(embedBody);
 
-            var msg = await embed.SendTo(Context.Channel);
+            var msg = await embed.SendToAsync(Context.Channel);
             await Context.Message.DeleteAsync();
 
             switch (choices.Length - 1)

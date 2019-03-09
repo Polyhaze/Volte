@@ -19,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.SelfRoles.Add(role.Name);
             Db.UpdateConfig(config);
             await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles list for this guild.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("SelfRoleRemove", "SrR", "SrRem")]
@@ -34,13 +34,13 @@ namespace Volte.Core.Commands.Modules.Admin
             {
                 config.SelfRoles.Remove(role.Name);
                 await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list for this guild.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 Db.UpdateConfig(config);
             }
             else
             {
                 await Context.CreateEmbed($"The Self Roles list for this guild doesn't contain **{role.Name}**.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Volte.Core.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Clear();
             Db.UpdateConfig(config);
-            await Context.CreateEmbed("Successfully cleared all Self Roles for this guild.").SendTo(Context.Channel);
+            await Context.CreateEmbed("Successfully cleared all Self Roles for this guild.").SendToAsync(Context.Channel);
         }
     }
 }

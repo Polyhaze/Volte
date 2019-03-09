@@ -21,7 +21,7 @@ namespace Volte.Core.Commands.Modules.Utility
             if (tag == null)
             {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace Volte.Core.Commands.Modules.Utility
             if (tag == null)
             {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace Volte.Core.Commands.Modules.Utility
                 .AddField("Response", $"`{tag.Response}`", true)
                 .AddField("Creator", u == null ? $"{tag.CreatorId}" : $"{u.Mention}", true)
                 .AddField("Uses", $"**{tag.Uses}**", true)
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

@@ -20,12 +20,12 @@ namespace Volte.Core.Commands.Modules.Admin
             {
                 await user.AddRoleAsync(targetRole);
                 await Context.CreateEmbed($"Added the role **{role}** to {user.Mention}!")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
 
             await Context.CreateEmbed($"**{role}** doesn't exist on this server!")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Volte.Core.Commands.Modules.Admin
             await Context.CreateEmbed(
                     $"{DebugService.Execute(Db.GetConfig(Context.Guild).ToString())}" +
                     "\n\nTake this to the Volte guild for support. Join the guild [here](https://greemdev.net/Discord).")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

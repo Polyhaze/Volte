@@ -23,7 +23,7 @@ namespace Volte.Core.Commands.Modules.Utility
                 .AddField("Roles", Context.Guild.Roles.Count, true)
                 .AddField("Voice Channels", Context.Guild.VoiceChannels.Count, true)
                 .AddField("Text Channels", Context.Guild.TextChannels.Count, true);
-            await embed.SendTo(Context.Channel);
+            await embed.SendToAsync(Context.Channel);
         }
     }
 }

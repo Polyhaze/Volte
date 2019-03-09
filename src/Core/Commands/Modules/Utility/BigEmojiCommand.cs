@@ -16,13 +16,13 @@ namespace Volte.Core.Commands.Modules.Utility
             switch (emoteIn)
             {
                 case Emote emote:
-                    await Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url).SendTo(Context.Channel);
+                    await Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url).SendToAsync(Context.Channel);
                     break;
                 case Emoji emoji:
                     var url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
                                   emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
                               ".png";
-                    await Context.CreateEmbedBuilder(url).WithImageUrl(url).SendTo(Context.Channel);
+                    await Context.CreateEmbedBuilder(url).WithImageUrl(url).SendToAsync(Context.Channel);
                     break;
             }
         }

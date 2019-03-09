@@ -20,14 +20,14 @@ namespace Volte.Core.Commands.Modules.Moderation
             try
             {
                 await Context.CreateEmbed($"You were kicked from **{Context.Guild.Name}** for **{reason}**.")
-                    .SendTo(user);
+                    .SendToAsync(user);
             }
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
 
             await user.KickAsync(reason);
             await Context.CreateEmbed($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

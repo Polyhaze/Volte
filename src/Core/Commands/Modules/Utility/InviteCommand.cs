@@ -18,7 +18,7 @@ namespace Volte.Core.Commands.Modules.Utility
                                       $"[Invite Me](https://discordapp.com/oauth2/authorize?client_id={VolteBot.Client.CurrentUser.Id}&scope=bot&permissions=8)\n" +
                                       "[Support Server Invite](https://greemdev.net/discord)\n\n" +
                                       "And again, thanks for using me!")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

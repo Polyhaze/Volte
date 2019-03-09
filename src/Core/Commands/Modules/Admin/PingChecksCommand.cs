@@ -18,7 +18,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.ModerationOptions.MassPingChecks = enabled;
             Db.UpdateConfig(config);
             await Context.CreateEmbed(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

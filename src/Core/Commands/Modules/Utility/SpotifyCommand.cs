@@ -24,11 +24,11 @@ namespace Volte.Core.Commands.Modules.Utility
                                      $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}\n" +
                                      $"**Artists:** {string.Join(", ", spotify.Artists)}")
                     .WithThumbnailUrl(spotify.AlbumArtUrl)
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
 
             }
-            await Context.CreateEmbed("Target user isn't listening to Spotify right now.").SendTo(Context.Channel);
+            await Context.CreateEmbed("Target user isn't listening to Spotify right now.").SendToAsync(Context.Channel);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Volte.Core.Commands.Modules.Help
         {
             var modules = $"`{string.Join("`, `", CommandService.GetAllModules().Select(x => x.SanitizeName()))}`";
             await Context.CreateEmbedBuilder(modules.Remove(modules.LastIndexOf(","))).WithTitle("Available Modules")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

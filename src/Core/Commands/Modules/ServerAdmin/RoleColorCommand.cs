@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.ServerAdmin
         {
             await role.ModifyAsync(x => x.Color = new Color(r, g, b));
             await Context.CreateEmbed($"Successfully changed the color of the role {role.Name}")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

@@ -13,11 +13,11 @@ namespace Volte.Core.Commands.Modules.Utility
         [Remarks("Usage: $feedback {feedback}")]
         public async Task FeedbackAsync([Remainder] string feedback)
         {
-            await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendToAsync(Context.Channel);
 
             var embed = Context.CreateEmbed($"```{feedback}```").ToEmbedBuilder()
                 .WithTitle($"Feedback from {Context.User.Username}#{Context.User.Discriminator}");
-            await embed.SendTo(VolteBot.Client.GetGuild(405806471578648588).GetTextChannel(415182876326232064));
+            await embed.SendToAsync(VolteBot.Client.GetGuild(405806471578648588).GetTextChannel(415182876326232064));
         }
     }
 }

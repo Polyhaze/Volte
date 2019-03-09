@@ -19,7 +19,7 @@ namespace Volte.Core.Commands.Modules.Owner
             await Context
                 .CreateEmbed(
                     $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

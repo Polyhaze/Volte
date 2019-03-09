@@ -18,12 +18,12 @@ namespace Volte.Core.Commands.Modules.Owner
             var target = VolteBot.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
             if (target is null)
             {
-                await Context.CreateEmbed($"I'm not in the guild **{serverName}**.").SendTo(Context.Channel);
+                await Context.CreateEmbed($"I'm not in the guild **{serverName}**.").SendToAsync(Context.Channel);
                 return;
             }
 
             await target.LeaveAsync();
-            await Context.CreateEmbed($"Successfully left **{target.Name}**").SendTo(Context.Channel);
+            await Context.CreateEmbed($"Successfully left **{target.Name}**").SendToAsync(Context.Channel);
         }
     }
 }

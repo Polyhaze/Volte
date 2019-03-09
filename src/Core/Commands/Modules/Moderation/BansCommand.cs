@@ -19,11 +19,11 @@ namespace Volte.Core.Commands.Modules.Moderation
             var bans = (await Context.Guild.GetBansAsync()).Select(b => $"**{b.User}**: {b.Reason ?? "No reason provided."}").ToList();
             if (bans.Count.Equals(0))
             {
-                await Context.CreateEmbed("This server doesn't have anyone banned.").SendTo(Context.Channel);
+                await Context.CreateEmbed("This server doesn't have anyone banned.").SendToAsync(Context.Channel);
             }
             else
             {
-                await Context.CreateEmbed(string.Join('\n', bans)).SendTo(Context.Channel);
+                await Context.CreateEmbed(string.Join('\n', bans)).SendToAsync(Context.Channel);
             }
 
         }

@@ -22,7 +22,7 @@ namespace Volte.Core.Commands.Modules.Moderation
 
             var msg = await Context
                 .CreateEmbed($"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
             await Task.Delay(5000).ContinueWith(_ => msg.DeleteAsync());
         }
     }

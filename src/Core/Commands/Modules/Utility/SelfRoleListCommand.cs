@@ -20,14 +20,14 @@ namespace Volte.Core.Commands.Modules.Utility
                 config.SelfRoles.ForEach(role =>
                 {
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-                    roleList += $"**{currentRole?.Name}**\n";
+                    roleList += $"**{(currentRole is null ? "Role no longer exists." : currentRole.Name)}**\n";
                 });
-                await Context.CreateEmbed(roleList).SendTo(Context.Channel);
+                await Context.CreateEmbed(roleList).SendToAsync(Context.Channel);
             }
             else
             {
                 roleList = "No roles available to self-assign in this guild.";
-                await Context.CreateEmbed(roleList).SendTo(Context.Channel);
+                await Context.CreateEmbed(roleList).SendToAsync(Context.Channel);
             }
         }
     }

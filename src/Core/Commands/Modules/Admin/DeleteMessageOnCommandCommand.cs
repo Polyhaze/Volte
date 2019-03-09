@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.DeleteMessageOnCommand = enabled;
             Db.UpdateConfig(config);
             await Context.CreateEmbed(enabled ? "Enabled DeleteMessageOnCommand in this server." : "Disabled DeleteMessageOnCommand in this server.")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

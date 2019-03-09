@@ -18,7 +18,7 @@ namespace Volte.Core.Commands.Modules.Moderation
             var target = await Context.Channel.GetMessageAsync(messageId);
             if (target is null)
             {
-                await Context.CreateEmbed("That message doesn't exist in this channel.").SendTo(Context.Channel);
+                await Context.CreateEmbed("That message doesn't exist in this channel.").SendToAsync(Context.Channel);
                 return;
             }
 
@@ -28,7 +28,7 @@ namespace Volte.Core.Commands.Modules.Moderation
             });
 
             var confirmationMessage = await Context
-                .CreateEmbed($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.").SendTo(Context.Channel);
+                .CreateEmbed($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.").SendToAsync(Context.Channel);
             await Task.Delay(2000).ContinueWith(async _ =>
             {
                 await Context.Message.DeleteAsync();

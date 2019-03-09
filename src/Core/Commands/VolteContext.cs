@@ -35,8 +35,8 @@ namespace Volte.Core.Commands
         public EmbedBuilder CreateEmbedBuilder(string content) => Util.CreateEmbed(this, content).ToEmbedBuilder();
         public EmbedBuilder CreateEmbedBuilder() => Util.CreateEmbed(this, string.Empty).ToEmbedBuilder();
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
-        public Task ReplyAsync(Embed embed) => embed.SendTo(Channel);
-        public Task ReplyAsync(EmbedBuilder embed) => embed.SendTo(Channel);
+        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
+        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
         public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
     }
 }

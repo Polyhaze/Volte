@@ -44,12 +44,12 @@ namespace Volte.Core.Services
 
             try
             {
-                await embed.SendTo(guild.Owner);
+                await embed.SendToAsync(guild.Owner);
             }
             catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
             {
                 var c = guild.TextChannels?.FirstOrDefault();
-                if (c != null) await embed.SendTo(c);
+                if (c != null) await embed.SendToAsync(c);
             }
 
             if (Config.JoinLeaveLog.Enabled)
@@ -118,7 +118,7 @@ namespace Volte.Core.Services
                         .AddField("ID", guild.Id, true)
                         .WithThumbnailUrl(guild.IconUrl)
                         .WithColor(0xFF0000)
-                        .SendTo(channel);
+                        .SendToAsync(channel);
                 }
                 catch (NullReferenceException e)
                 {

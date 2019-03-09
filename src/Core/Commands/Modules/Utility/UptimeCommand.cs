@@ -17,7 +17,7 @@ namespace Volte.Core.Commands.Modules.Utility
             await Context
                 .CreateEmbed(
                     $"I've been online for **{(DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3)}**!")
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }

@@ -7,22 +7,22 @@ namespace Volte.Core.Extensions
 {
     public static class EmbedExtensions
     {
-        public static Task<IUserMessage> SendTo(this EmbedBuilder e, IMessageChannel c)
+        public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c)
         {
             return Util.Send(c, e.Build());
         }
 
-        public static Task<IUserMessage> SendTo(this Embed e, IMessageChannel c)
+        public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c)
         {
             return Util.Send(c, e);
         }
 
-        public static async Task<IUserMessage> SendTo(this EmbedBuilder e, SocketGuildUser c)
+        public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, SocketGuildUser c)
         {
             return await Util.Send(await c.GetOrCreateDMChannelAsync(), e.Build());
         }
 
-        public static async Task<IUserMessage> SendTo(this Embed e, SocketGuildUser c)
+        public static async Task<IUserMessage> SendToAsync(this Embed e, SocketGuildUser c)
         {
             return await Util.Send(await c.GetOrCreateDMChannelAsync(), e);
         }

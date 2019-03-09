@@ -18,14 +18,14 @@ namespace Volte.Core.Commands.Modules.Utility
             if (m is null)
             {
                 await Context.CreateEmbed("A message with that ID doesn't exist in this channel.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
             await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize())
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
 
         [Command("Quote"), Priority(1)]
@@ -37,14 +37,14 @@ namespace Volte.Core.Commands.Modules.Utility
             if (m is null)
             {
                 await Context.CreateEmbed("A message with that ID doesn't exist in the given channel.")
-                    .SendTo(Context.Channel);
+                    .SendToAsync(Context.Channel);
                 return;
             }
             await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize())
-                .SendTo(Context.Channel);
+                .SendToAsync(Context.Channel);
         }
     }
 }
