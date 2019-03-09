@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Volte.Core.Commands;
 using Volte.Core.Discord;
 using Volte.Core.Extensions;
-using Volte.Core.Utils;
 
 namespace Volte.Core.Services
 {

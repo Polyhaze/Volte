@@ -1,18 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Octokit;
 
 namespace Volte.Core.Services
 {
+    [Obsolete]
     public sealed class GitHubService : IService
     {
-        public readonly GitHubClient GitHub = new GitHubClient(new ProductHeaderValue("GreemDev"));
+        public static readonly GitHubClient GitHub = new GitHubClient(new ProductHeaderValue("GreemDev"));
+
+        static GitHubService()
+        {
+            GitHub.Credentials = new Credentials("");
+        }
 
         public async Task<Commit> GetLastCommitAsync()
         {
             return (await GitHub.Repository.Commit.GetAll("GreemDev", "Volte"))
-                .Select(x => x.Commit).Take(1).ElementAt(0);
+                .Select(x => x.Commit).ToArray()[0];
         }
 
         public async Task<IEnumerable<Commit>> GetAllCommitsAsync()
