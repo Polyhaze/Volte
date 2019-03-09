@@ -18,7 +18,6 @@ namespace Volte.Core.Extensions
                             t.GetAttribute<ObsoleteAttribute>() == null))
             {
                 provider.AddSingleton(service);
-                Console.WriteLine(service.FullName);
             }
 
             return provider;
