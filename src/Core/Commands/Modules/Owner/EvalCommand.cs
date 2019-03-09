@@ -3,15 +3,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Qmmands;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Data.Objects;
 using Volte.Core.Extensions;
-using Volte.Core.Services;
 using Volte.Core.Utils;
+using Discord;
+using Qmmands;
 
 namespace Volte.Core.Commands.Modules.Owner
 {
@@ -44,15 +43,14 @@ namespace Volte.Core.Commands.Modules.Owner
                         CommandService = CommandService,
                         DebugService = DebugService,
                         DatabaseService = Db,
-                        EmojiService = EmojiService,
-                        GitHubService = GitHubService
+                        EmojiService = EmojiService
                     };
 
                     var imports = new[]
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Threading.Tasks",
                         "System.Diagnostics", "Discord", "Qmmands", "Discord.WebSocket", "System.IO",
-                        "System.Threading", "Volte.Core.Utils"
+                        "System.Threading", "Volte.Core.Extensions", "Volte.Core.Utils", "Volte.Core.Runtime", "Volte.Core.Data"
                     };
 
                     sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
