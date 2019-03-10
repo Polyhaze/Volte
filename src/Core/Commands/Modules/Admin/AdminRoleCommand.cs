@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using Qmmands;
+using System.Threading.Tasks;
 using Volte.Core.Commands.Preconditions;
 using Volte.Core.Extensions;
 
@@ -16,15 +15,11 @@ namespace Volte.Core.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task AdminRoleAsync(SocketRole role)
         {
-            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder();
+            var embed = Context.CreateEmbedBuilder();
             var config = Db.GetConfig(Context.Guild);
-            if (role != null)
-            {
-                config.ModerationOptions.AdminRole = role.Id;
-                Db.UpdateConfig(config);
-                embed.WithDescription($"Set **{role.Name}** as the Admin role for this server.");
-            }
-
+            config.ModerationOptions.AdminRole = role.Id;
+            Db.UpdateConfig(config);
+            embed.WithDescription($"Set **{role.Name}** as the Admin role for this server.");
             await embed.SendToAsync(Context.Channel);
         }
     }

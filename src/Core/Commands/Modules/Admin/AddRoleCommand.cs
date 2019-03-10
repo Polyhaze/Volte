@@ -13,18 +13,10 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Grants a role to the mentioned user.")]
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task AddRoleAsync(SocketGuildUser user, [Remainder] string role)
+        public async Task AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
-            var targetRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-            if (targetRole != null)
-            {
-                await user.AddRoleAsync(targetRole);
-                await Context.CreateEmbed($"Added the role **{role}** to {user.Mention}!")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
-
-            await Context.CreateEmbed($"**{role}** doesn't exist on this server!")
+            await user.AddRoleAsync(role);
+            await Context.CreateEmbed($"Added the role **{role}** to {user.Mention}!")
                 .SendToAsync(Context.Channel);
         }
     }

@@ -41,7 +41,7 @@ namespace Volte.Core.Commands.Modules.Admin
             config.Tags.Add(newTag);
             Db.UpdateConfig(config);
 
-            await Context.CreateEmbed("").ToEmbedBuilder()
+            await Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
                 .AddField("Name", newTag.Name)
                 .AddField("Response", newTag.Response)

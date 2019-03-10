@@ -32,8 +32,7 @@ namespace Volte.Core.Commands
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
         public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
         public Embed CreateEmbed(string content) => Util.CreateEmbed(this, content);
-        public EmbedBuilder CreateEmbedBuilder(string content) => Util.CreateEmbed(this, content).ToEmbedBuilder();
-        public EmbedBuilder CreateEmbedBuilder() => Util.CreateEmbed(this, string.Empty).ToEmbedBuilder();
+        public EmbedBuilder CreateEmbedBuilder(string content = null) => Util.CreateEmbed(this, content ?? "").ToEmbedBuilder();
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
         public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
         public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);

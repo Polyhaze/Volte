@@ -28,8 +28,7 @@ namespace Volte.Core.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             if (config.ModerationOptions.Blacklist.ContainsIgnoreCase(phrase))
             {
-                config.ModerationOptions.Blacklist.RemoveAt(
-                    config.ModerationOptions.Blacklist.FindIndex(p => p.EqualsIgnoreCase(phrase)));
+                config.ModerationOptions.Blacklist.Remove(phrase);
                 await Context.CreateEmbed($"Removed **{phrase}** from the word blacklist.").SendToAsync(Context.Channel);
                 Db.UpdateConfig(config);
             }

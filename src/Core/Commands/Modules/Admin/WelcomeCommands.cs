@@ -14,7 +14,6 @@ namespace Volte.Core.Commands.Modules.Admin
         public ImageWelcomeService ImageWelcomeService { get; set; }
         public DefaultWelcomeService DefaultWelcomeService { get; set; }
 
-
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]

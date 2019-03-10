@@ -37,5 +37,17 @@ namespace Volte.Core.Commands.Modules.Admin
                 .CreateEmbed($"Successfully set message with ID **{messageId}** as the message used for Verification.")
                 .SendToAsync(Context.Channel);
         }
+
+        [Command("VerificationEnabled", "Ve")]
+        [Description("Disables or enables verification in this server.")]
+        [Remarks("Usage: |prefix|verificationenabled {true/false}")]
+        public async Task VerificationEnabledAsync(bool enabled)
+        {
+            var config = Db.GetConfig(Context.Guild);
+            config.VerificationOptions.Enabled = enabled;
+            Db.UpdateConfig(config);
+            await Context.CreateEmbed("Enabled Verification in this server.")
+                .SendToAsync(Context.Channel);
+        }
     }
 }

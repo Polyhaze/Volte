@@ -15,13 +15,10 @@ namespace Volte.Core.Commands.Modules.Admin
         public async Task ModRoleAsync(SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
-            if (role != null)
-            {
-                config.ModerationOptions.ModRole = role.Id;
-                Db.UpdateConfig(config);
-                await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
-                    .SendToAsync(Context.Channel);
-            }
+            config.ModerationOptions.ModRole = role.Id;
+            Db.UpdateConfig(config);
+            await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
+                .SendToAsync(Context.Channel);
         }
     }
 }
