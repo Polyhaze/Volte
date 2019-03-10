@@ -10,13 +10,11 @@ namespace Volte.Core.Commands.Preconditions
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            if (!ctx.User.IsAdmin())
-            {
-                await ctx.ReactFailureAsync();
-                return CheckResult.Unsuccessful("Insufficient permission.");
-            }
+            if (ctx.User.IsAdmin()) return CheckResult.Successful;
 
-            return CheckResult.Successful;
+            await ctx.ReactFailureAsync();
+            return CheckResult.Unsuccessful("Insufficient permission.");
+
         }
     }
 }

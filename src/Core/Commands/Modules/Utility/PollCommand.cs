@@ -15,9 +15,8 @@ namespace Volte.Core.Commands.Modules.Utility
             var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');
 
-            var embed = Context.CreateEmbed(string.Empty).ToEmbedBuilder()
+            var embed = Context.CreateEmbedBuilder()
                 .WithTitle(question)
-                .WithAuthor(Context.User)
                 .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png");
             string embedBody;
 

@@ -16,17 +16,17 @@ namespace Volte.Core.Commands.Modules.Moderation
         [RequireGuildModerator]
         public async Task BansAsync()
         {
-            var bans = (await Context.Guild.GetBansAsync()).Select(b => $"**{b.User}**: {b.Reason ?? "No reason provided."}").ToList();
-            if (bans.Count.Equals(0))
+            var banList = await Context.Guild.GetBansAsync();
+            if (banList.Any())
             {
                 await Context.CreateEmbed("This server doesn't have anyone banned.").SendToAsync(Context.Channel);
             }
             else
             {
-                await Context.CreateEmbed(string.Join('\n', bans)).SendToAsync(Context.Channel);
+                await Context.CreateEmbed(string.Join('\n',
+                        banList.Select(b => $"**{b.User}**: {b.Reason ?? "No reason provided."}")))
+                    .SendToAsync(Context.Channel);
             }
-
         }
-
     }
 }

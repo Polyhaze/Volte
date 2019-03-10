@@ -17,12 +17,12 @@ namespace Volte.Core.Commands.Modules.Admin
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         [RequireGuildAdmin]
-        public async Task WelcomeChannelAsync(SocketTextChannel channel)
+        public async Task WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
             var config = Db.GetConfig(Context.Guild);
             config.WelcomeOptions.WelcomeChannel = channel.Id;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed($"Set this server's welcome channel to **{channel.Name}**")
+            await Context.CreateEmbed($"Set this server's welcome channel to {channel.Mention}.")
                 .SendToAsync(Context.Channel);
         }
 

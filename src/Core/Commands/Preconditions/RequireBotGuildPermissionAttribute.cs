@@ -10,9 +10,8 @@ namespace Volte.Core.Commands.Preconditions
     {
         private readonly GuildPermission[] _permissions;
 
-        public RequireBotGuildPermissionAttribute(GuildPermission[] perms) => _permissions = perms;
+        public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
 
-        public RequireBotGuildPermissionAttribute(GuildPermission perm) => _permissions = new[] {perm};
 
         public override async Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)

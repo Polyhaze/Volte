@@ -10,9 +10,7 @@ namespace Volte.Core.Commands.Preconditions
     {
         private readonly ChannelPermission[] _permissions;
 
-        public RequireBotChannelPermission(ChannelPermission[] permissions) => _permissions = permissions;
-
-        public RequireBotChannelPermission(ChannelPermission permission) => _permissions = new[] {permission};
+        public RequireBotChannelPermission(params ChannelPermission[] permissions) => _permissions = permissions;
 
 
         public override async Task<CheckResult> CheckAsync(
