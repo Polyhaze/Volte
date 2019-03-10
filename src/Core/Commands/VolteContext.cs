@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Volte.Core.Discord;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Utils;
 using Volte.Core.Services;
 using Qmmands;
@@ -12,11 +13,13 @@ namespace Volte.Core.Commands
     /// <inheritdoc />
     public sealed class VolteContext : ICommandContext
     {
-        private readonly EmojiService _emojiService = VolteBot.GetRequiredService<EmojiService>();
+        private readonly EmojiService _emojiService;
 
-        public VolteContext(IDiscordClient client, IUserMessage msg)
+        public VolteContext(IDiscordClient client, IUserMessage msg, IServiceProvider provider)
         {
+            _emojiService = provider.GetRequiredService<EmojiService>();
             Client = client as DiscordSocketClient;
+            ServiceProvider = provider;
             Guild = (msg.Channel as ITextChannel)?.Guild;
             Channel = msg.Channel as ITextChannel;
             User = msg.Author as IGuildUser;
@@ -24,6 +27,7 @@ namespace Volte.Core.Commands
         }
 
         public DiscordSocketClient Client { get; }
+        public IServiceProvider ServiceProvider { get; }
         public IGuild Guild { get; }
         public ITextChannel Channel { get; }
         public IGuildUser User { get; }

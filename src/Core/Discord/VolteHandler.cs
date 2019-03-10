@@ -94,7 +94,7 @@ namespace Volte.Core.Discord
                     return;
                 }
 
-                var ctx = new VolteContext(_client, msg);
+                var ctx = new VolteContext(_client, msg, VolteBot.ServiceProvider);
                 await _blacklist.CheckMessageAsync(ctx);
                 await _antilink.CheckMessageAsync(ctx);
                 await _pingchecks.CheckMessageAsync(ctx);
