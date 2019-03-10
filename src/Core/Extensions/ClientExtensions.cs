@@ -1,20 +1,21 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using Volte.Core.Data;
 
 namespace Volte.Core.Extensions
 {
     public static class ClientExtensions
     {
-
-        public static string GetInviteUrl(this DiscordSocketClient client)
+        public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin)
         {
-            return $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8";
+            return shouldHaveAdmin is true
+                ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
+                : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
         }
 
-        public static SocketUser GetOwner(this DiscordSocketClient client)
+        public static IUser GetOwner(this DiscordSocketClient client)
         {
             return client.GetUser(Config.Owner);
         }
-
     }
 }

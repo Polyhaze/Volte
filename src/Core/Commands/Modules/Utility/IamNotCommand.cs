@@ -24,7 +24,7 @@ namespace Volte.Core.Commands.Modules.Utility
                 var target = Context.Guild.Roles.FirstOrDefault(x => x.Name.EqualsIgnoreCase(roleName));
                 if (target is null)
                 {
-                    await Context.CreateEmbed($"The role **{roleName}** doesn't exist in this guild")
+                    await Context.CreateEmbed($"The role **{roleName}** doesn't exist in this guild.")
                         .SendToAsync(Context.Channel);
                 }
                 else

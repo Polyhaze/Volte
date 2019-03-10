@@ -14,8 +14,7 @@ namespace Volte.Core.Commands.Modules.Utility
         public async Task FeedbackAsync([Remainder] string feedback)
         {
             await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendToAsync(Context.Channel);
-
-            var embed = Context.CreateEmbed($"```{feedback}```").ToEmbedBuilder()
+            var embed = Context.CreateEmbedBuilder($"```{feedback}```")
                 .WithTitle($"Feedback from {Context.User.Username}#{Context.User.Discriminator}");
             await embed.SendToAsync(VolteBot.Client.GetGuild(405806471578648588).GetTextChannel(415182876326232064));
         }

@@ -25,10 +25,11 @@ namespace Volte.Core.Commands.Modules.Utility
                 .AddField("RAM Usage", $"{GetRamUsage()}MB", true)
                 .AddField("Language", "C# - Discord.Net 2.0.1", true)
                 .AddField("Servers", Context.Client.Guilds.Count, true)
-                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(), true)
+                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
+                    true)
                 .AddField("Invite Me", $"`{Db.GetConfig(Context.Guild).CommandPrefix}invite`", true)
                 .AddField(".NET Core Version", GetNetCoreVersion(), true)
-                .AddField("Operating System", Environment.OSVersion, true)
+                .AddField("Operating System", Environment.OSVersion.Platform, true)
                 .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl())
                 .SendToAsync(Context.Channel);

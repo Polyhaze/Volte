@@ -15,7 +15,7 @@ namespace Volte.Core.Commands.Modules.Utility
         {
             await Context.CreateEmbed("Do you like Volte? If you do, that's awesome! If not then I'm sorry :( \n\n" +
                                       "[Website](https://volte.greemdev.net)\n" +
-                                      $"[Invite Me](https://discordapp.com/oauth2/authorize?client_id={VolteBot.Client.CurrentUser.Id}&scope=bot&permissions=8)\n" +
+                                      $"[Invite Me]({Context.Client.GetInviteUrl(true)})\n" +
                                       "[Support Server Invite](https://greemdev.net/discord)\n\n" +
                                       "And again, thanks for using me!")
                 .SendToAsync(Context.Channel);

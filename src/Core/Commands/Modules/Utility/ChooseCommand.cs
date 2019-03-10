@@ -14,7 +14,8 @@ namespace Volte.Core.Commands.Modules.Utility
         {
             var opts = options.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-            await Context.CreateEmbed($"I choose `{opts[new Random().Next(0, opts.Length)]}`.").SendToAsync(Context.Channel);
+            await Context.CreateEmbed($"I choose `{opts[new Random().Next(0, opts.Length)]}`.")
+                .SendToAsync(Context.Channel);
         }
     }
 }
