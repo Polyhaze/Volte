@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Console = Colorful.Console;
 using Discord;
 using Volte.Data.Objects;
 using Volte.Extensions;
+using Console = Colorful.Console;
 using Color = System.Drawing.Color;
 using LogMessage = Discord.LogMessage;
 using Version = Volte.Runtime.Version;

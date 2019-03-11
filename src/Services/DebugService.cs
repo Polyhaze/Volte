@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using Volte.Runtime;
 
 namespace Volte.Services
 {
@@ -41,7 +42,7 @@ namespace Volte.Services
                 description = "Discord server settings for support.", files
             };
 
-            var httpClient = new RestClient("https://debug.scarsz.me") {UserAgent = "SIVA/V2"};
+            var httpClient = new RestClient("https://debug.scarsz.me") {UserAgent = $"SIVA/{Version.FullVersion}"};
             var req = new RestRequest("post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;

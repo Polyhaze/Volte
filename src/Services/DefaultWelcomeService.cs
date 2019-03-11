@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
-using Volte.Discord;
 using Volte.Extensions;
 
 namespace Volte.Services
@@ -11,7 +8,10 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public DefaultWelcomeService(DatabaseService databaseService) => _db = databaseService;
+        public DefaultWelcomeService(DatabaseService databaseService)
+        {
+            _db = databaseService;
+        }
 
         internal async Task JoinAsync(IGuildUser user)
         {
