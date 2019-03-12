@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
+using Volte.Extensions;
 
 namespace Volte.Commands.Preconditions
 {
@@ -16,7 +17,7 @@ namespace Volte.Commands.Preconditions
         public override async Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             foreach (var perm in (await ctx.Guild.GetCurrentUserAsync()).GetPermissions(ctx.Channel).ToList())
                 if (_permissions.Contains(perm))
                     return CheckResult.Successful;

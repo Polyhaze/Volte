@@ -9,7 +9,7 @@ namespace Volte.Commands.Preconditions
     {
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider services)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsBotOwner()) return CheckResult.Successful;
 
             await ctx.ReactFailureAsync();

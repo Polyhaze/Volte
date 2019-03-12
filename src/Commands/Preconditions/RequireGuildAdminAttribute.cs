@@ -9,7 +9,7 @@ namespace Volte.Commands.Preconditions
     {
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsAdmin()) return CheckResult.Successful;
 
             await ctx.ReactFailureAsync();
