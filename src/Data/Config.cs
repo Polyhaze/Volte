@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
 using Volte.Data.Objects;
@@ -15,17 +16,17 @@ namespace Volte.Data
 
         static Config()
         {
-            CreateIfNotExists();
+            CreateIfNotExists().GetAwaiter().GetResult();
             if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty())
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        public static void CreateIfNotExists()
+        public static async Task CreateIfNotExists()
         {
             if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty()) return;
             var logger = VolteBot.GetRequiredService<LoggingService>();
-            logger.Log(LogSeverity.Warning, LogSource.Volte,
-                "config.json didn't exist or was empty. Created it for you.").GetAwaiter().GetResult();
+            await logger.Log(LogSeverity.Warning, LogSource.Volte,
+                "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig
             {
                 Token = "token here",

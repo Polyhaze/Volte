@@ -79,7 +79,7 @@ namespace Volte.Services
                     reason = "Unknown command.";
                     break;
                 case ExecutionFailedResult efr:
-                    reason = "Execution of this command failed.";
+                    reason = $"Execution of this command failed.\nFull error message: {efr.Exception.Message}";
                     await _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
                 case ChecksFailedResult _:
@@ -102,12 +102,13 @@ namespace Volte.Services
 
             if (reason != "Insufficient permission." && reason != "Unknown command.")
             {
-                embed.AddField("Error in Command:", c.Name);
-                embed.AddField("Error Reason:", reason);
-                embed.AddField("Correct Usage", c.SanitizeRemarks(ctx));
-                embed.WithAuthor(ctx.User);
-                embed.WithColor(Config.ErrorColor);
-                await embed.SendToAsync(ctx.Channel);
+                await embed.AddField("Error in Command:", c.Name)
+                    .AddField("Error Reason:", reason)
+                    .AddField("Correct Usage", c.SanitizeRemarks(ctx))
+                    .WithAuthor(ctx.User)
+                    .WithErrorColor()
+                    .SendToAsync(ctx.Channel);
+
                 if (Config.LogAllCommands)
                 {
                     await _logger.Log(LogSeverity.Error, LogSource.Module,
