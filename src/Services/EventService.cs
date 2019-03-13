@@ -109,27 +109,26 @@ namespace Volte.Services
                     .WithErrorColor()
                     .SendToAsync(ctx.Channel);
 
-                if (Config.LogAllCommands)
-                {
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|     -Command Issued: {c.Name}");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|        -Args Passed: {args.Trim()}");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|        -Time Issued: {DateTime.Now}");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        $"|              -After: {sw.Elapsed.Humanize()}");
-                    await _logger.Log(LogSeverity.Error, LogSource.Module,
-                        "-------------------------------------------------");
-                }
+                if (!Config.LogAllCommands) return;
+
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|     -Command Issued: {c.Name}");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|        -Args Passed: {args.Trim()}");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|        -Time Issued: {DateTime.Now}");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    $"|              -After: {sw.Elapsed.Humanize()}");
+                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                    "-------------------------------------------------");
             }
         }
     }
