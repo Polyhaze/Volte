@@ -16,13 +16,6 @@ namespace Volte.Commands.Modules.Admin
         public async Task AutoroleAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
-            if (role is null)
-            {
-                await Context.CreateEmbed($"The specified role, **{role.Name}**, doesn't exist in this guild.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
-
             config.Autorole = role.Name;
             Db.UpdateConfig(config);
             await Context
