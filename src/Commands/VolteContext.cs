@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volte.Utils;
 using Volte.Services;
 using Qmmands;
+using Volte.Data;
 using Volte.Extensions;
 
 namespace Volte.Commands
@@ -35,8 +36,13 @@ namespace Volte.Commands
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
         public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
-        public Embed CreateEmbed(string content) => Util.CreateEmbed(this, content);
-        public EmbedBuilder CreateEmbedBuilder(string content = null) => Util.CreateEmbed(this, content ?? "").ToEmbedBuilder();
+
+        public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
+            .WithDescription(content).Build();
+
+        public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
+            .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
+
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
         public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
         public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);

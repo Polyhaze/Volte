@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task RoleColorAsync(SocketRole role)
         {
             await Context.CreateEmbedBuilder(
-                    $"**Hex:** {role.Color.ToString().ToUpper()}" +
+                    $"**Dec:** {role.Color.RawValue}" +
                     "\n" +
                     $"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"
                 ).SendToAsync(Context.Channel);

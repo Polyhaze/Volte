@@ -14,10 +14,9 @@ namespace Volte.Commands.Modules.Utility
         public async Task AvatarAsync(SocketGuildUser user = null)
         {
             var u = user ?? Context.User;
-            var embed = Context.CreateEmbedBuilder()
-                .WithImageUrl(u.GetAvatarUrl());
-
-            await embed.SendToAsync(Context.Channel);
+            await Context.CreateEmbedBuilder()
+                .WithImageUrl(u.GetAvatarUrl())
+                .SendToAsync(Context.Channel);
         }
     }
 }

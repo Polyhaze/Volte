@@ -1,5 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using Qmmands;
 using System.Threading.Tasks;
 using Volte.Commands.Preconditions;

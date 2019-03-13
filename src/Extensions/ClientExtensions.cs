@@ -17,5 +17,10 @@ namespace Volte.Extensions
         {
             return client.GetUser(Config.Owner);
         }
+
+        public static IGuild GetPrimaryGuild(this DiscordSocketClient client)
+        {
+            return client.GetGuild(405806471578648588);
+        }
     }
 }

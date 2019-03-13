@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Extensions;
-using Volte.Utils;
 
 namespace Volte.Commands.Modules.Help
 {

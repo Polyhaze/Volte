@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|ping")]
         public async Task PingAsync()
         {
-            var e = Context.CreateEmbed("Pinging...").ToEmbedBuilder();
+            var e = Context.CreateEmbedBuilder("Pinging...");
             var sw = new Stopwatch();
             sw.Start();
             var msg = await e.SendToAsync(Context.Channel);

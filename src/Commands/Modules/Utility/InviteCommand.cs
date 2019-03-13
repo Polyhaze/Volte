@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Discord;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
