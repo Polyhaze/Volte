@@ -13,17 +13,18 @@ namespace Volte.Data
     {
         private const string ConfigFile = "data/config.json";
         private static BotConfig _bot;
+        private static bool _valid = File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
 
         static Config()
         {
             _ = CreateIfNotExists();
-            if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty())
+            if (_valid)
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
         public static async Task CreateIfNotExists()
         {
-            if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty()) return;
+            if (_valid) return;
             var logger = VolteBot.GetRequiredService<LoggingService>();
             await logger.Log(LogSeverity.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.");
