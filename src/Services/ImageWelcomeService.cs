@@ -1,7 +1,5 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using Volte.Discord;
 using Discord;
 using Volte.Data;
 using Volte.Extensions;
@@ -9,7 +7,8 @@ using Color = System.Drawing.Color;
 
 namespace Volte.Services
 {
-    public sealed class ImageWelcomeService : IService
+    [Service("ImageWelcome", "The main Service used for getting images from the welcome image API to be used for welcoming when the WelcomeApiKey config entry is set.")]
+    public sealed class ImageWelcomeService
     {
         private readonly DatabaseService _db;
         private readonly string _url;

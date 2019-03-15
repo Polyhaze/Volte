@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using RestSharp.Extensions;
 using Volte.Services;
 
 namespace Volte.Extensions
@@ -13,9 +12,8 @@ namespace Volte.Extensions
         {
             //get all the classes that implement the IService interface, arent an interface themselves, and haven't been marked as Obsolete like the GitHubService.
             foreach (var service in Assembly.GetEntryAssembly().GetTypes()
-                .Where(t => typeof(IService).IsAssignableFrom(t) && 
-                            !t.IsInterface &&
-                            t.GetAttribute<ObsoleteAttribute>() == null))
+                .Where(t => !t.HasAttribute<ObsoleteAttribute>() &&
+                            t.HasAttribute<ServiceAttribute>()))
             {
                 provider.AddSingleton(service);
             }

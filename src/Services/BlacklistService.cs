@@ -4,7 +4,8 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class BlacklistService : IService
+    [Service("Blacklist", "The main Service for checking messages for blacklisted words/phrases in user's messages.")]
+    public sealed class BlacklistService
     {
         private readonly DatabaseService _db;
 

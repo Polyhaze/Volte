@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules.Admin
     {
         [Command("SelfRoleAdd", "SrA", "SrAdd")]
         [Description("Adds a role to the list of self roles for this guild.")]
-        [Remarks("Usage: |prefix|selfroleadd {roleName}")]
+        [Remarks("Usage: |prefix|selfroleadd {role}")]
         [RequireGuildAdmin]
         public async Task SelfRoleAddAsync([Remainder] SocketRole role)
         {
@@ -24,13 +24,13 @@ namespace Volte.Commands.Modules.Admin
 
         [Command("SelfRoleRemove", "SrR", "SrRem")]
         [Description("Removes a role from the list of self roles for this guild.")]
-        [Remarks("Usage: |prefix|selfrole remove {roleName}")]
+        [Remarks("Usage: |prefix|selfrole remove {role}")]
         [RequireGuildAdmin]
         public async Task SelfRoleRemAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
 
-            if (config.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
+            if (config.SelfRoles.ContainsIgnoreCase(role.Name))
             {
                 config.SelfRoles.Remove(role.Name);
                 await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list for this guild.")

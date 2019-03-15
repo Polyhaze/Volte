@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using RestSharp;
 using Volte.Commands;
-using Volte.Discord;
 using Volte.Extensions;
-using Volte.Utils;
 
 namespace Volte.Services
 {
-    public sealed class AntilinkService : IService
+    [Service("Antilink", "The main Service for checking links sent in chat.")]
+    public sealed class AntilinkService
     {
         private readonly DatabaseService _db;
 

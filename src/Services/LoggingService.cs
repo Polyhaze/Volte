@@ -10,7 +10,8 @@ using LogMessage = Discord.LogMessage;
 
 namespace Volte.Services
 {
-    public sealed class LoggingService : IService
+    [Service("Logging", "The main Service used to handle logging to the bot's console.")]
+    public sealed class LoggingService
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 

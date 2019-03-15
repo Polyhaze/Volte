@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
@@ -13,7 +12,8 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class EventService : IService
+    [Service("Event", "The main Service for handling some Discord gateway events.")]
+    public sealed class EventService
     {
         private readonly LoggingService _logger;
 

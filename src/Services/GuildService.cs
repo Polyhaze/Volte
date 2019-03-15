@@ -11,7 +11,8 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class GuildService : IService
+    [Service("Guild", "The main Service that handles guild-related Discord gateway events.")]
+    public sealed class GuildService
     {
         private readonly LoggingService _logger;
 

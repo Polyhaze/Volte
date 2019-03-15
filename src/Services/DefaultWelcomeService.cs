@@ -4,7 +4,8 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class DefaultWelcomeService : IService
+    [Service("DefaultWelcome", "The main Service that handles default welcome/leaving functionality when no WelcomeApiKey is set in the bot config.")]
+    public sealed class DefaultWelcomeService
     {
         private readonly DatabaseService _db;
 
@@ -23,7 +24,9 @@ namespace Volte.Services
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
-                .Replace("{UserTag}", user.Discriminator);
+                .Replace("{UserTag}", user.Discriminator)
+                .Replace("{MemberCount}", (await user.Guild.GetUsersAsync()).Count.ToString())
+                .Replace("{UserString}", user.ToString());
             var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
 
             if (!(c is null))
@@ -48,12 +51,15 @@ namespace Volte.Services
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
-                .Replace("{UserTag}", user.Discriminator);
+                .Replace("{UserTag}", user.Discriminator)
+                .Replace("{MemberCount}", (await user.Guild.GetUsersAsync()).Count.ToString())
+                .Replace("{UserString}", user.ToString());
             var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeOptions.WelcomeColorR,
+                    .WithColor(new Color(
+                        config.WelcomeOptions.WelcomeColorR,
                         config.WelcomeOptions.WelcomeColorG,
                         config.WelcomeOptions.WelcomeColorB)
                     )

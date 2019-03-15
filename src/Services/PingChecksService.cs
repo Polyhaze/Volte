@@ -4,7 +4,8 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class PingChecksService : IService
+    [Service("PingChecks", "The main Service used for checking if any given message contains mass mentions.")]
+    public sealed class PingChecksService
     {
         private readonly DatabaseService _db;
 

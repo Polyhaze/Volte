@@ -4,7 +4,8 @@ using Discord.WebSocket;
 
 namespace Volte.Services
 {
-    public sealed class VerificationService : IService
+    [Service("Verification", "The main Service that handles user verification.")]
+    public sealed class VerificationService
     {
         private readonly DatabaseService _db;
         private readonly EmojiService _emoji;

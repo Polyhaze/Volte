@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using Volte.Extensions;
 
 namespace Volte.Services
 {
-    public sealed class DebugService : IService
+    [Service("Debug", "The main Service that handles HTTP POST requests for debug reports to debug.scarsz.me.")]
+    public sealed class DebugService
     {
-        public string Execute(string config)
+        public string Execute(string json)
         {
             var files = new Dictionary<string, Dictionary<string, string>>
             {
@@ -27,7 +29,7 @@ namespace Volte.Services
                     "2-Server.conf", new Dictionary<string, string>
                     {
                         {
-                            "content", config
+                            "content", json
                         },
                         {
                             "description", "Server config for debug purposes."
@@ -47,9 +49,8 @@ namespace Volte.Services
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(payload), ParameterType.RequestBody);
-            return ((JObject) JsonConvert
-                    .DeserializeObject(httpClient.Execute(req).Content))
-                .GetValue("url").ToString();
+            return JsonConvert.DeserializeObject(httpClient.Execute(req).Content).Cast<JObject>().GetValue("url")
+                .ToString();
         }
     }
 }
