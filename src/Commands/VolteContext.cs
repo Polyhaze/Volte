@@ -3,15 +3,12 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Utils;
 using Volte.Services;
 using Qmmands;
-using Volte.Data;
 using Volte.Extensions;
 
 namespace Volte.Commands
 {
-    /// <inheritdoc />
     public sealed class VolteContext : ICommandContext
     {
         private readonly EmojiService _emojiService;

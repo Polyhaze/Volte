@@ -6,7 +6,7 @@ using Volte.Data.Objects;
 using Volte.Discord;
 using Volte.Services;
 
-namespace Volte.Runtime
+namespace Volte
 {
     internal static class Program
     {

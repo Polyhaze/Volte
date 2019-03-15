@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <StartupObject>Volte.Runtime.Program</StartupObject>
+    <StartupObject>Volte.Program</StartupObject>
     <NoWin32Manifest>true</NoWin32Manifest>
     <Authors>GreemDev</Authors>
     <Company>GreemDev</Company>

@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Data;
 using Volte.Extensions;
-using Volte.Runtime;
 using Volte.Services;
 
 namespace Volte.Discord
@@ -36,7 +35,6 @@ namespace Volte.Discord
         {
             return new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddVolteServices()
                 .AddSingleton(new CancellationTokenSource())
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
@@ -49,13 +47,15 @@ namespace Volte.Discord
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = Runtime.Version.ReleaseType != ReleaseType.Release
+                    LogLevel = Version.ReleaseType != ReleaseType.Release
                         ? LogSeverity.Debug
                         : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50
-                })).BuildServiceProvider();
+                }))
+                .AddVolteServices()
+                .BuildServiceProvider();
         }
 
         private async Task LoginAsync()

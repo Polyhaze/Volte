@@ -16,7 +16,7 @@ namespace Volte.Data
 
         static Config()
         {
-            CreateIfNotExists().GetAwaiter().GetResult();
+            _ = CreateIfNotExists();
             if (File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty())
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }

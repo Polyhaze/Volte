@@ -1,4 +1,4 @@
-﻿namespace Volte.Runtime
+﻿namespace Volte
 {
     public static class Version
     {

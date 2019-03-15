@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Humanizer;
 using Qmmands;
 using Volte.Extensions;
-using Version = Volte.Runtime.Version;
+using Version = Volte.Version;
 
 namespace Volte.Commands.Modules.Utility
 {
