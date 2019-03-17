@@ -1,4 +1,4 @@
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
@@ -24,11 +24,12 @@ namespace Volte.Extensions
 
         internal static void AddTypeParsers(this CommandService service)
         {
-            service.AddTypeParser(new UserParser<SocketGuildUser>());
-            service.AddTypeParser(new UserParser<SocketUser>());
-            service.AddTypeParser(new RoleParser<SocketRole>());
-            service.AddTypeParser(new ChannelParser<SocketTextChannel>());
-            service.AddTypeParser(new EmoteParser());
+            service.AddTypeParser(new UserParser<DiscordMember>());
+            service.AddTypeParser(new UserParser<DiscordUser>());
+            service.AddTypeParser(new RoleParser<DiscordRole>());
+            service.AddTypeParser(new ChannelParser<DiscordChannel>());
+            service.AddTypeParser(new EmoteParser<DiscordGuildEmoji>());
+            service.AddTypeParser(new EmoteParser<DiscordEmoji>());
             service.AddTypeParser(new BooleanParser(), true);
         }
     }

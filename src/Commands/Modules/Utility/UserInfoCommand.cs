@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Extensions;
 
@@ -11,21 +10,20 @@ namespace Volte.Commands.Modules.Utility
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("Usage: $userinfo [@user]")]
-        public async Task UserInfoAsync(SocketGuildUser user = null)
+        public async Task UserInfoAsync(DiscordMember user = null)
         {
             var actualUser = user ?? Context.User;
 
-            await Context.CreateEmbed(string.Empty)
-                .ToEmbedBuilder()
+            await Context.CreateEmbedBuilder()
                 .WithAuthor(Context.User)
-                .WithThumbnailUrl(actualUser.GetAvatarUrl())
+                .WithThumbnailUrl(actualUser.AvatarUrl)
                 .WithTitle("User Info")
-                .AddField("User ID", actualUser.Id)
-                .AddField("Game", actualUser.Activity.Name ?? "Nothing")
+                .AddField("User ID", actualUser.Id.ToString())
+                .AddField("Game", actualUser.Presence.Activity.Name ?? "Nothing")
                 .AddField("Created At",
-                    $"Month: {actualUser.CreatedAt.Month}\nDay: {actualUser.CreatedAt.Day}\nYear: {actualUser.CreatedAt.Year}")
-                .AddField("Status", actualUser.Status)
-                .AddField("Is Bot", actualUser.IsBot)
+                    $"Month: {actualUser.CreationTimestamp.Month}\nDay: {actualUser.CreationTimestamp.Day}\nYear: {actualUser.CreationTimestamp.Year}")
+                .AddField("Status", actualUser.Presence.Status.ToString())
+                .AddField("Is Bot", actualUser.IsBot.ToString())
                 .SendToAsync(Context.Channel);
         }
     }

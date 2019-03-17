@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Discord;
 using Volte.Extensions;
@@ -19,13 +18,9 @@ namespace Volte.Commands.Modules.Utility
             sw.Start();
             var msg = await e.SendToAsync(Context.Channel);
             sw.Stop();
-            await msg.ModifyAsync(x =>
-            {
-                e.WithDescription(
-                    $"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
-                    $"{EmojiService.OK_HAND} **API**: {VolteBot.Client.Latency}ms");
-                x.Embed = e.Build();
-            });
+            e.WithDescription($"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
+                              $"{EmojiService.OK_HAND} **API**: {VolteBot.Client.Ping}ms");
+            await msg.ModifyAsync(null, e.Build());
         }
     }
 }

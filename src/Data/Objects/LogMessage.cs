@@ -1,30 +1,31 @@
 using System;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
 
 namespace Volte.Data.Objects
 {
     public sealed class LogMessage
     {
-        public LogSeverity Severity { get; private set; }
+        public LogLevel Level { get; private set; }
         public LogSource Source { get; private set; }
         public string Message { get; private set; }
         public Exception Exception { get; private set; }
 
-        public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message)
+        public static LogMessage FromDiscordLogMessage(DebugLogMessageEventArgs args)
         {
             var s = new LogMessage
             {
-                Message = message.Message,
-                Severity = message.Severity,
-                Exception = message.Exception
+                Message = args.Message,
+                Level = args.Level,
+                Exception = null
             };
 
-            switch (message.Source)
+            switch (args.Application)
             {
-                case "Rest":
-                    s.Source = LogSource.Rest;
+                case "DSharpPlus":
+                    s.Source = LogSource.DSharpPlus;
                     return s;
-                case "Discord":
+                case "Websocket":
                     s.Source = LogSource.Discord;
                     return s;
                 case "Gateway":

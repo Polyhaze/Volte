@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Volte.Data.Objects;
 using Volte.Discord;
 using Volte.Services;
@@ -23,7 +23,7 @@ namespace Volte
             if (!Directory.Exists("data"))
             {
                 await VolteBot.GetRequiredService<LoggingService>()
-                    .Log(LogSeverity.Critical, LogSource.Volte,
+                    .Log(LogLevel.Critical, LogSource.Volte,
                         "The \"data\" directory didn't exist, so I created it for you.");
                 Directory.CreateDirectory("data");
             }

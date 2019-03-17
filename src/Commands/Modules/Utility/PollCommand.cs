@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Extensions;
 
@@ -24,40 +24,40 @@ namespace Volte.Commands.Modules.Utility
             {
                 case 1:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n\n" +
+                    embedBody = $"{DiscordEmoji.FromUnicode(EmojiService.ONE)} {choices[1]}\n\n" +
                                 "Click the number below to vote.";
                     break;
                 }
                 case 2:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n\n" +
+                    embedBody = $"{DiscordEmoji.FromUnicode(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.TWO)} {choices[2]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 3:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n\n" +
+                    embedBody = $"{DiscordEmoji.FromUnicode(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.THREE)} {choices[3]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 4:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n\n" +
+                    embedBody = $"{DiscordEmoji.FromUnicode(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.THREE)} {choices[3]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.FOUR)} {choices[4]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
                 case 5:
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n" +
-                                $"{new Emoji(EmojiService.FIVE)} {choices[5]}\n\n" +
+                    embedBody = $"{DiscordEmoji.FromUnicode(EmojiService.ONE)} {choices[1]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.TWO)} {choices[2]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.THREE)} {choices[3]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.FOUR)} {choices[4]}\n" +
+                                $"{DiscordEmoji.FromUnicode(EmojiService.FIVE)} {choices[5]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 default:
@@ -82,37 +82,37 @@ namespace Volte.Commands.Modules.Utility
             {
                 case 1:
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.ONE));
                     break;
                 }
                 case 2:
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.ONE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.TWO));
                     break;
                 }
                 case 3:
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.ONE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.TWO));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.THREE));
                     break;
                 }
                 case 4:
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.ONE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.TWO));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.THREE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.FOUR));
                     break;
                 }
                 case 5:
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.ONE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.TWO));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.THREE));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.FOUR));
+                    await msg.CreateReactionAsync(DiscordEmoji.FromUnicode(EmojiService.FIVE));
                     break;
                 }
             }

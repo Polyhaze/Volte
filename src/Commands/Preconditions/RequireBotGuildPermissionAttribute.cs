@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Qmmands;
 using Volte.Extensions;
 
@@ -9,19 +9,19 @@ namespace Volte.Commands.Preconditions
 {
     public class RequireBotGuildPermissionAttribute : CheckBaseAttribute
     {
-        private readonly GuildPermission[] _permissions;
+        private readonly Permissions[] _permissions;
 
-        public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
+        public RequireBotGuildPermissionAttribute(params Permissions[] perms) => _permissions = perms;
 
 
-        public override async Task<CheckResult> CheckAsync(
+        public override Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
-            foreach (var perm in (await ctx.Guild.GetCurrentUserAsync()).GuildPermissions.ToList())
-                if (_permissions.Contains(perm))
-                    return CheckResult.Successful;
-            return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
+            return Task.FromResult(
+                _permissions.Any(perm => ctx.Guild.CurrentMember.Roles.Any(x => x.Permissions.HasPermission(perm)))
+                    ? CheckResult.Successful
+                    : CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command."));
         }
     }
 }

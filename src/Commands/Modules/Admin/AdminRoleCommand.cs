@@ -1,6 +1,6 @@
-﻿using Discord.WebSocket;
-using Qmmands;
+﻿using Qmmands;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
 
@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role able to use Admin commands for the current guild.")]
         [Remarks("Usage: |prefix|adminrole {role}")]
         [RequireGuildAdmin]
-        public async Task AdminRoleAsync(SocketRole role)
+        public async Task AdminRoleAsync([Remainder] DiscordRole role)
         {
             var embed = Context.CreateEmbedBuilder();
             var config = Db.GetConfig(Context.Guild);

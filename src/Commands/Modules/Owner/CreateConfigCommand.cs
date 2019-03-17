@@ -16,9 +16,9 @@ namespace Volte.Commands.Modules.Owner
         {
             if (serverId == 0) serverId = Context.Guild.Id;
 
-            Db.GetConfig(serverId);
+            _ = Db.GetConfig(serverId);
             await Context
-                .CreateEmbed($"Created a config for **{VolteBot.Client.GetGuild(serverId).Name}** if it didn't exist.")
+                .CreateEmbed($"Created a config for **{(await Context.Client.GetGuildAsync(serverId)).Name}** if it didn't exist.")
                 .SendToAsync(Context.Channel);
         }
     }

@@ -1,6 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Volte.Data;
 using Volte.Extensions;
 using Color = System.Drawing.Color;
@@ -27,28 +28,30 @@ namespace Volte.Services
                    "&Authorization={auth}";
         }
 
-        private async Task<string> FormatUrl(IGuildUser user)
+        private string FormatUrl(DiscordMember user)
         {
             var config = _db.GetConfig(user.Guild);
             var c = Color.FromArgb(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG,
                 config.WelcomeOptions.WelcomeColorB);
             var color = string.Concat(c.R.ToString("X2"), c.G.ToString("X2"), c.G.ToString("X2"));
-            return _url.Replace("{avatarUrl}", user.GetAvatarUrl())
+            return _url.Replace("{avatarUrl}", user.AvatarUrl)
                 .Replace("{username}%23{discrim}", $"{user.Username}%23{user.Discriminator}")
                 .Replace("{serverName}", user.Guild.Name)
-                .Replace("{memberCount}", $"{(await user.Guild.GetUsersAsync()).Count}")
+                .Replace("{memberCount}", $"{user.Guild.MemberCount}")
                 .Replace("{hex}", color)
                 .Replace("{type}", "1")
                 .Replace("{auth}", Config.WelcomeApiKey);
         }
 
-        internal async Task JoinAsync(IGuildUser user)
+        internal async Task JoinAsync(DiscordMember user)
         {
             var img = (await
-                (await HttpClient.GetAsync(await FormatUrl(user), HttpCompletionOption.ResponseHeadersRead)
+                (await HttpClient.GetAsync(FormatUrl(user), HttpCompletionOption.ResponseHeadersRead)
                 ).Content.ReadAsByteArrayAsync()).ToStream();
-            var c = await user.Guild.GetTextChannelAsync(_db.GetConfig(user.Guild).WelcomeOptions.WelcomeChannel);
-            await c.SendFileAsync(img, $"welcome-{user.Id}.png", string.Empty);
+            var c = user.Guild.Channels.FirstOrDefault(x =>
+                x.Id == _db.GetConfig(user.Guild).WelcomeOptions.WelcomeChannel);
+            if (c is null) return;
+            await c.SendFileAsync($"welcome-{user.Id}.png", img);
         }
     }
 }

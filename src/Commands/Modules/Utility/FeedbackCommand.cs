@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Utility
             await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendToAsync(Context.Channel);
             var embed = Context.CreateEmbedBuilder($"```{feedback}```")
                 .WithTitle($"Feedback from {Context.User}");
-            await embed.SendToAsync(await Context.Client.GetPrimaryGuild().GetTextChannelAsync(415182876326232064));
+            await embed.SendToAsync((await Context.Client.GetPrimaryGuild()).GetChannel(415182876326232064));
         }
     }
 }

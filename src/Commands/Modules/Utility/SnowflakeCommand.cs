@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Discord;
+﻿using System;
+using System.Threading.Tasks;
 using Qmmands;
 using Volte.Extensions;
 
@@ -12,12 +12,15 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|snowflake {id}")]
         public async Task SnowflakeAsync(ulong id)
         {
-            var date = SnowflakeUtils.FromSnowflake(id);
+            var date = FromSnowflake(id);
             await Context.CreateEmbedBuilder(
                     $"**Date:** {date.FormatDate()}\n" +
                     $"**Time**: {date.FormatFullTime()}"
                 )
                 .SendToAsync(Context.Channel);
         }
+
+        private DateTimeOffset FromSnowflake(ulong id) 
+            => DateTimeOffset.FromUnixTimeMilliseconds((long)((id >> 22) + 1420070400000UL)); 
     }
 }

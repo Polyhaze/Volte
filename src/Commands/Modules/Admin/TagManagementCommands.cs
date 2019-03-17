@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Objects;
@@ -21,7 +20,7 @@ namespace Volte.Commands.Modules.Admin
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
-                var user = Context.Client.GetUser(tag.CreatorId);
+                var user = await Context.Client.GetUserAsync(tag.CreatorId);
                 await Context
                     .CreateEmbed(
                         $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.")
@@ -64,7 +63,7 @@ namespace Volte.Commands.Modules.Admin
                 return;
             }
 
-            var user = Context.Client.GetUser(tag.CreatorId);
+            var user = await Context.Client.GetUserAsync(tag.CreatorId);
 
             config.Tags.Remove(tag);
             Db.UpdateConfig(config);

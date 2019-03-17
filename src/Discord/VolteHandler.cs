@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
@@ -20,7 +20,7 @@ namespace Volte.Discord
     {
         private readonly AntilinkService _antilink;
         private readonly BlacklistService _blacklist;
-        private readonly DiscordSocketClient _client;
+        private readonly DiscordClient _client;
         private readonly DatabaseService _db;
         private readonly PingChecksService _pingchecks;
         private readonly CommandService _service;
@@ -34,7 +34,7 @@ namespace Volte.Discord
 
         public VolteHandler(AntilinkService antilinkService,
                             BlacklistService blacklistService,
-                            DiscordSocketClient client,
+                            DiscordClient client,
                             DatabaseService databaseService,
                             PingChecksService pingChecksService,
                             CommandService commandService,
@@ -66,35 +66,33 @@ namespace Volte.Discord
             var sw = Stopwatch.StartNew();
             var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
             sw.Stop();
-            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+            await _logger.Log(LogLevel.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
             //register event listeners
             //_service.CommandExecuted += _event.OnCommandAsync;
-            _client.Log += _logger.Log;
-            _client.JoinedGuild += _guild.OnJoinAsync;
-            _client.LeftGuild += _guild.OnLeaveAsync;
-            _client.ReactionAdded += _verification.CheckReactionAsync;
-            _client.UserJoined += async user =>
+            _client.DebugLogger.LogMessageReceived += async (obj, args) => await _logger.Log(obj, args);
+            _client.GuildCreated += _guild.OnJoinAsync;
+            _client.GuildDeleted += _guild.OnLeaveAsync;
+            _client.MessageReactionAdded += _verification.CheckReactionAsync;
+            _client.GuildMemberAdded += async args =>
             {
                 if (Config.WelcomeApiKey.IsNullOrWhitespace())
-                    await _defaultWelcome.JoinAsync(user);
+                    await _defaultWelcome.JoinAsync(args.Member);
                 else
-                    await _imageWelcome.JoinAsync(user);
+                    await _imageWelcome.JoinAsync(args.Member);
             };
-            _client.UserLeft += _defaultWelcome.LeaveAsync;
-            _client.UserJoined += _autorole.ApplyRoleAsync;
-            _client.Ready += async () => await _event.OnReady(_client);
-            _client.MessageReceived += async s =>
+            _client.GuildMemberRemoved += async (args) => await _defaultWelcome.LeaveAsync(args.Member);
+            _client.GuildMemberAdded += _autorole.ApplyRoleAsync;
+            _client.Ready += _event.OnReady;
+            _client.MessageCreated += async args =>
             {
-                if (!(s is SocketUserMessage msg)) return;
-                if (msg.Author.IsBot) return;
-                if (msg.Channel is IDMChannel)
+                if (args.Channel is DiscordDmChannel)
                 {
-                    await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    await args.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
                     return;
                 }
 
-                var ctx = new VolteContext(_client, msg, VolteBot.ServiceProvider);
+                var ctx = new VolteContext(_client, args.Message, VolteBot.ServiceProvider);
                 await _blacklist.CheckMessageAsync(ctx);
                 await _antilink.CheckMessageAsync(ctx);
                 await _pingchecks.CheckMessageAsync(ctx);

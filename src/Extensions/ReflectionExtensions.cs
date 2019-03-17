@@ -6,7 +6,6 @@ namespace Volte.Extensions
 {
     public static class ReflectionExtensions
     {
-
         public static bool HasAttribute<T>(this TypeInfo type) where T : Attribute
             => type.GetAttribute<T>() != null;
 

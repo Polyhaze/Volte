@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Qmmands;
 using Volte.Commands.Preconditions;
 
@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules.ServerAdmin
         [Command("ServerName", "Sn")]
         [Description("Sets the name of the current server.")]
         [Remarks("Usage: |prefix|servername {name}")]
-        [RequireBotGuildPermission(GuildPermission.ManageGuild | GuildPermission.Administrator)]
+        [RequireBotGuildPermission(Permissions.ManageGuild, Permissions.Administrator)]
         [RequireGuildAdmin]
         public async Task ServerNameAsync([Remainder] string name)
         {

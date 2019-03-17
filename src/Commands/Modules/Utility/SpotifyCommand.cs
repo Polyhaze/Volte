@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Humanizer;
 using Qmmands;
 using Volte.Extensions;
@@ -9,13 +8,14 @@ namespace Volte.Commands.Modules.Utility
 {
     public partial class UtilityModule : VolteModule
     {
-        [Command("Spotify")]
+        //Removed for now. I'm not sure if D#+ has support for Spotify statuses yet.
+        /*[Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
         [Remarks("Usage: |prefix|spotify [user]")]
-        public async Task SpotifyAsync(SocketGuildUser target = null)
+        public async Task SpotifyAsync(DiscordMember target = null)
         {
             var user = target ?? Context.User;
-            if (user.Activity is SpotifyGame spotify)
+            if (user.)
             {
                 await Context.CreateEmbedBuilder()
                     .WithAuthor(user)
@@ -29,6 +29,6 @@ namespace Volte.Commands.Modules.Utility
 
             }
             await Context.CreateEmbed("Target user isn't listening to Spotify right now.").SendToAsync(Context.Channel);
-        }
+        }*/
     }
 }

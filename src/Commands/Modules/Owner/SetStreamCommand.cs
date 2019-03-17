@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Discord;
@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task SetStreamAsync(string streamer, [Remainder] string streamName)
         {
-            await VolteBot.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
+            await Context.Client.UpdateStatusAsync(new DiscordActivity(streamName, ActivityType.Streaming));
             await Context
                 .CreateEmbed(
                     $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**.")

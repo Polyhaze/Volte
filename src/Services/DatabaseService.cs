@@ -1,5 +1,5 @@
-using Discord;
-using Discord.WebSocket;
+using System.Linq;
+using DSharpPlus.Entities;
 using LiteDB;
 using Volte.Data.Objects;
 using Volte.Discord;
@@ -11,7 +11,7 @@ namespace Volte.Services
     {
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
-        public DiscordServer GetConfig(IGuild guild)
+        public DiscordServer GetConfig(DiscordGuild guild)
         {
             return GetConfig(guild.Id);
         }
@@ -22,7 +22,7 @@ namespace Volte.Services
             var conf = coll.FindOne(g => g.ServerId == id);
             if (conf is null)
             {
-                var newConf = Create(VolteBot.Client.GetGuild(id));
+                var newConf = Create(VolteBot.Client.Guilds.First(x => x.Value.Id == id).Value);
                 coll.Insert(newConf);
                 return newConf;
             }
@@ -37,12 +37,12 @@ namespace Volte.Services
             collection.Update(newConfig);
         }
 
-        private DiscordServer Create(SocketGuild guild)
+        private DiscordServer Create(DiscordGuild guild)
         {
             return new DiscordServer
             {
                 ServerId = guild.Id,
-                GuildOwnerId = guild.OwnerId,
+                GuildOwnerId = guild.Owner.Id,
                 Autorole = string.Empty,
                 CommandPrefix = "$",
                 DeleteMessageOnCommand = false,

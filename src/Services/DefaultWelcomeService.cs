@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Volte.Extensions;
 
 namespace Volte.Services
@@ -14,7 +14,7 @@ namespace Volte.Services
             _db = databaseService;
         }
 
-        internal async Task JoinAsync(IGuildUser user)
+        internal async Task JoinAsync(DiscordMember user)
         {
             var config = _db.GetConfig(user.Guild);
             if (config.WelcomeOptions.WelcomeMessage.IsNullOrEmpty())
@@ -23,26 +23,27 @@ namespace Volte.Services
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator)
-                .Replace("{MemberCount}", (await user.Guild.GetUsersAsync()).Count.ToString())
-                .Replace("{UserString}", user.ToString());
-            var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
+                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
+                .Replace("{UserString}", user.ToHumanReadable());
+            var c = user.Guild.GetChannel(config.WelcomeOptions.WelcomeChannel);
 
             if (!(c is null))
             {
-                var embed = new EmbedBuilder()
-                    .WithColor(new Color(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG,
+                var embed = new DiscordEmbedBuilder()
+                    .WithColor(new DiscordColor(config.WelcomeOptions.WelcomeColorR,
+                        config.WelcomeOptions.WelcomeColorG,
                         config.WelcomeOptions.WelcomeColorB))
                     .WithDescription(welcomeMessage)
-                    .WithThumbnailUrl(user.GetAvatarUrl())
-                    .WithCurrentTimestamp();
+                    .WithThumbnailUrl(user.AvatarUrl)
+                    .WithTimestamp(user.JoinedAt.UtcDateTime);
 
                 await embed.SendToAsync(c);
             }
         }
 
-        internal async Task LeaveAsync(IGuildUser user)
+        internal async Task LeaveAsync(DiscordMember user)
         {
             var config = _db.GetConfig(user.Guild);
             if (config.WelcomeOptions.LeavingMessage.IsNullOrEmpty()) return;
@@ -50,22 +51,22 @@ namespace Volte.Services
                 .Replace("{ServerName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", (await user.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
                 .Replace("{UserTag}", user.Discriminator)
-                .Replace("{MemberCount}", (await user.Guild.GetUsersAsync()).Count.ToString())
-                .Replace("{UserString}", user.ToString());
-            var c = await user.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
+                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
+                .Replace("{UserString}", user.ToHumanReadable());
+            var c = user.Guild.GetChannel(config.WelcomeOptions.WelcomeChannel);
             if (!(c is null))
             {
-                var embed = new EmbedBuilder()
-                    .WithColor(new Color(
+                var embed = new DiscordEmbedBuilder()
+                    .WithColor(new DiscordColor(
                         config.WelcomeOptions.WelcomeColorR,
                         config.WelcomeOptions.WelcomeColorG,
                         config.WelcomeOptions.WelcomeColorB)
                     )
                     .WithDescription(leavingMessage)
-                    .WithThumbnailUrl(user.GetAvatarUrl())
-                    .WithCurrentTimestamp();
+                    .WithThumbnailUrl(user.AvatarUrl)
+                    .WithTimestamp(user.JoinedAt.UtcDateTime);
 
                 await embed.SendToAsync(c);
             }

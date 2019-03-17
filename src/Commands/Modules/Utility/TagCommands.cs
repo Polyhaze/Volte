@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Discord;
 using Volte.Extensions;
@@ -29,7 +28,7 @@ namespace Volte.Commands.Modules.Utility
                 .Replace("{ServerName}", Context.Guild.Name)
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
-                .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
                 .Replace("{UserTag}", Context.User.Discriminator);
 
             await Context.ReplyAsync(response);
@@ -54,9 +53,9 @@ namespace Volte.Commands.Modules.Utility
                 return;
             }
 
-            var u = VolteBot.Client.GetUser(tag.CreatorId);
+            var u = await VolteBot.Client.GetUserAsync(tag.CreatorId);
 
-            await Context.CreateEmbed(string.Empty).ToEmbedBuilder()
+            await Context.CreateEmbedBuilder(string.Empty)
                 .WithTitle($"Tag {tag.Name}")
                 .AddField("Response", $"`{tag.Response}`", true)
                 .AddField("Creator", u == null ? $"{tag.CreatorId}" : $"{u.Mention}", true)

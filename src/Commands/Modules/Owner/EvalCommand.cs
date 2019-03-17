@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Volte.Commands.Preconditions;
 using Volte.Data.Objects;
 using Volte.Extensions;
 using Volte.Utils;
-using Discord;
 using Qmmands;
 
 namespace Volte.Commands.Modules.Owner
@@ -65,10 +65,10 @@ namespace Volte.Commands.Modules.Owner
                         sw.Stop();
                         if (res != null)
                         {
-                            await msg.ModifyAsync(m => m.Embed = embed.WithTitle("Eval")
+                            await msg.ModifyAsync(null, embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
-                                .AddField("Input", Format.Code(code, "cs"))
-                                .AddField("Output", Format.Code(res.ToString(), "css")).Build());
+                                .AddField("Input", $"```cs\n{code}```")
+                                .AddField("Output", $"```css\n{res}").Build());
                         }
                         else
                         {
@@ -78,11 +78,10 @@ namespace Volte.Commands.Modules.Owner
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync(m =>
-                            m.Embed = embed
-                                .WithDescription($"`{e.Message}`")
-                                .WithTitle("Error")
-                                .Build()
+                        await msg.ModifyAsync(null, embed
+                            .WithDescription($"`{e.Message}`")
+                            .WithTitle("Error")
+                            .Build()
                         );
                         File.WriteAllText("data/EvalError.log", $"{e.Message}\n{e.StackTrace}");
                         await Context.Channel.SendFileAsync("data/EvalError.log", string.Empty);
@@ -96,7 +95,7 @@ namespace Volte.Commands.Modules.Owner
                 }
                 catch (Exception e)
                 {
-                    await Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
+                    await Logger.Log(LogLevel.Error, LogSource.Module, string.Empty, e);
                 }
             });
         }

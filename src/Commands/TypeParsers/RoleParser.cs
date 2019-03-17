@@ -1,14 +1,13 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Extensions;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : SocketRole
+    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : DiscordRole
     {
         public override Task<TypeParserResult<TRole>> ParseAsync(
             Parameter param,
@@ -18,8 +17,10 @@ namespace Volte.Commands.TypeParsers
         {
             var ctx = (VolteContext) context;
             TRole role = null;
-            if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
+            if (ulong.TryParse(value, out var id))
                 role = ctx.Guild.GetRole(id) as TRole;
+
+            if (role is null) role = ctx.Message.MentionedRoles.FirstOrDefault() as TRole;
 
             if (role is null)
             {

@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
@@ -22,13 +24,13 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        public async Task OnReady(IDiscordClient client)
+        public async Task OnReady(ReadyEventArgs ev)
         {
-            foreach (var guild in await client.GetGuildsAsync())
+            foreach (var guild in ev.Client.Guilds.Values)
             {
-                if (!Config.BlacklistedOwners.Contains(guild.OwnerId)) continue;
-                await _logger.Log(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {await guild.GetOwnerAsync()}.");
+                if (!Config.BlacklistedOwners.Contains(guild.Id)) continue;
+                await _logger.Log(LogLevel.Warning, LogSource.Volte,
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner.ToHumanReadable()}.");
                 await guild.LeaveAsync();
             }
         }
@@ -47,23 +49,23 @@ namespace Volte.Services
 
             if (Config.LogAllCommands)
             {
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|     -Command Issued: {c.Name}");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|        -Args Passed: {args.Trim()}");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|        -Time Issued: {DateTime.Now}");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|           -Executed: {res.IsSuccessful} ");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     $"|              -After: {sw.Elapsed.Humanize()}");
-                await _logger.Log(LogSeverity.Info, LogSource.Module,
+                await _logger.Log(LogLevel.Info, LogSource.Module,
                     "-------------------------------------------------");
             }
         }
@@ -71,7 +73,7 @@ namespace Volte.Services
         private async Task OnCommandFailureAsync(Command c, FailedResult res, VolteContext ctx, string args,
             Stopwatch sw)
         {
-            var embed = new EmbedBuilder();
+            var embed = new DiscordEmbedBuilder();
             string reason;
             switch (res)
             {
@@ -80,7 +82,7 @@ namespace Volte.Services
                     break;
                 case ExecutionFailedResult efr:
                     reason = $"Execution of this command failed.\nFull error message: {efr.Exception.Message}";
-                    await _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
+                    await _logger.Log(LogLevel.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
                 case ChecksFailedResult _:
                     reason = "Insufficient permission.";
@@ -105,29 +107,29 @@ namespace Volte.Services
                 await embed.AddField("Error in Command:", c.Name)
                     .AddField("Error Reason:", reason)
                     .AddField("Correct Usage", c.SanitizeRemarks(ctx))
-                    .WithAuthor(ctx.User)
+                    .WithAuthor(ctx.User.ToHumanReadable(), null, ctx.User.AvatarUrl)
                     .WithErrorColor()
                     .SendToAsync(ctx.Channel);
 
                 if (!Config.LogAllCommands) return;
 
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|     -Command Issued: {c.Name}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|        -Args Passed: {args.Trim()}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|        -Time Issued: {DateTime.Now}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|              -After: {sw.Elapsed.Humanize()}");
-                await _logger.Log(LogSeverity.Error, LogSource.Module,
+                await _logger.Log(LogLevel.Error, LogSource.Module,
                     "-------------------------------------------------");
             }
         }

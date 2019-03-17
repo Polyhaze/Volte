@@ -1,6 +1,3 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Data.Objects
 {
     public enum LogSource
@@ -8,7 +5,7 @@ namespace Volte.Data.Objects
         Module,
         Service,
         Discord,
-        Rest,
+        DSharpPlus,
         Gateway,
         Volte,
         Unknown

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Preconditions;
 
@@ -8,10 +9,12 @@ namespace Volte.Commands.Modules.ServerAdmin
     public partial class ServerAdminModule : VolteModule
     {
         [Command("MentionRole", "Menro", "Mr")]
-        [Description("Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
+        [Description(
+            "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [Remarks("Usage: |prefix|mentionrole {role}")]
+        [RequireBotGuildPermission(Permissions.ManageRoles)]
         [RequireGuildAdmin]
-        public async Task MentionRoleAsync([Remainder] SocketRole role)
+        public async Task MentionRoleAsync([Remainder] DiscordRole role)
         {
             if (role.IsMentionable)
             {
@@ -19,9 +22,9 @@ namespace Volte.Commands.Modules.ServerAdmin
             }
             else
             {
-                await role.ModifyAsync(x => x.Mentionable = true);
+                await role.ModifyAsync(r => r.Mentionable = true);
                 await Context.ReplyAsync(role.Mention);
-                await role.ModifyAsync(x => x.Mentionable = false);
+                await role.ModifyAsync(r => r.Mentionable = false);
             }
         }
     }

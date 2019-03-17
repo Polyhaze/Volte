@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
 using Volte.Data.Objects;
 using Volte.Extensions;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;
-using LogMessage = Discord.LogMessage;
 
 namespace Volte.Services
 {
@@ -15,26 +15,26 @@ namespace Volte.Services
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        internal async Task Log(LogMessage msg)
+        internal async Task Log(object obj, DebugLogMessageEventArgs args)
         {
-            if (msg.Message.Contains("handler is blocking")) return;
-            var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
-            await Log(m.Severity, m.Source, m.Message, m.Exception);
+            if (args.Message.Contains("handler is blocking")) return;
+            var m = LogMessage.FromDiscordLogMessage(args);
+            await Log(m.Level, m.Source, m.Message, m.Exception);
         }
 
         internal async Task PrintVersion()
         {
-            await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
+            await Log(LogLevel.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
         }
 
-        public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)
+        public async Task Log(LogLevel s, LogSource src, string message, Exception e = null)
         {
             await _semaphore.WaitAsync();
             DoLog(s, src, message, e);
             _semaphore.Release();
         }
 
-        private void DoLog(LogSeverity s, LogSource src, string message, Exception e)
+        private void DoLog(LogLevel s, LogSource src, string message, Exception e)
         {
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);
@@ -71,7 +71,7 @@ namespace Volte.Services
                     return (Color.Gold, "SERV");
                 case LogSource.Module:
                     return (Color.LimeGreen, "MDLE");
-                case LogSource.Rest:
+                case LogSource.DSharpPlus:
                     return (Color.Tomato, "REST");
                 case LogSource.Unknown:
                     return (Color.Teal, "UNKN");
@@ -80,21 +80,19 @@ namespace Volte.Services
             }
         }
 
-        private (Color, string) VerifySeverity(LogSeverity s)
+        private (Color, string) VerifySeverity(LogLevel s)
         {
             switch (s)
             {
-                case LogSeverity.Critical:
+                case LogLevel.Critical:
                     return (Color.Maroon, "CRIT");
-                case LogSeverity.Error:
+                case LogLevel.Error:
                     return (Color.DarkRed, "EROR");
-                case LogSeverity.Warning:
+                case LogLevel.Warning:
                     return (Color.Yellow, "WARN");
-                case LogSeverity.Info:
+                case LogLevel.Info:
                     return (Color.SpringGreen, "INFO");
-                case LogSeverity.Verbose:
-                    return (Color.Pink, "VRBS");
-                case LogSeverity.Debug:
+                case LogLevel.Debug:
                     return (Color.SandyBrown, "DEBG");
                 default:
                     throw new ArgumentNullException(nameof(s), "s cannot be null.");

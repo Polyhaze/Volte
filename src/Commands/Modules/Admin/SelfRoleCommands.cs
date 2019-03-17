@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Discord.WebSocket;
+﻿using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -13,7 +12,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfroleadd {role}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleAddAsync([Remainder] SocketRole role)
+        public async Task SelfRoleAddAsync([Remainder] DiscordRole role)
         {
             var config = Db.GetConfig(Context.Guild);
             config.SelfRoles.Add(role.Name);
@@ -26,7 +25,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {role}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleRemAsync([Remainder] SocketRole role)
+        public async Task SelfRoleRemAsync([Remainder] DiscordRole role)
         {
             var config = Db.GetConfig(Context.Guild);
 

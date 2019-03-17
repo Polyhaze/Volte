@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 
 namespace Volte.Services
 {
@@ -17,20 +17,20 @@ namespace Volte.Services
             _emoji = emojiService;
         }
 
-        public async Task CheckReactionAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        public async Task CheckReactionAsync(MessageReactionAddEventArgs args)
         {
-            if (channel is IDMChannel) return;
-            if (!(reaction.User.Value is IGuildUser u) || !(channel is IGuildChannel c)) return;
+            if (args.Channel is DiscordDmChannel) return;
+            if (!(args.User is DiscordMember u) || !(args.Channel is DiscordChannel c)) return;
             var config = _db.GetConfig(c.Guild);
-            if (!config.VerificationOptions.Enabled || !reaction.User.IsSpecified) return;
+            if (!config.VerificationOptions.Enabled) return;
             if (u.IsBot) return;
-            if (message.Id.Equals(config.VerificationOptions.MessageId))
+            if (args.Message.Id.Equals(config.VerificationOptions.MessageId))
             {
-                if (reaction.Emote.Name.Equals(_emoji.BALLOT_BOX_WITH_CHECK))
+                if (args.Emoji.Name.Equals(_emoji.BALLOT_BOX_WITH_CHECK))
                 {
                     var role = c.Guild.GetRole(config.VerificationOptions.RoleId);
                     if (role is null) return;
-                    await u.AddRoleAsync(role);
+                    await u.GrantRoleAsync(role, "User verified.");
 
                 }
             }

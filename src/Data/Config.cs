@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Newtonsoft.Json;
 using Volte.Data.Objects;
 using Volte.Discord;
@@ -26,7 +26,7 @@ namespace Volte.Data
         {
             if (_valid) return;
             var logger = VolteBot.GetRequiredService<LoggingService>();
-            await logger.Log(LogSeverity.Warning, LogSource.Volte,
+            await logger.Log(LogLevel.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig
             {

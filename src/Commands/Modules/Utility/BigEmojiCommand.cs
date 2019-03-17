@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿/*using System.Linq;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Extensions;
 
@@ -11,14 +11,14 @@ namespace Volte.Commands.Modules.Utility
         [Command("BigEmoji", "HugEmoji")]
         [Description("Shows the image URL for a given emoji.")]
         [Remarks("Usage: |prefix|bigemoji {emoji}")]
-        public async Task BigEmojiAsync(IEmote emoteIn)
+        public async Task BigEmojiAsync(DiscordEmoji emoteIn)
         {
             switch (emoteIn)
             {
-                case Emote emote:
-                    await Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url).SendToAsync(Context.Channel);
+                case DiscordGuildEmoji emote:
+                    await Context.CreateEmbedBuilder(emote).WithImageUrl(emote.Url).SendToAsync(Context.Channel);
                     break;
-                case Emoji emoji:
+                case DiscordEmoji emoji:
                     var url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
                                   emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
                               ".png";
@@ -27,4 +27,4 @@ namespace Volte.Commands.Modules.Utility
             }
         }
     }
-}
+}*/
