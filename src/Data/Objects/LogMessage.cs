@@ -20,16 +20,28 @@ namespace Volte.Data.Objects
                 Exception = null
             };
 
-            switch (args.Application)
+            switch (args.Application.ToLower())
             {
-                case "DSharpPlus":
+                case "dsharpplus":
                     s.Source = LogSource.DSharpPlus;
                     return s;
-                case "Websocket":
-                    s.Source = LogSource.Discord;
+                case "websocket":
+                    s.Source = LogSource.WebSocket;
                     return s;
-                case "Gateway":
-                    s.Source = LogSource.Gateway;
+                case "websocket:dispatch":
+                    s.Source = LogSource.WebSocketDispatch;
+                    return s;
+                case "event":
+                    s.Source = LogSource.Event;
+                    return s;
+                case "autoshard":
+                    s.Source = LogSource.AutoShard;
+                    return s;
+                case "voicenext":
+                    s.Source = LogSource.VoiceNext;
+                    return s;
+                case "rest":
+                    s.Source = LogSource.Rest;
                     return s;
                 default:
                     s.Source = LogSource.Unknown;

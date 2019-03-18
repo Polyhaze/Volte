@@ -36,10 +36,10 @@ namespace Volte.Services
 
         private void DoLog(LogLevel s, LogSource src, string message, Exception e)
         {
-            var (color, value) = VerifySeverity(s);
+            var (color, value) = GetSeverity(s);
             Append($"{value} -> ", color);
 
-            (color, value) = VerifySource(src);
+            (color, value) = GetSource(src);
             Append($"{value} -> ", color);
 
             if (!message.IsNullOrWhitespace())
@@ -58,29 +58,37 @@ namespace Volte.Services
             Console.Write(m);
         }
 
-        private (Color, string) VerifySource(LogSource source)
+        private (Color, string) GetSource(LogSource source)
         {
             switch (source)
             {
-                case LogSource.Discord:
-                case LogSource.Gateway:
-                    return (Color.RoyalBlue, "DSCD");
+                case LogSource.Event:
+                    return (Color.Orchid, "EVNT");
                 case LogSource.Volte:
                     return (Color.Crimson, "CORE");
+                case LogSource.WebSocket:
+                case LogSource.WebSocketDispatch:
+                    return (Color.RoyalBlue, "WSCK");
+                case LogSource.AutoShard:
+                    return (Color.Lime, "ASHD");
                 case LogSource.Service:
                     return (Color.Gold, "SERV");
+                case LogSource.VoiceNext:
+                    return (Color.Indigo, "VNXT");
                 case LogSource.Module:
                     return (Color.LimeGreen, "MDLE");
                 case LogSource.DSharpPlus:
-                    return (Color.Tomato, "REST");
+                    return (Color.Fuchsia, "");
+                case LogSource.Rest:
+                    return (Color.Teal, "REST");
                 case LogSource.Unknown:
-                    return (Color.Teal, "UNKN");
+                    return (Color.Tomato, "UNKN");
                 default:
                     throw new ArgumentNullException(nameof(source), "source cannot be null.");
             }
         }
 
-        private (Color, string) VerifySeverity(LogLevel s)
+        private (Color, string) GetSeverity(LogLevel s)
         {
             switch (s)
             {

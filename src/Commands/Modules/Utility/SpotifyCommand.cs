@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task SpotifyAsync(DiscordMember target = null)
         {
             var user = target ?? Context.User;
-            if (user.)
+            if (user.Presence.Activity)
             {
                 await Context.CreateEmbedBuilder()
                     .WithAuthor(user)

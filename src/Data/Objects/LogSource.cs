@@ -3,11 +3,15 @@ namespace Volte.Data.Objects
     public enum LogSource
     {
         Module,
+        WebSocket,
+        WebSocketDispatch,
+        AutoShard,
+        Event,
+        VoiceNext,
         Service,
-        Discord,
         DSharpPlus,
-        Gateway,
         Volte,
+        Rest,
         Unknown
     }
 }
