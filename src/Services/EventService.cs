@@ -69,27 +69,25 @@ namespace Volte.Services
                 return;
             }
 
-            if (Config.LogAllCommands)
-            {
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|     -Command Issued: {c.Name}");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|        -Args Passed: {args.Trim()}");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|        -Time Issued: {DateTime.Now}");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|           -Executed: {res.IsSuccessful} ");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    $"|              -After: {sw.Elapsed.Humanize()}");
-                await _logger.Log(LogLevel.Info, LogSource.Module,
-                    "-------------------------------------------------");
-            }
+            if (!Config.LogAllCommands) return;
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|  -Command from user: {ctx.User.ToHumanReadable()} ({ctx.User.Id})");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|     -Command Issued: {c.Name}");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|        -Args Passed: {args.Trim()}");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|        -Time Issued: {DateTime.Now}");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|           -Executed: {res.IsSuccessful} ");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                $"|              -After: {sw.Elapsed.Humanize()}");
+            await _logger.Log(LogLevel.Info, LogSource.Module,
+                "-------------------------------------------------");
         }
 
         private async Task OnCommandFailureAsync(Command c, FailedResult res, VolteContext ctx, string args,
@@ -129,14 +127,14 @@ namespace Volte.Services
                 await embed.AddField("Error in Command:", c.Name)
                     .AddField("Error Reason:", reason)
                     .AddField("Correct Usage", c.SanitizeRemarks(ctx))
-                    .WithAuthor(ctx.User.ToHumanReadable(), null, ctx.User.AvatarUrl)
+                    .WithAuthor(ctx.User)
                     .WithErrorColor()
                     .SendToAsync(ctx.Channel);
 
                 if (!Config.LogAllCommands) return;
 
                 await _logger.Log(LogLevel.Error, LogSource.Module,
-                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+                    $"|  -Command from user: {ctx.User.ToHumanReadable()} ({ctx.User.Id})");
                 await _logger.Log(LogLevel.Error, LogSource.Module,
                     $"|     -Command Issued: {c.Name}");
                 await _logger.Log(LogLevel.Error, LogSource.Module,
