@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Data;
@@ -21,7 +22,7 @@ namespace Volte.Discord
 
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
 
-        public static T GetRequiredService<T>() 
+        public static T GetRequiredService<T>()
             => ServiceProvider.GetRequiredService<T>();
 
         public static async Task StartAsync()
@@ -63,7 +64,6 @@ namespace Volte.Discord
 
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
             await Client.ConnectAsync();
-
             await _handler.InitAsync();
             await Task.Delay(-1, GetRequiredService<CancellationTokenSource>().Token);
         }

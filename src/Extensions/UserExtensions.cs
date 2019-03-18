@@ -27,7 +27,7 @@ namespace Volte.Extensions
             => HasRole(user, _db.GetConfig(user.Guild).ModerationOptions.AdminRole) ||
                IsGuildOwner(user);
 
-        public static string ToHumanReadable(this DiscordUser user) => user.ToString().Split(' ')[1];
-        public static string ToHumanReadable(this DiscordMember user) => user.ToString().Split(' ')[1];
+        public static string ToHumanReadable(this DiscordUser user) => user.ToString().Split(' ')[2];
+        public static string ToHumanReadable(this DiscordMember user) => user.ToString().Split(' ')[2];
     }
 }

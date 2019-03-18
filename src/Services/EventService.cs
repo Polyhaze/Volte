@@ -26,6 +26,28 @@ namespace Volte.Services
 
         public async Task OnReady(ReadyEventArgs ev)
         {
+            DiscordActivity activity;
+            if (Config.Streamer.EqualsIgnoreCase("streamer here") ||
+                Config.Streamer.IsNullOrWhitespace())
+            {
+                activity = new DiscordActivity
+                {
+                    ActivityType = ActivityType.Playing,
+                    Name = Config.Game
+                };
+            }
+            else
+            {
+                activity = new DiscordActivity
+                {
+                    StreamUrl = $"https://twitch.tv/{Config.Streamer}",
+                    ActivityType = ActivityType.Streaming,
+                    Name = Config.Game
+                };
+            }
+
+            await ev.Client.UpdateStatusAsync(activity);
+
             foreach (var guild in ev.Client.Guilds.Values)
             {
                 if (!Config.BlacklistedOwners.Contains(guild.Id)) continue;

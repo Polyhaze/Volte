@@ -36,11 +36,11 @@ namespace Volte.Commands
         public Task ReactSuccessAsync() =>
             Message.CreateReactionAsync(DiscordEmoji.FromUnicode(_emojiService.BALLOT_BOX_WITH_CHECK));
 
-        public DiscordEmbed CreateEmbed(string content) => new DiscordEmbedBuilder().WithSuccessColor().WithAuthor(User.ToString().Split(' ')[1])
+        public DiscordEmbed CreateEmbed(string content) => new DiscordEmbedBuilder().WithSuccessColor().WithAuthor(User)
             .WithDescription(content).Build();
 
         public DiscordEmbedBuilder CreateEmbedBuilder(string content = null) => new DiscordEmbedBuilder()
-            .WithSuccessColor().WithAuthor(User.ToString().Split(' ')[1]).WithDescription(content ?? string.Empty);
+            .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
         public Task ReplyAsync(DiscordEmbed embed) => embed.SendToAsync(Channel);
