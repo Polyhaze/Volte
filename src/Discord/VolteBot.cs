@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Data;
@@ -18,7 +18,7 @@ namespace Volte.Discord
 
         public static readonly CommandService CommandService = GetRequiredService<CommandService>();
 
-        public static readonly DiscordClient Client = GetRequiredService<DiscordClient>();
+        public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
 
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
 
@@ -27,6 +27,7 @@ namespace Volte.Discord
 
         public static async Task StartAsync()
         {
+            await GetRequiredService<LoggingService>().PrintVersion();
             await new VolteBot().LoginAsync();
         }
 
@@ -44,14 +45,14 @@ namespace Volte.Discord
                     Separator = "irrelevant",
                     NullableNouns = null
                 }))
-                .AddSingleton(new DiscordClient(new DiscordConfiguration
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
                     LogLevel = Version.ReleaseType != ReleaseType.Release
-                        ? LogLevel.Debug
-                        : LogLevel.Info,
-                    MessageCacheSize = 50,
-                    Token = Config.Token,
-                    TokenType = TokenType.Bot
+                        ? LogSeverity.Debug
+                        : LogSeverity.Verbose,
+                    AlwaysDownloadUsers = true,
+                    ConnectionTimeout = 10000,
+                    MessageCacheSize = 50
                 }))
                 .AddVolteServices()
                 .BuildServiceProvider();
@@ -62,7 +63,17 @@ namespace Volte.Discord
             CommandService.AddTypeParsers();
 
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
-            await Client.ConnectAsync();
+            await Client.LoginAsync(TokenType.Bot, Config.Token);
+            await Client.StartAsync();
+            if (Config.Streamer.EqualsIgnoreCase("streamer here") ||
+                Config.Streamer.IsNullOrWhitespace())
+                await Client.SetGameAsync(Config.Game);
+            else
+                await Client.SetGameAsync(Config.Game,
+                    $"https://twitch.tv/{Config.Streamer}",
+                    ActivityType.Streaming);
+
+            await Client.SetStatusAsync(UserStatus.Online);
             await _handler.InitAsync();
             await Task.Delay(-1, GetRequiredService<CancellationTokenSource>().Token);
         }

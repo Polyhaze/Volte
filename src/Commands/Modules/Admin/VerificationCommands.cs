@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role to be given to users when they verify in this server.")]
         [Remarks("Usage: |prefix|verificationrole {role}")]
         [RequireGuildAdmin]
-        public async Task VerificationRoleAsync([Remainder] DiscordRole role)
+        public async Task VerificationRoleAsync(SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
             config.VerificationOptions.RoleId = role.Id;

@@ -12,11 +12,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Colorful.Console" Version="1.2.9" />
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00576" />
-    <PackageReference Include="Humanizer.Core" Version="2.6.2" />
+      <PackageReference Include="Discord.Net" Version="2.0.1"/>
+      <PackageReference Include="Humanizer.Core" Version="2.5.16"/>
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.10.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="Qmmands" Version="2.3.0" />
     <PackageReference Include="RestSharp" Version="106.6.9" />
   </ItemGroup>

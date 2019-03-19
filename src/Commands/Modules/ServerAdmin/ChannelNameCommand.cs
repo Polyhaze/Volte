@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 
@@ -10,11 +10,11 @@ namespace Volte.Commands.Modules.ServerAdmin
         [Command("ChannelName", "Cn")]
         [Description("Sets the name of the current channel.")]
         [Remarks("Usage: |prefix|channelname {name}")]
-        [RequireBotChannelPermission(Permissions.ManageChannels)]
+        [RequireBotChannelPermission(ChannelPermission.ManageChannels)]
         [RequireGuildAdmin]
         public async Task ChannelNameAsync([Remainder] string name)
         {
-            await Context.Channel.ModifyAsync(x => x.Name = name);
+            await Context.Channel.ModifyAsync(c => c.Name = name);
             await Context.ReactSuccessAsync();
         }
     }

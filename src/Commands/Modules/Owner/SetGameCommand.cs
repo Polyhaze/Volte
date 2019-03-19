@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Discord;
@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task SetGameAsync([Remainder] string game)
         {
-            await Context.Client.UpdateStatusAsync(new DiscordActivity(game, ActivityType.Playing));
+            await VolteBot.Client.SetGameAsync(game);
             await Context.CreateEmbed($"Set the bot's game to **{game}**.").SendToAsync(Context.Channel);
         }
     }

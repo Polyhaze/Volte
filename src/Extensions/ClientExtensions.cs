@@ -1,21 +1,26 @@
-﻿using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using Discord;
+using Discord.WebSocket;
+using Volte.Data;
 
 namespace Volte.Extensions
 {
     public static class ClientExtensions
     {
-        public static string GetInviteUrl(this DiscordClient client, bool shouldHaveAdmin)
+        public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin)
         {
             return shouldHaveAdmin is true
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
         }
 
-        public static Task<DiscordGuild> GetPrimaryGuild(this DiscordClient client)
+        public static IUser GetOwner(this DiscordSocketClient client)
         {
-            return client.GetGuildAsync(405806471578648588);
+            return client.GetUser(Config.Owner);
+        }
+
+        public static IGuild GetPrimaryGuild(this DiscordSocketClient client)
+        {
+            return client.GetGuild(405806471578648588);
         }
     }
 }

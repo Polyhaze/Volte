@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -31,7 +32,7 @@ namespace Volte.Commands.Modules.Owner
 
                 using (var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream())
                 {
-                    await Context.Client.UpdateCurrentUserAsync(null, img);
+                    await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
                     await Context.CreateEmbed("Done!").SendToAsync(Context.Channel);
                 }
             }

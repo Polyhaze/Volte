@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -19,9 +19,9 @@ namespace Volte.Commands.Modules.Owner
         public async Task ShutdownAsync()
         {
             await Context.CreateEmbed($"Goodbye! {EmojiService.WAVE}").SendToAsync(Context.Channel);
-            await Context.Client.UpdateStatusAsync(null, UserStatus.Invisible);
-            await Context.Client.DisconnectAsync();
-            Context.Client.Dispose();
+            await Context.Client.SetStatusAsync(UserStatus.Invisible);
+            await Context.Client.LogoutAsync();
+            await Context.Client.StopAsync();
             Cts.Cancel();
             Context.Client.Dispose();
             Environment.Exit(0);

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Extensions;
 
@@ -10,13 +10,13 @@ namespace Volte.Commands.Modules.Utility
         [Command("RoleColor", "RoleColour")]
         [Description("Shows the Hex and RGB representation for a given role in the current server.")]
         [Remarks("Usage: |prefix|rolecolor {role}")]
-        public async Task RoleColorAsync(DiscordRole role)
+        public async Task RoleColorAsync(SocketRole role)
         {
             await Context.CreateEmbedBuilder(
-                    $"**Dec:** {role.Color.Value}" +
-                    "\n" +
-                    $"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"
-                ).SendToAsync(Context.Channel);
+                $"**Dec:** {role.Color.RawValue}" +
+                "\n" +
+                $"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"
+            ).SendToAsync(Context.Channel);
         }
     }
 }

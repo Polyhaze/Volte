@@ -1,47 +1,34 @@
 using System;
-using DSharpPlus;
-using DSharpPlus.EventArgs;
+using Discord;
 
 namespace Volte.Data.Objects
 {
     public sealed class LogMessage
     {
-        public LogLevel Level { get; private set; }
+        public LogSeverity Severity { get; private set; }
         public LogSource Source { get; private set; }
         public string Message { get; private set; }
         public Exception Exception { get; private set; }
 
-        public static LogMessage FromDiscordLogMessage(DebugLogMessageEventArgs args)
+        public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message)
         {
             var s = new LogMessage
             {
-                Message = args.Message,
-                Level = args.Level,
-                Exception = null
+                Message = message.Message,
+                Severity = message.Severity,
+                Exception = message.Exception
             };
 
-            switch (args.Application.ToLower())
+            switch (message.Source)
             {
-                case "dsharpplus":
-                    s.Source = LogSource.DSharpPlus;
-                    return s;
-                case "websocket":
-                    s.Source = LogSource.WebSocket;
-                    return s;
-                case "websocket:dispatch":
-                    s.Source = LogSource.WebSocketDispatch;
-                    return s;
-                case "event":
-                    s.Source = LogSource.Event;
-                    return s;
-                case "autoshard":
-                    s.Source = LogSource.AutoShard;
-                    return s;
-                case "voicenext":
-                    s.Source = LogSource.VoiceNext;
-                    return s;
-                case "rest":
+                case "Rest":
                     s.Source = LogSource.Rest;
+                    return s;
+                case "Discord":
+                    s.Source = LogSource.Discord;
+                    return s;
+                case "Gateway":
+                    s.Source = LogSource.Gateway;
                     return s;
                 default:
                     s.Source = LogSource.Unknown;

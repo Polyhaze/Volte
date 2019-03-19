@@ -1,33 +1,24 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord;
 using Qmmands;
-using Volte.Extensions;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class EmoteParser<TEmoji> : TypeParser<TEmoji> where TEmoji : DiscordEmoji
+    public sealed class EmoteParser : TypeParser<IEmote>
     {
-        public override Task<TypeParserResult<TEmoji>> ParseAsync(
+        public override Task<TypeParserResult<IEmote>> ParseAsync(
             Parameter param,
-            string value, 
-            ICommandContext context, 
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
-            var ctx = context.Cast<VolteContext>();
-
-
-
-            try
-            {
-                return Task.FromResult(
-                    new TypeParserResult<TEmoji>(DiscordEmoji.FromName(ctx.Client, value).Cast<TEmoji>()));
-            }
-            catch (ArgumentException)
-            {
-                return Task.FromResult(TypeParserResult<TEmoji>.Unsuccessful("Specified emoji/emote not found."));
-            }
+            return Emote.TryParse(value, out var emote)
+                ? Task.FromResult(new TypeParserResult<IEmote>(emote))
+                : Task.FromResult(Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
+                    ? new TypeParserResult<IEmote>(new Emoji(value))
+                    : new TypeParserResult<IEmote>("Emote not found."));
         }
     }
 }

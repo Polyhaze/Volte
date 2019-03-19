@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Discord;
 using Volte.Extensions;
-using System.Linq;
-using DSharpPlus.EventArgs;
 
 namespace Volte.Services
 {
@@ -16,13 +15,13 @@ namespace Volte.Services
             _db = databaseService;
         }
 
-        internal async Task ApplyRoleAsync(GuildMemberAddEventArgs args)
+        internal async Task ApplyRoleAsync(IGuildUser user)
         {
-            var config = _db.GetConfig(args.Guild.Id);
+            var config = _db.GetConfig(user.Guild.Id);
             if (!config.Autorole.IsNullOrWhitespace())
             {
-                var targetRole = args.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(config.Autorole));
-                await args.Member.GrantRoleAsync(targetRole);
+                var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(config.Autorole));
+                await user.AddRoleAsync(targetRole);
             }
         }
     }

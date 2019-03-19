@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -12,9 +12,9 @@ namespace Volte.Commands.Modules.Admin
         [Description("Remove a role from the mentioned user.")]
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task RemRoleAsync(DiscordMember user, [Remainder] DiscordRole role)
+        public async Task RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
-            await user.RevokeRoleAsync(role);
+            await user.RemoveRoleAsync(role);
             await Context.CreateEmbed($"Removed the role **{role.Name}** from {user.Mention}!")
                 .SendToAsync(Context.Channel);
         }

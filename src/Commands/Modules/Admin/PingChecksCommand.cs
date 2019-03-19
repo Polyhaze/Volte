@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -16,7 +17,8 @@ namespace Volte.Commands.Modules.Admin
             var config = Db.GetConfig(Context.Guild);
             config.ModerationOptions.MassPingChecks = enabled;
             Db.UpdateConfig(config);
-            await Context.CreateEmbed(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
+            await Context
+                .CreateEmbed(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
                 .SendToAsync(Context.Channel);
         }
     }

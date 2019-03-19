@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules.Utility
                 }
                 else
                 {
-                    await Context.User.GrantRoleAsync(target);
+                    await Context.User.AddRoleAsync(target);
                     await Context.CreateEmbed($"Gave you the **{roleName}** role.").SendToAsync(Context.Channel);
                 }
             }

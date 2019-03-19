@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.Exceptions;
+using Discord;
+using Discord.Net;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -13,16 +13,17 @@ namespace Volte.Commands.Modules.Moderation
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
         [Remarks("Usage: $ban {@user} {daysToDelete} [reason]")]
-        [RequireBotGuildPermission(Permissions.BanMembers)]
+        [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task BanAsync(DiscordMember user, int daysToDelete, [Remainder] string reason = "Banned by a Moderator.")
+        public async Task BanAsync(SocketGuildUser user, int daysToDelete,
+            [Remainder] string reason = "Banned by a Moderator.")
         {
             try
             {
                 await Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (UnauthorizedException) { }
+            catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             await user.BanAsync(daysToDelete, reason);
             await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")

@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules.Utility
                 }
                 else
                 {
-                    await Context.User.RevokeRoleAsync(target);
+                    await Context.User.RemoveRoleAsync(target);
                     await Context.CreateEmbed($"Took away your **{roleName}** role.").SendToAsync(Context.Channel);
                 }
             }

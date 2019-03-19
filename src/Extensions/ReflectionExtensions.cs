@@ -11,6 +11,5 @@ namespace Volte.Extensions
 
         public static bool HasAttribute<T>(this Type type) where T : Attribute
             => type.GetAttribute<T>() != null;
-
     }
 }

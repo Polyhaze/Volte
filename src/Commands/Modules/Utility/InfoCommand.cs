@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Humanizer;
 using Qmmands;
 using Volte.Extensions;
+using Version = Volte.Version;
 
 namespace Volte.Commands.Modules.Utility
 {
@@ -23,14 +24,14 @@ namespace Volte.Commands.Modules.Utility
                     "<@168548441939509248> and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
                 //.AddField("RAM Usage", $"{GetRamUsage()}MB", true)
                 .AddField("Language", "C# - Discord.Net 2.0.1", true)
-                .AddField("Servers", Context.Client.Guilds.Count.ToString(), true)
-                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Value.Channels).DistinctBy(x => x.Id).Count().ToString(),
+                .AddField("Servers", Context.Client.Guilds.Count, true)
+                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{Db.GetConfig(Context.Guild).CommandPrefix}invite`", true)
                 .AddField(".NET Core Version", GetDotNetCoreVersion(), true)
-                .AddField("Operating System", Environment.OSVersion.Platform.ToString(), true)
+                .AddField("Operating System", Environment.OSVersion.Platform, true)
                 .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
-                .WithThumbnailUrl(Context.Client.CurrentUser.AvatarUrl)
+                .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl())
                 .SendToAsync(Context.Channel);
         }
 

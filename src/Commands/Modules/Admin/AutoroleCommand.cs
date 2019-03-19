@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("Usage: |prefix|autorole {roleName}")]
         [RequireGuildAdmin]
-        public async Task AutoroleAsync([Remainder] DiscordRole role)
+        public async Task AutoroleAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
             config.Autorole = role.Name;

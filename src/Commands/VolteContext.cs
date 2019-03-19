@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using DSharpPlus;
+using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Services;
 using Qmmands;
@@ -13,38 +13,36 @@ namespace Volte.Commands
     {
         private readonly EmojiService _emojiService;
 
-        public VolteContext(DiscordClient client, DiscordMessage msg, IServiceProvider provider)
+        public VolteContext(IDiscordClient client, IUserMessage msg, IServiceProvider provider)
         {
             _emojiService = provider.GetRequiredService<EmojiService>();
-            Client = client;
+            Client = client as DiscordSocketClient;
             ServiceProvider = provider;
-            Guild = msg.Channel.Guild;
-            Channel = msg.Channel;
-            User = msg.Author as DiscordMember;
+            Guild = (msg.Channel as ITextChannel)?.Guild;
+            Channel = msg.Channel as ITextChannel;
+            User = msg.Author as IGuildUser;
             Message = msg;
         }
 
-        public DiscordClient Client { get; }
+        public DiscordSocketClient Client { get; }
         public IServiceProvider ServiceProvider { get; }
-        public DiscordGuild Guild { get; }
-        public DiscordChannel Channel { get; }
-        public DiscordMember User { get; }
-        public DiscordMessage Message { get; }
+        public IGuild Guild { get; }
+        public ITextChannel Channel { get; }
+        public IGuildUser User { get; }
+        public IUserMessage Message { get; }
 
-        public Task ReactFailureAsync() => Message.CreateReactionAsync(DiscordEmoji.FromUnicode(_emojiService.X));
+        public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
+        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
 
-        public Task ReactSuccessAsync() =>
-            Message.CreateReactionAsync(DiscordEmoji.FromUnicode(_emojiService.BALLOT_BOX_WITH_CHECK));
-
-        public DiscordEmbed CreateEmbed(string content) => new DiscordEmbedBuilder().WithSuccessColor().WithAuthor(User)
+        public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
             .WithDescription(content).Build();
 
-        public DiscordEmbedBuilder CreateEmbedBuilder(string content = null) => new DiscordEmbedBuilder()
+        public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
             .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
-        public Task ReplyAsync(DiscordEmbed embed) => embed.SendToAsync(Channel);
-        public Task ReplyAsync(DiscordEmbedBuilder embed) => embed.SendToAsync(Channel);
-        public Task ReactAsync(string unicode) => Message.CreateReactionAsync(DiscordEmoji.FromUnicode(unicode));
+        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
+        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
+        public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
     }
 }

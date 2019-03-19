@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using DSharpPlus;
+using Discord;
 using Newtonsoft.Json;
 using Volte.Data.Objects;
 using Volte.Discord;
@@ -26,7 +26,7 @@ namespace Volte.Data
         {
             if (_valid) return;
             var logger = VolteBot.GetRequiredService<LoggingService>();
-            await logger.Log(LogLevel.Warning, LogSource.Volte,
+            await logger.Log(LogSeverity.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig
             {
@@ -66,7 +66,7 @@ namespace Volte.Data
 
         public static JoinLeaveLog JoinLeaveLog => _bot.JoinLeaveLog;
 
-        public static ulong[] BlacklistedOwners =>_bot.BlacklistedServerOwners;
+        public static ulong[] BlacklistedOwners => _bot.BlacklistedServerOwners;
 
         private struct BotConfig
         {

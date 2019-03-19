@@ -1,26 +1,25 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Extensions;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : DiscordRole
+    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : SocketRole
     {
         public override Task<TypeParserResult<TRole>> ParseAsync(
             Parameter param,
-            string value, 
-            ICommandContext context, 
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
             TRole role = null;
-            if (ulong.TryParse(value, out var id))
+            if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
                 role = ctx.Guild.GetRole(id) as TRole;
-
-            if (role is null) role = ctx.Message.MentionedRoles.FirstOrDefault() as TRole;
 
             if (role is null)
             {

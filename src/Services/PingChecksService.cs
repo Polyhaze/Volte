@@ -19,9 +19,10 @@ namespace Volte.Services
             var config = _db.GetConfig(ctx.Guild);
             if (config.ModerationOptions.MassPingChecks && !ctx.User.IsAdmin())
             {
-                if (ctx.Message.Content.ContainsIgnoreCase("@here") ||
-                    ctx.Message.MentionEveryone ||
-                    ctx.Message.MentionedUsers.Count > 10)
+                var content = ctx.Message.Content;
+                if (content.ContainsIgnoreCase("@everyone") ||
+                    content.ContainsIgnoreCase("@here") ||
+                    ctx.Message.MentionedUserIds.Count > 10)
                 {
                     await ctx.Message.DeleteAsync();
                 }

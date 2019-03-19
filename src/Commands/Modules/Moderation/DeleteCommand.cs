@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus;
+using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Moderation
         [Description("Deletes a message by its ID. Creates an audit log entry for abuse prevention.")]
         [Remarks("Usage: |prefix|delete {messageId}")]
         [RequireGuildModerator]
-        [RequireBotChannelPermission(Permissions.ManageMessages)]
+        [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteAsync(ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
@@ -22,10 +22,14 @@ namespace Volte.Commands.Modules.Moderation
                 return;
             }
 
-            await target.DeleteAsync($"Message deleted by Moderator {Context.User}.");
+            await target.DeleteAsync(new RequestOptions
+            {
+                AuditLogReason = $"Message deleted by Moderator {Context.User}."
+            });
 
             var confirmationMessage = await Context
-                .CreateEmbed($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.").SendToAsync(Context.Channel);
+                .CreateEmbed($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.")
+                .SendToAsync(Context.Channel);
             await Task.Delay(2000).ContinueWith(async _ =>
             {
                 await Context.Message.DeleteAsync();

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
-using DSharpPlus.Entities;
+using Discord;
 using Qmmands;
+using Volte.Data;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -21,8 +22,8 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|silentsay {msg}")]
         public async Task SilentSayAsync([Remainder] string msg)
         {
-            await new DiscordEmbedBuilder()
-                .WithSuccessColor()
+            await new EmbedBuilder()
+                .WithColor(Config.SuccessColor)
                 .WithDescription(msg)
                 .SendToAsync(Context.Channel);
             await Context.Message.DeleteAsync();
