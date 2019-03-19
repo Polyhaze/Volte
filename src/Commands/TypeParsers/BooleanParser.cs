@@ -9,7 +9,8 @@ namespace Volte.Commands.TypeParsers
     {
         private readonly string[] _matchingTrueValues =
         {
-            "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "aff", "ya", "da", "yas", "enable", "yip", "positive", "1"
+            "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "aff", "ya", "da", "yas", "enable", "yip",
+            "positive", "1"
         };
 
         private readonly string[] _matchingFalseValues =
@@ -19,8 +20,8 @@ namespace Volte.Commands.TypeParsers
 
         public override Task<TypeParserResult<bool>> ParseAsync(
             Parameter param,
-            string value, 
-            ICommandContext context, 
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
             if (_matchingTrueValues.ContainsIgnoreCase(value))

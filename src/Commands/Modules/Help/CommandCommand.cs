@@ -21,7 +21,8 @@ namespace Volte.Commands.Modules.Help
 
             if (CanShowCommandInfo(c))
             {
-                await Context.CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
+                await Context
+                    .CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
                     .SendToAsync(Context.Channel);
                 return;
             }

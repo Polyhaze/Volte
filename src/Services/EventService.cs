@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
@@ -17,18 +18,46 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
 
+        private readonly bool _shouldStream =
+            Config.Streamer.EqualsIgnoreCase("streamer here") || Config.Streamer.IsNullOrWhitespace();
+
         public EventService(LoggingService loggingService)
         {
             _logger = loggingService;
         }
 
-        public async Task OnReady(IDiscordClient client)
+        public async Task OnReady(DiscordSocketClient client)
         {
-            foreach (var guild in await client.GetGuildsAsync())
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, $"{client.GetInviteUrl(true)}");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, $"Logged in as {client.CurrentUser}");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, "Connected to:");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte, $"    {client.Guilds.Count} servers");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+                $"    {client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count()} user");
+            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+                $"    {client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count()} channels");
+
+
+            if (_shouldStream)
+            {
+                await client.SetGameAsync(Config.Game);
+                await _logger.Log(LogSeverity.Info, LogSource.Volte, $"Set the bot's game to {Config.Game}.");
+            }
+            else
+            {
+                var twitchUrl = $"https://twitch.tv/{Config.Streamer}";
+                await client.SetGameAsync(Config.Game, twitchUrl, ActivityType.Streaming);
+                await _logger.Log(LogSeverity.Info, LogSource.Volte,
+                    $"Set the bot's game to \"{ActivityType.Streaming} {Config.Game}, at {twitchUrl}\".");
+            }
+
+            foreach (var guild in client.Guilds)
             {
                 if (!Config.BlacklistedOwners.Contains(guild.OwnerId)) continue;
                 await _logger.Log(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {await guild.GetOwnerAsync()}.");
+                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
                 await guild.LeaveAsync();
             }
         }

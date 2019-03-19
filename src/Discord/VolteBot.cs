@@ -6,12 +6,12 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Data;
+using Volte.Data.Objects;
 using Volte.Extensions;
 using Volte.Services;
 
 namespace Volte.Discord
 {
-#pragma warning disable 1998
     public class VolteBot
     {
         public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
@@ -22,12 +22,10 @@ namespace Volte.Discord
 
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
 
-        public static T GetRequiredService<T>()
-            => ServiceProvider.GetRequiredService<T>();
+        public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
         public static async Task StartAsync()
         {
-            await GetRequiredService<LoggingService>().PrintVersion();
             await new VolteBot().LoginAsync();
         }
 
@@ -65,13 +63,6 @@ namespace Volte.Discord
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.Token);
             await Client.StartAsync();
-            if (Config.Streamer.EqualsIgnoreCase("streamer here") ||
-                Config.Streamer.IsNullOrWhitespace())
-                await Client.SetGameAsync(Config.Game);
-            else
-                await Client.SetGameAsync(Config.Game,
-                    $"https://twitch.tv/{Config.Streamer}",
-                    ActivityType.Streaming);
 
             await Client.SetStatusAsync(UserStatus.Online);
             await _handler.InitAsync();

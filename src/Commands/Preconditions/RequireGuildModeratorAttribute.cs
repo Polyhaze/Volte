@@ -14,7 +14,6 @@ namespace Volte.Commands.Preconditions
 
             await ctx.ReactFailureAsync();
             return CheckResult.Unsuccessful("Insufficient permission.");
-
         }
     }
 }

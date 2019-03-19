@@ -15,6 +15,5 @@ namespace Volte.Services
             Name = name;
             Purpose = purpose;
         }
-
     }
 }

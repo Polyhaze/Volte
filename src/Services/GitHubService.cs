@@ -4,7 +4,7 @@ namespace Volte.Services
 {
     [Obsolete, Service("GitHub", "The main Service for using the GitHub API.")]
     public sealed class GitHubService
-    {/*
+    { /*
         public static readonly GitHubClient GitHub = new GitHubClient(new ProductHeaderValue("GreemDev"));
 
         static GitHubService()
