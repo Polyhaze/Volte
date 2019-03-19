@@ -22,15 +22,10 @@ namespace Volte.Services
             await Log(m.Level, m.Source, m.Message, m.Exception);
         }
 
-        internal async Task PrintVersion()
-        {
-            await Log(LogLevel.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
-        }
-
-        public async Task Log(LogLevel s, LogSource src, string message, Exception e = null)
+        public async Task Log(LogLevel severity, LogSource source, string message, Exception e = null)
         {
             await _semaphore.WaitAsync();
-            DoLog(s, src, message, e);
+            DoLog(severity, source, message, e);
             _semaphore.Release();
         }
 

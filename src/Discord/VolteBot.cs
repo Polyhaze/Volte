@@ -27,7 +27,6 @@ namespace Volte.Discord
 
         public static async Task StartAsync()
         {
-            await GetRequiredService<LoggingService>().PrintVersion();
             await new VolteBot().LoginAsync();
         }
 

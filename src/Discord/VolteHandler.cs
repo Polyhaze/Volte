@@ -33,18 +33,18 @@ namespace Volte.Discord
         private readonly VerificationService _verification;
 
         public VolteHandler(AntilinkService antilinkService,
-                            BlacklistService blacklistService,
-                            DiscordClient client,
-                            DatabaseService databaseService,
-                            PingChecksService pingChecksService,
-                            CommandService commandService,
-                            GuildService guildService,
-                            DefaultWelcomeService defaultWelcomeService,
-                            ImageWelcomeService imageWelcomeService,
-                            AutoroleService autoroleService,
-                            EventService eventService,
-                            LoggingService loggingService,
-                            VerificationService verificationService)
+            BlacklistService blacklistService,
+            DiscordClient client,
+            DatabaseService databaseService,
+            PingChecksService pingChecksService,
+            CommandService commandService,
+            GuildService guildService,
+            DefaultWelcomeService defaultWelcomeService,
+            ImageWelcomeService imageWelcomeService,
+            AutoroleService autoroleService,
+            EventService eventService,
+            LoggingService loggingService,
+            VerificationService verificationService)
         {
             _antilink = antilinkService;
             _blacklist = blacklistService;
@@ -81,6 +81,7 @@ namespace Volte.Discord
                 else
                     await _imageWelcome.JoinAsync(args.Member);
             };
+            _client.GuildDownloadCompleted += _event.OnGuildDownloadCompletedAsync;
             _client.GuildMemberRemoved += async (args) => await _defaultWelcome.LeaveAsync(args.Member);
             _client.GuildMemberAdded += _autorole.ApplyRoleAsync;
             _client.Ready += _event.OnReady;

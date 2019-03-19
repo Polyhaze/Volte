@@ -27,6 +27,7 @@ namespace Volte.Services
         public async Task OnReady(ReadyEventArgs ev)
         {
             await _logger.Log(LogLevel.Info, LogSource.Volte, "Ready");
+            await _logger.Log(LogLevel.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
             await _logger.Log(LogLevel.Info, LogSource.Volte,
                 $"Currently using DSharpPlus version {ev.Client.VersionString}");
             await _logger.Log(LogLevel.Info, LogSource.Volte,
@@ -54,11 +55,15 @@ namespace Volte.Services
 
             await ev.Client.UpdateStatusAsync(activity);
             await _logger.Log(LogLevel.Info, LogSource.Volte,
-                $"Set the bot's current activity to \"{activity.ActivityType}: {activity.Name}, {(activity.StreamUrl ?? string.Empty)}\"");
+                $"Set the bot's current activity to \"{activity.ActivityType}: {activity.Name} " +
+                $"{(activity.StreamUrl is null ? string.Empty : $", {activity.StreamUrl}")}\"");
+        }
 
-            foreach (var guild in ev.Client.Guilds.Values)
+        public async Task OnGuildDownloadCompletedAsync(GuildDownloadCompletedEventArgs args)
+        {
+            foreach (var guild in args.Client.Guilds.Values)
             {
-                if (!Config.BlacklistedOwners.Contains(guild.Owner.Id)) continue;
+                if (!Config.BlacklistedOwners.Contains(guild.Id)) continue;
                 await _logger.Log(LogLevel.Warning, LogSource.Volte,
                     $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner.ToHumanReadable()}.");
                 await guild.LeaveAsync();
