@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules.Utility
             {
                 e.WithDescription(
                     $"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
-                    $"{EmojiService.OK_HAND} **API**: {VolteBot.Client.Latency}ms");
+                    $"{EmojiService.OK_HAND} **API**: {Context.Client.Latency}ms");
                 x.Embed = e.Build();
             });
         }

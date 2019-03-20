@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Owner
         [RequireBotOwner]
         public async Task ForceLeaveAsync([Remainder] string serverName)
         {
-            var target = VolteBot.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
+            var target = Context.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
             if (target is null)
             {
                 await Context.CreateEmbed($"I'm not in the guild **{serverName}**.").SendToAsync(Context.Channel);

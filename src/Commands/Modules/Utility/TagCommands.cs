@@ -54,7 +54,7 @@ namespace Volte.Commands.Modules.Utility
                 return;
             }
 
-            var u = VolteBot.Client.GetUser(tag.CreatorId);
+            var u = Context.Client.GetUser(tag.CreatorId);
 
             await Context.CreateEmbed(string.Empty).ToEmbedBuilder()
                 .WithTitle($"Tag {tag.Name}")
