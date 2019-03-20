@@ -9,7 +9,7 @@ namespace Volte.Extensions
     {
         public static Stream ToStream(this IEnumerable<byte> bytes)
         {
-            var memStream = new MemoryStream(bytes as byte[] ?? bytes.ToArray(), false);
+            var memStream = new MemoryStream(bytes.Cast<byte[]>() ?? bytes.ToArray(), false);
             memStream.Seek(0, SeekOrigin.Begin);
             return memStream;
         }

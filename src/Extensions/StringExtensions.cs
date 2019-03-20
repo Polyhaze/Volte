@@ -22,7 +22,7 @@ namespace Volte.Extensions
 
         public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
 
-        public static int[] GetUnicodePoints(this string emoji)
+        public static IEnumerable<int> GetUnicodePoints(this string emoji)
         {
             var pts = new List<int>(emoji.Length);
             for (var i = 0; i < emoji.Length; i++)

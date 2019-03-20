@@ -18,11 +18,10 @@ namespace Volte.Services
 
         internal async Task CheckMessageAsync(VolteContext ctx)
         {
-            var config = _db.GetConfig(ctx.Guild.Id);
             var m = ctx.Message.Content.Split(" ");
             if (m.Length < 1) m = new[] {ctx.Message.Content};
 
-            if (!config.ModerationOptions.Antilink || ctx.User.IsAdmin()) return;
+            if (!_db.GetConfig(ctx.Guild.Id).ModerationOptions.Antilink || ctx.User.IsAdmin()) return;
 
             foreach (var part in m)
             {
