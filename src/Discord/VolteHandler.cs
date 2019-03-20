@@ -11,6 +11,7 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Data;
 using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Volte.Services;
 
@@ -68,21 +69,20 @@ namespace Volte.Discord
             sw.Stop();
             await _logger.Log(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            //register event listeners
-            //_service.CommandExecuted += _event.OnCommandAsync;
             _client.Log += _logger.Log;
             _client.JoinedGuild += _guild.OnJoinAsync;
             _client.LeftGuild += _guild.OnLeaveAsync;
             _client.ReactionAdded += _verification.CheckReactionAsync;
-            _client.UserJoined += async user =>
+            _client.UserJoined += async (user) =>
             {
+                var args = new UserJoinedEventArgs(user);
                 if (Config.WelcomeApiKey.IsNullOrWhitespace())
-                    await _defaultWelcome.JoinAsync(user);
+                    await _defaultWelcome.JoinAsync(args);
                 else
-                    await _imageWelcome.JoinAsync(user);
+                    await _imageWelcome.JoinAsync(args);
             };
-            _client.UserLeft += _defaultWelcome.LeaveAsync;
-            _client.UserJoined += _autorole.ApplyRoleAsync;
+            _client.UserLeft += async (user) => await _defaultWelcome.LeaveAsync(new UserLeftEventArgs(user));
+            _client.UserJoined += async (user) => await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
             _client.Ready += async () => await _event.OnReady(_client);
             _client.MessageReceived += async s =>
             {

@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Volte.Services;
 
@@ -54,13 +55,11 @@ namespace Volte.Commands.Modules.Admin
                 await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
                     .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
-                if (config.WelcomeOptions.WelcomeChannel != 0)
-                {
-                    if (Config.WelcomeApiKey.IsNullOrWhitespace())
-                        await DefaultWelcomeService.JoinAsync(Context.User);
-                    else
-                        await ImageWelcomeService.JoinAsync(Context.User);
-                }
+                var args = new UserJoinedEventArgs(Context.User);
+                if (Config.WelcomeApiKey.IsNullOrWhitespace())
+                    await DefaultWelcomeService.JoinAsync(args);
+                else
+                    await ImageWelcomeService.JoinAsync(args);
             }
         }
 
@@ -117,13 +116,8 @@ namespace Volte.Commands.Modules.Admin
                     .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
 
-                if (config.WelcomeOptions.WelcomeChannel != 0)
-                {
-                    if (config.WelcomeOptions.WelcomeChannel != 0)
-                    {
-                        await DefaultWelcomeService.JoinAsync(Context.User);
-                    }
-                }
+                var args = new UserLeftEventArgs(Context.User);
+                await DefaultWelcomeService.LeaveAsync(args);
             }
         }
     }

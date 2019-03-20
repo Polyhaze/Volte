@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Volte.Data;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Color = System.Drawing.Color;
 
@@ -43,13 +44,13 @@ namespace Volte.Services
                 .Replace("{auth}", Config.WelcomeApiKey);
         }
 
-        internal async Task JoinAsync(IGuildUser user)
+        internal async Task JoinAsync(UserJoinedEventArgs args)
         {
             var img = (await
-                (await HttpClient.GetAsync(await FormatUrl(user), HttpCompletionOption.ResponseHeadersRead)
+                (await HttpClient.GetAsync(await FormatUrl(args.User), HttpCompletionOption.ResponseHeadersRead)
                 ).Content.ReadAsByteArrayAsync()).ToStream();
-            var c = await user.Guild.GetTextChannelAsync(_db.GetConfig(user.Guild).WelcomeOptions.WelcomeChannel);
-            await c.SendFileAsync(img, $"welcome-{user.Id}.png", string.Empty);
+            var c = await args.Guild.GetTextChannelAsync(args.Config.WelcomeOptions.WelcomeChannel);
+            await c.SendFileAsync(img, $"welcome-{args.User.Id}.png", string.Empty);
         }
     }
 }
