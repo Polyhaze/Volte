@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using RestSharp;
 using Volte.Commands;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Services
@@ -9,19 +10,12 @@ namespace Volte.Services
     [Service("Antilink", "The main Service for checking links sent in chat.")]
     public sealed class AntilinkService
     {
-        private readonly DatabaseService _db;
-
-        public AntilinkService(DatabaseService databaseService)
+        internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            _db = databaseService;
-        }
+            var m = args.Message.Content.Split(" ");
+            if (m.Length < 1) m = new[] {args.Message.Content};
 
-        internal async Task CheckMessageAsync(VolteContext ctx)
-        {
-            var m = ctx.Message.Content.Split(" ");
-            if (m.Length < 1) m = new[] {ctx.Message.Content};
-
-            if (!_db.GetConfig(ctx.Guild.Id).ModerationOptions.Antilink || ctx.User.IsAdmin()) return;
+            if (!args.Config.ModerationOptions.Antilink || args.Context.User.IsAdmin()) return;
 
             foreach (var part in m)
             {
@@ -33,8 +27,9 @@ namespace Volte.Services
 
                 if (csp != null && csp.Value.ToString().Contains("discord.gg"))
                 {
-                    await ctx.Message.DeleteAsync();
-                    var warnMsg = await ctx.CreateEmbed("Don't send server invites here.").SendToAsync(ctx.Channel);
+                    await args.Message.DeleteAsync();
+                    var warnMsg = await args.Context.CreateEmbed("Don't send server invites here.")
+                        .SendToAsync(args.Context.Channel);
                     await Task.Delay(3000).ContinueWith(_ => warnMsg.DeleteAsync());
                 }
             }

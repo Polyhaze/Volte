@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
-using Volte.Commands;
 using Volte.Data;
 using Volte.Data.Objects;
 using Volte.Data.Objects.EventArgs;
@@ -83,10 +80,10 @@ namespace Volte.Discord
             };
             _client.UserLeft += async (user) => await _defaultWelcome.LeaveAsync(new UserLeftEventArgs(user));
             _client.UserJoined += async (user) => await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
-            _client.Ready += async () => await _event.OnReady(_client);
+            _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
             _client.MessageReceived += async s =>
             {
-                if (!(s is SocketUserMessage msg)) return;
+                if (!(s is IUserMessage msg)) return;
                 if (msg.Author.IsBot) return;
                 if (msg.Channel is IDMChannel)
                 {
@@ -94,37 +91,32 @@ namespace Volte.Discord
                     return;
                 }
 
-                var ctx = new VolteContext(_client, msg, VolteBot.ServiceProvider);
-                await _blacklist.CheckMessageAsync(ctx);
-                await _antilink.CheckMessageAsync(ctx);
-                await _pingchecks.CheckMessageAsync(ctx);
-                await HandleMessageAsync(ctx);
+                var args = new MessageReceivedEventArgs(s);
+
+                await _blacklist.CheckMessageAsync(args);
+                await _antilink.CheckMessageAsync(args);
+                await _pingchecks.CheckMessageAsync(args);
+                await HandleMessageAsync(args);
             };
         }
 
-        private async Task HandleMessageAsync(VolteContext ctx)
+        private async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
-            //pass the message-reliant services what they need
-            await _blacklist.CheckMessageAsync(ctx);
-            await _antilink.CheckMessageAsync(ctx);
-            await _pingchecks.CheckMessageAsync(ctx);
-
-            var config = _db.GetConfig(ctx.Guild);
-            var prefixes = new[] {config.CommandPrefix, $"<@{ctx.Client.CurrentUser.Id}> "};
-            if (CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> "};
+            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
                 var sw = Stopwatch.StartNew();
-                var result = await _service.ExecuteAsync(cmd, ctx, VolteBot.ServiceProvider);
+                var result = await _service.ExecuteAsync(cmd, args.Context, VolteBot.ServiceProvider);
 
                 if (result is CommandNotFoundResult) return;
                 var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
                                     ?? _service.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
                 sw.Stop();
-                await _event.OnCommandAsync(targetCommand, result, ctx, sw);
+                await _event.OnCommandAsync(targetCommand, result, args.Context, sw);
 
-                if (config.DeleteMessageOnCommand) await ctx.Message.DeleteAsync();
+                if (args.Config.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
             }
         }
     }
