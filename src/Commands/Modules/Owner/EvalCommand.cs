@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Volte.Commands.Modules.Owner
 {
     public partial class OwnerModule : VolteModule
     {
-        [Command("Eval")]
+        [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
@@ -46,7 +47,7 @@ namespace Volte.Commands.Modules.Owner
                         EmojiService = EmojiService
                     };
 
-                    var imports = new[]
+                    var imports = new List<string>
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text",
                         "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
@@ -65,10 +66,12 @@ namespace Volte.Commands.Modules.Owner
                         sw.Stop();
                         if (res != null)
                         {
-                            await msg.ModifyAsync(m => m.Embed = embed.WithTitle("Eval")
-                                .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms")
-                                .AddField("Input", Format.Code(code, "cs"))
-                                .AddField("Output", Format.Code(res.ToString(), "css")).Build());
+                            await msg.ModifyAsync(m =>
+                                m.Embed = embed.WithTitle("Eval")
+                                    .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms", true)
+                                    .AddField("Return Type", res.GetType().FullName, true)
+                                    .AddField("Input", Format.Code(code, "cs"))
+                                    .AddField("Output", Format.Code(res.ToString(), "css")).Build());
                         }
                         else
                         {
