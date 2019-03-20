@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Humanizer;
@@ -22,11 +23,18 @@ namespace Volte.Commands.Modules.Utility
                 return;
             }
 
-            await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
+            var shouldHaveImage = m.Attachments.Count > 0;
+
+            var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
-                .WithFooter(m.Timestamp.Humanize())
-                .SendToAsync(Context.Channel);
+                .WithFooter(m.Timestamp.Humanize());
+            if (shouldHaveImage)
+            {
+                e.WithImageUrl(m.Attachments.ElementAt(0).Url);
+            }
+
+            await e.SendToAsync(Context.Channel);
         }
 
         [Command("Quote"), Priority(1)]
@@ -42,11 +50,18 @@ namespace Volte.Commands.Modules.Utility
                 return;
             }
 
-            await Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
+            var shouldHaveImage = m.Attachments.Count > 0;
+
+            var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
                 .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
-                .WithFooter(m.Timestamp.Humanize())
-                .SendToAsync(Context.Channel);
+                .WithFooter(m.Timestamp.Humanize());
+            if (shouldHaveImage)
+            {
+                e.WithImageUrl(m.Attachments.ElementAt(0).Url);
+            }
+
+            await e.SendToAsync(Context.Channel);
         }
     }
 }
