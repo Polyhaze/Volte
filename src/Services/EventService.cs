@@ -10,6 +10,7 @@ using Volte.Commands;
 using Volte.Data;
 using Volte.Data.Objects;
 using Volte.Data.Objects.EventArgs;
+using Volte.Discord;
 using Volte.Extensions;
 
 namespace Volte.Services
@@ -19,12 +20,52 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
 
+        private readonly AntilinkService _antilink;
+        private readonly BlacklistService _blacklist;
+        private readonly DatabaseService _db;
+        private readonly PingChecksService _pingchecks;
+        private readonly CommandService _commandService;
+
         private readonly bool _shouldStream =
             Config.Streamer.EqualsIgnoreCase("streamer here") || Config.Streamer.IsNullOrWhitespace();
 
-        public EventService(LoggingService loggingService)
+        public EventService(LoggingService loggingService,
+            AntilinkService antilinkService,
+            BlacklistService blacklistService,
+            DatabaseService databaseService,
+            PingChecksService pingChecksService,
+            CommandService commandService)
         {
             _logger = loggingService;
+            _antilink = antilinkService;
+            _blacklist = blacklistService;
+            _db = databaseService;
+            _pingchecks = pingChecksService;
+            _commandService = commandService;
+        }
+
+        public async Task HandleMessageAsync(MessageReceivedEventArgs args)
+        {
+            await _blacklist.CheckMessageAsync(args);
+            await _antilink.CheckMessageAsync(args);
+            await _pingchecks.CheckMessageAsync(args);
+            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> "};
+            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+                out var cmd))
+            {
+                var sw = Stopwatch.StartNew();
+                var result = await _commandService.ExecuteAsync(cmd, args.Context, VolteBot.ServiceProvider);
+
+                if (result is CommandNotFoundResult) return;
+                var targetCommand = _commandService.GetAllCommands()
+                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
+                                    ?? _commandService.GetAllCommands()
+                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
+                sw.Stop();
+                await OnCommandAsync(targetCommand, result, args.Context, sw);
+
+                if (args.Config.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
+            }
         }
 
         public async Task OnReady(ReadyEventArgs args)

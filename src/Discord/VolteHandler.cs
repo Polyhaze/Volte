@@ -16,11 +16,7 @@ namespace Volte.Discord
 {
     public class VolteHandler
     {
-        private readonly AntilinkService _antilink;
-        private readonly BlacklistService _blacklist;
         private readonly DiscordSocketClient _client;
-        private readonly DatabaseService _db;
-        private readonly PingChecksService _pingchecks;
         private readonly CommandService _service;
         private readonly GuildService _guild;
         private readonly DefaultWelcomeService _defaultWelcome;
@@ -30,11 +26,7 @@ namespace Volte.Discord
         private readonly LoggingService _logger;
         private readonly VerificationService _verification;
 
-        public VolteHandler(AntilinkService antilinkService,
-            BlacklistService blacklistService,
-            DiscordSocketClient client,
-            DatabaseService databaseService,
-            PingChecksService pingChecksService,
+        public VolteHandler(DiscordSocketClient client,
             CommandService commandService,
             GuildService guildService,
             DefaultWelcomeService defaultWelcomeService,
@@ -44,11 +36,7 @@ namespace Volte.Discord
             LoggingService loggingService,
             VerificationService verificationService)
         {
-            _antilink = antilinkService;
-            _blacklist = blacklistService;
             _client = client;
-            _db = databaseService;
-            _pingchecks = pingChecksService;
             _service = commandService;
             _guild = guildService;
             _defaultWelcome = defaultWelcomeService;
@@ -92,31 +80,8 @@ namespace Volte.Discord
                     return;
                 }
 
-                await HandleMessageAsync(new MessageReceivedEventArgs(s));
+                await _event.HandleMessageAsync(new MessageReceivedEventArgs(s));
             };
-        }
-
-        private async Task HandleMessageAsync(MessageReceivedEventArgs args)
-        {
-            await _blacklist.CheckMessageAsync(args);
-            await _antilink.CheckMessageAsync(args);
-            await _pingchecks.CheckMessageAsync(args);
-            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> "};
-            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
-                out var cmd))
-            {
-                var sw = Stopwatch.StartNew();
-                var result = await _service.ExecuteAsync(cmd, args.Context, VolteBot.ServiceProvider);
-
-                if (result is CommandNotFoundResult) return;
-                var targetCommand = _service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
-                                    ?? _service.GetAllCommands()
-                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
-                sw.Stop();
-                await _event.OnCommandAsync(targetCommand, result, args.Context, sw);
-
-                if (args.Config.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
-            }
         }
     }
 }
