@@ -6,6 +6,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Volte.Data;
 using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Discord;
 using Volte.Extensions;
 
@@ -21,21 +22,21 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        public async Task OnJoinAsync(IGuild guild)
+        public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
-            if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+            if (Config.BlacklistedOwners.Contains(args.Guild.OwnerId))
             {
                 await _logger.Log(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {await guild.GetOwnerAsync()}.");
-                await guild.LeaveAsync();
+                    $"Left guild \"{args.Guild.Name}\" owned by blacklisted owner {await args.Guild.GetOwnerAsync()}.");
+                await args.Guild.LeaveAsync();
                 return;
             }
 
-            var owner = await guild.GetOwnerAsync();
+            var owner = await args.Guild.GetOwnerAsync();
 
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
-                .WithAuthor(await guild.GetOwnerAsync())
+                .WithAuthor(await args.Guild.GetOwnerAsync())
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
@@ -51,7 +52,7 @@ namespace Volte.Services
             }
             catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
             {
-                var c = (await guild.GetTextChannelsAsync()).FirstOrDefault();
+                var c = (await args.Guild.GetTextChannelsAsync()).FirstOrDefault();
                 if (c != null) await embed.SendToAsync(c);
             }
 
@@ -68,15 +69,15 @@ namespace Volte.Services
                 }
 
                 var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                var users = (await guild.GetUsersAsync()).Where(u => !u.IsBot).ToList();
-                var bots = (await guild.GetUsersAsync()).Where(u => u.IsBot).ToList();
+                var users = (await args.Guild.GetUsersAsync()).Where(u => !u.IsBot).ToList();
+                var bots = (await args.Guild.GetUsersAsync()).Where(u => u.IsBot).ToList();
 
                 var e = new EmbedBuilder()
                     .WithAuthor(owner)
                     .WithTitle("Joined Guild")
-                    .AddField("Name", guild.Name, true)
-                    .AddField("ID", guild.Id, true)
-                    .WithThumbnailUrl(guild.IconUrl)
+                    .AddField("Name", args.Guild.Name, true)
+                    .AddField("ID", args.Guild.Id, true)
+                    .WithThumbnailUrl(args.Guild.IconUrl)
                     .WithCurrentTimestamp()
                     .AddField("Users", users.Count, true)
                     .AddField("Bots", bots.Count, true);
@@ -97,7 +98,7 @@ namespace Volte.Services
             }
         }
 
-        public async Task OnLeaveAsync(SocketGuild guild)
+        public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             if (Config.JoinLeaveLog.Enabled)
             {
@@ -115,11 +116,11 @@ namespace Volte.Services
                 try
                 {
                     var e = new EmbedBuilder()
-                        .WithAuthor(guild.Owner)
+                        .WithAuthor(await args.Guild.GetOwnerAsync())
                         .WithTitle("Left Guild")
-                        .AddField("Name", guild.Name, true)
-                        .AddField("ID", guild.Id, true)
-                        .WithThumbnailUrl(guild.IconUrl)
+                        .AddField("Name", args.Guild.Name, true)
+                        .AddField("ID", args.Guild.Id, true)
+                        .WithThumbnailUrl(args.Guild.IconUrl)
                         .WithColor(0xFF0000)
                         .SendToAsync(channel);
                 }

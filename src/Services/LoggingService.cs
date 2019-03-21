@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;
@@ -15,11 +16,10 @@ namespace Volte.Services
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        internal async Task Log(LogMessage msg)
+        internal async Task Log(LogEventArgs args)
         {
-            if (msg.Message.Contains("handler is blocking")) return;
-            var m = Data.Objects.LogMessage.FromDiscordLogMessage(msg);
-            await Log(m.Severity, m.Source, m.Message, m.Exception);
+            await Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
+                args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
         }
 
         internal async Task PrintVersion()

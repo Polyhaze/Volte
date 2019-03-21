@@ -66,10 +66,11 @@ namespace Volte.Discord
             sw.Stop();
             await _logger.Log(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            _client.Log += _logger.Log;
-            _client.JoinedGuild += _guild.OnJoinAsync;
-            _client.LeftGuild += _guild.OnLeaveAsync;
-            _client.ReactionAdded += _verification.CheckReactionAsync;
+            _client.Log += async (m) => await _logger.Log(new LogEventArgs(m));
+            _client.JoinedGuild += async (guild) => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
+            _client.LeftGuild += async (guild) => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
+            _client.ReactionAdded += async (m, c, r) =>
+                await _verification.CheckReactionAsync(new ReactionAddedEventArgs(m, c, r));
             _client.UserJoined += async (user) =>
             {
                 var args = new UserJoinedEventArgs(user);
@@ -81,7 +82,7 @@ namespace Volte.Discord
             _client.UserLeft += async (user) => await _defaultWelcome.LeaveAsync(new UserLeftEventArgs(user));
             _client.UserJoined += async (user) => await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
             _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
-            _client.MessageReceived += async s =>
+            _client.MessageReceived += async (s) =>
             {
                 if (!(s is IUserMessage msg)) return;
                 if (msg.Author.IsBot) return;
@@ -91,17 +92,15 @@ namespace Volte.Discord
                     return;
                 }
 
-                var args = new MessageReceivedEventArgs(s);
-
-                await _blacklist.CheckMessageAsync(args);
-                await _antilink.CheckMessageAsync(args);
-                await _pingchecks.CheckMessageAsync(args);
-                await HandleMessageAsync(args);
+                await HandleMessageAsync(new MessageReceivedEventArgs(s));
             };
         }
 
         private async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
+            await _blacklist.CheckMessageAsync(args);
+            await _antilink.CheckMessageAsync(args);
+            await _pingchecks.CheckMessageAsync(args);
             var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> "};
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))

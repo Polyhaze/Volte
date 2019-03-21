@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Volte.Data.Objects.EventArgs;
 
 namespace Volte.Services
 {
@@ -17,17 +18,16 @@ namespace Volte.Services
             _emoji = emojiService;
         }
 
-        public async Task CheckReactionAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
-            SocketReaction reaction)
+        public async Task CheckReactionAsync(ReactionAddedEventArgs args)
         {
-            if (channel is IDMChannel) return;
-            if (!(reaction.User.Value is IGuildUser u) || !(channel is IGuildChannel c)) return;
+            if (args.Channel is IDMChannel) return;
+            if (!(args.Reaction.User.Value is IGuildUser u) || !(args.Channel is IGuildChannel c)) return;
             var config = _db.GetConfig(c.Guild);
-            if (!config.VerificationOptions.Enabled || !reaction.User.IsSpecified) return;
+            if (!config.VerificationOptions.Enabled || !args.Reaction.User.IsSpecified) return;
             if (u.IsBot) return;
-            if (message.Id.Equals(config.VerificationOptions.MessageId))
+            if (args.Message.Id.Equals(config.VerificationOptions.MessageId))
             {
-                if (reaction.Emote.Name.Equals(_emoji.BALLOT_BOX_WITH_CHECK))
+                if (args.Reaction.Emote.Name.Equals(_emoji.BALLOT_BOX_WITH_CHECK))
                 {
                     var role = c.Guild.GetRole(config.VerificationOptions.RoleId);
                     if (role is null) return;
