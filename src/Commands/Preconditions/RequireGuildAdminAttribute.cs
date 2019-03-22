@@ -5,7 +5,7 @@ using Volte.Extensions;
 
 namespace Volte.Commands.Preconditions
 {
-    public class RequireGuildAdminAttribute : CheckBaseAttribute
+    public sealed class RequireGuildAdminAttribute : CheckBaseAttribute
     {
         public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
         {

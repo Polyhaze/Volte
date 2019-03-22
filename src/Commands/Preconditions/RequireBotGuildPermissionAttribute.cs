@@ -7,7 +7,7 @@ using Volte.Extensions;
 
 namespace Volte.Commands.Preconditions
 {
-    public class RequireBotGuildPermissionAttribute : CheckBaseAttribute
+    public sealed class RequireBotGuildPermissionAttribute : CheckBaseAttribute
     {
         private readonly GuildPermission[] _permissions;
 

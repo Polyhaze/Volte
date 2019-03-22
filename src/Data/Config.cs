@@ -9,7 +9,7 @@ using Volte.Services;
 
 namespace Volte.Data
 {
-    public class Config
+    public sealed class Config
     {
         private const string ConfigFile = "data/config.json";
         private static BotConfig _bot;

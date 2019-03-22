@@ -7,7 +7,7 @@ using Volte.Extensions;
 
 namespace Volte.Commands.Preconditions
 {
-    public class RequireBotChannelPermission : CheckBaseAttribute
+    public sealed class RequireBotChannelPermission : CheckBaseAttribute
     {
         private readonly ChannelPermission[] _permissions;
 

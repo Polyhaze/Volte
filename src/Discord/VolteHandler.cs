@@ -14,7 +14,7 @@ using Volte.Services;
 
 namespace Volte.Discord
 {
-    public class VolteHandler
+    internal sealed class VolteHandler
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _service;

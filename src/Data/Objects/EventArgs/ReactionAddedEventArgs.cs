@@ -5,7 +5,7 @@ using Volte.Services;
 
 namespace Volte.Data.Objects.EventArgs
 {
-    public class ReactionAddedEventArgs
+    public sealed class ReactionAddedEventArgs
     {
         private DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
         public IUserMessage Message { get; }

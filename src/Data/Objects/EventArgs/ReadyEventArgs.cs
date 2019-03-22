@@ -2,7 +2,7 @@ using Discord.WebSocket;
 
 namespace Volte.Data.Objects.EventArgs
 {
-    public class ReadyEventArgs
+    public sealed class ReadyEventArgs
     {
         public DiscordSocketClient Client { get; }
 

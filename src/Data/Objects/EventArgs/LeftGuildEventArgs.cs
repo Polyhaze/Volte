@@ -5,7 +5,7 @@ using Volte.Services;
 
 namespace Volte.Data.Objects.EventArgs
 {
-    public class LeftGuildEventArgs
+    public sealed class LeftGuildEventArgs
     {
         private DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
         public IGuild Guild { get; }

@@ -3,7 +3,7 @@ using Discord;
 
 namespace Volte.Data.Objects.EventArgs
 {
-    public class LogEventArgs
+    public sealed class LogEventArgs
     {
         public string Message { get; }
         public string Source { get; }
