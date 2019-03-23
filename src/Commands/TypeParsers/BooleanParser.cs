@@ -15,7 +15,7 @@ namespace Volte.Commands.TypeParsers
 
         private readonly string[] _matchingFalseValues =
         {
-            "true", "n", "no", "nah", "na", "nej", "nope", "nop", "neg", "negatory", "disable", "nay", "negative", "0"
+            "false", "n", "no", "nah", "na", "nej", "nope", "nop", "neg", "negatory", "disable", "nay", "negative", "0"
         };
 
         public override Task<TypeParserResult<bool>> ParseAsync(
