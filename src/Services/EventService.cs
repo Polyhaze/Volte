@@ -70,16 +70,22 @@ namespace Volte.Services
 
         public async Task OnReady(ReadyEventArgs args)
         {
+            var guilds = args.Client.Guilds.Count;
+            var users = args.Client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
+            var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
+
             await _logger.Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
             await _logger.Log(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
             await _logger.Log(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl(true)}");
             await _logger.Log(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
             await _logger.Log(LogSeverity.Info, LogSource.Volte, "Connected to:");
-            await _logger.Log(LogSeverity.Info, LogSource.Volte, $"    {args.Client.Guilds.Count} servers");
             await _logger.Log(LogSeverity.Info, LogSource.Volte,
-                $"    {args.Client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count()} user");
+                $"    {guilds} server{(guilds.ShouldBePlural() ? "s" : "")}");
             await _logger.Log(LogSeverity.Info, LogSource.Volte,
-                $"    {args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count()} channels");
+                $"    {users} user{(users.ShouldBePlural() ? "s" : "")}");
+
+            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+                $"    {channels} channel{(channels.ShouldBePlural() ? "s" : "")}");
 
 
             if (_shouldStream)

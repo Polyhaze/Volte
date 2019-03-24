@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace Volte.Extensions
 {
-    public static class StringExtensions
+    public static class PrimitiveExtensions
     {
+        #region String
+
         public static bool EqualsIgnoreCase(this string str, string otherString)
         {
             if (str is null) return false;
@@ -36,5 +38,13 @@ namespace Volte.Extensions
 
             return pts.ToArray();
         }
+
+        #endregion
+
+        #region Boolean
+
+        public static bool ShouldBePlural(this int val) => val != 1;
+
+        #endregion
     }
 }

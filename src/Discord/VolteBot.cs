@@ -15,19 +15,13 @@ namespace Volte.Discord
     public class VolteBot
     {
         public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
-
         public static readonly CommandService CommandService = GetRequiredService<CommandService>();
-
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
-
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
-
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
-        public static async Task StartAsync()
-        {
-            await new VolteBot().LoginAsync();
-        }
+        public static Task StartAsync()
+            => new VolteBot().LoginAsync();
 
         private static IServiceProvider BuildServiceProvider()
         {

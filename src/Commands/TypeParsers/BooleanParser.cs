@@ -25,14 +25,13 @@ namespace Volte.Commands.TypeParsers
             IServiceProvider provider)
         {
             if (_matchingTrueValues.ContainsIgnoreCase(value))
-            {
                 return Task.FromResult(TypeParserResult<bool>.Successful(true));
-            }
 
             if (_matchingFalseValues.ContainsIgnoreCase(value))
-            {
                 return Task.FromResult(TypeParserResult<bool>.Successful(false));
-            }
+
+            if (bool.TryParse(value, out var result))
+                return Task.FromResult(TypeParserResult<bool>.Successful(result));
 
             return Task.FromResult(
                 TypeParserResult<bool>.Unsuccessful("Failed to parse a boolean (true/false) value."));
