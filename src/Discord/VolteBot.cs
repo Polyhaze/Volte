@@ -12,22 +12,22 @@ using Volte.Services;
 
 namespace Volte.Discord
 {
-    public class VolteBot
+    public class VolteBot : IDisposable
     {
-        public static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
+        public static readonly ServiceProvider ServiceProvider = BuildServiceProvider();
         public static readonly CommandService CommandService = GetRequiredService<CommandService>();
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
+        public static readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
         public static Task StartAsync()
             => new VolteBot().LoginAsync();
 
-        private static IServiceProvider BuildServiceProvider()
+        private static ServiceProvider BuildServiceProvider()
         {
             return new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddSingleton(new CancellationTokenSource())
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
@@ -50,6 +50,15 @@ namespace Volte.Discord
                 .BuildServiceProvider();
         }
 
+        private VolteBot()
+        {
+            Console.CancelKeyPress += (s, e) =>
+            {
+                e.Cancel = true;
+                CancellationTokenSource.Cancel();
+            };
+        }
+
         private async Task LoginAsync()
         {
             CommandService.AddTypeParsers();
@@ -60,7 +69,29 @@ namespace Volte.Discord
 
             await Client.SetStatusAsync(UserStatus.Online);
             await _handler.InitAsync();
-            await Task.Delay(-1, GetRequiredService<CancellationTokenSource>().Token);
+            try
+            {
+                await Task.Delay(-1, CancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException) { } //this should happen, so w/e
+
+            await ShutdownAsync();
+        }
+
+        private async Task ShutdownAsync()
+        {
+            await Client.SetStatusAsync(UserStatus.Invisible);
+            await Client.LogoutAsync();
+            await Client.StopAsync();
+            Dispose();
+            Environment.Exit(0);
+        }
+
+        public void Dispose()
+        {
+            CancellationTokenSource.Dispose();
+            ServiceProvider.Dispose();
+            Client.Dispose();
         }
     }
 }
