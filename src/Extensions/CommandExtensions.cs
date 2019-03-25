@@ -1,4 +1,7 @@
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
@@ -9,8 +12,8 @@ namespace Volte.Extensions
 {
     public static class CommandExtensions
     {
-        public static string SanitizeName(this Module m) =>
-            m.Name.Replace("Module", string.Empty);
+        public static string SanitizeName(this Module m)
+            => m.Name.Replace("Module", string.Empty);
 
         public static string SanitizeRemarks(this Command c, VolteContext ctx)
         {
