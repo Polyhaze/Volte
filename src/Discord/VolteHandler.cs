@@ -49,6 +49,7 @@ namespace Volte.Discord
 
         public async Task InitAsync()
         {
+            _service.AddTypeParsers();
             var sw = Stopwatch.StartNew();
             var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
             sw.Stop();

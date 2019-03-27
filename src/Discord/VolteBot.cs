@@ -17,7 +17,7 @@ namespace Volte.Discord
         public static readonly ServiceProvider ServiceProvider = BuildServiceProvider();
         public static readonly CommandService CommandService = GetRequiredService<CommandService>();
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
-        public static readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+        public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
@@ -55,14 +55,12 @@ namespace Volte.Discord
             Console.CancelKeyPress += (s, e) =>
             {
                 e.Cancel = true;
-                CancellationTokenSource.Cancel();
+                Cts.Cancel();
             };
         }
 
         private async Task LoginAsync()
         {
-            CommandService.AddTypeParsers();
-
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.Token);
             await Client.StartAsync();
@@ -71,11 +69,13 @@ namespace Volte.Discord
             await _handler.InitAsync();
             try
             {
-                await Task.Delay(-1, CancellationTokenSource.Token);
+                await Task.Delay(-1, Cts.Token);
             }
-            catch (TaskCanceledException) { } //this should happen, so w/e
-
-            await ShutdownAsync();
+            catch (TaskCanceledException)
+            {
+                //this exception should occur, so put the shutdown logic inside the catch block
+                await ShutdownAsync();
+            }
         }
 
         private async Task ShutdownAsync()
@@ -89,7 +89,7 @@ namespace Volte.Discord
 
         public void Dispose()
         {
-            CancellationTokenSource.Dispose();
+            Cts.Dispose();
             ServiceProvider.Dispose();
             Client.Dispose();
         }

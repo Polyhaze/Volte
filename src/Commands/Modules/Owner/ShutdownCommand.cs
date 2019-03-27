@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules.Owner
         public async Task ShutdownAsync()
         {
             await Context.CreateEmbed($"Goodbye! {EmojiService.WAVE}").SendToAsync(Context.Channel);
-            VolteBot.CancellationTokenSource.Cancel();
+            VolteBot.Cts.Cancel();
         }
     }
 }
