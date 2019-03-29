@@ -1,0 +1,17 @@
+{
+  "Token": "Your Bot Token", //bot token obtained from the Discord developer portal
+  "WelcomeApiKey": "", //key for the https://ourmainfra.me/api/v2/welcomer/ api
+  "CommandPrefix": "$", //can be anything, not just $
+  "Owner": 0, //your Discord user ID
+  "Game": "$h - @Volte h", //game to set upon logging in
+  "Streamer": "GreemDev", //set this if you want your bot to have a twitch stream set as its status
+  "SuccessEmbedColor": 0x7000FB, //hexadecimal color value for success
+  "ErrorEmbedColor": 0xFF0000, //same as above but for failures
+  "LogAllCommands": true, //whether or not to log all commands to the bot's console; enabled by default
+  "JoinLeaveLog": { //send a log of the bot's joins/leaves to a channel within a certain guild
+    "Enabled": true,
+    "GuildId": 405806471578648588,
+    "ChannelId": 544048742114918410
+  },
+  "BlacklistedServerOwners": [] //if the bot joins a guild owned by someone whose ID is in this list it leaves immediately
+}

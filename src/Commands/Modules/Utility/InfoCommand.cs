@@ -61,6 +61,7 @@ namespace Volte.Commands.Modules.Utility
                     version = process.StandardOutput.ReadToEnd();
                     return true;
                 }
+
                 case PlatformID.Win32NT:
                     process = new Process
                     {

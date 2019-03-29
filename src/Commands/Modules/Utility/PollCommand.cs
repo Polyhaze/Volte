@@ -28,6 +28,7 @@ namespace Volte.Commands.Modules.Utility
                                 "Click the number below to vote.";
                     break;
                 }
+
                 case 2:
                 {
                     embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
@@ -35,6 +36,7 @@ namespace Volte.Commands.Modules.Utility
                                 "Click one of the numbers below to vote.";
                     break;
                 }
+
                 case 3:
                 {
                     embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
@@ -43,6 +45,7 @@ namespace Volte.Commands.Modules.Utility
                                 "Click one of the numbers below to vote.";
                     break;
                 }
+
                 case 4:
                 {
                     embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
@@ -52,6 +55,7 @@ namespace Volte.Commands.Modules.Utility
                                 "Click one of the numbers below to vote.";
                     break;
                 }
+
                 case 5:
                     embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
                                 $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
@@ -85,12 +89,14 @@ namespace Volte.Commands.Modules.Utility
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     break;
                 }
+
                 case 2:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
                     await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
                     break;
                 }
+
                 case 3:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
@@ -98,6 +104,7 @@ namespace Volte.Commands.Modules.Utility
                     await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
                     break;
                 }
+
                 case 4:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
@@ -106,6 +113,7 @@ namespace Volte.Commands.Modules.Utility
                     await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
                     break;
                 }
+
                 case 5:
                 {
                     await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
