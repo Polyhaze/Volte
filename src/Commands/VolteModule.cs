@@ -3,12 +3,12 @@ using Qmmands;
 
 namespace Volte.Commands
 {
-    public class VolteModule : ModuleBase<VolteContext>
+    public abstract class VolteModule : ModuleBase<VolteContext>
     {
-        protected DatabaseService Db { get; set; }
-        protected DebugService DebugService { get; set; }
-        protected CommandService CommandService { get; set; }
-        protected EmojiService EmojiService { get; set; }
-        protected LoggingService Logger { get; set; }
+        public DatabaseService Db { get; set; }
+        public DebugService DebugService { get; set; }
+        public CommandService CommandService { get; set; }
+        public EmojiService EmojiService { get; set; }
+        public LoggingService Logger { get; set; }
     }
 }
