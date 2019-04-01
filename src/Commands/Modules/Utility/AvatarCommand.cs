@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Utility
         {
             var u = user ?? Context.User;
             await Context.CreateEmbedBuilder()
-                .WithImageUrl(u.GetAvatarUrl())
+                .WithImageUrl(u.GetAvatarUrl(ImageFormat.Auto, 1024))
                 .SendToAsync(Context.Channel);
         }
     }
