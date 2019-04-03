@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -17,6 +19,8 @@ namespace Volte.Commands.Modules.Moderation
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
             await Context.CreateEmbed("Successfully banned that user from this guild.").SendToAsync(Context.Channel);
+            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.IdBan, user,
+                reason));
         }
     }
 }

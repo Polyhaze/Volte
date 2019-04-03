@@ -4,7 +4,10 @@ using Discord.Net;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
+using Volte.Services;
 
 namespace Volte.Commands.Modules.Moderation
 {
@@ -28,6 +31,8 @@ namespace Volte.Commands.Modules.Moderation
             await user.BanAsync(daysToDelete, reason);
             await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")
                 .SendToAsync(Context.Channel);
+            await EventService.OnModActionCompleteAsync(
+                new ModActionEventArgs(Context, ModActionType.Ban, user, reason));
         }
     }
 }

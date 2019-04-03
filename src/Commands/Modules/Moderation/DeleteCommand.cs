@@ -2,6 +2,8 @@
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -35,6 +37,9 @@ namespace Volte.Commands.Modules.Moderation
                 await Context.Message.DeleteAsync();
                 await confirmationMessage.DeleteAsync();
             });
+
+            await EventService.OnModActionCompleteAsync(
+                new ModActionEventArgs(Context, ModActionType.Delete, messageId));
         }
     }
 }

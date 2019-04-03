@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Volte.Data.Objects
 {
-    public sealed class DiscordServer : object
+    public sealed class DiscordServer
     {
         internal DiscordServer()
         {

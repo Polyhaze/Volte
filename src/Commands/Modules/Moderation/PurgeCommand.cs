@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Volte.Utils;
 
@@ -23,6 +25,7 @@ namespace Volte.Commands.Modules.Moderation
                 .CreateEmbed($"Successfully deleted **{count}** {(count != 1 ? "messages" : "message")}.")
                 .SendToAsync(Context.Channel);
             await ExecutorUtil.ExecuteAfterDelayAsync(3000, async () => await msg.DeleteAsync());
+            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Purge, count));
         }
     }
 }

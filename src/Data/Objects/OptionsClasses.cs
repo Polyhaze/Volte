@@ -2,14 +2,14 @@
 
 namespace Volte.Data.Objects
 {
-    public sealed class VerificationOptions : object
+    public sealed class VerificationOptions
     {
         public bool Enabled { get; set; }
         public ulong MessageId { get; set; }
         public ulong RoleId { get; set; }
     }
 
-    public sealed class ModerationOptions : object
+    public sealed class ModerationOptions
     {
         internal ModerationOptions()
         {
@@ -18,12 +18,14 @@ namespace Volte.Data.Objects
 
         public bool MassPingChecks { get; set; }
         public bool Antilink { get; set; }
+        public ulong ModActionLogChannel { get; set; }
+        public ulong ModActionCaseNumber { get; set; }
         public ulong ModRole { get; set; }
         public ulong AdminRole { get; set; }
         public List<string> Blacklist { get; set; }
     }
 
-    public sealed class WelcomeOptions : object
+    public sealed class WelcomeOptions
     {
         public ulong WelcomeChannel { get; set; }
         public string WelcomeMessage { get; set; }

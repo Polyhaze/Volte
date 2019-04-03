@@ -4,6 +4,8 @@ using Discord.Net;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Objects;
+using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -28,6 +30,8 @@ namespace Volte.Commands.Modules.Moderation
             await user.KickAsync(reason);
             await Context.CreateEmbed($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.")
                 .SendToAsync(Context.Channel);
+            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Kick, user,
+                reason));
         }
     }
 }
