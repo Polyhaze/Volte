@@ -7,7 +7,6 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Objects;
 using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
-using Volte.Services;
 
 namespace Volte.Commands.Modules.Moderation
 {

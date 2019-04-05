@@ -9,7 +9,8 @@ namespace Volte.Commands.TypeParsers
     {
         private readonly string[] _matchingTrueValues =
         {
-            "true", "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "aff", "ya", "da", "yas", "enable", "yip",
+            "true", "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "yar", "aff", "ya", "da", "yas", "enable",
+            "yip",
             "positive", "1"
         };
 
