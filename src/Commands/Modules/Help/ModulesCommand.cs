@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Help
         [Remarks("Usage: |prefix|modules")]
         public async Task ModulesAsync()
         {
-            var modules = $"`{string.Join("`, `", CommandService.GetAllModules().Select(x => x.SanitizeName()))}`";
+            var modules = $"`{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`";
             await Context.CreateEmbedBuilder(modules.Remove(modules.LastIndexOf(","))).WithTitle("Available Modules")
                 .SendToAsync(Context.Channel);
         }

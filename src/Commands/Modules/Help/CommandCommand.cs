@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules.Help
                 return;
             }
 
-            if (CanShowCommandInfo(c))
+            if (CanShowModuleInfo(c.Module))
             {
                 await Context
                     .CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
@@ -32,15 +32,6 @@ namespace Volte.Commands.Modules.Help
                                       $"**Description**: {c.Description ?? "No summary provided."}\n" +
                                       $"**Usage**: {c.SanitizeRemarks(Context)}")
                 .SendToAsync(Context.Channel);
-        }
-
-        private bool CanShowCommandInfo(Command c)
-        {
-            var admin = c.Module.SanitizeName().EqualsIgnoreCase("admin") && !Context.User.IsAdmin();
-            var serverAdmin = c.Module.SanitizeName().EqualsIgnoreCase("serveradmin") && !Context.User.IsAdmin();
-            var owner = c.Module.SanitizeName().EqualsIgnoreCase("owner") && !Context.User.IsBotOwner();
-            var moderation = c.Module.SanitizeName().EqualsIgnoreCase("moderation") && !Context.User.IsModerator();
-            return admin || serverAdmin || owner || moderation;
         }
     }
 }

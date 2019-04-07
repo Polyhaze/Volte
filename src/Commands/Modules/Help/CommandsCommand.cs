@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules.Help
                 return;
             }
 
-            var commands = $"`{string.Join("`, `", target.Commands.Select(x => x.FullAliases.First()))}`";
+            var commands = $"`{target.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
             await Context.CreateEmbedBuilder(commands).WithTitle($"Commands for {target.SanitizeName()}")
                 .SendToAsync(Context.Channel);
         }

@@ -16,10 +16,13 @@ namespace Volte.Extensions
         public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> coll, Func<T, TKey> selector)
             => coll.GroupBy(selector).Select(x => x.FirstOrDefault());
 
+        public static string Join(this IEnumerable<string> list, string separator)
+            => string.Join(separator, list);
+
+        public static string Join(this IEnumerable<string> list, char separator)
+            => string.Join(separator, list);
+
         public static string Random(this string[] arr)
-        {
-            var r = new Random();
-            return arr[r.Next(0, arr.Length)];
-        }
+            => arr[new Random().Next(0, arr.Length)];
     }
 }
