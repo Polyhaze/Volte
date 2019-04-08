@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -19,6 +20,7 @@ namespace Volte.Discord
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
         public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
         private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
+        private readonly LoggingService _logger = GetRequiredService<LoggingService>();
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
         public static Task StartAsync()
@@ -61,6 +63,16 @@ namespace Volte.Discord
 
         private async Task LoginAsync()
         {
+            Console.Title = "Volte";
+            Console.CursorVisible = false;
+            if (!Directory.Exists("data"))
+            {
+                await _logger.Log(LogSeverity.Critical, LogSource.Volte,
+                    "The \"data\" directory didn't exist, so I created it for you.");
+                Directory.CreateDirectory("data");
+                return;
+            }
+
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
             await Client.LoginAsync(TokenType.Bot, Config.Token);
             await Client.StartAsync();
