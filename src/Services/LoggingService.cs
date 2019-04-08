@@ -7,7 +7,6 @@ using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;
-using LogMessage = Discord.LogMessage;
 
 namespace Volte.Services
 {
