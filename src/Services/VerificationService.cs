@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using Volte.Data.Objects.EventArgs;
 
 namespace Volte.Services
@@ -22,10 +21,10 @@ namespace Volte.Services
         {
             if (args.Channel is IDMChannel) return;
             if (!(args.Reaction.User.Value is IGuildUser u) || !(args.Channel is IGuildChannel c)) return;
-            var config = _db.GetConfig(c.Guild);
+            var config = _db.GetConfig(args.Guild);
             if (!config.VerificationOptions.Enabled || !args.Reaction.User.IsSpecified) return;
             if (u.IsBot) return;
-            if (args.Message.Id.Equals(config.VerificationOptions.MessageId))
+            if (args.Message.Id == config.VerificationOptions.MessageId)
             {
                 if (args.Reaction.Emote.Name.Equals(_emoji.BALLOT_BOX_WITH_CHECK))
                 {

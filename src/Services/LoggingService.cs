@@ -57,7 +57,7 @@ namespace Volte.Services
             Console.Write(m);
         }
 
-        private (Color, string) VerifySource(LogSource source)
+        private (Color Color, string Source) VerifySource(LogSource source)
         {
             switch (source)
             {
@@ -79,7 +79,7 @@ namespace Volte.Services
             }
         }
 
-        private (Color, string) VerifySeverity(LogSeverity s)
+        private (Color Color, string Level) VerifySeverity(LogSeverity s)
         {
             switch (s)
             {

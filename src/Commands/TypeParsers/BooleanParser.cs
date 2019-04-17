@@ -31,11 +31,9 @@ namespace Volte.Commands.TypeParsers
             if (_matchingFalseValues.ContainsIgnoreCase(value))
                 return Task.FromResult(TypeParserResult<bool>.Successful(false));
 
-            if (bool.TryParse(value, out var result))
-                return Task.FromResult(TypeParserResult<bool>.Successful(result));
-
-            return Task.FromResult(
-                TypeParserResult<bool>.Unsuccessful("Failed to parse a boolean (true/false) value."));
+            return Task.FromResult(bool.TryParse(value, out var result) 
+                ? TypeParserResult<bool>.Successful(result) 
+                : TypeParserResult<bool>.Unsuccessful("Failed to parse a boolean (true/false) value."));
         }
     }
 }
