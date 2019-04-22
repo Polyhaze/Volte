@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Volte.Extensions;
+using Gommon;
 
 namespace Volte.Services
 {

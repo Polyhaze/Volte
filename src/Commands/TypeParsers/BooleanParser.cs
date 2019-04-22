@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Extensions;
+using Gommon;
 
 namespace Volte.Commands.TypeParsers
 {

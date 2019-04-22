@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using Volte.Data;
 using Volte.Data.Objects;
 using Volte.Data.Objects.EventArgs;
 using Volte.Extensions;
+using Gommon;
 using Volte.Services;
 
 namespace Volte.Discord
@@ -24,7 +24,6 @@ namespace Volte.Discord
         private readonly AutoroleService _autorole;
         private readonly EventService _event;
         private readonly LoggingService _logger;
-        private readonly VerificationService _verification;
 
         public VolteHandler(DiscordSocketClient client,
             CommandService commandService,
@@ -33,8 +32,7 @@ namespace Volte.Discord
             ImageWelcomeService imageWelcomeService,
             AutoroleService autoroleService,
             EventService eventService,
-            LoggingService loggingService,
-            VerificationService verificationService)
+            LoggingService loggingService)
         {
             _client = client;
             _service = commandService;
@@ -44,7 +42,6 @@ namespace Volte.Discord
             _autorole = autoroleService;
             _event = eventService;
             _logger = loggingService;
-            _verification = verificationService;
         }
 
         public async Task InitAsync()
@@ -58,8 +55,6 @@ namespace Volte.Discord
             _client.Log += async (m) => await _logger.Log(new LogEventArgs(m));
             _client.JoinedGuild += async (guild) => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
             _client.LeftGuild += async (guild) => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
-            _client.ReactionAdded += async (m, c, r) =>
-                await _verification.CheckReactionAsync(new ReactionAddedEventArgs(m, c, r));
             _client.UserJoined += async (user) =>
             {
                 var args = new UserJoinedEventArgs(user);

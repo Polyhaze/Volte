@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Volte.Data.Objects;
 using Volte.Data.Objects.EventArgs;
-using Volte.Extensions;
+using Gommon;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;
 
@@ -21,12 +21,9 @@ namespace Volte.Services
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
         }
 
-        internal async Task PrintVersion()
-        {
-            await Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
-        }
+        internal Task PrintVersion() => Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
 
-        public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)
+            public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)
         {
             await _semaphore.WaitAsync();
             DoLog(s, src, message, e);

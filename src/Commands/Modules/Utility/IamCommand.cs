@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Extensions;
-using Volte.Services;
+using Gommon;
 
 namespace Volte.Commands.Modules.Utility
 {

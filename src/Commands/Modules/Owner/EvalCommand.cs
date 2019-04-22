@@ -9,9 +9,9 @@ using Microsoft.CodeAnalysis.Scripting;
 using Volte.Commands.Preconditions;
 using Volte.Data.Objects;
 using Volte.Extensions;
-using Volte.Utils;
 using Discord;
 using Qmmands;
+using Gommon;
 
 namespace Volte.Commands.Modules.Owner
 {
@@ -51,7 +51,7 @@ namespace Volte.Commands.Modules.Owner
                     {
                         "System", "System.Collections.Generic", "System.Linq", "System.Text",
                         "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
-                        "System.Threading", "Volte.Extensions", "Volte.Utils", "Volte.Data",
+                        "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data",
                         "Volte.Discord", "Volte.Services", "System.Threading.Tasks", "Qmmands"
                     };
 
