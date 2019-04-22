@@ -70,7 +70,6 @@ namespace Volte.Commands.Modules.Owner
                                 m.Embed = embed.WithTitle("Eval")
                                     .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms", true)
                                     .AddField("Return Type", res.GetType().FullName, true)
-                                    .AddField("Input", Format.Code(code, "cs"))
                                     .AddField("Output", Format.Code(res.ToString(), "css")).Build());
                         }
                         else
