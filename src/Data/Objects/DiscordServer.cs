@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using LiteDB;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Volte.Data.Objects
@@ -15,7 +13,7 @@ namespace Volte.Data.Objects
             Tags = new List<Tag>();
         }
 
-        public ObjectId Id { get; set; }
+        public LiteDB.ObjectId Id { get; set; }
         public ulong ServerId { get; set; }
         public ulong GuildOwnerId { get; set; }
         public string Autorole { get; set; }
@@ -27,9 +25,8 @@ namespace Volte.Data.Objects
         public List<string> SelfRoles { get; set; }
         public List<Tag> Tags { get; set; }
 
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+        public override string ToString() 
+            => JsonConvert.SerializeObject(this, Formatting.Indented);
+
     }
 }
