@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -21,9 +22,9 @@ namespace Volte.Commands.Modules.Owner
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
-        public async Task EvalAsync([Remainder] string code)
+        public Task EvalAsync([Remainder] string code)
         {
-            await ExecutorUtil.ExecuteAsync(async () =>
+            _ = ExecutorUtil.ExecuteAsync(async () =>
             {
                 try
                 {
@@ -47,15 +48,18 @@ namespace Volte.Commands.Modules.Owner
                         EmojiService = EmojiService
                     };
 
-                    var imports = new List<string>
+                    List<string> GetImports()
                     {
-                        "System", "System.Collections.Generic", "System.Linq", "System.Text",
-                        "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
-                        "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data",
-                        "Volte.Discord", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-                    };
+                        return new List<string>
+                        {
+                            "System", "System.Collections.Generic", "System.Linq", "System.Text",
+                            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
+                            "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data", "Humanizer",
+                            "Volte.Discord", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+                        };
+                    }
 
-                    sopts = sopts.WithImports(imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
+                    sopts = sopts.WithImports(GetImports()).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                         .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
                     var msg = await embed.WithTitle("Evaluating...").SendToAsync(Context.Channel);
@@ -82,13 +86,12 @@ namespace Volte.Commands.Modules.Owner
                     {
                         await msg.ModifyAsync(m =>
                             m.Embed = embed
-                                .WithDescription($"`{e.Message}`")
+                                .AddField("Exception Type", e.GetType().FullName, true)
+                                .AddField("Message", e.Message, true)
+                                .WithDescription($"{Format.Code(e.StackTrace, "cs")}")
                                 .WithTitle("Error")
                                 .Build()
                         );
-                        File.WriteAllText("data/EvalError.log", $"{e.Message}\n{e.StackTrace}");
-                        await Context.Channel.SendFileAsync("data/EvalError.log", string.Empty);
-                        File.Delete("data/EvalError.log");
                     }
                     finally
                     {
@@ -98,9 +101,11 @@ namespace Volte.Commands.Modules.Owner
                 }
                 catch (Exception e)
                 {
-                    await Logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
+                    await e.PrintStackTrace();
                 }
             });
+
+            return Task.CompletedTask;
         }
     }
 }
