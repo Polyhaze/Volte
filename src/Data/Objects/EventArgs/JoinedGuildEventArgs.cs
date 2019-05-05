@@ -9,7 +9,7 @@ namespace Volte.Data.Objects.EventArgs
     {
         private DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
         public IGuild Guild { get; }
-        public DiscordServer Config { get; }
+        public GuildConfiguration Config { get; }
         public DiscordSocketClient Client { get; }
 
         public JoinedGuildEventArgs(SocketGuild guild)

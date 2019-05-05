@@ -9,7 +9,7 @@ namespace Volte.Data.Objects
     {
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }
-        public DiscordServer Config { get; set; }
+        public GuildConfiguration Config { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }
         public DebugService DebugService { get; set; }

@@ -11,7 +11,7 @@ namespace Volte.Data.Objects.EventArgs
         private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
         public IUserMessage Message { get; }
         public VolteContext Context { get; }
-        public DiscordServer Config { get; }
+        public GuildConfiguration Config { get; }
 
         public MessageReceivedEventArgs(SocketMessage s)
         {
