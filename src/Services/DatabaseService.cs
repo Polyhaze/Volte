@@ -11,35 +11,32 @@ namespace Volte.Services
     {
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
-        public DiscordServer GetConfig(IGuild guild)
+        public GuildConfiguration GetConfig(IGuild guild)
         {
             return GetConfig(guild.Id);
         }
 
-        public DiscordServer GetConfig(ulong id)
+        public GuildConfiguration GetConfig(ulong id)
         {
-            var coll = Database.GetCollection<DiscordServer>("serverconfigs");
+            var coll = Database.GetCollection<GuildConfiguration>("serverconfigs");
             var conf = coll.FindOne(g => g.ServerId == id);
-            if (conf is null)
-            {
-                var newConf = Create(VolteBot.Client.GetGuild(id));
-                coll.Insert(newConf);
-                return newConf;
-            }
+            if (!(conf is null)) return conf;
+            var newConf = Create(VolteBot.Client.GetGuild(id));
+            coll.Insert(newConf);
+            return newConf;
 
-            return conf;
         }
 
-        public void UpdateConfig(DiscordServer newConfig)
+        public void UpdateConfig(GuildConfiguration newConfig)
         {
-            var collection = Database.GetCollection<DiscordServer>("serverconfigs");
+            var collection = Database.GetCollection<GuildConfiguration>("serverconfigs");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);
         }
 
-        private DiscordServer Create(SocketGuild guild)
+        private GuildConfiguration Create(SocketGuild guild)
         {
-            return new DiscordServer
+            return new GuildConfiguration
             {
                 ServerId = guild.Id,
                 GuildOwnerId = guild.OwnerId,
@@ -60,12 +57,6 @@ namespace Volte.Services
                     AdminRole = ulong.MinValue,
                     MassPingChecks = false,
                     Antilink = false
-                },
-                VerificationOptions = new VerificationOptions
-                {
-                    Enabled = false,
-                    MessageId = ulong.MinValue,
-                    RoleId = ulong.MinValue
                 }
             };
         }
