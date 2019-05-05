@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Volte.Discord;
 
 namespace Volte
 {
@@ -8,7 +6,7 @@ namespace Volte
     {
         private static async Task Main()
         {
-            await VolteBot.StartAsync();
+            await Discord.VolteBot.StartAsync();
         }
     }
 }

@@ -34,9 +34,9 @@ namespace Volte.Services
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(args.Config.WelcomeOptions.WelcomeColorR,
+                    .WithColor(args.Config.WelcomeOptions.WelcomeColorR,
                         args.Config.WelcomeOptions.WelcomeColorG,
-                        args.Config.WelcomeOptions.WelcomeColorB))
+                        args.Config.WelcomeOptions.WelcomeColorB)
                     .WithDescription(welcomeMessage)
                     .WithThumbnailUrl(args.User.GetAvatarUrl())
                     .WithCurrentTimestamp();
@@ -60,11 +60,10 @@ namespace Volte.Services
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(new Color(
+                    .WithColor(
                         args.Config.WelcomeOptions.WelcomeColorR,
                         args.Config.WelcomeOptions.WelcomeColorG,
                         args.Config.WelcomeOptions.WelcomeColorB)
-                    )
                     .WithDescription(leavingMessage)
                     .WithThumbnailUrl(args.User.GetAvatarUrl())
                     .WithCurrentTimestamp();
