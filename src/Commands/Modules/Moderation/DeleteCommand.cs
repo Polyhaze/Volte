@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Objects;
@@ -32,7 +33,7 @@ namespace Volte.Commands.Modules.Moderation
             var confirmationMessage = await Context
                 .CreateEmbed($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.")
                 .SendToAsync(Context.Channel);
-            await Task.Delay(2000).ContinueWith(async _ =>
+            await Executor.ExecuteAfterDelayAsync(3000, async () =>
             {
                 await Context.Message.DeleteAsync();
                 await confirmationMessage.DeleteAsync();

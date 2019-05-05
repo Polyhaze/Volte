@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Gommon;
 using RestSharp;
 using Volte.Commands;
 using Volte.Data.Objects.EventArgs;
@@ -30,7 +31,7 @@ namespace Volte.Services
                     await args.Message.DeleteAsync();
                     var warnMsg = await args.Context.CreateEmbed("Don't send server invites here.")
                         .SendToAsync(args.Context.Channel);
-                    await Task.Delay(3000).ContinueWith(_ => warnMsg.DeleteAsync());
+                    await Executor.ExecuteAfterDelayAsync(3000, async () => await warnMsg.DeleteAsync());
                 }
             }
         }
