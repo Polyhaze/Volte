@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules.Utility
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
-            if (tag == null)
+            if (tag is null)
             {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
                     .SendToAsync(Context.Channel);
@@ -47,19 +47,19 @@ namespace Volte.Commands.Modules.Utility
             var config = Db.GetConfig(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
-            if (tag == null)
+            if (tag is null)
             {
                 await Context.CreateEmbed($"The tag **{name}** doesn't exist in this guild.")
                     .SendToAsync(Context.Channel);
                 return;
             }
 
-            var u = Context.Client.GetUser(tag.CreatorId);
+            var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
 
-            await Context.CreateEmbed(string.Empty).ToEmbedBuilder()
+            await Context.CreateEmbedBuilder()
                 .WithTitle($"Tag {tag.Name}")
                 .AddField("Response", $"`{tag.Response}`", true)
-                .AddField("Creator", u is null ? $"{tag.CreatorId}" : $"{u.Mention}", true)
+                .AddField("Creator", $"{u}", true)
                 .AddField("Uses", $"**{tag.Uses}**", true)
                 .SendToAsync(Context.Channel);
         }
