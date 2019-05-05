@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules.Moderation
             var msg = await Context
                 .CreateEmbed($"Successfully deleted **{count}** message{(count.ShouldBePlural() ? "s" : string.Empty)}")
                 .SendToAsync(Context.Channel);
-            await ExecutorUtil.ExecuteAfterDelayAsync(3000, async () => await msg.DeleteAsync());
+            await Executor.ExecuteAfterDelayAsync(3000, async () => await msg.DeleteAsync());
             await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Purge, count));
         }
     }

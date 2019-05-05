@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules.Owner
         [RequireBotOwner]
         public Task EvalAsync([Remainder] string code)
         {
-            _ = ExecutorUtil.ExecuteAsync(async () =>
+            _ = Executor.ExecuteAsync(async () =>
             {
                 try
                 {
