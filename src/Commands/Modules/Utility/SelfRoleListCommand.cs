@@ -17,11 +17,12 @@ namespace Volte.Commands.Modules.Utility
             var config = Db.GetConfig(Context.Guild);
             if (config.SelfRoles.Count > 0)
             {
-                config.SelfRoles.ForEach(role =>
+                foreach (var role in config.SelfRoles)
                 {
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-                    roleList += $"**{(currentRole is null ? "Role no longer exists." : currentRole.Name)}**\n";
-                });
+                    if (currentRole is null) continue;
+                    roleList += $"**{currentRole.Name}**\n";
+                }
                 await Context.CreateEmbed(roleList).SendToAsync(Context.Channel);
             }
             else
