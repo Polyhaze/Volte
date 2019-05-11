@@ -7,10 +7,10 @@ namespace Volte.Commands.Modules.Utility
 {
     public partial class UtilityModule : VolteModule
     {
-        [Command("RoleColor", "RoleColour")]
+        [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current server.")]
-        [Remarks("Usage: |prefix|rolecolor {role}")]
-        public async Task RoleColorAsync(SocketRole role)
+        [Remarks("Usage: |prefix|color {role}")]
+        public async Task RoleColorAsync([Remainder] SocketRole role)
         {
             await Context.CreateEmbedBuilder(
                 $"**Dec:** {role.Color.RawValue}" +
