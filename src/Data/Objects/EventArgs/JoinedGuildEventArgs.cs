@@ -1,6 +1,6 @@
 using Discord;
 using Discord.WebSocket;
-using Volte.Discord;
+using Volte.Core;
 using Volte.Services;
 
 namespace Volte.Data.Objects.EventArgs

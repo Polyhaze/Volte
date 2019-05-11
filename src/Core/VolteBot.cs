@@ -12,7 +12,7 @@ using Volte.Extensions;
 using Volte.Services;
 using Gommon;
 
-namespace Volte.Discord
+namespace Volte.Core
 {
     public class VolteBot : IDisposable
     {
@@ -68,7 +68,7 @@ namespace Volte.Discord
             Console.CursorVisible = false;
             if (!Directory.Exists("data"))
             {
-                await _logger.Log(LogSeverity.Critical, LogSource.Volte,
+                await _logger.LogAsync(LogSeverity.Critical, LogSource.Volte,
                     "The \"data\" directory didn't exist, so I created it for you.");
                 Directory.CreateDirectory("data");
                 return;

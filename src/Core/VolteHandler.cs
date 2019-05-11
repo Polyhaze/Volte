@@ -12,7 +12,7 @@ using Volte.Extensions;
 using Gommon;
 using Volte.Services;
 
-namespace Volte.Discord
+namespace Volte.Core
 {
     internal sealed class VolteHandler
     {
@@ -50,7 +50,7 @@ namespace Volte.Discord
             var sw = Stopwatch.StartNew();
             var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
             sw.Stop();
-            await _logger.Log(LogSeverity.Info, LogSource.Volte,
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
             _client.Log += async (m) => await _logger.Log(new LogEventArgs(m));
             _client.JoinedGuild += async (guild) => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));

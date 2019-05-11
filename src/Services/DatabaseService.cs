@@ -2,7 +2,7 @@ using Discord;
 using Discord.WebSocket;
 using LiteDB;
 using Volte.Data.Objects;
-using Volte.Discord;
+using Volte.Core;
 
 namespace Volte.Services
 {

@@ -17,13 +17,14 @@ namespace Volte.Services
 
         internal async Task Log(LogEventArgs args)
         {
-            await Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
+            await LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
         }
 
-        internal Task PrintVersion() => Log(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
+        internal Task PrintVersion() => LogAsync(LogSeverity.Info, LogSource.Volte,
+            $"Currently running Volte V{Version.FullVersion}");
 
-            public async Task Log(LogSeverity s, LogSource src, string message, Exception e = null)
+        public async Task LogAsync(LogSeverity s, LogSource src, string message, Exception e = null)
         {
             await _semaphore.WaitAsync();
             DoLog(s, src, message, e);

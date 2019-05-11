@@ -6,7 +6,7 @@ namespace Volte
     {
         private static async Task Main()
         {
-            await Discord.VolteBot.StartAsync();
+            await Core.VolteBot.StartAsync();
         }
     }
 }

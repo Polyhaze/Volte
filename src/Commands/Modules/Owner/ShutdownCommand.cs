@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord;
+﻿using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Volte.Discord;
+using Volte.Core;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Owner

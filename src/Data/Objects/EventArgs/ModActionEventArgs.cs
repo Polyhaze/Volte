@@ -1,8 +1,6 @@
 using System;
 using Discord;
 using Volte.Commands;
-using Volte.Discord;
-using Volte.Services;
 
 namespace Volte.Data.Objects.EventArgs
 {

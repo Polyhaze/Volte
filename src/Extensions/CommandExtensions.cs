@@ -1,11 +1,8 @@
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
-using Volte.Discord;
+using Volte.Core;
 using Volte.Services;
 
 namespace Volte.Extensions

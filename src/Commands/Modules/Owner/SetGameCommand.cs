@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Volte.Discord;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Owner
