@@ -8,7 +8,7 @@ namespace Volte.Commands.Modules.Utility
     {
         [Command("Feedback", "Fb")]
         [Description("Submit feedback directly to the Volte guild.")]
-        [Remarks("Usage: $feedback {feedback}")]
+        [Remarks("Usage: |prefix|feedback {feedback}")]
         public async Task FeedbackAsync([Remainder] string feedback)
         {
             await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendToAsync(Context.Channel);

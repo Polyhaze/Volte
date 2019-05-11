@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Moderation
     {
         [Command("Softban")]
         [Description("Softbans the mentioned user, kicking them and deleting the last 7 days of messages.")]
-        [Remarks("Usage: $softban {@user} {daysToDelete} [reason]")]
+        [Remarks("Usage: |prefix|softban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task SoftBanAsync(SocketGuildUser user, int daysToDelete,

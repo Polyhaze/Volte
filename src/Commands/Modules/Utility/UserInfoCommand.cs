@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using Volte.Extensions;
 
@@ -10,22 +11,22 @@ namespace Volte.Commands.Modules.Utility
     {
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
-        [Remarks("Usage: $userinfo [@user]")]
+        [Remarks("Usage: |prefix|userinfo [user]")]
         public async Task UserInfoAsync(SocketGuildUser user = null)
         {
-            var actualUser = user ?? Context.User;
+            var target = user ?? Context.User;
 
-            await Context.CreateEmbed(string.Empty)
-                .ToEmbedBuilder()
+            await Context.CreateEmbedBuilder()
                 .WithAuthor(Context.User)
-                .WithThumbnailUrl(actualUser.GetAvatarUrl())
+                .WithThumbnailUrl(target.GetAvatarUrl())
                 .WithTitle("User Info")
-                .AddField("User ID", actualUser.Id)
-                .AddField("Game", actualUser.Activity.Name ?? "Nothing")
-                .AddField("Created At",
-                    $"Month: {actualUser.CreatedAt.Month}\nDay: {actualUser.CreatedAt.Day}\nYear: {actualUser.CreatedAt.Year}")
-                .AddField("Status", actualUser.Status)
-                .AddField("Is Bot", actualUser.IsBot)
+                .AddField("User ID", target.Id, true)
+                .AddField("Game", target.Activity.Name ?? "Nothing", true)
+                .AddField("Status", target.Status, true)
+                .AddField("Is Bot", target.IsBot, true)
+                .AddField("Account Created",
+                    $"{target.CreatedAt.FormatDate()}, {target.CreatedAt.FormatFullTime()}")
+                .AddField("Joined This Guild", $"{target.JoinedAt.Value.FormatDate()}, {target.JoinedAt.Value.FormatFullTime()}")
                 .SendToAsync(Context.Channel);
         }
     }

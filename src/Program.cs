@@ -4,9 +4,7 @@ namespace Volte
 {
     internal static class Program
     {
-        private static async Task Main()
-        {
-            await Core.VolteBot.StartAsync();
-        }
+        private static Task Main() 
+            => Core.VolteBot.StartAsync();
     }
 }

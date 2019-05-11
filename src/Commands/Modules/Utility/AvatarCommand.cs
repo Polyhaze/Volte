@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules.Utility
     {
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
-        [Remarks("Usage: $avatar [@user]")]
+        [Remarks("Usage: |prefix|avatar [@user]")]
         public async Task AvatarAsync(SocketGuildUser user = null)
         {
             var u = user ?? Context.User;

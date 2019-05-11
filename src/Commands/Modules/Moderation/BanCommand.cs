@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Moderation
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("Usage: $ban {@user} {daysToDelete} [reason]")]
+        [Remarks("Usage: |prefix|ban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task BanAsync(SocketGuildUser user, int daysToDelete,

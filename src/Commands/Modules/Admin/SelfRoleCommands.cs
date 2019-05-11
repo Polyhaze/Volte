@@ -26,7 +26,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("Usage: |prefix|selfrole remove {role}")]
         [RequireGuildAdmin]
-        public async Task SelfRoleRemAsync([Remainder] SocketRole role)
+        public async Task SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
             var config = Db.GetConfig(Context.Guild);
 
