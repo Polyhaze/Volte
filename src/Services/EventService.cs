@@ -49,7 +49,7 @@ namespace Volte.Services
             await _blacklist.CheckMessageAsync(args);
             await _antilink.CheckMessageAsync(args);
             await _pingchecks.CheckMessageAsync(args);
-            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> "};
+            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ", $"<@!{args.Context.Client.CurrentUser.Id}> "};
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
