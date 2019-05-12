@@ -55,7 +55,7 @@ namespace Volte.Commands.Modules.Owner
                             "System", "System.Collections.Generic", "System.Linq", "System.Text",
                             "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
                             "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data", "Humanizer",
-                            "Volte.Discord", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+                            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
                         };
                     }
 

@@ -11,6 +11,7 @@ namespace Volte.Data.Objects
             WelcomeOptions = new WelcomeOptions();
             SelfRoles = new List<string>();
             Tags = new List<Tag>();
+            Warns = new List<Warn>();
         }
 
         public LiteDB.ObjectId Id { get; set; }
@@ -23,6 +24,7 @@ namespace Volte.Data.Objects
         public bool DeleteMessageOnCommand { get; set; }
         public List<string> SelfRoles { get; set; }
         public List<Tag> Tags { get; set; }
+        public List<Warn> Warns { get; set; }
 
         public override string ToString() 
             => JsonConvert.SerializeObject(this, Formatting.Indented);

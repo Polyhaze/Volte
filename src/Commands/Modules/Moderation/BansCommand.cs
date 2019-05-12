@@ -17,7 +17,7 @@ namespace Volte.Commands.Modules.Moderation
         public async Task BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
-            if (banList.Any())
+            if (!banList.Any())
             {
                 await Context.CreateEmbed("This server doesn't have anyone banned.").SendToAsync(Context.Channel);
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -6,6 +7,7 @@ using Gommon;
 
 namespace Volte.Services
 {
+    [Obsolete]
     [Service("Debug", "The main Service that handles HTTP POST requests for debug reports to debug.scarsz.me.")]
     public sealed class DebugService
     {

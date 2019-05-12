@@ -49,7 +49,11 @@ namespace Volte.Services
             await _blacklist.CheckMessageAsync(args);
             await _antilink.CheckMessageAsync(args);
             await _pingchecks.CheckMessageAsync(args);
-            var prefixes = new[] {args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ", $"<@!{args.Context.Client.CurrentUser.Id}> "};
+            var prefixes = new[]
+            {
+                args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
+                $"<@!{args.Context.Client.CurrentUser.Id}> "
+            };
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
             {
@@ -74,7 +78,8 @@ namespace Volte.Services
             var users = args.Client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Currently running Volte V{Version.FullVersion}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
+                $"Currently running Volte V{Version.FullVersion}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl(true)}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
@@ -187,6 +192,30 @@ namespace Volte.Services
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .SendToAsync(c);
                     return;
+                }
+
+                case ModActionType.Warn:
+                {
+                    config.ModerationOptions.ModActionCaseNumber += 1;
+                    _db.UpdateConfig(config);
+                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
+                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
+                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
+                                            $"**User:** {args.TargetUser} ({args.TargetId})\n" +
+                                            $"**Reason:** {args.Reason}\n" +
+                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .SendToAsync(c);
+                    break;
+                }
+
+                case ModActionType.ClearWarns:
+                {
+                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
+                                            $"**Modertor:** {args.Moderator} ({args.Moderator.Id})\n" +
+                                            $"**User:** {args.TargetUser} ({args.TargetUser.Id})\n" +
+                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .SendToAsync(c);
+                    break;
                 }
 
                 case ModActionType.Softban:
