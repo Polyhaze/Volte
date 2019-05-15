@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 using Volte.Services;
 using Gommon;

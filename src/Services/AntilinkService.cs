@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using RestSharp;
 using Volte.Commands;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Services

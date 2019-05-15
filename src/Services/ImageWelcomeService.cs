@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Volte.Data;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models.EventArgs;
 using Gommon;
 using Color = System.Drawing.Color;
 

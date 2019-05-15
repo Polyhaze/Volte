@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models.EventArgs;
 using Gommon;
 
 namespace Volte.Services

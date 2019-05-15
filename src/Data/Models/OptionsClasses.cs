@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Volte.Data.Objects
+namespace Volte.Data.Models
 {
     public sealed class ModerationOptions
     {

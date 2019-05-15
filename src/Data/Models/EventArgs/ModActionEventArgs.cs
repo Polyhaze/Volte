@@ -2,7 +2,7 @@ using System;
 using Discord;
 using Volte.Commands;
 
-namespace Volte.Data.Objects.EventArgs
+namespace Volte.Data.Models.EventArgs
 {
     public class ModActionEventArgs
     {

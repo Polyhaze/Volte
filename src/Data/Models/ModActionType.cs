@@ -1,4 +1,4 @@
-namespace Volte.Data.Objects
+namespace Volte.Data.Models
 {
     public enum ModActionType
     {

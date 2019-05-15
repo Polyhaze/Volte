@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Data.Objects;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models;
+using Volte.Data.Models.EventArgs;
 using Gommon;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;

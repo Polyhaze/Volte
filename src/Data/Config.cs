@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
-using Volte.Data.Objects;
+using Volte.Data.Models;
 using Volte.Core;
 using Gommon;
 using Volte.Services;

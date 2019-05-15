@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Data.Objects;
+using Volte.Data.Models;
 using Volte.Core;
 using Volte.Services;
 

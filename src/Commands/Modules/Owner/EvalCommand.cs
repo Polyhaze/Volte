@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Volte.Commands.Preconditions;
-using Volte.Data.Objects;
+using Volte.Data.Models;
 using Volte.Extensions;
 using Discord;
 using Qmmands;
@@ -43,7 +43,6 @@ namespace Volte.Commands.Modules.Owner
                         Config = Db.GetConfig(Context.Guild),
                         Logger = Logger,
                         CommandService = CommandService,
-                        DebugService = DebugService,
                         DatabaseService = Db,
                         EmojiService = EmojiService
                     };

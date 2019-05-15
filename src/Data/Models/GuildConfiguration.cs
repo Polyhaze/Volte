@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Volte.Data.Objects
+namespace Volte.Data.Models
 {
     public sealed class GuildConfiguration
     {

@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using Volte.Core;
 using Volte.Services;
 
-namespace Volte.Data.Objects.EventArgs
+namespace Volte.Data.Models.EventArgs
 {
     public sealed class UserJoinedEventArgs : System.EventArgs
     {

@@ -6,8 +6,8 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Volte.Data.Objects;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models;
+using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation

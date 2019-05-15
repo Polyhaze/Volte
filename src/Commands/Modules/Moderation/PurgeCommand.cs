@@ -4,8 +4,8 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Volte.Data.Objects;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models;
+using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 using Gommon;
 

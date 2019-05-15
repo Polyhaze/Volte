@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Volte.Data;
-using Volte.Data.Objects;
-using Volte.Data.Objects.EventArgs;
+using Volte.Data.Models;
+using Volte.Data.Models.EventArgs;
 using Volte.Core;
 using Volte.Extensions;
 

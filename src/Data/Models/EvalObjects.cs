@@ -3,7 +3,7 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Services;
 
-namespace Volte.Data.Objects
+namespace Volte.Data.Models
 {
     public sealed class EvalObjects
     {
@@ -12,7 +12,6 @@ namespace Volte.Data.Objects
         public GuildConfiguration Config { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }
-        public DebugService DebugService { get; set; }
         public DatabaseService DatabaseService { get; set; }
         public EmojiService EmojiService { get; set; }
     }
