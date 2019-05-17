@@ -20,26 +20,9 @@ namespace Volte.Commands.Modules.Help
                 return;
             }
 
-            if (CanShowModuleInfo(target))
-            {
-                await Context
-                    .CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
-
             var commands = $"`{target.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
             await Context.CreateEmbedBuilder(commands).WithTitle($"Commands for {target.SanitizeName()}")
                 .SendToAsync(Context.Channel);
-        }
-
-        private bool CanShowModuleInfo(Module m)
-        {
-            var admin = m.SanitizeName().EqualsIgnoreCase("admin") && !Context.User.IsAdmin();
-            var serverAdmin = m.SanitizeName().EqualsIgnoreCase("serveradmin") && !Context.User.IsAdmin();
-            var owner = m.SanitizeName().EqualsIgnoreCase("owner") && !Context.User.IsBotOwner();
-            var moderation = m.SanitizeName().EqualsIgnoreCase("moderation") && !Context.User.IsModerator();
-            return admin || serverAdmin || owner || moderation;
         }
     }
 }

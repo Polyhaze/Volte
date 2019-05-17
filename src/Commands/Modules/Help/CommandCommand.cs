@@ -20,14 +20,6 @@ namespace Volte.Commands.Modules.Help
                 return;
             }
 
-            if (CanShowModuleInfo(c.Module))
-            {
-                await Context
-                    .CreateEmbed($"{EmojiService.X} You don't have permission to use the module that command is from.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
-
             await Context.CreateEmbed($"**Command**: {c.Name}\n" +
                                       $"**Module**: {c.Module.SanitizeName()}\n" +
                                       $"**Description**: {c.Description ?? "No summary provided."}\n" +
