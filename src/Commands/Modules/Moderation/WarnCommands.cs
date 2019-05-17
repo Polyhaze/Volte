@@ -69,6 +69,7 @@ namespace Volte.Commands.Modules.Moderation
             Db.UpdateConfig(config);
 
             await Context.CreateEmbed($"Cleared all warnings for **{user}**.").SendToAsync(Context.Channel);
+            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));
         }
 
     }
