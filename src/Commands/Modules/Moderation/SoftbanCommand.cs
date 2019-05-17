@@ -31,7 +31,7 @@ namespace Volte.Commands.Modules.Moderation
             await Context.Guild.RemoveBanAsync(user);
             await Context.CreateEmbed($"Successfully softbanned **{user.Username}#{user.Discriminator}**.")
                 .SendToAsync(Context.Channel);
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Softban, user,
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Softban, user,
                 reason));
         }
     }

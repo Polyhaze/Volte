@@ -22,7 +22,6 @@ namespace Volte.Services
 
         private readonly AntilinkService _antilink;
         private readonly BlacklistService _blacklist;
-        private readonly DatabaseService _db;
         private readonly PingChecksService _pingchecks;
         private readonly CommandService _commandService;
 
@@ -32,14 +31,12 @@ namespace Volte.Services
         public EventService(LoggingService loggingService,
             AntilinkService antilinkService,
             BlacklistService blacklistService,
-            DatabaseService databaseService,
             PingChecksService pingChecksService,
             CommandService commandService)
         {
             _logger = loggingService;
             _antilink = antilinkService;
             _blacklist = blacklistService;
-            _db = databaseService;
             _pingchecks = pingChecksService;
             _commandService = commandService;
         }
@@ -85,12 +82,12 @@ namespace Volte.Services
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Connected to:");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {guilds} server{(guilds.ShouldBePlural() ? "s" : "")}");
+                $"    {"guild".ToQuantity(guilds)}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {users} user{(users.ShouldBePlural() ? "s" : "")}");
+                $"    {"user".ToQuantity(users)}");
 
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {channels} channel{(channels.ShouldBePlural() ? "s" : "")}");
+                $"    {"channel".ToQuantity(channels)}");
 
 
             if (_shouldStream)
@@ -147,121 +144,6 @@ namespace Volte.Services
                     $"|              -After: {sw.Elapsed.Humanize()}");
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
                     "-------------------------------------------------");
-            }
-        }
-
-        public async Task OnModActionCompleteAsync(ModActionEventArgs args)
-        {
-            var config = _db.GetConfig(args.Guild);
-            var c = await args.Guild.GetTextChannelAsync(config.ModerationOptions.ModActionLogChannel);
-            if (c is null) return;
-            var e = args.Context.CreateEmbedBuilder();
-            switch (args.ActionType)
-            {
-                case ModActionType.Purge:
-                {
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator}\n" +
-                                            $"**Messages Cleared:** {args.Count}\n" +
-                                            $"**Channel:** {args.Context.Channel.Mention}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-                    return;
-                }
-
-                case ModActionType.Delete:
-                {
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator}\n" +
-                                            $"**Message Deleted:** {args.TargetId}\n" +
-                                            $"**Channel:** {args.Context.Channel.Mention}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-                    return;
-                }
-
-                case ModActionType.Kick:
-                {
-                    config.ModerationOptions.ModActionCaseNumber += 1;
-                    _db.UpdateConfig(config);
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
-                                            $"**User:** {args.TargetUser} ({args.TargetId})\n" +
-                                            $"**Reason:** {args.Reason}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-                    return;
-                }
-
-                case ModActionType.Warn:
-                {
-                    config.ModerationOptions.ModActionCaseNumber += 1;
-                    _db.UpdateConfig(config);
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
-                                            $"**User:** {args.TargetUser} ({args.TargetId})\n" +
-                                            $"**Reason:** {args.Reason}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-                    break;
-                }
-
-                case ModActionType.ClearWarns:
-                {
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Modertor:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**User:** {args.TargetUser} ({args.TargetUser.Id})\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-                    break;
-                }
-
-                case ModActionType.Softban:
-                {
-                    config.ModerationOptions.ModActionCaseNumber += 1;
-                    _db.UpdateConfig(config);
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
-                                            $"**User:** {args.TargetUser} ({args.TargetId})\n" +
-                                            $"**Reason:** {args.Reason}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-
-                    return;
-                }
-
-                case ModActionType.Ban:
-                {
-                    config.ModerationOptions.ModActionCaseNumber += 1;
-                    _db.UpdateConfig(config);
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
-                                            $"**User:** {args.TargetUser} ({args.TargetId})\n" +
-                                            $"**Reason:** {args.Reason}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-
-                    return;
-                }
-
-                case ModActionType.IdBan:
-                {
-                    config.ModerationOptions.ModActionCaseNumber += 1;
-                    _db.UpdateConfig(config);
-                    await e.WithDescription($"**Action:** {args.ActionType}\n" +
-                                            $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {config.ModerationOptions.ModActionCaseNumber}\n" +
-                                            $"**User:** {args.TargetId}\n" +
-                                            $"**Reason:** {args.Reason}\n" +
-                                            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                        .SendToAsync(c);
-
-                    return;
-                }
             }
         }
 

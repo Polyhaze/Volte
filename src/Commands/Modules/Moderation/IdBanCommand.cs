@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules.Moderation
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
             await Context.CreateEmbed("Successfully banned that user from this guild.").SendToAsync(Context.Channel);
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.IdBan, user,
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.IdBan, user,
                 reason));
         }
     }

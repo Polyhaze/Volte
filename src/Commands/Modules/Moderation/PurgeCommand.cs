@@ -32,7 +32,7 @@ namespace Volte.Commands.Modules.Moderation
                 .CreateEmbed($"Successfully deleted **{messages.Count()}** message{(messages.Count().ShouldBePlural() ? "s" : string.Empty)}")
                 .SendToAsync(Context.Channel);
             _ = Executor.ExecuteAfterDelayAsync(3000, async () => await msg.DeleteAsync());
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Purge, count));
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Purge, count));
         }
     }
 }

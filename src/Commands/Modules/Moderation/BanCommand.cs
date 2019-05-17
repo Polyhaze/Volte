@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules.Moderation
             await user.BanAsync(daysToDelete, reason);
             await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")
                 .SendToAsync(Context.Channel);
-            await EventService.OnModActionCompleteAsync(
+            await ModLogService.OnModActionCompleteAsync(
                 new ModActionEventArgs(Context, ModActionType.Ban, user, reason));
         }
     }

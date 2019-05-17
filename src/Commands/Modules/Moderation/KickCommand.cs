@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules.Moderation
             await user.KickAsync(reason);
             await Context.CreateEmbed($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.")
                 .SendToAsync(Context.Channel);
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Kick, user,
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Kick, user,
                 reason));
         }
     }

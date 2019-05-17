@@ -39,7 +39,7 @@ namespace Volte.Commands.Modules.Moderation
 
             await Context.CreateEmbed($"Successfully warned **{user}** for **{reason}**.").SendToAsync(Context.Channel);
 
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Warn, user, reason));
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Warn, user, reason));
         }
 
         [Command("Warns", "Ws")]
@@ -69,7 +69,7 @@ namespace Volte.Commands.Modules.Moderation
             Db.UpdateConfig(config);
 
             await Context.CreateEmbed($"Cleared all warnings for **{user}**.").SendToAsync(Context.Channel);
-            await EventService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));
+            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));
         }
 
     }
