@@ -33,7 +33,7 @@ namespace Volte.Commands.TypeParsers
             }
 
             return role is null
-                ? Task.FromResult(TypeParserResult<TRole>.Unsuccessful("Role not found."))
+                ? Task.FromResult(TypeParserResult<TRole>.Unsuccessful($"Role `{value}`not found."))
                 : Task.FromResult(TypeParserResult<TRole>.Successful(role));
         }
     }

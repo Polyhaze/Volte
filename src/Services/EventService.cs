@@ -289,8 +289,7 @@ namespace Volte.Services
                     reason = $"Parsing for arguments failed on argument **{apfr.Parameter?.Name}**.";
                     break;
                 case TypeParseFailedResult tpfr:
-                    reason =
-                        $"Failed to parse type **{tpfr.Parameter.Type.FullName}** from parameter **{tpfr.Parameter.Name}**.";
+                    reason = tpfr.Reason;
                     break;
                 case OverloadsFailedResult ofr:
                     reason = "A suitable overload could not be found for the given parameter type/order.";
