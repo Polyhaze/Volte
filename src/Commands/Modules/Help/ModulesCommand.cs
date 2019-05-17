@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Help
         public async Task ModulesAsync()
         {
             var modules = $"`{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`";
-            await Context.CreateEmbedBuilder(modules.Remove(modules.LastIndexOf(","))).WithTitle("Available Modules")
+            await Context.CreateEmbedBuilder(modules).WithTitle("Available Modules")
                 .SendToAsync(Context.Channel);
         }
     }

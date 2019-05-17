@@ -5,9 +5,9 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.ServerAdmin
+namespace Volte.Commands.Modules.AdminUtility
 {
-    public partial class ServerAdminModule : VolteModule
+    public partial class AdminUtilityModule : VolteModule
     {
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role.")]

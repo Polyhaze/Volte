@@ -7,9 +7,9 @@ using Volte.Commands.Preconditions;
 using Volte.Extensions;
 using Gommon;
 
-namespace Volte.Commands.Modules.Owner
+namespace Volte.Commands.Modules.BotOwner
 {
-    public partial class OwnerModule : VolteModule
+    public partial class BotOwnerModule : VolteModule
     {
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar.")]

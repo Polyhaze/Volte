@@ -4,9 +4,9 @@ using Volte.Commands.Preconditions;
 using Volte.Core;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.Owner
+namespace Volte.Commands.Modules.BotOwner
 {
-    public partial class OwnerModule : VolteModule
+    public partial class BotOwnerModule : VolteModule
     {
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]

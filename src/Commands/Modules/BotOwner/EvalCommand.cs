@@ -14,9 +14,9 @@ using Discord;
 using Qmmands;
 using Gommon;
 
-namespace Volte.Commands.Modules.Owner
+namespace Volte.Commands.Modules.BotOwner
 {
-    public partial class OwnerModule : VolteModule
+    public partial class BotOwnerModule : VolteModule
     {
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
@@ -32,8 +32,8 @@ namespace Volte.Commands.Modules.Owner
                     var embed = Context.CreateEmbedBuilder();
                     if (code.Contains("```cs"))
                     {
-                        code = code.Remove(code.IndexOf("```cs", StringComparison.Ordinal), 5);
-                        code = code.Remove(code.LastIndexOf("```", StringComparison.Ordinal), 3);
+                        code = code.Remove(code.IndexOf("```cs", StringComparison.OrdinalIgnoreCase), 5);
+                        code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
                     }
 
                     var objects = new EvalObjects
@@ -47,18 +47,7 @@ namespace Volte.Commands.Modules.Owner
                         EmojiService = EmojiService
                     };
 
-                    List<string> GetImports()
-                    {
-                        return new List<string>
-                        {
-                            "System", "System.Collections.Generic", "System.Linq", "System.Text",
-                            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
-                            "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data", "Humanizer",
-                            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-                        };
-                    }
-
-                    sopts = sopts.WithImports(GetImports()).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
+                    sopts = sopts.WithImports(_imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                         .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
                     var msg = await embed.WithTitle("Evaluating...").SendToAsync(Context.Channel);
@@ -106,5 +95,13 @@ namespace Volte.Commands.Modules.Owner
 
             return Task.CompletedTask;
         }
+
+        private readonly List<string> _imports = new List<string>
+        {
+            "System", "System.Collections.Generic", "System.Linq", "System.Text",
+            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
+            "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data", "Humanizer",
+            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+        };
     }
 }

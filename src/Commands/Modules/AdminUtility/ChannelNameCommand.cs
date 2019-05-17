@@ -3,9 +3,9 @@ using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
 
-namespace Volte.Commands.Modules.ServerAdmin
+namespace Volte.Commands.Modules.AdminUtility
 {
-    public partial class ServerAdminModule : VolteModule
+    public partial class AdminUtilityModule : VolteModule
     {
         [Command("ChannelName", "Cn")]
         [Description("Sets the name of the current channel.")]
