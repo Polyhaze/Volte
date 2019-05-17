@@ -15,10 +15,9 @@ namespace Volte.Commands.Modules.BotOwner
         public async Task SetStreamAsync(string streamer, [Remainder] string streamName)
         {
             await Context.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
-            await Context
-                .CreateEmbed(
-                    $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**.")
-                .SendToAsync(Context.Channel);
+            await Context.CreateEmbed(
+                $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**."
+            ).SendToAsync(Context.Channel);
         }
     }
 }
