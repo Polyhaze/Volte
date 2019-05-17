@@ -8,7 +8,7 @@ namespace Volte
         internal static int Minor { get; } = 4;
         internal static int Patch { get; } = 1;
         internal static int Hotfix { get; } = 0;
-        public static ReleaseType ReleaseType { get; } = ReleaseType.Development;
+        public static ReleaseType ReleaseType { get; } = ReleaseType.Release;
         public static string FullVersion { get; } = $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion { get; } = DiscordConfig.Version;
     }
