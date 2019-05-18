@@ -43,6 +43,7 @@ namespace Volte.Commands.Modules.BotOwner
                         Config = Db.GetConfig(Context.Guild),
                         Logger = Logger,
                         CommandService = CommandService,
+                        BinService = BinService,
                         DatabaseService = Db,
                         EmojiService = EmojiService
                     };

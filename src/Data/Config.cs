@@ -58,6 +58,8 @@ namespace Volte.Data
 
         public static string Streamer => _bot.Streamer;
 
+        public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
+
         public static uint SuccessColor => _bot.SuccessEmbedColor;
 
         public static uint ErrorColor => _bot.ErrorEmbedColor;

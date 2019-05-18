@@ -6,9 +6,9 @@ namespace Volte.Extensions
 {
     public static class ClientExtensions
     {
-        public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin)
+        public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin = true)
         {
-            return shouldHaveAdmin is true
+            return shouldHaveAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
         }

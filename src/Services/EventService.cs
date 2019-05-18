@@ -78,7 +78,7 @@ namespace Volte.Services
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Currently running Volte V{Version.FullVersion}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl(true)}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl()}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Connected to:");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
@@ -97,10 +97,9 @@ namespace Volte.Services
             }
             else
             {
-                var twitchUrl = $"https://twitch.tv/{Config.Streamer}";
-                await args.Client.SetGameAsync(Config.Game, twitchUrl, ActivityType.Streaming);
+                await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                    $"Set the bot's game to \"{ActivityType.Streaming} {Config.Game}, at {twitchUrl}\".");
+                    $"Set the bot's game to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
             }
 
             foreach (var guild in args.Client.Guilds)
