@@ -18,10 +18,13 @@ namespace Volte.Services
     {
 
         private DiscordSocketClient _client;
+        private RestClient _http;
 
-        public BinService(DiscordSocketClient discordSocketClient)
+        public BinService(DiscordSocketClient discordSocketClient,
+            RestClient restClient)
         {
             _client = discordSocketClient;
+            _http = restClient;
         }
 
         public string Execute(GuildConfiguration config)
@@ -42,14 +45,13 @@ namespace Volte.Services
                     }
                 }
             };
-
-            var http = new RestClient("https://bin.greemdev.net/") {UserAgent = $"Volte/{Version.FullVersion}"};
+            _http.BaseUrl = new Uri("https://bin.greemdev.net");
             var req = new RestRequest("v1/post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(data), ParameterType.RequestBody);
-            return $"{JsonConvert.DeserializeObject(http.Execute(req).Content).Cast<JObject>().GetValue("bin")}#{key}";
+            return $"{JsonConvert.DeserializeObject(_http.Execute(req).Content).Cast<JObject>().GetValue("bin")}#{key}";
 
         }
 

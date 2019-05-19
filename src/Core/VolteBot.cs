@@ -11,6 +11,7 @@ using Volte.Data.Models;
 using Volte.Extensions;
 using Volte.Services;
 using Gommon;
+using RestSharp;
 
 namespace Volte.Core
 {
@@ -31,6 +32,7 @@ namespace Volte.Core
         {
             return new ServiceCollection()
                 .AddSingleton<VolteHandler>()
+                .AddSingleton(new RestClient { UserAgent = $"Volte/{Version.FullVersion}" })
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,

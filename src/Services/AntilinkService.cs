@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using RestSharp;
 using Volte.Commands;
@@ -11,29 +14,28 @@ namespace Volte.Services
     [Service("Antilink", "The main Service for checking links sent in chat.")]
     public sealed class AntilinkService
     {
+        private readonly Regex _invitePattern = new Regex(@"discord(?:\.gg|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
+
+        private RestClient _http;
+
+        public AntilinkService(RestClient restClient)
+        {
+            _http = restClient;
+        }
+
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            var m = args.Message.Content.Split(" ");
-            if (m.Length < 1) m = new[] {args.Message.Content};
 
             if (!args.Config.ModerationOptions.Antilink || args.Context.User.IsAdmin()) return;
 
-            foreach (var part in m)
-            {
-                if (!part.StartsWith("http://") && !part.StartsWith("https://")) continue;
-                if (part.Contains("oauth2/authorize?client_id=")) continue;
-                var resp = new RestClient(part).Execute(new RestRequest());
+            var matches = _invitePattern.Matches(args.Message.Content);
+            if (!matches.Any()) return;
 
-                var csp = resp.Headers.FirstOrDefault(x => x.Name.Equals("Content-Security-Policy"));
+            await args.Message.DeleteAsync(new RequestOptions
+                {AuditLogReason = "Deleted as it contained an invite link."});
+            var m = await args.Context.CreateEmbed("Don't send invites here.").SendToAsync(args.Context.Channel);
+            _ = Executor.ExecuteAfterDelayAsync(3000, async () => await m.DeleteAsync());
 
-                if (csp != null && csp.Value.ToString().Contains("discord.gg"))
-                {
-                    await args.Message.DeleteAsync();
-                    var warnMsg = await args.Context.CreateEmbed("Don't send server invites here.")
-                        .SendToAsync(args.Context.Channel);
-                    await Executor.ExecuteAfterDelayAsync(3000, async () => await warnMsg.DeleteAsync());
-                }
-            }
         }
     }
 }
