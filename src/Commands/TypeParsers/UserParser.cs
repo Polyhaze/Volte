@@ -16,7 +16,7 @@ namespace Volte.Commands.TypeParsers
             ICommandContext context,
             IServiceProvider provider)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             var users = (await ctx.Guild.GetUsersAsync()).OfType<TUser>().ToList();
 
             TUser user = null;

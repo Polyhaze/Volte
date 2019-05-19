@@ -43,8 +43,8 @@ namespace Volte.Services
                 }
             };
 
-            var http = new RestClient("https://bin.greemdev.net/v1/post") {UserAgent = $"Volte/{Version.FullVersion}"};
-            var req = new RestRequest(Method.POST);
+            var http = new RestClient("https://bin.greemdev.net/") {UserAgent = $"Volte/{Version.FullVersion}"};
+            var req = new RestRequest("v1/post", Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
             req.Parameters.Clear();

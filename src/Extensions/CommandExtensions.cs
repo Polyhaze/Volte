@@ -29,6 +29,7 @@ namespace Volte.Extensions
             service.AddTypeParser(new RoleParser<SocketRole>());
             service.AddTypeParser(new ChannelParser<SocketTextChannel>());
             service.AddTypeParser(new EmoteParser());
+            service.AddTypeParser(new GuildParser());
             service.AddTypeParser(new BooleanParser(), true);
         }
     }
