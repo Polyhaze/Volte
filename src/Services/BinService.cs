@@ -43,7 +43,7 @@ namespace Volte.Services
                 }
             };
 
-            var http = new RestClient("https://bin.scarsz.me/v1/post") {UserAgent = $"Volte/{Version.FullVersion}"};
+            var http = new RestClient("https://bin.greemdev.net/v1/post") {UserAgent = $"Volte/{Version.FullVersion}"};
             var req = new RestRequest(Method.POST);
             req.AddHeader("Content-Type", "application/json");
             req.RequestFormat = DataFormat.Json;
