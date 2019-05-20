@@ -14,9 +14,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task ModRoleAsync(SocketRole role)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.ModerationOptions.ModRole = role.Id;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
                 .SendToAsync(Context.Channel);
         }

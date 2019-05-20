@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|iamnot {roleName}")]
         public async Task IamNotAsync([Remainder] string roleName)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))
             {
                 await Context.CreateEmbed($"The role **{roleName}** isn't in the self roles list for this guild.")

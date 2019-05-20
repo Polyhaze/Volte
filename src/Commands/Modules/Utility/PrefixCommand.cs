@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|prefix")]
         public async Task PrefixAsync()
         {
-            await Context.CreateEmbed($"The prefix for this server is **{Db.GetConfig(Context.Guild).CommandPrefix}**.")
+            await Context.CreateEmbed($"The prefix for this server is **{Db.GetData(Context.Guild).CommandPrefix}**.")
                 .SendToAsync(Context.Channel);
         }
     }

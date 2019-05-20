@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task SelfRoleListAsync()
         {
             var roleList = string.Empty;
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             if (config.SelfRoles.Count > 0)
             {
                 foreach (var role in config.SelfRoles)

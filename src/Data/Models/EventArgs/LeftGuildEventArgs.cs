@@ -15,7 +15,7 @@ namespace Volte.Data.Models.EventArgs
         public LeftGuildEventArgs(SocketGuild guild)
         {
             Guild = guild;
-            Config = _db.GetConfig(guild);
+            Config = _db.GetData(guild);
             Client = VolteBot.Client;
         }
     }

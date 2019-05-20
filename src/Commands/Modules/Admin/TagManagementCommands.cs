@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task TagCreateAsync(string name, [Remainder] string response)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
@@ -40,7 +40,7 @@ namespace Volte.Commands.Modules.Admin
             };
 
             config.Tags.Add(newTag);
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
 
             await Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
@@ -56,7 +56,7 @@ namespace Volte.Commands.Modules.Admin
         [Remarks("Usage: |prefix|tagdelete {name}")]
         public async Task TagDeleteAsync([Remainder] string name)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag == null)
             {
@@ -68,7 +68,7 @@ namespace Volte.Commands.Modules.Admin
             var user = Context.Client.GetUser(tag.CreatorId);
 
             config.Tags.Remove(tag);
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed(
                     $"Deleted the tag **{tag.Name}**, created by " +
                     $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +

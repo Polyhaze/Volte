@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Volte.Data.Models
+namespace Volte.Data.Models.Guild
 {
     public sealed class Warn
     {

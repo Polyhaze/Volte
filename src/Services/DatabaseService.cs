@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
 using LiteDB;
 using Volte.Data.Models;
 using Volte.Core;
+using Volte.Data.Models.Guild;
 
 namespace Volte.Services
 {
@@ -11,54 +13,53 @@ namespace Volte.Services
     {
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
-        public GuildConfiguration GetConfig(IGuild guild)
-        {
-            return GetConfig(guild.Id);
-        }
+        public GuildData GetData(IGuild guild) => GetData(guild.Id);
 
-        public GuildConfiguration GetConfig(ulong id)
+        public GuildData GetData(ulong id)
         {
-            var coll = Database.GetCollection<GuildConfiguration>("serverconfigs");
-            var conf = coll.FindOne(g => g.ServerId == id);
+            var coll = Database.GetCollection<GuildData>("serverconfigs");
+            var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
             var newConf = Create(VolteBot.Client.GetGuild(id));
             coll.Insert(newConf);
             return newConf;
-
         }
 
-        public void UpdateConfig(GuildConfiguration newConfig)
+        public void UpdateData(GuildData newConfig)
         {
-            var collection = Database.GetCollection<GuildConfiguration>("serverconfigs");
+            var collection = Database.GetCollection<GuildData>("guilds");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);
         }
 
-        private GuildConfiguration Create(SocketGuild guild)
-        {
-            return new GuildConfiguration
+        private GuildData Create(IGuild guild)
+            => new GuildData
             {
-                ServerId = guild.Id,
-                GuildOwnerId = guild.OwnerId,
-                Autorole = string.Empty,
-                CommandPrefix = "$",
-                DeleteMessageOnCommand = false,
-                WelcomeOptions = new WelcomeOptions
+                Id = guild.Id,
+                OwnerId = guild.OwnerId,
+                Configuration = new GuildConfiguration
                 {
-                    WelcomeChannel = ulong.MinValue,
-                    WelcomeMessage = string.Empty,
-                    WelcomeColorR = 112,
-                    WelcomeColorG = 0,
-                    WelcomeColorB = 251
-                },
-                ModerationOptions = new ModerationOptions
-                {
-                    ModRole = ulong.MinValue,
-                    AdminRole = ulong.MinValue,
-                    MassPingChecks = false,
-                    Antilink = false
+                    Autorole = ulong.MinValue,
+                    CommandPrefix = "$",
+                    DeleteMessageOnCommand = false,
+                    ModerationOptions = new ModerationOptions
+                    {
+                        AdminRole = ulong.MinValue,
+                        Antilink = false,
+                        Blacklist = new List<string>(),
+                        MassPingChecks = false,
+                        ModActionCaseNumber = ulong.MinValue,
+                        ModActionLogChannel = ulong.MinValue,
+                        ModRole = ulong.MinValue
+                    },
+                    WelcomeOptions = new WelcomeOptions
+                    {
+                        LeavingMessage = string.Empty,
+                        WelcomeChannel = ulong.MinValue,
+                        WelcomeColor = new Color(112, 0, 251).RawValue,
+                        WelcomeMessage = string.Empty
+                    }
                 }
             };
-        }
     }
 }

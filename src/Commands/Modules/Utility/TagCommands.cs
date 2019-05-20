@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|tag {name}")]
         public async Task TagAsync([Remainder] string name)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules.Utility
             await Context.ReplyAsync(response);
 
             tag.Uses += 1;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
         }
 
         [Command("TagStats")]
@@ -44,7 +44,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|tagstats {name}")]
         public async Task TagStatsAsync([Remainder] string name)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
@@ -69,7 +69,7 @@ namespace Volte.Commands.Modules.Utility
         [Remarks("Usage: |prefix|tags")]
         public async Task TagsAsync()
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             await Context.CreateEmbedBuilder(
                 config.Tags.Count == 0 
                 ? "None" 

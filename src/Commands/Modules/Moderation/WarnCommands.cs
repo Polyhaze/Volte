@@ -8,6 +8,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
+using Volte.Data.Models.Guild;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -20,15 +21,15 @@ namespace Volte.Commands.Modules.Moderation
         [RequireGuildModerator]
         public async Task WarnAsync(SocketGuildUser user, [Remainder] string reason)
         {
-            var config = Db.GetConfig(Context.Guild);
-            config.Warns.Add(new Warn
+            var data = Db.GetData(Context.Guild);
+            data.Extras.Warns.Add(new Warn
             {
                 User = user.Id,
                 Reason = reason,
                 Issuer = Context.User.Id,
                 Date = DateTimeOffset.UtcNow
             });
-            Db.UpdateConfig(config);
+            Db.UpdateData(data);
 
             try
             {
@@ -48,8 +49,8 @@ namespace Volte.Commands.Modules.Moderation
         [RequireGuildModerator]
         public async Task WarnsAsync(SocketGuildUser user)
         {
-            var config = Db.GetConfig(Context.Guild);
-            var warns = config.Warns.Where(x => x.User == user.Id).Take(10);
+            var data = Db.GetData(Context.Guild);
+            var warns = data.Extras.Warns.Where(x => x.User == user.Id).Take(10);
             var desc = "Showing the last 10 warnings, or less if the user doesn't have 10 yet." +
                        "\n" +
                        "\n" +
@@ -63,10 +64,10 @@ namespace Volte.Commands.Modules.Moderation
         [RequireGuildModerator]
         public async Task ClearWarnsAsync(SocketGuildUser user)
         {
-            var config = Db.GetConfig(Context.Guild);
-            var newWarnList = config.Warns.Where(x => x.User != user.Id).ToList();
-            config.Warns = newWarnList;
-            Db.UpdateConfig(config);
+            var data = Db.GetData(Context.Guild);
+            var newWarnList = data.Extras.Warns.Where(x => x.User != user.Id).ToList();
+            data.Extras.Warns = newWarnList;
+            Db.UpdateData(data);
 
             await Context.CreateEmbed($"Cleared all warnings for **{user}**.").SendToAsync(Context.Channel);
             await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));

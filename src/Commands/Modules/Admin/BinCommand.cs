@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules.Admin
                     "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
                     "\n" +
                     "\n" +
-                    $"https://bin.greemdev.net/{BinService.Execute(Db.GetConfig(Context.Guild))}")
+                    $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(Context.Guild))}")
                 .SendToAsync(Context.Channel);
         }
     }

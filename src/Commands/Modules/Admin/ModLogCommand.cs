@@ -14,9 +14,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task ModLogAsync(SocketTextChannel c)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.ModerationOptions.ModActionLogChannel = c.Id;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed($"Set {c.Mention} as the channel to be used by mod log.")
                 .SendToAsync(Context.Channel);
         }

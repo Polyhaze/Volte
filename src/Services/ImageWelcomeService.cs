@@ -31,7 +31,7 @@ namespace Volte.Services
 
         private async Task<string> FormatUrl(IGuildUser user)
         {
-            var config = _db.GetConfig(user.Guild);
+            var data = _db.GetData(user.Guild);
             var c = Color.FromArgb(config.WelcomeOptions.WelcomeColorR, config.WelcomeOptions.WelcomeColorG,
                 config.WelcomeOptions.WelcomeColorB);
             var color = string.Concat(c.R.ToString("X2"), c.G.ToString("X2"), c.G.ToString("X2"));

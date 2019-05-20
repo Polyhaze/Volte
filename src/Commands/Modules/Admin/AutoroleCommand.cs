@@ -14,9 +14,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task AutoroleAsync([Remainder] SocketRole role)
         {
-            var config = Db.GetConfig(Context.Guild);
-            config.Autorole = role.Name;
-            Db.UpdateConfig(config);
+            var data = Db.GetData(Context.Guild);
+            data.Configuration.Autorole = role.Id;
+            Db.UpdateData(data);
             await Context
                 .CreateEmbed(
                     $"Successfully set **{role.Name}** as the role to be given to members upon joining this server.")

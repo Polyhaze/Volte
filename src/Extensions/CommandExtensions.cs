@@ -18,7 +18,7 @@ namespace Volte.Extensions
             var aliases = $"({string.Join("|", c.FullAliases)})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|", db.GetConfig(ctx.Guild).CommandPrefix)
+                .Replace("|prefix|", db.GetData(ctx.Guild).CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 

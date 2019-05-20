@@ -1,4 +1,4 @@
-namespace Volte.Data.Models
+namespace Volte.Data.Models.Guild
 {
     public sealed class Tag
     {

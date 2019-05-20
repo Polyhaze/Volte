@@ -17,7 +17,7 @@ namespace Volte.Data.Models.EventArgs
         {
             User = user;
             Guild = user.Guild;
-            Config = _db.GetConfig(Guild);
+            Config = _db.GetData(Guild);
             Client = VolteBot.Client;
         }
     }

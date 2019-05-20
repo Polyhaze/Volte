@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using RestSharp;
-using Volte.Commands;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 

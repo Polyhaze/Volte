@@ -15,9 +15,9 @@ namespace Volte.Commands.Modules.Admin
         public async Task AdminRoleAsync(SocketRole role)
         {
             var embed = Context.CreateEmbedBuilder();
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.ModerationOptions.AdminRole = role.Id;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             embed.WithDescription($"Set **{role.Name}** as the Admin role for this server.");
             await embed.SendToAsync(Context.Channel);
         }

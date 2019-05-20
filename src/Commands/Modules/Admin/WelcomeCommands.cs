@@ -21,9 +21,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.WelcomeOptions.WelcomeChannel = channel.Id;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed($"Set this server's welcome channel to {channel.Mention}.")
                 .SendToAsync(Context.Channel);
         }
@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task WelcomeMessageAsync([Remainder] string message = null)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
 
             if (message is null)
             {
@@ -47,7 +47,7 @@ namespace Volte.Commands.Modules.Admin
             else
             {
                 config.WelcomeOptions.WelcomeMessage = message;
-                Db.UpdateConfig(config);
+                Db.UpdateData(config);
                 var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
@@ -79,11 +79,11 @@ namespace Volte.Commands.Modules.Admin
                 return;
             }
 
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.WelcomeOptions.WelcomeColorR = r;
             config.WelcomeOptions.WelcomeColorG = g;
             config.WelcomeOptions.WelcomeColorB = b;
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context
                 .CreateEmbed($"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!")
                 .SendToAsync(Context.Channel);
@@ -95,7 +95,7 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task LeavingMessageAsync([Remainder] string message = null)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
 
             if (message is null)
             {
@@ -107,7 +107,7 @@ namespace Volte.Commands.Modules.Admin
             else
             {
                 config.WelcomeOptions.LeavingMessage = message;
-                Db.UpdateConfig(config);
+                Db.UpdateData(config);
                 var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
                 var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +

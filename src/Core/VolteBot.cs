@@ -29,10 +29,9 @@ namespace Volte.Core
             => new VolteBot().LoginAsync();
 
         private static ServiceProvider BuildServiceProvider()
-        {
-            return new ServiceCollection()
+            => new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddSingleton(new RestClient { UserAgent = $"Volte/{Version.FullVersion}" })
+                .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
@@ -53,16 +52,13 @@ namespace Volte.Core
                 }))
                 .AddVolteServices()
                 .BuildServiceProvider();
-        }
 
         private VolteBot()
-        {
-            Console.CancelKeyPress += (s, e) =>
+            => Console.CancelKeyPress += (s, e) =>
             {
                 e.Cancel = true;
                 Cts.Cancel();
             };
-        }
 
         private async Task LoginAsync()
         {

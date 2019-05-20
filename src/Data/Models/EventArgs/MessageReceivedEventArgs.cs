@@ -17,7 +17,7 @@ namespace Volte.Data.Models.EventArgs
         {
             Message = s as IUserMessage;
             Context = new VolteContext(VolteBot.Client, Message, VolteBot.ServiceProvider);
-            Config = _db.GetConfig(Context.Guild);
+            Config = _db.GetData(Context.Guild);
         }
     }
 }

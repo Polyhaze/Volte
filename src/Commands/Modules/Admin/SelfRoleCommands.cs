@@ -15,9 +15,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task SelfRoleAddAsync([Remainder] SocketRole role)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.SelfRoles.Add(role.Name);
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles list for this guild.")
                 .SendToAsync(Context.Channel);
         }
@@ -28,14 +28,14 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
 
             if (config.SelfRoles.ContainsIgnoreCase(role.Name))
             {
                 config.SelfRoles.Remove(role.Name);
                 await Context.CreateEmbed($"Removed **{role.Name}** from the Self Roles list for this guild.")
                     .SendToAsync(Context.Channel);
-                Db.UpdateConfig(config);
+                Db.UpdateData(config);
             }
             else
             {
@@ -50,9 +50,9 @@ namespace Volte.Commands.Modules.Admin
         [RequireGuildAdmin]
         public async Task SelfRoleClearAsync()
         {
-            var config = Db.GetConfig(Context.Guild);
+            var data = Db.GetData(Context.Guild);
             config.SelfRoles.Clear();
-            Db.UpdateConfig(config);
+            Db.UpdateData(config);
             await Context.CreateEmbed("Successfully cleared all Self Roles for this guild.")
                 .SendToAsync(Context.Channel);
         }
