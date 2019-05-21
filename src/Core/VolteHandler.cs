@@ -19,8 +19,7 @@ namespace Volte.Core
         private readonly DiscordSocketClient _client;
         private readonly CommandService _service;
         private readonly GuildService _guild;
-        private readonly DefaultWelcomeService _defaultWelcome;
-        private readonly ImageWelcomeService _imageWelcome;
+        private readonly WelcomeService _welcome;
         private readonly AutoroleService _autorole;
         private readonly EventService _event;
         private readonly LoggingService _logger;
@@ -28,8 +27,7 @@ namespace Volte.Core
         public VolteHandler(DiscordSocketClient client,
             CommandService commandService,
             GuildService guildService,
-            DefaultWelcomeService defaultWelcomeService,
-            ImageWelcomeService imageWelcomeService,
+            WelcomeService welcomeService,
             AutoroleService autoroleService,
             EventService eventService,
             LoggingService loggingService)
@@ -37,8 +35,7 @@ namespace Volte.Core
             _client = client;
             _service = commandService;
             _guild = guildService;
-            _defaultWelcome = defaultWelcomeService;
-            _imageWelcome = imageWelcomeService;
+            _welcome = welcomeService;
             _autorole = autoroleService;
             _event = eventService;
             _logger = loggingService;
@@ -57,14 +54,10 @@ namespace Volte.Core
             _client.LeftGuild += async (guild) => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
             _client.UserJoined += async (user) =>
             {
-                var args = new UserJoinedEventArgs(user);
-                if (Config.WelcomeApiKey.IsNullOrWhitespace())
-                    await _defaultWelcome.JoinAsync(args);
-                else
-                    await _imageWelcome.JoinAsync(args);
+                await _welcome.JoinAsync(new UserJoinedEventArgs(user));
+                await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
             };
-            _client.UserLeft += async (user) => await _defaultWelcome.LeaveAsync(new UserLeftEventArgs(user));
-            _client.UserJoined += async (user) => await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+            _client.UserLeft += async (user) => await _welcome.LeaveAsync(new UserLeftEventArgs(user));
             _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
             _client.MessageReceived += async (s) =>
             {

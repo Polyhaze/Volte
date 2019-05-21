@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
@@ -12,8 +13,7 @@ namespace Volte.Commands.Modules.Admin
 {
     public partial class AdminModule : VolteModule
     {
-        public ImageWelcomeService ImageWelcomeService { get; set; }
-        public DefaultWelcomeService DefaultWelcomeService { get; set; }
+        public WelcomeService WelcomeService { get; set; }
 
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
@@ -22,8 +22,8 @@ namespace Volte.Commands.Modules.Admin
         public async Task WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
             var data = Db.GetData(Context.Guild);
-            config.WelcomeOptions.WelcomeChannel = channel.Id;
-            Db.UpdateData(config);
+            data.Configuration.Welcome.WelcomeChannel = channel.Id;
+            Db.UpdateData(data);
             await Context.CreateEmbed($"Set this server's welcome channel to {channel.Mention}.")
                 .SendToAsync(Context.Channel);
         }
@@ -41,26 +41,23 @@ namespace Volte.Commands.Modules.Admin
             {
                 await Context
                     .CreateEmbed(
-                        $"The current welcome message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
+                        $"The current welcome message for this server is ```\n{data.Configuration.Welcome.WelcomeMessage}```")
                     .SendToAsync(Context.Channel);
             }
             else
             {
-                config.WelcomeOptions.WelcomeMessage = message;
-                Db.UpdateData(config);
-                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
-                var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
+                data.Configuration.Welcome.WelcomeMessage = message;
+                Db.UpdateData(data);
+                var welcomeChannel = await Context.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+                var sendingTest = data.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
                 await Context.CreateEmbed($"Set this server's welcome message to ```{message}```\n\n{sendingTest}")
                     .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
-                var args = new UserJoinedEventArgs(Context.User);
-                if (Config.WelcomeApiKey.IsNullOrWhitespace())
-                    await DefaultWelcomeService.JoinAsync(args);
-                else
-                    await ImageWelcomeService.JoinAsync(args);
+
+                await WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User));
             }
         }
 
@@ -80,10 +77,8 @@ namespace Volte.Commands.Modules.Admin
             }
 
             var data = Db.GetData(Context.Guild);
-            config.WelcomeOptions.WelcomeColorR = r;
-            config.WelcomeOptions.WelcomeColorG = g;
-            config.WelcomeOptions.WelcomeColorB = b;
-            Db.UpdateData(config);
+            data.Configuration.Welcome.WelcomeColor = new Color(r, g, b).RawValue;
+            Db.UpdateData(data);
             await Context
                 .CreateEmbed($"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!")
                 .SendToAsync(Context.Channel);
@@ -101,15 +96,15 @@ namespace Volte.Commands.Modules.Admin
             {
                 await Context
                     .CreateEmbed(
-                        $"The current leaving message for this server is ```\n{config.WelcomeOptions.WelcomeMessage}```")
+                        $"The current leaving message for this server is ```\n{data.Configuration.Welcome.WelcomeMessage}```")
                     .SendToAsync(Context.Channel);
             }
             else
             {
-                config.WelcomeOptions.LeavingMessage = message;
-                Db.UpdateData(config);
-                var welcomeChannel = await Context.Guild.GetTextChannelAsync(config.WelcomeOptions.WelcomeChannel);
-                var sendingTest = config.WelcomeOptions.WelcomeChannel == 0 || welcomeChannel is null
+                data.Configuration.Welcome.LeavingMessage = message;
+                Db.UpdateData(data);
+                var welcomeChannel = await Context.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+                var sendingTest = data.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
@@ -117,8 +112,7 @@ namespace Volte.Commands.Modules.Admin
                     .SendToAsync(Context.Channel);
                 if (welcomeChannel is null) return;
 
-                var args = new UserLeftEventArgs(Context.User);
-                await DefaultWelcomeService.LeaveAsync(args);
+                await WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User));
             }
         }
     }

@@ -1,6 +1,7 @@
 using Discord;
 using Discord.WebSocket;
 using Volte.Core;
+using Volte.Data.Models.Guild;
 using Volte.Services;
 
 namespace Volte.Data.Models.EventArgs
@@ -9,13 +10,13 @@ namespace Volte.Data.Models.EventArgs
     {
         private DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
         public IGuild Guild { get; }
-        public GuildConfiguration Config { get; }
+        public GuildData Data { get; }
         public DiscordSocketClient Client { get; }
 
         public LeftGuildEventArgs(SocketGuild guild)
         {
             Guild = guild;
-            Config = _db.GetData(guild);
+            Data = _db.GetData(guild);
             Client = VolteBot.Client;
         }
     }

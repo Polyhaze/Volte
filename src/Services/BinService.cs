@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using Gommon;
 using Volte.Data.Models;
+using Volte.Data.Models.Guild;
 
 namespace Volte.Services
 {
@@ -27,7 +28,7 @@ namespace Volte.Services
             _http = restClient;
         }
 
-        public string Execute(GuildConfiguration config)
+        public string Execute(GuildData config)
         {
             var key = RandomKey();
             var data = new BinData
@@ -40,7 +41,7 @@ namespace Volte.Services
                     {
                         Name = BinEncrypt("GuildConfiguration.json", key),
                         Content = BinEncrypt(config.ToString(), key),
-                        Description = BinEncrypt($"Guild Configuration for {_client.GetGuild(config.ServerId).Name}", key),
+                        Description = BinEncrypt($"Guild Configuration for {_client.GetGuild(config.Id).Name}", key),
                         Type = BinEncrypt("text/plain", key)
                     }
                 }

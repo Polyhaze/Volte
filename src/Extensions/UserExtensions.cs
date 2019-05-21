@@ -16,14 +16,14 @@ namespace Volte.Extensions
             => user.Guild.OwnerId.Equals(user.Id) || IsBotOwner(user);
 
         public static bool IsModerator(this IGuildUser user)
-            => HasRole(user, _db.GetData(user.Guild.Id).ModerationOptions.ModRole) ||
+            => HasRole(user, _db.GetData(user.Guild.Id).Configuration.Moderation.ModRole) ||
                IsAdmin(user) ||
                IsGuildOwner(user);
 
         public static bool HasRole(this IGuildUser user, ulong roleId) => user.RoleIds.Contains(roleId);
 
         public static bool IsAdmin(this IGuildUser user)
-            => HasRole(user, _db.GetData(user.Guild).ModerationOptions.AdminRole) ||
+            => HasRole(user, _db.GetData(user.Guild).Configuration.Moderation.AdminRole) ||
                IsGuildOwner(user);
     }
 }

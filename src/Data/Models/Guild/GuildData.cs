@@ -24,5 +24,8 @@ namespace Volte.Data.Models.Guild
 
         [JsonProperty("extras")]
         public GuildExtras Extras { get; set; }
+
+        public override string ToString()
+            => JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }

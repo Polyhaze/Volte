@@ -40,7 +40,7 @@ namespace Volte.Commands.Modules.BotOwner
                     {
                         Context = Context,
                         Client = Context.Client,
-                        Config = Db.GetData(Context.Guild),
+                        Data = Db.GetData(Context.Guild),
                         Logger = Logger,
                         CommandService = CommandService,
                         BinService = BinService,

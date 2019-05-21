@@ -31,7 +31,6 @@ namespace Volte.Data
             _bot = new BotConfig
             {
                 Token = "token here",
-                WelcomeApiKey = "",
                 CommandPrefix = "$",
                 Owner = 0,
                 Game = "in Volte V2 Code!",
@@ -47,8 +46,6 @@ namespace Volte.Data
         }
 
         public static string Token => _bot.Token;
-
-        public static string WelcomeApiKey => _bot.WelcomeApiKey;
 
         public static string CommandPrefix => _bot.CommandPrefix;
 
@@ -73,7 +70,6 @@ namespace Volte.Data
         private struct BotConfig
         {
             public string Token;
-            public string WelcomeApiKey;
             public string CommandPrefix;
             public ulong Owner;
             public string Game;

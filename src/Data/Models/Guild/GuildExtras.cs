@@ -22,5 +22,8 @@ namespace Volte.Data.Models.Guild
 
         [JsonProperty("warns")]
         public List<Warn> Warns { get; set; }
+
+        [JsonProperty("mod_log_case_number")]
+        public ulong ModActionCaseNumber { get; set; }
     }
 }

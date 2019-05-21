@@ -6,8 +6,8 @@ namespace Volte.Data.Models.Guild
     {
         internal GuildConfiguration()
         {
-            ModerationOptions = new ModerationOptions();
-            WelcomeOptions = new WelcomeOptions();
+            Moderation = new ModerationOptions();
+            Welcome = new WelcomeOptions();
         }
 
         [JsonProperty("autorole")]
@@ -17,10 +17,10 @@ namespace Volte.Data.Models.Guild
         public string CommandPrefix { get; set; }
 
         [JsonProperty("welcome_options")]
-        public WelcomeOptions WelcomeOptions { get; set; }
+        public WelcomeOptions Welcome { get; set; }
 
         [JsonProperty("moderation_options")]
-        public ModerationOptions ModerationOptions { get; set; }
+        public ModerationOptions Moderation { get; set; }
 
         [JsonProperty("delete_message_on_command")]
         public bool DeleteMessageOnCommand { get; set; }

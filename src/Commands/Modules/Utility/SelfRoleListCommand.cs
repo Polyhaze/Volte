@@ -15,9 +15,9 @@ namespace Volte.Commands.Modules.Utility
         {
             var roleList = string.Empty;
             var data = Db.GetData(Context.Guild);
-            if (config.SelfRoles.Count > 0)
+            if (data.Extras.SelfRoles.Count > 0)
             {
-                foreach (var role in config.SelfRoles)
+                foreach (var role in data.Extras.SelfRoles)
                 {
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
                     if (currentRole is null) continue;

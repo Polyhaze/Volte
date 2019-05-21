@@ -14,8 +14,8 @@ namespace Volte.Commands.Modules.Admin
         public async Task DeleteMessageOnCommandAsync(bool enabled)
         {
             var data = Db.GetData(Context.Guild);
-            config.DeleteMessageOnCommand = enabled;
-            Db.UpdateData(config);
+            data.Configuration.DeleteMessageOnCommand = enabled;
+            Db.UpdateData(data);
             await Context.CreateEmbed(enabled
                     ? "Enabled DeleteMessageOnCommand in this server."
                     : "Disabled DeleteMessageOnCommand in this server.")

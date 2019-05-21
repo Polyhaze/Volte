@@ -26,7 +26,7 @@ namespace Volte.Commands.Modules.Utility
                 .AddField("Servers", Context.Client.Guilds.Count, true)
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
-                .AddField("Invite Me", $"`{Db.GetData(Context.Guild).CommandPrefix}invite`", true)
+                .AddField("Invite Me", $"`{Db.GetData(Context.Guild).Configuration.CommandPrefix}invite`", true)
                 .AddField(".NET Core Version",
                     GetNetCoreVersion(out var ver) ? ver : "Couldn't fetch the version of .NET Core.", true)
                 .AddField("Operating System", Environment.OSVersion.Platform, true)

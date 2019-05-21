@@ -1,6 +1,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands;
+using Volte.Data.Models.Guild;
 using Volte.Services;
 
 namespace Volte.Data.Models
@@ -9,7 +10,7 @@ namespace Volte.Data.Models
     {
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }
-        public GuildConfiguration Config { get; set; }
+        public GuildData Data { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }
         public BinService BinService { get; set; }

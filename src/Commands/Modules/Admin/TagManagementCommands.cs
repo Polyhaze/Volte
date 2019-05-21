@@ -6,6 +6,7 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Extensions;
 using Gommon;
+using Volte.Data.Models.Guild;
 
 namespace Volte.Commands.Modules.Admin
 {
@@ -19,7 +20,7 @@ namespace Volte.Commands.Modules.Admin
         public async Task TagCreateAsync(string name, [Remainder] string response)
         {
             var data = Db.GetData(Context.Guild);
-            var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
                 var user = Context.Client.GetUser(tag.CreatorId);
@@ -39,8 +40,8 @@ namespace Volte.Commands.Modules.Admin
                 Uses = 0
             };
 
-            config.Tags.Add(newTag);
-            Db.UpdateData(config);
+            data.Extras.Tags.Add(newTag);
+            Db.UpdateData(data);
 
             await Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
@@ -57,7 +58,7 @@ namespace Volte.Commands.Modules.Admin
         public async Task TagDeleteAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
-            var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag == null)
             {
                 await Context.CreateEmbed($"Cannot delete the tag **{name}**, as it doesn't exist.")
@@ -67,8 +68,8 @@ namespace Volte.Commands.Modules.Admin
 
             var user = Context.Client.GetUser(tag.CreatorId);
 
-            config.Tags.Remove(tag);
-            Db.UpdateData(config);
+            data.Extras.Tags.Remove(tag);
+            Db.UpdateData(data);
             await Context.CreateEmbed(
                     $"Deleted the tag **{tag.Name}**, created by " +
                     $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +

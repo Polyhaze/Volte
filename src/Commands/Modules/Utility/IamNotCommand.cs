@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task IamNotAsync([Remainder] string roleName)
         {
             var data = Db.GetData(Context.Guild);
-            if (!config.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))
+            if (!data.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))
             {
                 await Context.CreateEmbed($"The role **{roleName}** isn't in the self roles list for this guild.")
                     .SendToAsync(Context.Channel);

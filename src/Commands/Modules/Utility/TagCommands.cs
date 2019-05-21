@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task TagAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
-            var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
             {
@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules.Utility
             await Context.ReplyAsync(response);
 
             tag.Uses += 1;
-            Db.UpdateData(config);
+            Db.UpdateData(data);
         }
 
         [Command("TagStats")]
@@ -45,7 +45,7 @@ namespace Volte.Commands.Modules.Utility
         public async Task TagStatsAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
-            var tag = config.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
             {
@@ -71,12 +71,11 @@ namespace Volte.Commands.Modules.Utility
         {
             var data = Db.GetData(Context.Guild);
             await Context.CreateEmbedBuilder(
-                config.Tags.Count == 0 
-                ? "None" 
-                : $"`{config.Tags.Select(x => x.Name).Join("`, `")}`"
+                    data.Extras.Tags.Count == 0
+                        ? "None"
+                        : $"`{data.Extras.Tags.Select(x => x.Name).Join("`, `")}`"
                 ).WithTitle($"Available Tags for {Context.Guild.Name}")
                 .SendToAsync(Context.Channel);
         }
-
     }
 }

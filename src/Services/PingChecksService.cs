@@ -10,7 +10,7 @@ namespace Volte.Services
     {
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            if (args.Config.ModerationOptions.MassPingChecks && !args.Context.User.IsAdmin())
+            if (args.Data.Configuration.Moderation.MassPingChecks && !args.Context.User.IsAdmin())
             {
                 var content = args.Message.Content;
                 if (content.ContainsIgnoreCase("@everyone") ||

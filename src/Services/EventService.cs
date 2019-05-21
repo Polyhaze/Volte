@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Volte.Services
     public sealed class EventService
     {
         private readonly LoggingService _logger;
-
+        private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
         private readonly BlacklistService _blacklist;
         private readonly PingChecksService _pingchecks;
@@ -29,6 +30,7 @@ namespace Volte.Services
             Config.Streamer.EqualsIgnoreCase("streamer here") || Config.Streamer.IsNullOrWhitespace();
 
         public EventService(LoggingService loggingService,
+            DatabaseService databaseService,
             AntilinkService antilinkService,
             BlacklistService blacklistService,
             PingChecksService pingChecksService,
@@ -36,6 +38,7 @@ namespace Volte.Services
         {
             _logger = loggingService;
             _antilink = antilinkService;
+            _db = databaseService;
             _blacklist = blacklistService;
             _pingchecks = pingChecksService;
             _commandService = commandService;
@@ -48,11 +51,11 @@ namespace Volte.Services
             await _pingchecks.CheckMessageAsync(args);
             var prefixes = new[]
             {
-                args.Config.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
+                args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
                 $"<@!{args.Context.Client.CurrentUser.Id}> "
-            };
-            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
-                out var cmd))
+            }.ToList();
+
+            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out var cmd))
             {
                 var sw = Stopwatch.StartNew();
                 var result = await _commandService.ExecuteAsync(cmd, args.Context, VolteBot.ServiceProvider);
@@ -65,7 +68,7 @@ namespace Volte.Services
                 sw.Stop();
                 await OnCommandAsync(targetCommand, result, args.Context, sw);
 
-                if (args.Config.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
+                if (args.Data.Configuration.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
             }
         }
 
@@ -104,10 +107,14 @@ namespace Volte.Services
 
             foreach (var guild in args.Client.Guilds)
             {
-                if (!Config.BlacklistedOwners.Contains(guild.OwnerId)) continue;
-                await _logger.LogAsync(LogSeverity.Warning, LogSource.Volte,
-                    $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
-                await guild.LeaveAsync();
+                if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+                {
+                    await _logger.LogAsync(LogSeverity.Warning, LogSource.Volte,
+                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                    await guild.LeaveAsync();
+                }
+
+                _ = _db.GetData(guild);
             }
         }
 

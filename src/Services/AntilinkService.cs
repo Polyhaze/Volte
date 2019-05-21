@@ -24,7 +24,7 @@ namespace Volte.Services
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
 
-            if (!args.Config.ModerationOptions.Antilink || args.Context.User.IsAdmin()) return;
+            if (!args.Data.Configuration.Moderation.Antilink || args.Context.User.IsAdmin()) return;
 
             var matches = _invitePattern.Matches(args.Message.Content);
             if (!matches.Any()) return;

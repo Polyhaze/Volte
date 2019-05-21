@@ -9,7 +9,7 @@ namespace Volte.Services
     {
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            foreach (var word in args.Config.ModerationOptions.Blacklist)
+            foreach (var word in args.Data.Configuration.Moderation.Blacklist)
                 if (args.Message.Content.ContainsIgnoreCase(word))
                 {
                     await args.Message.DeleteAsync();

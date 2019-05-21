@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
+using Volte.Commands.Preconditions;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -10,6 +11,7 @@ namespace Volte.Commands.Modules.BotOwner
         [Command("ForceBin")]
         [Description("Forcefully creates a debug dump on bin.greemdev.net with debug information used for Support, using the configuration from the target guild.")]
         [Remarks("Usage: |prefix|forcebin")]
+        [RequireBotOwner]
         public async Task ForceBinAsync([Remainder] SocketGuild guild)
         {
             await Context.CreateEmbed(

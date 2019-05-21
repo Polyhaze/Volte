@@ -17,9 +17,6 @@ namespace Volte.Data.Models.Guild
         [JsonProperty("mod_log_channel")]
         public ulong ModActionLogChannel { get; set; }
 
-        [JsonProperty("mod_log_case_number")]
-        public ulong ModActionCaseNumber { get; set; }
-
         [JsonProperty("mod_role")]
         public ulong ModRole { get; set; }
 

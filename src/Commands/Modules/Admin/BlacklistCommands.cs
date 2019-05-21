@@ -15,8 +15,8 @@ namespace Volte.Commands.Modules.Admin
         public async Task BlacklistAddAsync([Remainder] string phrase)
         {
             var data = Db.GetData(Context.Guild);
-            config.ModerationOptions.Blacklist.Add(phrase);
-            Db.UpdateData(config);
+            data.Configuration.Moderation.Blacklist.Add(phrase);
+            Db.UpdateData(data);
             await Context.CreateEmbed($"Added **{phrase}** to the blacklist.").SendToAsync(Context.Channel);
         }
 
@@ -27,12 +27,12 @@ namespace Volte.Commands.Modules.Admin
         public async Task BlacklistRemoveAsync([Remainder] string phrase)
         {
             var data = Db.GetData(Context.Guild);
-            if (config.ModerationOptions.Blacklist.ContainsIgnoreCase(phrase))
+            if (data.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
             {
-                config.ModerationOptions.Blacklist.Remove(phrase);
+                data.Configuration.Moderation.Blacklist.Remove(phrase);
                 await Context.CreateEmbed($"Removed **{phrase}** from the word blacklist.")
                     .SendToAsync(Context.Channel);
-                Db.UpdateData(config);
+                Db.UpdateData(data);
             }
             else
             {
@@ -49,10 +49,10 @@ namespace Volte.Commands.Modules.Admin
             var data = Db.GetData(Context.Guild);
             await Context
                 .CreateEmbed(
-                    $"Cleared the custom commands, containing **{config.ModerationOptions.Blacklist.Count}** words.")
+                    $"Cleared the this guild's blacklist, containing **{data.Configuration.Moderation.Blacklist.Count}** words.")
                 .SendToAsync(Context.Channel);
-            config.ModerationOptions.Blacklist.Clear();
-            Db.UpdateData(config);
+            data.Configuration.Moderation.Blacklist.Clear();
+            Db.UpdateData(data);
         }
     }
 }
