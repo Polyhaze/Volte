@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Gommon;
+using Volte.Core;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
@@ -12,6 +10,8 @@ namespace Volte.Services
     [Service("ModLog", "The main Service for handling per-guild mod logs.")]
     public sealed class ModLogService
     {
+        public static ModLogService Instance = VolteBot.GetRequiredService<ModLogService>();
+
         private readonly DatabaseService _db;
 
         public ModLogService(DatabaseService databaseService)

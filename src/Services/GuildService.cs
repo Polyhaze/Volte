@@ -14,6 +14,8 @@ namespace Volte.Services
     [Service("Guild", "The main Service that handles guild-related Discord gateway events.")]
     public sealed class GuildService
     {
+        public static GuildService Instance = VolteBot.GetRequiredService<GuildService>();
+
         private readonly LoggingService _logger;
 
         public GuildService(LoggingService loggingService)
@@ -58,10 +60,9 @@ namespace Volte.Services
             if (Config.JoinLeaveLog.Enabled)
             {
                 var joinLeave = Config.JoinLeaveLog;
-                var logger = VolteBot.GetRequiredService<LoggingService>();
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
-                    await logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
                     return;
@@ -91,7 +92,7 @@ namespace Volte.Services
                 }
                 catch (NullReferenceException ex)
                 {
-                    await logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
                 }
             }
@@ -101,11 +102,10 @@ namespace Volte.Services
         {
             if (Config.JoinLeaveLog.Enabled)
             {
-                var logger = VolteBot.GetRequiredService<LoggingService>();
                 var joinLeave = Config.JoinLeaveLog;
                 if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
                 {
-                    await logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                         "To fix, set Enabled to false, or correctly fill in your options.");
                     return;
@@ -125,7 +125,7 @@ namespace Volte.Services
                 }
                 catch (NullReferenceException e)
                 {
-                    await logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
                 }
             }

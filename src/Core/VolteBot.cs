@@ -21,8 +21,8 @@ namespace Volte.Core
         public static readonly CommandService CommandService = GetRequiredService<CommandService>();
         public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
         public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
-        private readonly VolteHandler _handler = GetRequiredService<VolteHandler>();
-        private readonly LoggingService _logger = GetRequiredService<LoggingService>();
+        private readonly VolteHandler _handler = VolteHandler.Instance;
+        private readonly LoggingService _logger = LoggingService.Instance;
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
         public static Task StartAsync()
@@ -43,9 +43,9 @@ namespace Volte.Core
                 }))
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = Version.ReleaseType != ReleaseType.Release
-                        ? LogSeverity.Debug
-                        : LogSeverity.Verbose,
+                    LogLevel = Version.ReleaseType is ReleaseType.Release
+                        ? LogSeverity.Verbose
+                        : LogSeverity.Debug,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50

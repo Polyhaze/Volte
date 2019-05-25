@@ -2,19 +2,14 @@
 using System.Threading.Tasks;
 using Discord;
 using Volte.Data.Models;
-using Volte.Core;
 using Volte.Services;
 
 namespace Volte.Extensions
 {
     public static class ExceptionExtensions
     {
-
-        public static Task PrintStackTrace(this Exception e)
-        {
-            var logger = VolteBot.GetRequiredService<LoggingService>();
-            return logger.LogAsync(LogSeverity.Error, LogSource.Volte, string.Empty, e);
-        }
+        public static Task PrintStackTraceAsync(this Exception e) 
+            => LoggingService.Instance.LogAsync(LogSeverity.Error, LogSource.Volte, string.Empty, e);
 
     }
 }

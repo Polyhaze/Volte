@@ -1,3 +1,5 @@
+using Volte.Core;
+
 namespace Volte.Services
 {
     // ReSharper disable UnusedMember.Global
@@ -6,6 +8,7 @@ namespace Volte.Services
     [Service("Emoji", "The main Service that has properties for all twemoji emojis used by Discord.")]
     public sealed class EmojiService
     {
+        public static EmojiService Instance = VolteBot.GetRequiredService<EmojiService>();
         public string A { get; } = "\uD83C\uDD70";
         public string AB { get; } = "\uD83C\uDD8E";
         public string ABC { get; } = "\uD83D\uDD24";

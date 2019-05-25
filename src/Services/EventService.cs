@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +18,7 @@ namespace Volte.Services
     [Service("Event", "The main Service for handling some Discord gateway events.")]
     public sealed class EventService
     {
+        public static EventService Instance = VolteBot.GetRequiredService<EventService>();
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;

@@ -25,7 +25,7 @@ namespace Volte.Data
         public static async Task CreateIfNotExists()
         {
             if (_valid) return;
-            var logger = VolteBot.GetRequiredService<LoggingService>();
+            var logger = LoggingService.Instance;
             await logger.LogAsync(LogSeverity.Warning, LogSource.Volte,
                 "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig

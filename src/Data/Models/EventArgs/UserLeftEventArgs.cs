@@ -8,7 +8,7 @@ namespace Volte.Data.Models.EventArgs
 {
     public sealed class UserLeftEventArgs : System.EventArgs
     {
-        private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
+        private readonly DatabaseService _db = DatabaseService.Instance;
         public IGuildUser User { get; }
         public IGuild Guild { get; }
         public GuildData Data { get; }

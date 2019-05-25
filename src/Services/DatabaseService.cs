@@ -13,6 +13,7 @@ namespace Volte.Services
     [Service("Database", "The main Service for interacting with the Volte database.")]
     public sealed class DatabaseService
     {
+        public static DatabaseService Instance = VolteBot.GetRequiredService<DatabaseService>();
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
         public GuildData GetData(IGuild guild) => GetData(guild.Id);

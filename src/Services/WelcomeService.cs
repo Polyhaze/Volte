@@ -3,13 +3,15 @@ using Discord;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 using Gommon;
+using Volte.Core;
 
 namespace Volte.Services
 {
-    [Service("DefaultWelcome",
-        "The main Service that handles default welcome/leaving functionality when no WelcomeApiKey is set in the bot config.")]
+    [Service("Welcome", "The main Service that handles welcome/leaving functionality..")]
     public sealed class WelcomeService
     {
+        public static WelcomeService Instance = VolteBot.GetRequiredService<WelcomeService>();
+
         private readonly DatabaseService _db;
 
         public WelcomeService(DatabaseService databaseService)

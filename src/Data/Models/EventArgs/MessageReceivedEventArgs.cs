@@ -9,7 +9,7 @@ namespace Volte.Data.Models.EventArgs
 {
     public sealed class MessageReceivedEventArgs : System.EventArgs
     {
-        private readonly DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
+        private readonly DatabaseService _db = DatabaseService.Instance;
         public IUserMessage Message { get; }
         public VolteContext Context { get; }
         public GuildData Data { get; }

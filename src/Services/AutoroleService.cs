@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Volte.Data.Models.EventArgs;
 using Gommon;
+using Volte.Core;
 using Volte.Data.Models;
 
 namespace Volte.Services
@@ -10,6 +11,7 @@ namespace Volte.Services
     [Service("Autorole", "The main Service for automatically applying roles when a user joins any given guild.")]
     public sealed class AutoroleService
     {
+        public static AutoroleService Instance = VolteBot.GetRequiredService<AutoroleService>();
         private LoggingService _logger;
 
         public AutoroleService(LoggingService loggingService)

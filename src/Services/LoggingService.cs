@@ -5,6 +5,7 @@ using Discord;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Gommon;
+using Volte.Core;
 using Console = Colorful.Console;
 using Color = System.Drawing.Color;
 
@@ -13,6 +14,8 @@ namespace Volte.Services
     [Service("Logging", "The main Service used to handle logging to the bot's console.")]
     public sealed class LoggingService
     {
+        public static LoggingService Instance = VolteBot.GetRequiredService<LoggingService>();
+
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         internal async Task Log(LogEventArgs args)

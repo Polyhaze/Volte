@@ -16,6 +16,8 @@ namespace Volte.Core
 {
     internal sealed class VolteHandler
     {
+        public static VolteHandler Instance = VolteBot.GetRequiredService<VolteHandler>();
+
         private readonly DiscordSocketClient _client;
         private readonly CommandService _service;
         private readonly GuildService _guild;

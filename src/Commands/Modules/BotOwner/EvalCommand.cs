@@ -90,7 +90,7 @@ namespace Volte.Commands.Modules.BotOwner
                 }
                 catch (Exception e)
                 {
-                    await e.PrintStackTrace();
+                    await e.PrintStackTraceAsync();
                 }
             });
 

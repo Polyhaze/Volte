@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using RestSharp;
+using Volte.Core;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
 
@@ -12,7 +12,10 @@ namespace Volte.Services
     [Service("Antilink", "The main Service for checking links sent in chat.")]
     public sealed class AntilinkService
     {
-        private readonly Regex _invitePattern = new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
+        public static AntilinkService Instance = VolteBot.GetRequiredService<AntilinkService>();
+
+        private readonly Regex _invitePattern =
+            new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
 
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

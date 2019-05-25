@@ -2,7 +2,6 @@ using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
-using Volte.Core;
 using Volte.Services;
 
 namespace Volte.Extensions
@@ -14,11 +13,10 @@ namespace Volte.Extensions
 
         public static string SanitizeRemarks(this Command c, VolteContext ctx)
         {
-            var db = VolteBot.GetRequiredService<DatabaseService>();
             var aliases = $"({string.Join("|", c.FullAliases)})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|", db.GetData(ctx.Guild).Configuration.CommandPrefix)
+                .Replace("|prefix|", DatabaseService.Instance.GetData(ctx.Guild).Configuration.CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 

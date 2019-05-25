@@ -8,7 +8,7 @@ namespace Volte.Extensions
 {
     public static class UserExtensions
     {
-        private static DatabaseService _db = VolteBot.GetRequiredService<DatabaseService>();
+        private static DatabaseService _db = DatabaseService.Instance;
 
         public static bool IsBotOwner(this IGuildUser user) => Config.Owner.Equals(user.Id);
 

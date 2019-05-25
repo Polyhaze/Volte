@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using Gommon;
+using Volte.Core;
 using Volte.Data.Models;
 using Volte.Data.Models.Guild;
 
@@ -17,7 +18,7 @@ namespace Volte.Services
     [Service("Bin", "The main Service that handles HTTP POST requests for debug reports to bin.scarsz.me.")]
     public sealed class BinService
     {
-
+        public static BinService Instance = VolteBot.GetRequiredService<BinService>();
         private DiscordSocketClient _client;
         private RestClient _http;
 
