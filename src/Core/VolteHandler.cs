@@ -51,15 +51,15 @@ namespace Volte.Core
             sw.Stop();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            _client.Log += async (m) => await _logger.Log(new LogEventArgs(m));
-            _client.JoinedGuild += async (guild) => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
-            _client.LeftGuild += async (guild) => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
-            _client.UserJoined += async (user) =>
+            _client.Log += async m => await _logger.Log(new LogEventArgs(m));
+            _client.JoinedGuild += async guild => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
+            _client.LeftGuild += async guild => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
+            _client.UserJoined += async user =>
             {
                 await _welcome.JoinAsync(new UserJoinedEventArgs(user));
                 await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
             };
-            _client.UserLeft += async (user) => await _welcome.LeaveAsync(new UserLeftEventArgs(user));
+            _client.UserLeft += async user => await _welcome.LeaveAsync(new UserLeftEventArgs(user));
             _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
             _client.MessageReceived += async (s) =>
             {
