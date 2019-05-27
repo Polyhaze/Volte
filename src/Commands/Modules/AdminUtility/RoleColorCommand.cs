@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord.WebSocket;
 using Discord;
+using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;

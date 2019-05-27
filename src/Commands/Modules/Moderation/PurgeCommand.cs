@@ -2,12 +2,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
-using Gommon;
 
 namespace Volte.Commands.Modules.Moderation
 {

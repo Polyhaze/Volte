@@ -10,7 +10,7 @@ namespace Volte.Data.Models.Guild
         public ulong Issuer { get; set; }
         public DateTimeOffset Date { get; set; }
 
-        public override string ToString() 
+        public override string ToString()
             => JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }

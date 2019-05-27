@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Qmmands;
 using Gommon;
+using Qmmands;
 
 namespace Volte.Commands.Preconditions
 {
@@ -12,7 +12,6 @@ namespace Volte.Commands.Preconditions
         private readonly GuildPermission[] _permissions;
 
         public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
-
 
         public override async Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)

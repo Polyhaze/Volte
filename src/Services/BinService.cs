@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Discord.WebSocket;
+using Gommon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Gommon;
 using Volte.Core;
 using Volte.Data.Models;
 using Volte.Data.Models.Guild;
@@ -54,7 +54,6 @@ namespace Volte.Services
             req.Parameters.Clear();
             req.AddParameter("application/json", JsonConvert.SerializeObject(data), ParameterType.RequestBody);
             return $"{JsonConvert.DeserializeObject(_http.Execute(req).Content).Cast<JObject>().GetValue("bin")}#{key}";
-
         }
 
         private string BinEncrypt(string content, string key)
@@ -106,6 +105,5 @@ namespace Volte.Services
                 .Select(x => pool[r.Next(0, pool.Length - 1)]);
             return new string(chars.ToArray());
         }
-
     }
 }

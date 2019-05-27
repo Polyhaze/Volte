@@ -2,10 +2,10 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Extensions;
-using Gommon;
 
 namespace Volte.Commands.Modules.BotOwner
 {

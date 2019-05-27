@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Discord;
 using Volte.Data;
-using Volte.Core;
 using Volte.Services;
 
 namespace Volte.Extensions

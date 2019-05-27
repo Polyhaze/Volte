@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
 using Gommon;
 using Volte.Core;
-using Console = Colorful.Console;
+using Volte.Data.Models;
+using Volte.Data.Models.EventArgs;
 using Color = System.Drawing.Color;
+using Console = Colorful.Console;
 
 namespace Volte.Services
 {
@@ -48,7 +48,6 @@ namespace Volte.Services
             if (e != null)
                 Append($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
 
-
             Console.Write(Environment.NewLine);
         }
 
@@ -65,16 +64,22 @@ namespace Volte.Services
                 case LogSource.Discord:
                 case LogSource.Gateway:
                     return (Color.RoyalBlue, "DSCD");
+
                 case LogSource.Volte:
                     return (Color.Crimson, "CORE");
+
                 case LogSource.Service:
                     return (Color.Gold, "SERV");
+
                 case LogSource.Module:
                     return (Color.LimeGreen, "MDLE");
+
                 case LogSource.Rest:
                     return (Color.Tomato, "REST");
+
                 case LogSource.Unknown:
                     return (Color.Teal, "UNKN");
+
                 default:
                     throw new ArgumentNullException(nameof(source), "source cannot be null.");
             }
@@ -86,16 +91,22 @@ namespace Volte.Services
             {
                 case LogSeverity.Critical:
                     return (Color.Maroon, "CRIT");
+
                 case LogSeverity.Error:
                     return (Color.DarkRed, "EROR");
+
                 case LogSeverity.Warning:
                     return (Color.Yellow, "WARN");
+
                 case LogSeverity.Info:
                     return (Color.SpringGreen, "INFO");
+
                 case LogSeverity.Verbose:
                     return (Color.Pink, "VRBS");
+
                 case LogSeverity.Debug:
                     return (Color.SandyBrown, "DEBG");
+
                 default:
                     throw new ArgumentNullException(nameof(s), "s cannot be null.");
             }

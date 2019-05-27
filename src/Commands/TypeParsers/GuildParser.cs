@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
@@ -12,9 +10,9 @@ namespace Volte.Commands.TypeParsers
     public sealed class GuildParser : TypeParser<SocketGuild>
     {
         public override Task<TypeParserResult<SocketGuild>> ParseAsync(
-            Parameter parameter, 
-            string value, 
-            ICommandContext context, 
+            Parameter parameter,
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();

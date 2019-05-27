@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Newtonsoft.Json;
 using Volte.Data.Models;
-using Volte.Core;
-using Gommon;
 using Volte.Services;
 
 namespace Volte.Data

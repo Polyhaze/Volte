@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Volte.Data.Models.EventArgs;
-using Volte.Extensions;
 using Gommon;
 using Volte.Core;
+using Volte.Data.Models.EventArgs;
+using Volte.Extensions;
 
 namespace Volte.Services
 {

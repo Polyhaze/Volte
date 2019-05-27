@@ -4,14 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
+using RestSharp;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Extensions;
 using Volte.Services;
-using Gommon;
-using RestSharp;
 
 namespace Volte.Core
 {
@@ -23,6 +23,7 @@ namespace Volte.Core
         public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
         private readonly VolteHandler _handler = VolteHandler.Instance;
         private readonly LoggingService _logger = LoggingService.Instance;
+
         public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
 
         public static Task StartAsync()
@@ -31,7 +32,7 @@ namespace Volte.Core
         private static ServiceProvider BuildServiceProvider()
             => new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
+                .AddSingleton(new RestClient { UserAgent = $"Volte/{Version.FullVersion}" })
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,

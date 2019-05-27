@@ -28,7 +28,6 @@ namespace Volte.Data.Models.Guild
 
         public override string ToString()
             => JsonConvert.SerializeObject(this, Formatting.Indented);
-
     }
 
     internal sealed class DummyModerationOptions

@@ -8,8 +8,7 @@ namespace Volte.Extensions
 {
     public static class ExceptionExtensions
     {
-        public static Task PrintStackTraceAsync(this Exception e) 
+        public static Task PrintStackTraceAsync(this Exception e)
             => LoggingService.Instance.LogAsync(LogSeverity.Error, LogSource.Volte, string.Empty, e);
-
     }
 }

@@ -24,12 +24,15 @@ namespace Volte.Data.Models
                 case "Rest":
                     s.Source = LogSource.Rest;
                     return s;
+
                 case "Discord":
                     s.Source = LogSource.Discord;
                     return s;
+
                 case "Gateway":
                     s.Source = LogSource.Gateway;
                     return s;
+
                 default:
                     s.Source = LogSource.Unknown;
                     return s;

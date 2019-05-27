@@ -3,15 +3,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
-using Volte.Core;
 using Volte.Extensions;
-using Gommon;
 
 namespace Volte.Services
 {
@@ -92,7 +92,6 @@ namespace Volte.Services
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"    {"channel".ToQuantity(channels)}");
 
-
             if (_shouldStream)
             {
                 await args.Client.SetGameAsync(Config.Game);
@@ -163,25 +162,32 @@ namespace Volte.Services
                 case CommandNotFoundResult _:
                     reason = "Unknown command.";
                     break;
+
                 case ExecutionFailedResult efr:
                     reason = $"Execution of this command failed.\nFull error message: {efr.Exception.Message}";
                     await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
+
                 case ChecksFailedResult _:
                     reason = "Insufficient permission.";
                     break;
+
                 case ParameterChecksFailedResult pcfr:
                     reason = $"Checks failed on parameter *{pcfr.Parameter.Name}**.";
                     break;
+
                 case ArgumentParseFailedResult apfr:
                     reason = $"Parsing for arguments failed on argument **{apfr.Parameter?.Name}**.";
                     break;
+
                 case TypeParseFailedResult tpfr:
                     reason = tpfr.Reason;
                     break;
+
                 case OverloadsFailedResult ofr:
                     reason = "A suitable overload could not be found for the given parameter type/order.";
                     break;
+
                 default:
                     reason = "Unknown error.";
                     break;

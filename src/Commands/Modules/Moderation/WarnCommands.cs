@@ -72,6 +72,5 @@ namespace Volte.Commands.Modules.Moderation
             await Context.CreateEmbed($"Cleared all warnings for **{user}**.").SendToAsync(Context.Channel);
             await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));
         }
-
     }
 }

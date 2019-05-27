@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Extensions;
-using Gommon;
 
 namespace Volte.Commands.Modules.Utility
 {
@@ -19,6 +19,7 @@ namespace Volte.Commands.Modules.Utility
                 case Emote emote:
                     await Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url).SendToAsync(Context.Channel);
                     break;
+
                 case Emoji emoji:
                     var url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
                                   emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +

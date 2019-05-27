@@ -21,18 +21,22 @@ namespace Volte.Commands.Modules.BotOwner
                     await Context.Client.SetStatusAsync(UserStatus.DoNotDisturb);
                     embed.WithDescription("Set the status to Do Not Disturb.");
                     break;
+
                 case "idle":
                     await Context.Client.SetStatusAsync(UserStatus.Idle);
                     embed.WithDescription("Set the status to Idle.");
                     break;
+
                 case "invisible":
                     await Context.Client.SetStatusAsync(UserStatus.Invisible);
                     embed.WithDescription("Set the status to Invisible.");
                     break;
+
                 case "online":
                     await Context.Client.SetStatusAsync(UserStatus.Online);
                     embed.WithDescription("Set the status to Online.");
                     break;
+
                 default:
                     await Context.Client.SetStatusAsync(UserStatus.Online);
                     embed.WithDescription(

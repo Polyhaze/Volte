@@ -1,5 +1,5 @@
-using Volte.Services;
 using Qmmands;
+using Volte.Services;
 
 namespace Volte.Commands
 {

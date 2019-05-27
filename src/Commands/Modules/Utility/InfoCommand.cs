@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Humanizer;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Extensions;
 
@@ -77,6 +77,7 @@ namespace Volte.Commands.Modules.Utility
                     process.Start();
                     version = process.StandardOutput.ReadToEnd();
                     return true;
+
                 default:
                     version = string.Empty;
                     return false;

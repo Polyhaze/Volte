@@ -64,6 +64,7 @@ namespace Volte.Commands.Modules.Utility
                                 $"{new Emoji(EmojiService.FIVE)} {choices[5]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
+
                 default:
                 {
                     if (choices.Length - 1 > 5)

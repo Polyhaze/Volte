@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
-using Gommon;
 using Volte.Services;
 
 namespace Volte.Core

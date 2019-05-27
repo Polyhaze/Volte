@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
+using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
-using Volte.Core;
 using Volte.Extensions;
 
 namespace Volte.Services

@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Volte.Services;
 using Qmmands;
 using Volte.Extensions;
+using Volte.Services;
 
 namespace Volte.Commands
 {
@@ -31,6 +31,7 @@ namespace Volte.Commands
         public IUserMessage Message { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
+
         public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
 
         public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
@@ -40,8 +41,11 @@ namespace Volte.Commands
             .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
+
         public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
+
         public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
+
         public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
     }
 }

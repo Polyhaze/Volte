@@ -1,6 +1,3 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Data.Models
 {
     public enum LogSource

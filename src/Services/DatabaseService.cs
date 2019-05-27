@@ -80,9 +80,8 @@ namespace Volte.Services
 
                 newColl.EnsureIndex(x => x.Id, true);
                 newColl.Upsert(@new);
-
             }
-            
+
             return Task.CompletedTask;
         }
 

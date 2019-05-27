@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Gommon;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin

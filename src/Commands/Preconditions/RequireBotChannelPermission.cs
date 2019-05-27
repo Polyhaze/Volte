@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Qmmands;
-using Volte.Extensions;
 using Gommon;
+using Qmmands;
 
 namespace Volte.Commands.Preconditions
 {
@@ -13,7 +12,6 @@ namespace Volte.Commands.Preconditions
         private readonly ChannelPermission[] _permissions;
 
         public RequireBotChannelPermission(params ChannelPermission[] permissions) => _permissions = permissions;
-
 
         public override async Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)

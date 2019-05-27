@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Qmmands;
 using Gommon;
+using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
@@ -31,8 +31,8 @@ namespace Volte.Commands.TypeParsers
             if (_matchingFalseValues.ContainsIgnoreCase(value))
                 return Task.FromResult(TypeParserResult<bool>.Successful(false));
 
-            return Task.FromResult(bool.TryParse(value, out var result) 
-                ? TypeParserResult<bool>.Successful(result) 
+            return Task.FromResult(bool.TryParse(value, out var result)
+                ? TypeParserResult<bool>.Successful(result)
                 : TypeParserResult<bool>.Unsuccessful("Failed to parse a boolean (true/false) value."));
         }
     }
