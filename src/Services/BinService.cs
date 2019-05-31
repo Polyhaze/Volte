@@ -34,7 +34,9 @@ namespace Volte.Services
             var key = RandomKey();
             var data = new BinData
             {
-                Description = BinEncrypt($"Volte Debug Information for Support, generated {DateTimeOffset.Now.FormatDate()}.", key),
+                Description =
+                    BinEncrypt($"Volte Debug Information for Support, generated {DateTimeOffset.Now.FormatDate()}.",
+                        key),
                 Expiration = 120,
                 Files = new List<BinFile>
                 {
@@ -57,9 +59,7 @@ namespace Volte.Services
         }
 
         private string BinEncrypt(string content, string key)
-        {
-            return Convert.ToBase64String(EncryptString(content, Encoding.ASCII.GetBytes(key)));
-        }
+            => Convert.ToBase64String(EncryptString(content, Encoding.ASCII.GetBytes(key)));
 
         private byte[] EncryptString(string text, byte[] key)
         {

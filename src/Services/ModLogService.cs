@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Gommon;
 using Volte.Core;
 using Volte.Data.Models;
@@ -131,6 +132,9 @@ namespace Volte.Services
 
                     return;
                 }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

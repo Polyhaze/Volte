@@ -51,16 +51,16 @@ namespace Volte.Services
             {
                 await embed.SendToAsync(owner);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode.Equals(50007))
+            catch (HttpException ignored) when (ignored.DiscordCode is 50007)
             {
-                var c = (await args.Guild.GetTextChannelsAsync()).FirstOrDefault();
+                var c = (await args.Guild.GetTextChannelsAsync()).OrderByDescending(x => x.Position).FirstOrDefault();
                 if (c != null) await embed.SendToAsync(c);
             }
 
             if (Config.JoinLeaveLog.Enabled)
             {
                 var joinLeave = Config.JoinLeaveLog;
-                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
+                if (joinLeave.GuildId == 0 || joinLeave.ChannelId.Equals(0))
                 {
                     await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
@@ -69,8 +69,9 @@ namespace Volte.Services
                 }
 
                 var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                var users = (await args.Guild.GetUsersAsync()).Where(u => !u.IsBot).ToList();
-                var bots = (await args.Guild.GetUsersAsync()).Where(u => u.IsBot).ToList();
+                var all = await args.Guild.GetUsersAsync();
+                var users = all.Where(u => !u.IsBot);
+                var bots = all.Where(u => u.IsBot);
 
                 var e = new EmbedBuilder()
                     .WithAuthor(owner)
@@ -79,16 +80,16 @@ namespace Volte.Services
                     .AddField("ID", args.Guild.Id, true)
                     .WithThumbnailUrl(args.Guild.IconUrl)
                     .WithCurrentTimestamp()
-                    .AddField("Users", users.Count, true)
-                    .AddField("Bots", bots.Count, true);
+                    .AddField("Users", users.Count(), true)
+                    .AddField("Bots", bots.Count(), true);
                 try
                 {
-                    if (bots.Count > users.Count)
+                    if (bots.Count() > users.Count())
                         await channel.SendMessageAsync(
                             $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
-                            e.WithColor(0x00FF00).Build());
+                            e.WithSuccessColor().Build());
                     else
-                        await channel.SendMessageAsync("", false, e.WithColor(0x00FF00).Build());
+                        await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
                 }
                 catch (NullReferenceException ex)
                 {
@@ -103,7 +104,7 @@ namespace Volte.Services
             if (Config.JoinLeaveLog.Enabled)
             {
                 var joinLeave = Config.JoinLeaveLog;
-                if (joinLeave.GuildId.Equals(0) || joinLeave.ChannelId.Equals(0))
+                if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
                 {
                     await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
@@ -114,13 +115,13 @@ namespace Volte.Services
                 var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
                 try
                 {
-                    var e = new EmbedBuilder()
+                    await new EmbedBuilder()
                         .WithAuthor(await args.Guild.GetOwnerAsync())
                         .WithTitle("Left Guild")
                         .AddField("Name", args.Guild.Name, true)
                         .AddField("ID", args.Guild.Id, true)
                         .WithThumbnailUrl(args.Guild.IconUrl)
-                        .WithColor(0xFF0000)
+                        .WithErrorColor()
                         .SendToAsync(channel);
                 }
                 catch (NullReferenceException e)
