@@ -60,7 +60,7 @@ namespace Volte.Services
             if (Config.JoinLeaveLog.Enabled)
             {
                 var joinLeave = Config.JoinLeaveLog;
-                if (joinLeave.GuildId == 0 || joinLeave.ChannelId.Equals(0))
+                if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
                 {
                     await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                         "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
