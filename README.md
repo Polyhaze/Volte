@@ -18,6 +18,6 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
 ## Bots made by Cool People
 
- * [thecatitude/Katbot](https://github.com/thecatitude/Katbot)
+ * [abyssal512/Abyss](https://github.com/abyssal512/Abyss)
  * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
  
