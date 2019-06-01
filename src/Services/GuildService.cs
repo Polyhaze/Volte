@@ -71,7 +71,7 @@ namespace Volte.Services
             {
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
                     "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
-                reutrn;
+                return;
             }
 
             var all = await args.Guild.GetUsersAsync();
