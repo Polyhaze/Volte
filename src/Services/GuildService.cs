@@ -57,78 +57,74 @@ namespace Volte.Services
                 if (c != null) await embed.SendToAsync(c);
             }
 
-            if (Config.JoinLeaveLog.Enabled)
+            if (!Config.JoinLeaveLog.Enabled) return;
+            var joinLeave = Config.JoinLeaveLog;
+            if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
             {
-                var joinLeave = Config.JoinLeaveLog;
-                if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
-                {
-                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                        "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
-                        "To fix, set Enabled to false, or correctly fill in your options.");
-                    return;
-                }
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
+                    "To fix, set Enabled to false, or correctly fill in your options.");
+                return;
+            }
 
-                var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                var all = await args.Guild.GetUsersAsync();
-                var users = all.Where(u => !u.IsBot);
-                var bots = all.Where(u => u.IsBot);
+            var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            var all = await args.Guild.GetUsersAsync();
+            var users = all.Where(u => !u.IsBot);
+            var bots = all.Where(u => u.IsBot);
 
-                var e = new EmbedBuilder()
-                    .WithAuthor(owner)
-                    .WithTitle("Joined Guild")
-                    .AddField("Name", args.Guild.Name, true)
-                    .AddField("ID", args.Guild.Id, true)
-                    .WithThumbnailUrl(args.Guild.IconUrl)
-                    .WithCurrentTimestamp()
-                    .AddField("Users", users.Count(), true)
-                    .AddField("Bots", bots.Count(), true);
-                try
-                {
-                    if (bots.Count() > users.Count())
-                        await channel.SendMessageAsync(
-                            $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
-                            e.WithSuccessColor().Build());
-                    else
-                        await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
-                }
-                catch (NullReferenceException ex)
-                {
-                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                        "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
-                }
+            var e = new EmbedBuilder()
+                .WithAuthor(owner)
+                .WithTitle("Joined Guild")
+                .AddField("Name", args.Guild.Name, true)
+                .AddField("ID", args.Guild.Id, true)
+                .WithThumbnailUrl(args.Guild.IconUrl)
+                .WithCurrentTimestamp()
+                .AddField("Users", users.Count(), true)
+                .AddField("Bots", bots.Count(), true);
+            try
+            {
+                if (bots.Count() > users.Count())
+                    await channel.SendMessageAsync(
+                        $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
+                        e.WithSuccessColor().Build());
+                else
+                    await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
+            }
+            catch (NullReferenceException ex)
+            {
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
             }
         }
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
-            if (Config.JoinLeaveLog.Enabled)
+            if (!Config.JoinLeaveLog.Enabled) return;
+            var joinLeave = Config.JoinLeaveLog;
+            if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
             {
-                var joinLeave = Config.JoinLeaveLog;
-                if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
-                {
-                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                        "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
-                        "To fix, set Enabled to false, or correctly fill in your options.");
-                    return;
-                }
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
+                    "To fix, set Enabled to false, or correctly fill in your options.");
+                return;
+            }
 
-                var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-                try
-                {
-                    await new EmbedBuilder()
-                        .WithAuthor(await args.Guild.GetOwnerAsync())
-                        .WithTitle("Left Guild")
-                        .AddField("Name", args.Guild.Name, true)
-                        .AddField("ID", args.Guild.Id, true)
-                        .WithThumbnailUrl(args.Guild.IconUrl)
-                        .WithErrorColor()
-                        .SendToAsync(channel);
-                }
-                catch (NullReferenceException e)
-                {
-                    await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                        "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
-                }
+            var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            try
+            {
+                await new EmbedBuilder()
+                    .WithAuthor(await args.Guild.GetOwnerAsync())
+                    .WithTitle("Left Guild")
+                    .AddField("Name", args.Guild.Name, true)
+                    .AddField("ID", args.Guild.Id, true)
+                    .WithThumbnailUrl(args.Guild.IconUrl)
+                    .WithErrorColor()
+                    .SendToAsync(channel);
+            }
+            catch (NullReferenceException e)
+            {
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
             }
         }
     }
