@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,8 +15,6 @@ namespace Volte.Core
 {
     internal sealed class VolteHandler
     {
-        public static VolteHandler Instance = VolteBot.GetRequiredService<VolteHandler>();
-
         private readonly DiscordSocketClient _client;
         private readonly CommandService _service;
         private readonly GuildService _guild;
@@ -41,7 +40,7 @@ namespace Volte.Core
             _logger = loggingService;
         }
 
-        public async Task InitAsync()
+        public async Task InitAsync(IServiceProvider provider)
         {
             _service.AddTypeParsers();
             var sw = Stopwatch.StartNew();
@@ -69,7 +68,7 @@ namespace Volte.Core
                     return;
                 }
 
-                await _event.HandleMessageAsync(new MessageReceivedEventArgs(s));
+                await _event.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
             };
         }
     }

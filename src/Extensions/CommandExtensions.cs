@@ -1,4 +1,5 @@
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
@@ -16,7 +17,7 @@ namespace Volte.Extensions
             var aliases = $"({string.Join("|", c.FullAliases)})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|", DatabaseService.Instance.GetData(ctx.Guild).Configuration.CommandPrefix)
+                .Replace("|prefix|", ctx.ServiceProvider.GetRequiredService<DatabaseService>().GetData(ctx.Guild).Configuration.CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 

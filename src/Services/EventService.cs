@@ -18,7 +18,6 @@ namespace Volte.Services
     [Service("Event", "The main Service for handling some Discord gateway events.")]
     public sealed class EventService
     {
-        public static EventService Instance = VolteBot.GetRequiredService<EventService>();
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
@@ -58,7 +57,7 @@ namespace Volte.Services
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out var cmd))
             {
                 var sw = Stopwatch.StartNew();
-                var result = await _commandService.ExecuteAsync(cmd, args.Context, VolteBot.ServiceProvider);
+                var result = await _commandService.ExecuteAsync(cmd, args.Context, args.Context.ServiceProvider);
 
                 if (result is CommandNotFoundResult) return;
                 var targetCommand = _commandService.GetAllCommands()

@@ -88,7 +88,7 @@ namespace Volte.Commands.Modules.BotOwner
                 }
                 catch (Exception e)
                 {
-                    await e.PrintStackTraceAsync();
+                    await Logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, e);
                 }
             });
 

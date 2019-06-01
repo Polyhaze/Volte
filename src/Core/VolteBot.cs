@@ -17,14 +17,12 @@ namespace Volte.Core
 {
     public class VolteBot : IDisposable
     {
-        public static readonly ServiceProvider ServiceProvider = BuildServiceProvider();
-        public static readonly CommandService CommandService = GetRequiredService<CommandService>();
-        public static readonly DiscordSocketClient Client = GetRequiredService<DiscordSocketClient>();
+        private static readonly ServiceProvider _serviceProvider = BuildServiceProvider();
+        private readonly CommandService _commandService = _serviceProvider.GetRequiredService<CommandService>();
+        private readonly DiscordSocketClient _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
         public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
-        private readonly VolteHandler _handler = VolteHandler.Instance;
-        private readonly LoggingService _logger = LoggingService.Instance;
-
-        public static T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
+        private readonly VolteHandler _handler = _serviceProvider.GetRequiredService<VolteHandler>();
+        private readonly LoggingService _logger = _serviceProvider.GetRequiredService<LoggingService>();
 
         public static Task StartAsync()
             => new VolteBot().LoginAsync();
@@ -74,11 +72,11 @@ namespace Volte.Core
             }
 
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
-            await Client.LoginAsync(TokenType.Bot, Config.Token);
-            await Client.StartAsync();
+            await _client.LoginAsync(TokenType.Bot, Config.Token);
+            await _client.StartAsync();
 
-            await Client.SetStatusAsync(UserStatus.Online);
-            await _handler.InitAsync();
+            await _client.SetStatusAsync(UserStatus.Online);
+            await _handler.InitAsync(_serviceProvider);
             try
             {
                 await Task.Delay(-1, Cts.Token);
@@ -92,9 +90,9 @@ namespace Volte.Core
 
         private async Task ShutdownAsync()
         {
-            await Client.SetStatusAsync(UserStatus.Invisible);
-            await Client.LogoutAsync();
-            await Client.StopAsync();
+            await _client.SetStatusAsync(UserStatus.Invisible);
+            await _client.LogoutAsync();
+            await _client.StopAsync();
             Dispose();
             Environment.Exit(0);
         }
@@ -102,8 +100,8 @@ namespace Volte.Core
         public void Dispose()
         {
             Cts.Dispose();
-            ServiceProvider.Dispose();
-            Client.Dispose();
+            _serviceProvider.Dispose();
+            _client.Dispose();
         }
     }
 }

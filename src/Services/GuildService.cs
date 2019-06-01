@@ -1,8 +1,8 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
+using Discord.WebSocket;
 using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models;
@@ -14,13 +14,14 @@ namespace Volte.Services
     [Service("Guild", "The main Service that handles guild-related Discord gateway events.")]
     public sealed class GuildService
     {
-        public static GuildService Instance = VolteBot.GetRequiredService<GuildService>();
-
         private readonly LoggingService _logger;
+        private readonly DiscordSocketClient _client;
 
-        public GuildService(LoggingService loggingService)
+        public GuildService(LoggingService loggingService,
+            DiscordSocketClient discordSocketClient)
         {
             _logger = loggingService;
+            _client = discordSocketClient;
         }
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
@@ -50,7 +51,7 @@ namespace Volte.Services
             {
                 await embed.SendToAsync(owner);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode is 50007)
+            catch (HttpException ex) when (ex.DiscordCode is 50007)
             {
                 var c = (await args.Guild.GetTextChannelsAsync()).OrderByDescending(x => x.Position).FirstOrDefault();
                 if (c != null) await embed.SendToAsync(c);
@@ -66,7 +67,7 @@ namespace Volte.Services
                 return;
             }
 
-            var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
             if (channel is null)
             {
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
@@ -108,7 +109,7 @@ namespace Volte.Services
                 return;
             }
 
-            var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
             if (channel is null)
             {
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Service,

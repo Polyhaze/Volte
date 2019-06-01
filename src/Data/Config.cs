@@ -4,7 +4,6 @@ using Discord;
 using Gommon;
 using Newtonsoft.Json;
 using Volte.Data.Models;
-using Volte.Services;
 
 namespace Volte.Data
 {
@@ -15,18 +14,15 @@ namespace Volte.Data
         private static bool _valid = File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
 
         static Config()
-        {
-            _ = CreateIfNotExists();
+        { 
+            CreateIfNotExists();
             if (_valid)
                 _bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        public static async Task CreateIfNotExists()
+        public static void CreateIfNotExists()
         {
             if (_valid) return;
-            var logger = LoggingService.Instance;
-            await logger.LogAsync(LogSeverity.Warning, LogSource.Volte,
-                "config.json didn't exist or was empty. Created it for you.");
             _bot = new BotConfig
             {
                 Token = "token here",

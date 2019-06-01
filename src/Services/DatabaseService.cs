@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using LiteDB;
-using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models.Guild;
 
@@ -13,8 +13,14 @@ namespace Volte.Services
     [Service("Database", "The main Service for interacting with the Volte database.")]
     public sealed class DatabaseService
     {
-        public static DatabaseService Instance = VolteBot.GetRequiredService<DatabaseService>();
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
+
+        private DiscordSocketClient _client;
+
+        public DatabaseService(DiscordSocketClient discordSocketClient)
+        {
+            _client = discordSocketClient;
+        }
 
         public GuildData GetData(IGuild guild) => GetData(guild.Id);
 
@@ -23,7 +29,7 @@ namespace Volte.Services
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
-            var newConf = Create(VolteBot.Client.GetGuild(id));
+            var newConf = Create(_client.GetGuild(id));
             coll.Insert(newConf);
             return newConf;
         }
@@ -48,7 +54,7 @@ namespace Volte.Services
                     OwnerId = record.GuildOwnerId,
                     Configuration = new GuildConfiguration
                     {
-                        Autorole = VolteBot.Client.GetGuild(record.ServerId)?.Roles
+                        Autorole = _client.GetGuild(record.ServerId)?.Roles
                                        .FirstOrDefault(x => x.Name.EqualsIgnoreCase(record.Autorole))?.Id ?? ulong.MinValue,
                         CommandPrefix = record.CommandPrefix ?? Config.CommandPrefix,
                         DeleteMessageOnCommand = record.DeleteMessageOnCommand,

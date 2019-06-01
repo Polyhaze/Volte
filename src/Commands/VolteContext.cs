@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Extensions;
 using Volte.Services;
@@ -14,7 +15,7 @@ namespace Volte.Commands
 
         public VolteContext(IDiscordClient client, IUserMessage msg, IServiceProvider provider)
         {
-            _emojiService = EmojiService.Instance;
+            _emojiService = provider.GetRequiredService<EmojiService>();
             Client = client as DiscordSocketClient;
             ServiceProvider = provider;
             Guild = (msg.Channel as ITextChannel)?.Guild;
