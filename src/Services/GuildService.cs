@@ -25,7 +25,8 @@ namespace Volte.Services
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
-            if (Config.BlacklistedOwners.Contains(args.Guild.OwnerId))
+            var owner = await args.Guild.GetOwnerAsync();
+            if (Config.BlacklistedOwners.Contains(owner.Id))
             {
                 await _logger.LogAsync(LogSeverity.Warning, LogSource.Volte,
                     $"Left guild \"{args.Guild.Name}\" owned by blacklisted owner {await args.Guild.GetOwnerAsync()}.");
@@ -33,11 +34,9 @@ namespace Volte.Services
                 return;
             }
 
-            var owner = await args.Guild.GetOwnerAsync();
-
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
-                .WithAuthor(await args.Guild.GetOwnerAsync())
+                .WithAuthor(owner)
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
@@ -68,6 +67,12 @@ namespace Volte.Services
             }
 
             var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            if (channel is null)
+            {
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
+                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
+            }
+
             var all = await args.Guild.GetUsersAsync();
             var users = all.Where(u => !u.IsBot);
             var bots = all.Where(u => u.IsBot);
@@ -81,20 +86,13 @@ namespace Volte.Services
                 .WithCurrentTimestamp()
                 .AddField("Users", users.Count(), true)
                 .AddField("Bots", bots.Count(), true);
-            try
-            {
-                if (bots.Count() > users.Count())
-                    await channel.SendMessageAsync(
-                        $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
-                        e.WithSuccessColor().Build());
-                else
-                    await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
-            }
-            catch (NullReferenceException ex)
-            {
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", ex);
-            }
+
+            if (bots.Count() > users.Count())
+                await channel.SendMessageAsync(
+                    $"<@{Config.Owner}>: Joined a guild with more bots than users.", false,
+                    e.WithSuccessColor().Build());
+            else
+                await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
         }
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
@@ -110,22 +108,21 @@ namespace Volte.Services
             }
 
             var channel = VolteBot.Client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-            try
-            {
-                await new EmbedBuilder()
-                    .WithAuthor(await args.Guild.GetOwnerAsync())
-                    .WithTitle("Left Guild")
-                    .AddField("Name", args.Guild.Name, true)
-                    .AddField("ID", args.Guild.Id, true)
-                    .WithThumbnailUrl(args.Guild.IconUrl)
-                    .WithErrorColor()
-                    .SendToAsync(channel);
-            }
-            catch (NullReferenceException e)
+            if (channel is null)
             {
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Service,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.", e);
+                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
             }
+
+            await new EmbedBuilder()
+                .WithAuthor(await args.Guild.GetOwnerAsync())
+                .WithTitle("Left Guild")
+                .AddField("Name", args.Guild.Name, true)
+                .AddField("ID", args.Guild.Id, true)
+                .WithThumbnailUrl(args.Guild.IconUrl)
+                .WithErrorColor()
+                .SendToAsync(channel);
+
         }
     }
 }
