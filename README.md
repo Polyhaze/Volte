@@ -11,8 +11,7 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
  
  - [Invite the bot](https://greemdev.net/Invite)
  - [Issue Tracker](https://github.com/GreemDev/Volte/issues)
- - [Discord Server](https://greemdev.net/Discord)
- - [Volte Twitter](https://twitter.com/VolteBot)
+ - [Discord Server](https://discord.gg/H8bcFr2)
  - [Website](https://greemdev.net/Volte)
  - [Source Code](https://github.com/GreemDev/Volte) (literally this site)
 
