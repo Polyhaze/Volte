@@ -1,10 +1,9 @@
 {
   "Token": "Your Bot Token", //bot token obtained from the Discord developer portal
-  "WelcomeApiKey": "", //key for the https://ourmainfra.me/api/v2/welcomer/ api
-  "CommandPrefix": "$", //can be anything, not just $
+  "CommandPrefix": "$", //default prefix for commands. can be anything, not just $
   "Owner": 0, //your Discord user ID
   "Game": "$h - @Volte h", //game to set upon logging in
-  "Streamer": "GreemDev", //set this if you want your bot to have a twitch stream set as its status
+  "Streamer": "GreemDev", //set this if you want your bot to have a twitch stream set as its status. if not, leave blank and a twitch status will not be set
   "SuccessEmbedColor": 0x7000FB, //hexadecimal color value for success
   "ErrorEmbedColor": 0xFF0000, //same as above but for failures
   "LogAllCommands": true, //whether or not to log all commands to the bot's console; enabled by default

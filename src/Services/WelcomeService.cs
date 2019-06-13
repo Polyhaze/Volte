@@ -6,7 +6,7 @@ using Volte.Extensions;
 
 namespace Volte.Services
 {
-    [Service("Welcome", "The main Service that handles welcome/leaving functionality..")]
+    [Service("Welcome", "The main Service that handles welcome/leaving functionality.")]
     public sealed class WelcomeService
     {
         private readonly DatabaseService _db;
@@ -59,8 +59,7 @@ namespace Volte.Services
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(
-                        data.Configuration.Welcome.WelcomeColor)
+                    .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(leavingMessage)
                     .WithThumbnailUrl(args.User.GetAvatarUrl())
                     .WithCurrentTimestamp();
