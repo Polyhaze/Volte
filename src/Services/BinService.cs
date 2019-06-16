@@ -75,16 +75,11 @@ namespace Volte.Services
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
                 using (var ms = new MemoryStream())
-                {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (var sw = new StreamWriter(cs))
-                        {
-                            sw.Write(text);
-                        }
-
-                        enc = ms.ToArray();
-                    }
+                using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                using (var sw = new StreamWriter(cs))
+                { 
+                    sw.Write(text);
+                    enc = ms.ToArray();
                 }
             }
 

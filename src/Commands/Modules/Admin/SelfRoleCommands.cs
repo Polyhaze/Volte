@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
@@ -16,10 +17,19 @@ namespace Volte.Commands.Modules.Admin
         public async Task SelfRoleAddAsync([Remainder] SocketRole role)
         {
             var data = Db.GetData(Context.Guild);
-            data.Extras.SelfRoles.Add(role.Name);
-            Db.UpdateData(data);
-            await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles list for this guild.")
+            var target = data.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
+            if (target is null)
+            {
+                data.Extras.SelfRoles.Add(role.Name);
+                Db.UpdateData(data);
+                await Context.CreateEmbed($"Successfully added **{role.Name}** to the Self Roles list for this guild.")
+                    .SendToAsync(Context.Channel);
+                return;
+            }
+
+            await Context.CreateEmbed($"A role with the name **{role.Name}** is already in the Self Roles list for this guild!")
                 .SendToAsync(Context.Channel);
+
         }
 
         [Command("SelfRoleRemove", "SrR", "SrRem")]
