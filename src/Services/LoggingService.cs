@@ -22,33 +22,33 @@ namespace Volte.Services
         }
 
         internal Task PrintVersion() => LogAsync(LogSeverity.Info, LogSource.Volte,
-            $"Currently running Volte V{Version.FullVersion}");
+            $"Currently running Volte V{Version.FullVersion}.");
 
         public async Task LogAsync(LogSeverity s, LogSource src, string message, Exception e = null)
         {
             await _semaphore.WaitAsync();
-            await DoLog(s, src, message, e);
-            _semaphore.Release();
+            await DoLogAsync(s, src, message, e);
+            _ = _semaphore.Release();
         }
 
-        private async Task DoLog(LogSeverity s, LogSource src, string message, Exception e)
+        private async Task DoLogAsync(LogSeverity s, LogSource src, string message, Exception e)
         {
             var (color, value) = VerifySeverity(s);
-            await Append($"{value} -> ", color);
+            await AppendAsync($"{value} -> ", color);
 
             (color, value) = VerifySource(src);
-            await Append($"{value} -> ", color);
+            await AppendAsync($"{value} -> ", color);
 
             if (!message.IsNullOrWhitespace())
-                await Append(message, Color.White);
+                await AppendAsync(message, Color.White);
 
             if (e != null)
-                await Append($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
+                await AppendAsync($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
 
             Console.Write(Environment.NewLine);
         }
 
-        private async Task Append(string m, Color c)
+        private async Task AppendAsync(string m, Color c)
         {
             Console.ForegroundColor = c;
             await Console.Out.WriteAsync(m);
