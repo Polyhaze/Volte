@@ -15,11 +15,9 @@ namespace Volte.Services
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        internal async Task Log(LogEventArgs args)
-        {
-            await LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
+        internal Task Log(LogEventArgs args) => 
+            LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
-        }
 
         internal Task PrintVersion() => LogAsync(LogSeverity.Info, LogSource.Volte,
             $"Currently running Volte V{Version.FullVersion}.");
