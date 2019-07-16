@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
@@ -26,7 +27,9 @@ namespace Volte.Commands.Modules.Utility
                 .AddField("Is Bot", target.IsBot, true)
                 .AddField("Account Created",
                     $"{target.CreatedAt.FormatDate()}, {target.CreatedAt.FormatFullTime()}")
-                .AddField("Joined This Guild", $"{target.JoinedAt.Value.FormatDate()}, {target.JoinedAt.Value.FormatFullTime()}")
+                .AddField("Joined This Guild", 
+                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatDate() : string.Empty)}, " +
+                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : string.Empty)}")
                 .SendToAsync(Context.Channel);
         }
     }
