@@ -28,8 +28,8 @@ namespace Volte.Commands.Modules.Utility
                 .AddField("Account Created",
                     $"{target.CreatedAt.FormatDate()}, {target.CreatedAt.FormatFullTime()}")
                 .AddField("Joined This Guild", 
-                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatDate() : string.Empty)}, " +
-                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : string.Empty)}")
+                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatDate() : "\u200B")}, " +
+                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : "\u200B")}")
                 .SendToAsync(Context.Channel);
         }
     }
