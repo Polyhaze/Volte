@@ -34,7 +34,8 @@ namespace Volte.Data
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
                 JoinLeaveLog = new JoinLeaveLog(),
-                BlacklistedServerOwners = new ulong[] { }
+                BlacklistedServerOwners = new ulong[] { },
+                EnabledFeatures = new EnabledFeatures()
             };
             File.WriteAllText(ConfigFile,
                 JsonConvert.SerializeObject(_bot, Formatting.Indented));
@@ -62,18 +63,32 @@ namespace Volte.Data
 
         public static ulong[] BlacklistedOwners => _bot.BlacklistedServerOwners;
 
+        public static EnabledFeatures EnabledFeatures => _bot.EnabledFeatures;
+
         private struct BotConfig
         {
+            [JsonProperty("discord_token")]
             public string Token;
+            [JsonProperty("command_prefix")]
             public string CommandPrefix;
+            [JsonProperty("bot_owner")]
             public ulong Owner;
+            [JsonProperty("status_game")]
             public string Game;
+            [JsonProperty("status_twitch_streamer")]
             public string Streamer;
+            [JsonProperty("color_success")]
             public uint SuccessEmbedColor;
+            [JsonProperty("color_error")]
             public uint ErrorEmbedColor;
+            [JsonProperty("log_all_commands")]
             public bool LogAllCommands;
+            [JsonProperty("join_leave_log")]
             public JoinLeaveLog JoinLeaveLog;
+            [JsonProperty("blacklisted_guild_owners")]
             public ulong[] BlacklistedServerOwners;
+            [JsonProperty("enabled_features")]
+            public EnabledFeatures EnabledFeatures;
         }
     }
 }

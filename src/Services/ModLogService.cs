@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Gommon;
+using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
@@ -19,6 +20,9 @@ namespace Volte.Services
 
         public async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
+            if (!Config.EnabledFeatures.ModLog)
+                return;
+
             var data = _db.GetData(args.Guild);
             var c = await args.Guild.GetTextChannelAsync(data.Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;

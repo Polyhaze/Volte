@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
+using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Extensions;
@@ -53,10 +54,16 @@ namespace Volte.Core
             _client.LeftGuild += async guild => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
             _client.UserJoined += async user =>
             {
-                await _welcome.JoinAsync(new UserJoinedEventArgs(user));
-                await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Welcome)
+                    await _welcome.JoinAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Autorole)
+                    await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
             };
-            _client.UserLeft += async user => await _welcome.LeaveAsync(new UserLeftEventArgs(user));
+            _client.UserLeft += async user =>
+            {
+                if (Config.EnabledFeatures.Welcome)
+                    await _welcome.LeaveAsync(new UserLeftEventArgs(user));
+            };
             _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
             _client.MessageReceived += async (s) =>
             {

@@ -26,7 +26,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
 
         private readonly bool _shouldStream =
-            Config.Streamer.EqualsIgnoreCase("streamer here") || Config.Streamer.IsNullOrWhitespace();
+            !Config.Streamer.EqualsIgnoreCase("streamer here") || !Config.Streamer.IsNullOrWhitespace();
 
         public EventService(LoggingService loggingService,
             DatabaseService databaseService,
@@ -45,9 +45,13 @@ namespace Volte.Services
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
-            await _blacklist.CheckMessageAsync(args);
-            await _antilink.CheckMessageAsync(args);
-            await _pingchecks.CheckMessageAsync(args);
+            if (Config.EnabledFeatures.Blacklist)
+                await _blacklist.CheckMessageAsync(args);
+            if (Config.EnabledFeatures.Antilink)
+                await _antilink.CheckMessageAsync(args);
+            if (Config.EnabledFeatures.PingChecks)
+                await _pingchecks.CheckMessageAsync(args);
+
             var prefixes = new[]
             {
                 args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
