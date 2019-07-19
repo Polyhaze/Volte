@@ -2,6 +2,7 @@
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 
 namespace Volte.Commands.Modules.AdminUtility
 {
@@ -12,10 +13,10 @@ namespace Volte.Commands.Modules.AdminUtility
         [Remarks("Usage: |prefix|servername {name}")]
         [RequireBotGuildPermission(GuildPermission.ManageGuild | GuildPermission.Administrator)]
         [RequireGuildAdmin]
-        public async Task ServerNameAsync([Remainder] string name)
+        public async Task<BaseResult> ServerNameAsync([Remainder] string name)
         {
             await Context.Guild.ModifyAsync(g => g.Name = name);
-            await Context.ReactSuccessAsync();
+            return Ok($"Set this server's name to **{name}**!");
         }
     }
 }

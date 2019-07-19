@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Data;
@@ -16,14 +18,15 @@ namespace Volte.Commands
         public EmojiService EmojiService { get; set; }
         public LoggingService Logger { get; set; }
 
-        protected BaseResult Ok(string embedContent)
+
+        protected BaseResult Ok(string text, Func<IUserMessage, Task> afterCompletion = null, bool shouldEmbed = true)
         {
-            return new OkResult(Context.CreateEmbedBuilder(embedContent));
+            return new OkResult(text, shouldEmbed, afterCompletion);
         }
 
-        protected BaseResult Ok(EmbedBuilder embed)
+        protected BaseResult Ok(string text)
         {
-            return new OkResult(embed);
+            return new OkResult(text, true);
         }
 
         protected BaseResult BadRequest(string reason)

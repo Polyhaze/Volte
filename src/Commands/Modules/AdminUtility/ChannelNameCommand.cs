@@ -2,6 +2,7 @@
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 
 namespace Volte.Commands.Modules.AdminUtility
 {
@@ -12,10 +13,10 @@ namespace Volte.Commands.Modules.AdminUtility
         [Remarks("Usage: |prefix|channelname {name}")]
         [RequireBotChannelPermission(ChannelPermission.ManageChannels)]
         [RequireGuildAdmin]
-        public async Task ChannelNameAsync([Remainder] string name)
+        public async Task<BaseResult> ChannelNameAsync([Remainder] string name)
         {
             await Context.Channel.ModifyAsync(c => c.Name = name);
-            await Context.ReactSuccessAsync();
+            return Ok($"Set this channel's name to **{name}**");
         }
     }
 }

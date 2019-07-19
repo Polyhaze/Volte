@@ -40,11 +40,7 @@ namespace Volte.Commands.Modules.Admin
             data.Extras.Tags.Add(newTag);
             Db.UpdateData(data);
 
-            return Ok(Context.CreateEmbedBuilder()
-                .WithTitle("Tag Created!")
-                .AddField("Name", newTag.Name)
-                .AddField("Response", newTag.Response)
-                .AddField("Creator", Context.User.Mention));
+            return Ok($"Created new tag: **{newTag.Name}**");
         }
 
         [Command("TagDelete", "TagDel", "TagRem")]

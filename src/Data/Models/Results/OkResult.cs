@@ -1,63 +1,51 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Commands;
+using Volte.Extensions;
 
 namespace Volte.Data.Models.Results
 {
     public class OkResult : BaseResult
     {
-        public OkResult(string text, params FileAttachment[] attachments)
+        public OkResult(string text, bool shouldEmbed = true, Func<IUserMessage, Task> func = null)
         {
             Message = text;
-            Embed = null;
-            Attachments = attachments;
-        }
-
-        public OkResult(EmbedBuilder embed, params FileAttachment[] attachments)
-        {
-            Message = null;
-            Embed = embed;
-            Attachments = attachments;
+            ShouldEmbed = shouldEmbed;
+            After = func;
         }
 
         public override bool IsSuccessful => true;
 
         private string Message { get; }
-        private EmbedBuilder Embed { get; }
-        private FileAttachment[] Attachments { get; }
+        private bool ShouldEmbed { get; }
+        private Func<IUserMessage, Task> After { get; set; }
 
         public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             var currentUser = await ctx.Guild.GetCurrentUserAsync();
             if (!currentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
-            if (Attachments.Length > 0 && !currentUser.GetPermissions(ctx.Channel).AttachFiles)
-                return new ResultCompletionData();
 
-            var messages = new List<IUserMessage>();
-            if (Attachments.Length == 1)
+            IUserMessage message;
+            if (ShouldEmbed)
             {
-                var attachment = Attachments.First();
-                messages.Add(await ctx.Channel.SendFileAsync(attachment.Stream, attachment.Filename, Message, false,
-                    Embed?.Build()));
-            }
-            else if (Attachments.Length > 0)
-            {
-                foreach (var attach in Attachments)
-                {
-                    messages.Add(await ctx.Channel.SendFileAsync(attach.Stream, attach.Filename));
-                }
-
-                if (Message != null || Embed != null)
-                    messages.Add(await ctx.Channel.SendMessageAsync(Message, false, Embed?.Build()));
+                message = await ctx.CreateEmbedBuilder(Message).SendToAsync(ctx.Channel);
             }
             else
             {
-                messages.Add(await ctx.Channel.SendMessageAsync(Message, false, Embed?.Build()));
+                message = await ctx.Channel.SendMessageAsync(Message);
             }
 
-            return new ResultCompletionData(messages.ToArray());
+            if (After != null)
+            {
+                await After(message);
+            }
+
+
+            return new ResultCompletionData();
         }
     }
 }
