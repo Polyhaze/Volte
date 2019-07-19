@@ -11,6 +11,7 @@ using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Services
@@ -58,7 +59,8 @@ namespace Volte.Services
                 $"<@!{args.Context.Client.CurrentUser.Id}> "
             }.ToList();
 
-            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out var cmd))
+            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+                out var cmd))
             {
                 var sw = Stopwatch.StartNew();
                 var result = await _commandService.ExecuteAsync(cmd, args.Context, args.Context.ServiceProvider);
@@ -68,6 +70,10 @@ namespace Volte.Services
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
                                     ?? _commandService.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
+
+                if (result is OkResult res)
+                    await res.ExecuteResultAsync(args.Context);
+
                 sw.Stop();
                 await OnCommandAsync(targetCommand, result, args.Context, sw);
 
@@ -126,10 +132,14 @@ namespace Volte.Services
             var commandName = ctx.Message.Content.Split(" ")[0];
             var args = ctx.Message.Content.Replace($"{commandName}", "");
             if (string.IsNullOrEmpty(args)) args = "None";
-            if (res is FailedResult failedRes)
+            switch (res)
             {
-                await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
-                return;
+                case FailedResult failedRes:
+                    await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
+                    return;
+                case BadRequestResult badreq:
+                    await OnBadRequestResultAsync(c, badreq, ctx, args, sw);
+                    return;
             }
 
             if (Config.LogAllCommands)
@@ -226,6 +236,31 @@ namespace Volte.Services
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
                     "-------------------------------------------------");
             }
+        }
+
+        public async Task OnBadRequestResultAsync(Command c, BadRequestResult res, VolteContext ctx, string args,
+            Stopwatch sw)
+        {
+            await res.ExecuteResultAsync(ctx);
+
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|     -Command Issued: {c.Name}");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|        -Args Passed: {args.Trim()}");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|        -Time Issued: {DateTime.Now}");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|           -Executed: {res.IsSuccessful} | Reason: {res.Reason}");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                $"|              -After: {sw.Elapsed.Humanize()}");
+            await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                "-------------------------------------------------");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -9,14 +10,13 @@ namespace Volte.Commands.Modules.Admin
         [Command("Bin")]
         [Description("Create a debug dump on bin.greemdev.net with debug information used for Support.")]
         [Remarks("Usage: |prefix|bin")]
-        public async Task BinAsync()
+        public Task<BaseResult> BinAsync()
         {
-            await Context.CreateEmbed(
-                    "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
-                    "\n" +
-                    "\n" +
-                    $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(Context.Guild))}")
-                .SendToAsync(Context.Channel);
+            return Ok(
+                "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
+                "\n" +
+                "\n" +
+                $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(Context.Guild))}");
         }
     }
 }

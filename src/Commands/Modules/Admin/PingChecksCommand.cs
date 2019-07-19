@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -11,14 +12,12 @@ namespace Volte.Commands.Modules.Admin
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         [RequireGuildAdmin]
-        public async Task PingChecksAsync(bool enabled)
+        public Task<BaseResult> PingChecksAsync(bool enabled)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.MassPingChecks = enabled;
             Db.UpdateData(data);
-            await Context
-                .CreateEmbed(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.")
-                .SendToAsync(Context.Channel);
+            return Ok(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.");
         }
     }
 }

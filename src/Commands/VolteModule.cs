@@ -1,4 +1,7 @@
+using Discord;
 using Qmmands;
+using Volte.Data;
+using Volte.Data.Models.Results;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -12,5 +15,25 @@ namespace Volte.Commands
         public BinService BinService { get; set; }
         public EmojiService EmojiService { get; set; }
         public LoggingService Logger { get; set; }
+
+        protected BaseResult Ok(string embedContent)
+        {
+            return new OkResult(Context.CreateEmbedBuilder(embedContent));
+        }
+
+        protected BaseResult Ok(EmbedBuilder embed)
+        {
+            return new OkResult(embed);
+        }
+
+        protected BaseResult BadRequest(string reason)
+        {
+            return new BadRequestResult(reason);
+        }
+
+        protected BaseResult None()
+        {
+            return new NoResult();
+        }
     }
 }

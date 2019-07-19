@@ -1,9 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Guild;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -15,18 +17,15 @@ namespace Volte.Commands.Modules.Admin
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tagcreate {name} {response}")]
         [RequireGuildAdmin]
-        public async Task TagCreateAsync(string name, [Remainder] string response)
+        public async Task<BaseResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
                 var user = Context.Client.GetUser(tag.CreatorId);
-                await Context
-                    .CreateEmbed(
-                        $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.")
-                    .SendToAsync(Context.Channel);
-                return;
+                return BadRequest(
+                    $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.");
             }
 
             var newTag = new Tag
@@ -41,38 +40,31 @@ namespace Volte.Commands.Modules.Admin
             data.Extras.Tags.Add(newTag);
             Db.UpdateData(data);
 
-            await Context.CreateEmbedBuilder()
+            return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
                 .AddField("Name", newTag.Name)
                 .AddField("Response", newTag.Response)
-                .AddField("Creator", Context.User.Mention)
-                .SendToAsync(Context.Channel);
+                .AddField("Creator", Context.User.Mention));
         }
 
         [Command("TagDelete", "TagDel", "TagRem")]
         [Priority(1)]
         [Description("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tagdelete {name}")]
-        public async Task TagDeleteAsync([Remainder] string name)
+        public Task<BaseResult> TagDeleteAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag == null)
-            {
-                await Context.CreateEmbed($"Cannot delete the tag **{name}**, as it doesn't exist.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
+            if (tag is null)
+                return BadRequest($"Cannot delete the tag **{name}**, as it doesn't exist.");
 
             var user = Context.Client.GetUser(tag.CreatorId);
 
             data.Extras.Tags.Remove(tag);
             Db.UpdateData(data);
-            await Context.CreateEmbed(
-                    $"Deleted the tag **{tag.Name}**, created by " +
-                    $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
-                    $"{(tag.Uses != 1 ? "uses" : "use")}.")
-                .SendToAsync(Context.Channel);
+            return Ok($"Deleted the tag **{tag.Name}**, created by " +
+                      $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
+                      $"{"use".ToQuantity(tag.Uses)}.");
         }
     }
 }

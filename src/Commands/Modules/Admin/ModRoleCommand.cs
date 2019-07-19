@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -12,13 +13,12 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("Usage: |prefix|modrole {role}")]
         [RequireGuildAdmin]
-        public async Task ModRoleAsync(SocketRole role)
+        public Task<BaseResult> ModRoleAsync(SocketRole role)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.ModRole = role.Id;
             Db.UpdateData(data);
-            await Context.CreateEmbed($"Set **{role.Name}** as the Moderator role for this server.")
-                .SendToAsync(Context.Channel);
+            return Ok($"Set **{role.Name}** as the Moderator role for this server.");
         }
     }
 }

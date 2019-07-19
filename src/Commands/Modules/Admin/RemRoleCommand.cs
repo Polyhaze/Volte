@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -12,11 +13,15 @@ namespace Volte.Commands.Modules.Admin
         [Description("Remove a role from the mentioned user.")]
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<BaseResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
+            if (role.Position > (await Context.Guild.GetCurrentUserAsync() as SocketGuildUser)?.Hierarchy)
+            {
+                return BadRequest("Role position is too high for me to be able to remove it from anyone.");
+            }
+
             await user.RemoveRoleAsync(role);
-            await Context.CreateEmbed($"Removed the role **{role.Name}** from {user.Mention}!")
-                .SendToAsync(Context.Channel);
+            return Ok($"Removed the role **{role.Name}** from {user.Mention}!");
         }
     }
 }

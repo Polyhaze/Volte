@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Admin
@@ -12,15 +13,12 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("Usage: |prefix|autorole {roleName}")]
         [RequireGuildAdmin]
-        public async Task AutoroleAsync([Remainder] SocketRole role)
+        public Task<BaseResult> AutoroleAsync([Remainder] SocketRole role)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Autorole = role.Id;
             Db.UpdateData(data);
-            await Context
-                .CreateEmbed(
-                    $"Successfully set **{role.Name}** as the role to be given to members upon joining this server.")
-                .SendToAsync(Context.Channel);
+            return Ok($"Successfully set **{role.Name}** as the role to be given to members upon joining this server.");
         }
     }
 }
