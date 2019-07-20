@@ -2,6 +2,7 @@
 using Discord;
 using Gommon;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -11,14 +12,11 @@ namespace Volte.Commands.Modules.Utility
         [Command("Snowflake")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
         [Remarks("Usage: |prefix|snowflake {id}")]
-        public async Task SnowflakeAsync(ulong id)
+        public Task<VolteCommandResult> SnowflakeAsync(ulong id)
         {
             var date = SnowflakeUtils.FromSnowflake(id);
-            await Context.CreateEmbedBuilder(
-                    $"**Date:** {date.FormatDate()}\n" +
-                    $"**Time**: {date.FormatFullTime()}"
-                )
-                .SendToAsync(Context.Channel);
+            return Ok($"**Date:** {date.FormatDate()}\n" +
+                      $"**Time**: {date.FormatFullTime()}");
         }
     }
 }

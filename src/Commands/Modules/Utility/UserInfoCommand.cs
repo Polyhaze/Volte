@@ -4,6 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -13,11 +14,12 @@ namespace Volte.Commands.Modules.Utility
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("Usage: |prefix|userinfo [user]")]
-        public async Task UserInfoAsync(SocketGuildUser user = null)
+        public Task<VolteCommandResult> UserInfoAsync(SocketGuildUser user = null)
         {
             var target = user ?? Context.User;
 
-            await Context.CreateEmbedBuilder()
+
+            return Ok(Context.CreateEmbedBuilder()
                 .WithAuthor(Context.User)
                 .WithThumbnailUrl(target.GetAvatarUrl())
                 .WithTitle("User Info")
@@ -27,10 +29,9 @@ namespace Volte.Commands.Modules.Utility
                 .AddField("Is Bot", target.IsBot, true)
                 .AddField("Account Created",
                     $"{target.CreatedAt.FormatDate()}, {target.CreatedAt.FormatFullTime()}")
-                .AddField("Joined This Guild", 
+                .AddField("Joined This Guild",
                     $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatDate() : "\u200B")}, " +
-                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : "\u200B")}")
-                .SendToAsync(Context.Channel);
+                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
         }
     }
 }

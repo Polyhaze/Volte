@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -9,12 +10,14 @@ namespace Volte.Commands.Modules.Utility
         [Command("Feedback", "Fb")]
         [Description("Submit feedback directly to the Volte guild.")]
         [Remarks("Usage: |prefix|feedback {feedback}")]
-        public async Task FeedbackAsync([Remainder] string feedback)
+        public Task<VolteCommandResult> FeedbackAsync([Remainder] string feedback)
         {
-            await Context.CreateEmbed($"Feedback sent! Message: ```{feedback}```").SendToAsync(Context.Channel);
-            var embed = Context.CreateEmbedBuilder($"```{feedback}```")
-                .WithTitle($"Feedback from {Context.User}");
-            await embed.SendToAsync(await Context.Client.GetPrimaryGuild().GetTextChannelAsync(415182876326232064));
+            return Ok($"Feedback sent! Message: ```{feedback}```", async _ =>
+            {
+                await Context.CreateEmbedBuilder($"```{feedback}```")
+                    .WithTitle($"Feedback from {Context.User}")
+                    .SendToAsync(await Context.Client.GetPrimaryGuild().GetTextChannelAsync(415182876326232064));
+            });
         }
     }
 }

@@ -2,6 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -11,13 +12,12 @@ namespace Volte.Commands.Modules.Utility
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
         [Remarks("Usage: |prefix|avatar [@user]")]
-        public async Task AvatarAsync(SocketGuildUser user = null)
+        public Task<VolteCommandResult> AvatarAsync(SocketGuildUser user = null)
         {
             var u = user ?? Context.User;
-            await Context.CreateEmbedBuilder()
+            return Ok(Context.CreateEmbedBuilder()
                 .WithAuthor(u)
-                .WithImageUrl(u.GetAvatarUrl(ImageFormat.Auto, 1024))
-                .SendToAsync(Context.Channel);
+                .WithImageUrl(u.GetAvatarUrl(ImageFormat.Auto, 1024)));
         }
     }
 }

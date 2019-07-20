@@ -17,17 +17,29 @@ namespace Volte.Data.Models.Results
             After = func;
         }
 
+        public OkResult(Func<Task> logic)
+        {
+            SeparateLogic = logic;
+        }
+
         public override bool IsSuccessful => true;
 
         private string Message { get; }
         private bool ShouldEmbed { get; }
         private Func<IUserMessage, Task> After { get; }
+        private Func<Task> SeparateLogic { get; }
         private EmbedBuilder Embed { get; }
 
         public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             var currentUser = await ctx.Guild.GetCurrentUserAsync();
             if (!currentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
+
+            if (SeparateLogic != null)
+            {
+                await SeparateLogic();
+                return new ResultCompletionData();
+            }
 
             IUserMessage message;
             if (Embed is null)

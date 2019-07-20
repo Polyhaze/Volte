@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -11,24 +12,25 @@ namespace Volte.Commands.Modules.Utility
         [Command("SelfRoleList", "Srl")]
         [Description("Gets a list of self roles available for this guild.")]
         [Remarks("Usage: |prefix|selfrolelist")]
-        public async Task SelfRoleListAsync()
+        public async Task<VolteCommandResult> SelfRoleListAsync()
         {
             var roleList = string.Empty;
             var data = Db.GetData(Context.Guild);
             if (data.Extras.SelfRoles.Count > 0)
             {
-                foreach (var role in data.Extras.SelfRoles)
-                {
-                    var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(role));
-                    if (currentRole is null) continue;
-                    roleList += $"**{currentRole.Name}**\n";
-                }
-                await Context.CreateEmbed(roleList).SendToAsync(Context.Channel);
+                roleList = data.Extras.SelfRoles.Select(x =>
+                    {
+                        var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
+                        if (currentRole is null) return "";
+                        return $"**{currentRole.Name}**";
+                    })
+                    .Where(x => x != string.Empty).Join("\n");
+
+                return Ok(roleList);
             }
             else
             {
-                roleList = "No roles available to self-assign in this guild.";
-                await Context.CreateEmbed(roleList).SendToAsync(Context.Channel);
+                return BadRequest("No roles available to self-assign in this guild.");
             }
         }
     }

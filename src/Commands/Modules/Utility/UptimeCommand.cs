@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Humanizer;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -12,12 +13,10 @@ namespace Volte.Commands.Modules.Utility
         [Command("Uptime")]
         [Description("Shows the bot's uptime in a human-friendly fashion.")]
         [Remarks("Usage: |prefix|uptime")]
-        public async Task UptimeAsync()
+        public Task<VolteCommandResult> UptimeAsync()
         {
-            await Context
-                .CreateEmbed(
-                    $"I've been online for **{(DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3)}**!")
-                .SendToAsync(Context.Channel);
+            return Ok(
+                $"I've been online for **{(DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3)}**!");
         }
     }
 }

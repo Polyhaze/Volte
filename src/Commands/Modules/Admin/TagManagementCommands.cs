@@ -17,7 +17,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tagcreate {name} {response}")]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> TagCreateAsync(string name, [Remainder] string response)
+        public Task<VolteCommandResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -40,7 +40,11 @@ namespace Volte.Commands.Modules.Admin
             data.Extras.Tags.Add(newTag);
             Db.UpdateData(data);
 
-            return Ok($"Created new tag: **{newTag.Name}**");
+            return Ok(Context.CreateEmbedBuilder()
+                .WithTitle("Tag Created!")
+                .AddField("Name", newTag.Name)
+                .AddField("Response", newTag.Response)
+                .AddField("Creator", Context.User.Mention));
         }
 
         [Command("TagDelete", "TagDel", "TagRem")]

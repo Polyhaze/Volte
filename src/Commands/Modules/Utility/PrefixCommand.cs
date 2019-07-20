@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -9,10 +10,9 @@ namespace Volte.Commands.Modules.Utility
         [Command("Prefix")]
         [Description("Shows the command prefix for this guild.")]
         [Remarks("Usage: |prefix|prefix")]
-        public async Task PrefixAsync()
+        public Task<VolteCommandResult> PrefixAsync()
         {
-            await Context.CreateEmbed($"The prefix for this server is **{Db.GetData(Context.Guild).Configuration.CommandPrefix}**.")
-                .SendToAsync(Context.Channel);
+            return Ok($"The prefix for this server is **{Db.GetData(Context.Guild).Configuration.CommandPrefix}**.");
         }
     }
 }

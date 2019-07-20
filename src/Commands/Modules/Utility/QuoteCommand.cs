@@ -4,6 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -13,15 +14,11 @@ namespace Volte.Commands.Modules.Utility
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]
         [Remarks("Usage: |prefix|quote {messageId}")]
-        public async Task QuoteAsync(ulong messageId)
+        public async Task<VolteCommandResult> QuoteAsync(ulong messageId)
         {
             var m = await Context.Channel.GetMessageAsync(messageId);
             if (m is null)
-            {
-                await Context.CreateEmbed("A message with that ID doesn't exist in this channel.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
+                return BadRequest("A message with that ID doesn't exist in this channel.");
 
             var shouldHaveImage = m.Attachments.Count > 0;
 
@@ -34,21 +31,17 @@ namespace Volte.Commands.Modules.Utility
                 e.WithImageUrl(m.Attachments.ElementAt(0).Url);
             }
 
-            await e.SendToAsync(Context.Channel);
+            return Ok(e);
         }
 
         [Command("Quote"), Priority(1)]
         [Description("Quotes a user in a different chanel from a given message's ID.")]
         [Remarks("Usage: |prefix|quote {messageId}")]
-        public async Task QuoteAsync(SocketTextChannel channel, ulong messageId)
+        public async Task<VolteCommandResult> QuoteAsync(SocketTextChannel channel, ulong messageId)
         {
             var m = await channel.GetMessageAsync(messageId);
             if (m is null)
-            {
-                await Context.CreateEmbed("A message with that ID doesn't exist in the given channel.")
-                    .SendToAsync(Context.Channel);
-                return;
-            }
+                return BadRequest("A message with that ID doesn't exist in the given channel.");
 
             var shouldHaveImage = m.Attachments.Count > 0;
 
@@ -61,7 +54,7 @@ namespace Volte.Commands.Modules.Utility
                 e.WithImageUrl(m.Attachments.ElementAt(0).Url);
             }
 
-            await e.SendToAsync(Context.Channel);
+            return Ok(e);
         }
     }
 }

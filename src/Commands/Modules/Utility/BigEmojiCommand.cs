@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -12,20 +13,20 @@ namespace Volte.Commands.Modules.Utility
         [Command("BigEmoji", "HugeEmoji")]
         [Description("Shows the image URL for a given emoji.")]
         [Remarks("Usage: |prefix|bigemoji {emoji}")]
-        public async Task BigEmojiAsync(IEmote emoteIn)
+        public Task<VolteCommandResult> BigEmojiAsync(IEmote emoteIn)
         {
             switch (emoteIn)
             {
                 case Emote emote:
-                    await Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url).SendToAsync(Context.Channel);
-                    break;
+                    return Ok(Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url));
 
                 case Emoji emoji:
                     var url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
                                   emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
                               ".png";
-                    await Context.CreateEmbedBuilder(url).WithImageUrl(url).SendToAsync(Context.Channel);
-                    break;
+                    return Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url));
+                default:
+                    return None();
             }
         }
     }

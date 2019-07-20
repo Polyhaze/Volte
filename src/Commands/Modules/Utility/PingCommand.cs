@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -10,19 +11,22 @@ namespace Volte.Commands.Modules.Utility
         [Command("Ping")]
         [Description("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
-        public async Task PingAsync()
+        public Task<VolteCommandResult> PingAsync()
         {
-            var e = Context.CreateEmbedBuilder("Pinging...");
-            var sw = new Stopwatch();
-            sw.Start();
-            var msg = await e.SendToAsync(Context.Channel);
-            sw.Stop();
-            await msg.ModifyAsync(x =>
+            return Ok(async () =>
             {
-                e.WithDescription(
-                    $"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
-                    $"{EmojiService.OK_HAND} **API**: {Context.Client.Latency}ms");
-                x.Embed = e.Build();
+                var e = Context.CreateEmbedBuilder("Pinging...");
+                var sw = new Stopwatch();
+                sw.Start();
+                var msg = await e.SendToAsync(Context.Channel);
+                sw.Stop();
+                await msg.ModifyAsync(x =>
+                {
+                    e.WithDescription(
+                        $"{EmojiService.CLAP} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
+                        $"{EmojiService.OK_HAND} **API**: {Context.Client.Latency}ms");
+                    x.Embed = e.Build();
+                });
             });
         }
     }

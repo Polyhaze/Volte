@@ -24,6 +24,16 @@ namespace Volte.Commands
             return new OkResult(text, shouldEmbed, null, afterCompletion);
         }
 
+        protected VolteCommandResult Ok(Func<Task> logic)
+        {
+            return new OkResult(logic);
+        }
+
+        protected VolteCommandResult Ok(EmbedBuilder embed, Func<IUserMessage, Task> afterCompletion = null)
+        {
+            return new OkResult(null, true, embed, afterCompletion);
+        }
+
         protected VolteCommandResult Ok(string text)
         {
             return new OkResult(text);

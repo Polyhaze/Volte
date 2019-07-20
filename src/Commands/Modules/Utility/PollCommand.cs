@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Qmmands;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Utility
@@ -10,14 +11,11 @@ namespace Volte.Commands.Modules.Utility
         [Command("Poll")]
         [Description("Create a poll.")]
         [Remarks("Usage: |prefix|poll question;option1;option2;...")]
-        public async Task PollAsync([Remainder] string pollText)
+        public Task<VolteCommandResult> PollAsync([Remainder] string pollText)
         {
             var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');
 
-            var embed = Context.CreateEmbedBuilder()
-                .WithTitle(question)
-                .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png");
             string embedBody;
 
             switch (choices.Length - 1)
@@ -78,53 +76,57 @@ namespace Volte.Commands.Modules.Utility
                 }
             }
 
-            embed.WithDescription(embedBody);
 
-            var msg = await embed.SendToAsync(Context.Channel);
-            await Context.Message.DeleteAsync();
-
-            switch (choices.Length - 1)
-            {
-                case 1:
+            return Ok(Context.CreateEmbedBuilder()
+                    .WithTitle(question)
+                    .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png")
+                    .WithDescription(embedBody),
+                async msg =>
                 {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    break;
-                }
+                    await Context.Message.DeleteAsync();
+                    switch (choices.Length - 1)
+                    {
+                        case 1:
+                        {
+                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            break;
+                        }
 
-                case 2:
-                {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    break;
-                }
+                        case 2:
+                        {
+                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                            break;
+                        }
 
-                case 3:
-                {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    break;
-                }
+                        case 3:
+                        {
+                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
+                            break;
+                        }
 
-                case 4:
-                {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
-                    break;
-                }
+                        case 4:
+                        {
+                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
+                            break;
+                        }
 
-                case 5:
-                {
-                    await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
-                    await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
-                    break;
-                }
-            }
+                        case 5:
+                        {
+                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
+                            break;
+                        }
+                    }
+                });
         }
     }
 }
