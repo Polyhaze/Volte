@@ -7,7 +7,7 @@ using Qmmands;
 using Volte.Data.Models.Results;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.Utility
+namespace Volte.Commands.Modules
 {
     public partial class UtilityModule : VolteModule
     {

@@ -5,20 +5,19 @@ using Qmmands;
 using Volte.Data.Models.Results;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.Utility
+namespace Volte.Commands.Modules
 {
     public partial class UtilityModule : VolteModule
     {
         [Command("SelfRoleList", "Srl")]
         [Description("Gets a list of self roles available for this guild.")]
         [Remarks("Usage: |prefix|selfrolelist")]
-        public async Task<VolteCommandResult> SelfRoleListAsync()
+        public Task<VolteCommandResult> SelfRoleListAsync()
         {
-            var roleList = string.Empty;
             var data = Db.GetData(Context.Guild);
             if (data.Extras.SelfRoles.Count > 0)
             {
-                roleList = data.Extras.SelfRoles.Select(x =>
+                var roleList = data.Extras.SelfRoles.Select(x =>
                     {
                         var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
                         if (currentRole is null) return "";
@@ -28,10 +27,8 @@ namespace Volte.Commands.Modules.Utility
 
                 return Ok(roleList);
             }
-            else
-            {
-                return BadRequest("No roles available to self-assign in this guild.");
-            }
+
+            return BadRequest("No roles available to self-assign in this guild.");
         }
     }
 }

@@ -12,7 +12,7 @@ using Volte.Data.Models.Guild;
 using Volte.Data.Models.Results;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.Moderation
+namespace Volte.Commands.Modules
 {
     public partial class ModerationModule : VolteModule
     {

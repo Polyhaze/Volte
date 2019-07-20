@@ -9,7 +9,7 @@ using Volte.Data.Models.Results;
 using Volte.Extensions;
 using Volte.Services;
 
-namespace Volte.Commands.Modules.Admin
+namespace Volte.Commands.Modules
 {
     public partial class AdminModule : VolteModule
     {

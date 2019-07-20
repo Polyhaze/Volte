@@ -5,7 +5,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
 
-namespace Volte.Commands.Modules.Admin
+namespace Volte.Commands.Modules
 {
     public partial class AdminModule : VolteModule
     {

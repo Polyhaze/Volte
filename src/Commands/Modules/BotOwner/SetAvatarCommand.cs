@@ -9,13 +9,12 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.BotOwner
+namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule : VolteModule
     {
-        
         public RestClient Http { get; set; }
-        
+
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar.")]
         [Remarks("Usage: |prefix|setavatar {url}")]

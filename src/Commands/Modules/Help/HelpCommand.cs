@@ -5,7 +5,7 @@ using Volte.Extensions;
 using Gommon;
 using Volte.Data.Models.Results;
 
-namespace Volte.Commands.Modules.Help
+namespace Volte.Commands.Modules
 {
     public partial class HelpModule : VolteModule
     {

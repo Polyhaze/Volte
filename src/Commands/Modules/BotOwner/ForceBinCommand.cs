@@ -5,12 +5,13 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
 using Volte.Extensions;
 
-namespace Volte.Commands.Modules.BotOwner
+namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule
     {
         [Command("ForceBin")]
-        [Description("Forcefully creates a debug dump on bin.greemdev.net with debug information used for Support, using the configuration from the target guild.")]
+        [Description(
+            "Forcefully creates a debug dump on bin.greemdev.net with debug information used for Support, using the configuration from the target guild.")]
         [Remarks("Usage: |prefix|forcebin")]
         [RequireBotOwner]
         public Task<VolteCommandResult> ForceBinAsync([Remainder] SocketGuild guild)

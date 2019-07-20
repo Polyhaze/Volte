@@ -4,7 +4,7 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
 using Volte.Services;
 
-namespace Volte.Commands.Modules.BotOwner
+namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule : VolteModule
     {
