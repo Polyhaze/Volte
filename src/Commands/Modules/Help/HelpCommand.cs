@@ -17,31 +17,34 @@ namespace Volte.Commands.Modules.Help
             if (moduleOrCommand is null)
             {
                 var embed = Context.CreateEmbedBuilder()
-                    .WithDescription("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out. \n" +
-                                     $"Use `{data.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
-                                     $"and `{data.Configuration.CommandPrefix}help {{commandName}}` to show information about a command." +
-                                     "\n\n" +
-                                     $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`" +
-                                     "\n\n" +
-                                     $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`");
+                    .WithDescription(
+                        "Hey, I'm Volte! Here's a list of my modules and commands designed to help you out. \n" +
+                        $"Use `{data.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
+                        $"and `{data.Configuration.CommandPrefix}help {{commandName}}` to show information about a command." +
+                        "\n\n" +
+                        $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`" +
+                        "\n\n" +
+                        $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`");
 
                 await embed.SendToAsync(Context.Channel);
             }
             else
             {
-
                 var module = GetTargetModule(moduleOrCommand);
                 var command = GetTargetCommand(moduleOrCommand);
 
                 if (module is null && command is null)
                 {
-                    await Context.CreateEmbedBuilder().WithDescription($"{EmojiService.X} Specified module/command not found.").SendToAsync(Context.Channel);
+                    await Context.CreateEmbedBuilder()
+                        .WithDescription($"{EmojiService.X} Specified module/command not found.")
+                        .SendToAsync(Context.Channel);
                 }
 
                 if (module != null && command is null)
                 {
                     var commands = $"`{module.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
-                    await Context.CreateEmbedBuilder().WithDescription(commands).WithTitle($"Commands for {module.SanitizeName()}")
+                    await Context.CreateEmbedBuilder().WithDescription(commands)
+                        .WithTitle($"Commands for {module.SanitizeName()}")
                         .SendToAsync(Context.Channel);
                 }
 
@@ -61,16 +64,13 @@ namespace Volte.Commands.Modules.Help
                                               $"**{command.Name}**")
                         .SendToAsync(Context.Channel);
                 }
-
             }
-
-
         }
 
-        private Module GetTargetModule(string input) 
+        private Module GetTargetModule(string input)
             => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
 
-        private Command GetTargetCommand(string input) 
-            => CommandService.GetAllCommands().FirstOrDefault(x => x.Name.EqualsIgnoreCase(input));
+        private Command GetTargetCommand(string input)
+            => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
     }
 }

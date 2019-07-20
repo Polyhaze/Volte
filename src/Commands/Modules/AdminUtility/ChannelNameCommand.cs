@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules.AdminUtility
         public async Task<BaseResult> ChannelNameAsync([Remainder] string name)
         {
             await Context.Channel.ModifyAsync(c => c.Name = name);
-            return Ok($"Set this channel's name to **{name}**");
+            return Ok($"Set this channel's name to **{name}**.");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.AdminUtility
         [Description(
             "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [Remarks("Usage: |prefix|mentionrole {role}")]
-        [RequireBotGuildPermission(GuildPermission.ManageRoles | GuildPermission.Administrator)]
+        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
         public async Task<BaseResult> MentionRoleAsync([Remainder] SocketRole role)
         {
@@ -23,8 +23,7 @@ namespace Volte.Commands.Modules.AdminUtility
             }
 
             await role.ModifyAsync(x => x.Mentionable = true);
-            await Context.ReplyAsync(role.Mention);
-            return Ok(role.Mention, async m => await role.ModifyAsync(x => x.Mentionable = false));
+            return Ok(role.Mention, async _ => await role.ModifyAsync(x => x.Mentionable = false), false);
         }
     }
 }

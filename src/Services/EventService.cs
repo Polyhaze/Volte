@@ -71,9 +71,6 @@ namespace Volte.Services
                                     ?? _commandService.GetAllCommands()
                                         .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
 
-                if (result is OkResult res)
-                    await res.ExecuteResultAsync(args.Context);
-
                 sw.Stop();
                 await OnCommandAsync(targetCommand, result, args.Context, sw);
 
@@ -87,8 +84,7 @@ namespace Volte.Services
             var users = args.Client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"Currently running Volte V{Version.FullVersion}");
+            await _logger.PrintVersion();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl()}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
@@ -110,7 +106,7 @@ namespace Volte.Services
             {
                 await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                    $"Set the bot's game to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
+                    $"Set the bot's activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
             }
 
             foreach (var guild in args.Client.Guilds)
@@ -126,7 +122,7 @@ namespace Volte.Services
             }
         }
 
-        public async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
+        private async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
         {
             var ctx = (VolteContext) context;
             var commandName = ctx.Message.Content.Split(" ")[0];
@@ -134,6 +130,9 @@ namespace Volte.Services
             if (string.IsNullOrEmpty(args)) args = "None";
             switch (res)
             {
+                case OkResult okRes:
+                    await okRes.ExecuteResultAsync(ctx);
+                    break;
                 case FailedResult failedRes:
                     await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
                     return;
@@ -142,27 +141,26 @@ namespace Volte.Services
                     return;
             }
 
-            if (Config.LogAllCommands)
-            {
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|     -Command Issued: {c.Name}");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|        -Args Passed: {args.Trim()}");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|        -Time Issued: {DateTime.Now}");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|           -Executed: {res.IsSuccessful} ");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|              -After: {sw.Elapsed.Humanize()}");
-                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    "-------------------------------------------------");
-            }
+            if (!Config.LogAllCommands) return;
+
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|     -Command Issued: {c.Name}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|        -Args Passed: {args.Trim()}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|        -Time Issued: {DateTime.Now}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|           -Executed: {res.IsSuccessful} ");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                $"|              -After: {sw.Elapsed.Humanize()}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                "-------------------------------------------------");
         }
 
         private async Task OnCommandFailureAsync(Command c, FailedResult res, VolteContext ctx, string args,
@@ -197,7 +195,7 @@ namespace Volte.Services
                     reason = tpfr.Reason;
                     break;
 
-                case OverloadsFailedResult ofr:
+                case OverloadsFailedResult _:
                     reason = "A suitable overload could not be found for the given parameter type/order.";
                     break;
 

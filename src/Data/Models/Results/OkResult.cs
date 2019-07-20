@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Commands;
@@ -22,7 +19,7 @@ namespace Volte.Data.Models.Results
 
         private string Message { get; }
         private bool ShouldEmbed { get; }
-        private Func<IUserMessage, Task> After { get; set; }
+        private Func<IUserMessage, Task> After { get; }
 
         public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
@@ -32,7 +29,7 @@ namespace Volte.Data.Models.Results
             IUserMessage message;
             if (ShouldEmbed)
             {
-                message = await ctx.CreateEmbedBuilder(Message).SendToAsync(ctx.Channel);
+                message = await ctx.CreateEmbed(Message).SendToAsync(ctx.Channel);
             }
             else
             {

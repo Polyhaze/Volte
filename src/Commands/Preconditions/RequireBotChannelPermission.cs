@@ -17,9 +17,15 @@ namespace Volte.Commands.Preconditions
             ICommandContext context, IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
-            foreach (var perm in (await ctx.Guild.GetCurrentUserAsync()).GetPermissions(ctx.Channel).ToList())
+            var currentUser = await ctx.Guild.GetCurrentUserAsync();
+            foreach (var perm in currentUser.GetPermissions(ctx.Channel).ToList())
+            {
+                if (currentUser.GuildPermissions.Administrator)
+                    return CheckResult.Successful;
                 if (_permissions.Contains(perm))
                     return CheckResult.Successful;
+            }
+
             return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
         }
     }

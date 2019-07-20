@@ -1,11 +1,9 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules.AdminUtility
 {
@@ -14,7 +12,7 @@ namespace Volte.Commands.Modules.AdminUtility
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role.")]
         [Remarks("Usage: |prefix|rolecolor {role} {r} {g} {b}")]
-        [RequireBotGuildPermission(GuildPermission.ManageRoles | GuildPermission.Administrator)]
+        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
         public async Task<BaseResult> RoleColorAsync(SocketRole role, int r, int g, int b)
         {
