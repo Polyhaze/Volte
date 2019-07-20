@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Services;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -13,10 +14,10 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Evaluates C# code.")]
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
-        public Task EvalAsync([Remainder] string code)
+        public Task<VolteCommandResult> EvalAsync([Remainder] string code)
         {
             _ = Eval.EvaluateAsync(Context, code);
-            return Task.CompletedTask;
+            return None();
         }
     }
 }

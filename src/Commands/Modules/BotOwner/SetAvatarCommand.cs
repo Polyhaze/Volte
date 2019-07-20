@@ -4,37 +4,41 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
+using RestSharp;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
 {
     public partial class BotOwnerModule : VolteModule
     {
+        
+        public RestClient Http { get; set; }
+        
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar.")]
         [Remarks("Usage: |prefix|setavatar {url}")]
         [RequireBotOwner]
-        public async Task SetAvatarAsync(string url)
+        public async Task<VolteCommandResult> SetAvatarAsync(string url)
         {
             if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                await Context.CreateEmbed("That URL is malformed or empty.").SendToAsync(Context.Channel);
-                return;
+                return BadRequest("That URL is malformed or empty.");
             }
 
-            using (var sr = await new HttpClient().GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead))
+            using (var sr = await Http.GetAsync<HttpResponseMessage>(new RestRequest(url)))
             {
                 if (!sr.IsImage())
                 {
-                    await Context.CreateEmbed("Provided URL does not lead to an image.").SendToAsync(Context.Channel);
-                    return;
+                    return BadRequest(
+                        "Provided URL does not lead to an image. Note that I cannot follow redirects; so provide *direct* image URLs please!");
                 }
 
                 using (var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream())
                 {
                     await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
-                    await Context.CreateEmbed("Done!").SendToAsync(Context.Channel);
+                    return Ok("Done!");
                 }
             }
         }

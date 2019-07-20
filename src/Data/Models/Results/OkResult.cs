@@ -6,7 +6,7 @@ using Volte.Extensions;
 
 namespace Volte.Data.Models.Results
 {
-    public class OkResult : BaseResult
+    public class OkResult : VolteCommandResult
     {
         public OkResult(string text, bool shouldEmbed = true, Func<IUserMessage, Task> func = null)
         {

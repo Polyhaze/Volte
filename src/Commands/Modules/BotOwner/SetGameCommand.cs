@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -11,10 +12,10 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Sets the bot's game (presence).")]
         [Remarks("Usage: |prefix|setgame {game}")]
         [RequireBotOwner]
-        public async Task SetGameAsync([Remainder] string game)
+        public async Task<VolteCommandResult> SetGameAsync([Remainder] string game)
         {
             await Context.Client.SetGameAsync(game);
-            await Context.CreateEmbed($"Set the bot's game to **{game}**.").SendToAsync(Context.Channel);
+            return Ok($"Set the bot's game to **{game}**.");
         }
     }
 }

@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -12,14 +13,13 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Forcefully creates a debug dump on bin.greemdev.net with debug information used for Support, using the configuration from the target guild.")]
         [Remarks("Usage: |prefix|forcebin")]
         [RequireBotOwner]
-        public async Task ForceBinAsync([Remainder] SocketGuild guild)
+        public Task<VolteCommandResult> ForceBinAsync([Remainder] SocketGuild guild)
         {
-            await Context.CreateEmbed(
-                    "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
-                    "\n" +
-                    "\n" +
-                    $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(guild))}")
-                .SendToAsync(Context.Channel);
+            return Ok(
+                "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
+                "\n" +
+                "\n" +
+                $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(guild))}");
         }
     }
 }

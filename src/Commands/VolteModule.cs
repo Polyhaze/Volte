@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Data;
 using Volte.Data.Models.Results;
 using Volte.Services;
 
@@ -19,22 +18,22 @@ namespace Volte.Commands
         public LoggingService Logger { get; set; }
 
 
-        protected BaseResult Ok(string text, Func<IUserMessage, Task> afterCompletion = null, bool shouldEmbed = true)
+        protected VolteCommandResult Ok(string text, Func<IUserMessage, Task> afterCompletion = null, bool shouldEmbed = true)
         {
             return new OkResult(text, shouldEmbed, afterCompletion);
         }
 
-        protected BaseResult Ok(string text)
+        protected VolteCommandResult Ok(string text)
         {
-            return new OkResult(text, true);
+            return new OkResult(text);
         }
 
-        protected BaseResult BadRequest(string reason)
+        protected VolteCommandResult BadRequest(string reason)
         {
             return new BadRequestResult(reason);
         }
 
-        protected BaseResult None()
+        protected VolteCommandResult None()
         {
             return new NoResult();
         }

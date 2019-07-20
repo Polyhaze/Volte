@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Grants a role to the mentioned user.")]
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin, RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public async Task<BaseResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<VolteCommandResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
             if (role.Position > (await Context.Guild.GetCurrentUserAsync() as SocketGuildUser)?.Hierarchy)
             {

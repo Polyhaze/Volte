@@ -2,6 +2,7 @@
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -12,12 +13,11 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Sets the bot's stream.")]
         [Remarks("Usage: |prefix|setstream {streamer} {streamName}")]
         [RequireBotOwner]
-        public async Task SetStreamAsync(string streamer, [Remainder] string streamName)
+        public async Task<VolteCommandResult> SetStreamAsync(string streamer, [Remainder] string streamName)
         {
             await Context.Client.SetGameAsync(streamName, $"https://twitch.tv/{streamer}", ActivityType.Streaming);
-            await Context.CreateEmbed(
-                $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**."
-            ).SendToAsync(Context.Channel);
+            return Ok(
+                $"Set the bot's stream to **{streamName}**, and the Twitch URL to **[{streamer}](https://twitch.tv/{streamer})**.");
         }
     }
 }

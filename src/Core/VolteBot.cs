@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -31,6 +32,7 @@ namespace Volte.Core
             => new ServiceCollection()
                 .AddSingleton<VolteHandler>()
                 .AddSingleton(new RestClient { UserAgent = $"Volte/{Version.FullVersion}" })
+                .AddSingleton(new HttpClient())
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,

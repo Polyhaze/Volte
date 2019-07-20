@@ -3,7 +3,7 @@ using Volte.Commands;
 
 namespace Volte.Data.Models.Results
 {
-    public class NoResult : BaseResult
+    public class NoResult : VolteCommandResult
     {
         public override bool IsSuccessful => true;
 

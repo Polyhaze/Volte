@@ -2,6 +2,7 @@
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Core;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -12,10 +13,13 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Forces the bot to shutdown.")]
         [Remarks("Usage: |prefix|shutdown")]
         [RequireBotOwner]
-        public async Task ShutdownAsync()
+        public Task<VolteCommandResult> ShutdownAsync()
         {
-            await Context.CreateEmbed($"Goodbye! {EmojiService.WAVE}").SendToAsync(Context.Channel);
-            VolteBot.Cts.Cancel();
+            return Ok($"Goodbye! {EmojiService.WAVE}", _ =>
+            {
+                VolteBot.Cts.Cancel();
+                return Task.CompletedTask;
+            });
         }
     }
 }

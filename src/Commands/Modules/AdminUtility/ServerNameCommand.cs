@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.AdminUtility
         [Remarks("Usage: |prefix|servername {name}")]
         [RequireBotGuildPermission(GuildPermission.ManageGuild)]
         [RequireGuildAdmin]
-        public async Task<BaseResult> ServerNameAsync([Remainder] string name)
+        public async Task<VolteCommandResult> ServerNameAsync([Remainder] string name)
         {
             await Context.Guild.ModifyAsync(g => g.Name = name);
             return Ok($"Set this server's name to **{name}**!");

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.BotOwner
@@ -11,14 +12,12 @@ namespace Volte.Commands.Modules.BotOwner
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
         [Remarks("Usage: |prefix|createconfig [serverId]")]
         [RequireBotOwner]
-        public async Task CreateConfigAsync(ulong serverId = 0)
+        public Task<VolteCommandResult> CreateConfigAsync(ulong serverId = 0)
         {
-            if (serverId == 0) serverId = Context.Guild.Id;
+            if (serverId is 0) serverId = Context.Guild.Id;
 
             Db.GetData(serverId);
-            await Context
-                .CreateEmbed($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.")
-                .SendToAsync(Context.Channel);
+            return Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.");
         }
     }
 }

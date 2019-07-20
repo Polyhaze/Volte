@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the channel used for welcoming new users for this guild.")]
         [Remarks("Usage: |prefix|welcomechannel {#channel}")]
         [RequireGuildAdmin]
-        public Task<BaseResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
+        public Task<VolteCommandResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Welcome.WelcomeChannel = channel.Id;
@@ -32,7 +32,7 @@ namespace Volte.Commands.Modules.Admin
             "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
-        public async Task<BaseResult> WelcomeMessageAsync([Remainder] string message = null)
+        public async Task<VolteCommandResult> WelcomeMessageAsync([Remainder] string message = null)
         {
             var data = Db.GetData(Context.Guild);
 
@@ -59,7 +59,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the color used for welcome embeds for this guild.")]
         [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
         [RequireGuildAdmin]
-        public Task<BaseResult> WelcomeColorAsync(int r, int g, int b)
+        public Task<VolteCommandResult> WelcomeColorAsync(int r, int g, int b)
         {
             if (r > 255 || g > 255 || b > 255)
             {
@@ -77,7 +77,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         [RequireGuildAdmin]
-        public async Task<BaseResult> LeavingMessageAsync([Remainder] string message = null)
+        public async Task<VolteCommandResult> LeavingMessageAsync([Remainder] string message = null)
         {
             var data = Db.GetData(Context.Guild);
 

@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("Usage: |prefix|pingchecks {true|false}")]
         [RequireGuildAdmin]
-        public Task<BaseResult> PingChecksAsync(bool enabled)
+        public Task<VolteCommandResult> PingChecksAsync(bool enabled)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.MassPingChecks = enabled;

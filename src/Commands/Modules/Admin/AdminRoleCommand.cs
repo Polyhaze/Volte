@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules.Admin
         [Description("Sets the role able to use Admin commands for the current guild.")]
         [Remarks("Usage: |prefix|adminrole {role}")]
         [RequireGuildAdmin]
-        public Task<BaseResult> AdminRoleAsync([Remainder] SocketRole role)
+        public Task<VolteCommandResult> AdminRoleAsync([Remainder] SocketRole role)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.AdminRole = role.Id;
