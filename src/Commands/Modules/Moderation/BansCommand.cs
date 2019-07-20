@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands.Preconditions;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -14,19 +15,16 @@ namespace Volte.Commands.Modules.Moderation
         [Remarks("Usage: |prefix|bans")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task BansAsync()
+        public async Task<VolteCommandResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
             if (!banList.Any())
             {
-                await Context.CreateEmbed("This server doesn't have anyone banned.").SendToAsync(Context.Channel);
+                return BadRequest("This server doesn't have anyone banned.");
             }
-            else
-            {
-                await Context.CreateEmbed(string.Join('\n',
-                        banList.Select(b => $"**{b.User}**: {b.Reason ?? "No reason provided."}")))
-                    .SendToAsync(Context.Channel);
-            }
+
+            return Ok(string.Join('\n',
+                banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`")));
         }
     }
 }

@@ -6,6 +6,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -17,7 +18,8 @@ namespace Volte.Commands.Modules.Moderation
         [Remarks("Usage: |prefix|kick {@user} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
-        public async Task KickAsync(SocketGuildUser user, [Remainder] string reason = "Kicked by a Moderator.")
+        public async Task<VolteCommandResult> KickAsync(SocketGuildUser user,
+            [Remainder] string reason = "Kicked by a Moderator.")
         {
             try
             {
@@ -27,10 +29,10 @@ namespace Volte.Commands.Modules.Moderation
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             await user.KickAsync(reason);
-            await Context.CreateEmbed($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.")
-                .SendToAsync(Context.Channel);
-            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Kick, user,
-                reason));
+
+            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.", _ =>
+                ModLogService.OnModActionCompleteAsync(
+                    new ModActionEventArgs(Context, ModActionType.Kick, user, reason)));
         }
     }
 }

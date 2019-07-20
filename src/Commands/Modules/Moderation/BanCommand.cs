@@ -6,6 +6,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -17,7 +18,7 @@ namespace Volte.Commands.Modules.Moderation
         [Remarks("Usage: |prefix|ban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task BanAsync(SocketGuildUser user, int daysToDelete,
+        public async Task<VolteCommandResult> BanAsync(SocketGuildUser user, int daysToDelete,
             [Remainder] string reason = "Banned by a Moderator.")
         {
             try
@@ -28,10 +29,9 @@ namespace Volte.Commands.Modules.Moderation
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             await user.BanAsync(daysToDelete, reason);
-            await Context.CreateEmbed($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.")
-                .SendToAsync(Context.Channel);
-            await ModLogService.OnModActionCompleteAsync(
-                new ModActionEventArgs(Context, ModActionType.Ban, user, reason));
+            return Ok($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.", _ =>
+                ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Ban, user,
+                    reason)));
         }
     }
 }

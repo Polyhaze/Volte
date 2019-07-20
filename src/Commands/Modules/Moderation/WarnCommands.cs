@@ -9,6 +9,7 @@ using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Guild;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -19,7 +20,7 @@ namespace Volte.Commands.Modules.Moderation
         [Description("Warns the target user for the given reason.")]
         [Remarks("Usage: |prefix|warn {user} {reason}")]
         [RequireGuildModerator]
-        public async Task WarnAsync(SocketGuildUser user, [Remainder] string reason)
+        public async Task<VolteCommandResult> WarnAsync(SocketGuildUser user, [Remainder] string reason)
         {
             var data = Db.GetData(Context.Guild);
             data.Extras.Warns.Add(new Warn
@@ -38,39 +39,38 @@ namespace Volte.Commands.Modules.Moderation
             }
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
-            await Context.CreateEmbed($"Successfully warned **{user}** for **{reason}**.").SendToAsync(Context.Channel);
-
-            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Warn, user, reason));
+            return Ok($"Successfully warned **{user}** for **{reason}**.",
+                _ => ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Warn, user,
+                    reason)));
         }
 
         [Command("Warns", "Ws")]
         [Description("Shows all the warns for the given user.")]
         [Remarks("Usage: |prefix|warns {user}")]
         [RequireGuildModerator]
-        public async Task WarnsAsync(SocketGuildUser user)
+        public Task<VolteCommandResult> WarnsAsync(SocketGuildUser user)
         {
-            var data = Db.GetData(Context.Guild);
-            var warns = data.Extras.Warns.Where(x => x.User == user.Id).Take(10);
-            var desc = "Showing the last 10 warnings, or less if the user doesn't have 10 yet." +
-                       "\n" +
-                       "\n" +
-                       $"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}";
-            await Context.CreateEmbed(desc).SendToAsync(Context.Channel);
+            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10).ToList();
+            return Ok("Showing the last 10 warnings, or less if the user doesn't have 10 yet." +
+                      "\n" +
+                      "\n" +
+                      $"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}");
         }
 
         [Command("ClearWarns", "Cw")]
         [Description("Clears the warnings for the given user.")]
         [Remarks("Usage: |prefix|clearwarns {user}")]
         [RequireGuildModerator]
-        public async Task ClearWarnsAsync(SocketGuildUser user)
+        public Task<VolteCommandResult> ClearWarnsAsync(SocketGuildUser user)
         {
             var data = Db.GetData(Context.Guild);
             var newWarnList = data.Extras.Warns.Where(x => x.User != user.Id).ToList();
             data.Extras.Warns = newWarnList;
             Db.UpdateData(data);
 
-            await Context.CreateEmbed($"Cleared all warnings for **{user}**.").SendToAsync(Context.Channel);
-            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns, user, null));
+            return Ok($"Cleared all warnings for **{user}**.",
+                _ => ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns,
+                    user, null)));
         }
     }
 }

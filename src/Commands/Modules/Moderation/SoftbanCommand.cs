@@ -6,6 +6,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
+using Volte.Data.Models.Results;
 using Volte.Extensions;
 
 namespace Volte.Commands.Modules.Moderation
@@ -17,7 +18,7 @@ namespace Volte.Commands.Modules.Moderation
         [Remarks("Usage: |prefix|softban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task SoftBanAsync(SocketGuildUser user, int daysToDelete,
+        public async Task<VolteCommandResult> SoftBanAsync(SocketGuildUser user, int daysToDelete,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {
             try
@@ -29,10 +30,10 @@ namespace Volte.Commands.Modules.Moderation
 
             await user.BanAsync(daysToDelete, reason);
             await Context.Guild.RemoveBanAsync(user);
-            await Context.CreateEmbed($"Successfully softbanned **{user.Username}#{user.Discriminator}**.")
-                .SendToAsync(Context.Channel);
-            await ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Softban, user,
-                reason));
+
+            return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
+                ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Softban, user,
+                    reason)));
         }
     }
 }

@@ -8,10 +8,12 @@ namespace Volte.Data.Models.Results
 {
     public class OkResult : VolteCommandResult
     {
-        public OkResult(string text, bool shouldEmbed = true, Func<IUserMessage, Task> func = null)
+        public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
+            Func<IUserMessage, Task> func = null)
         {
             Message = text;
             ShouldEmbed = shouldEmbed;
+            Embed = embed;
             After = func;
         }
 
@@ -20,6 +22,7 @@ namespace Volte.Data.Models.Results
         private string Message { get; }
         private bool ShouldEmbed { get; }
         private Func<IUserMessage, Task> After { get; }
+        private EmbedBuilder Embed { get; }
 
         public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
@@ -27,14 +30,22 @@ namespace Volte.Data.Models.Results
             if (!currentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
             IUserMessage message;
-            if (ShouldEmbed)
+            if (Embed is null)
             {
-                message = await ctx.CreateEmbed(Message).SendToAsync(ctx.Channel);
+                if (ShouldEmbed)
+                {
+                    message = await ctx.CreateEmbed(Message).SendToAsync(ctx.Channel);
+                }
+                else
+                {
+                    message = await ctx.Channel.SendMessageAsync(Message);
+                }
             }
             else
             {
-                message = await ctx.Channel.SendMessageAsync(Message);
+                message = await Embed.SendToAsync(ctx.Channel);
             }
+
 
             if (After != null)
             {
