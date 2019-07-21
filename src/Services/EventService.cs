@@ -127,6 +127,7 @@ namespace Volte.Services
             var commandName = ctx.Message.Content.Split(" ")[0];
             var args = ctx.Message.Content.Replace($"{commandName}", "");
             if (string.IsNullOrEmpty(args)) args = "None";
+
             switch (res)
             {
                 case OkResult okRes:
@@ -142,24 +143,27 @@ namespace Volte.Services
 
             if (!Config.LogAllCommands) return;
 
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|     -Command Issued: {c.Name}");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|        -Args Passed: {args.Trim()}");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|        -Time Issued: {DateTime.Now}");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|           -Executed: {res.IsSuccessful} ");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                $"|              -After: {sw.Elapsed.Humanize()}");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                "-------------------------------------------------");
+            _ = Executor.ExecuteAsync(async () =>
+            {
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|     -Command Issued: {c.Name}");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|        -Args Passed: {args.Trim()}");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|        -Time Issued: {DateTime.Now}");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|           -Executed: {res.IsSuccessful} ");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    $"|              -After: {sw.Elapsed.Humanize()}");
+                await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                    "-------------------------------------------------");
+            });
         }
 
         private async Task OnCommandFailureAsync(Command c, FailedResult res, VolteContext ctx, string args,
@@ -174,7 +178,7 @@ namespace Volte.Services
                     break;
 
                 case ExecutionFailedResult efr:
-                    reason = $"Execution of this command failed.\nFull error message: {efr.Exception.Message}";
+                    reason = $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}";
                     await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
                     break;
 
@@ -187,7 +191,13 @@ namespace Volte.Services
                     break;
 
                 case ArgumentParseFailedResult apfr:
-                    reason = $"Parsing for arguments failed on argument **{apfr.Parameter?.Name}**.";
+                    if (apfr.Parameter is null)
+                    {
+                        reason = "Parsing for an argument failed.";
+                        break;
+                    }
+
+                    reason = $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**.";
                     break;
 
                 case TypeParseFailedResult tpfr:
@@ -203,7 +213,7 @@ namespace Volte.Services
                     break;
             }
 
-            if (reason != "Insufficient permission." && reason != "Unknown command.")
+            if (!(res is CommandNotFoundResult) && !(res is ChecksFailedResult))
             {
                 await embed.AddField("Error in Command:", c.Name)
                     .AddField("Error Reason:", reason)
@@ -214,24 +224,27 @@ namespace Volte.Services
 
                 if (!Config.LogAllCommands) return;
 
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|     -Command Issued: {c.Name}");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|        -Args Passed: {args.Trim()}");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|        -Time Issued: {DateTime.Now}");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    $"|              -After: {sw.Elapsed.Humanize()}");
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
-                    "-------------------------------------------------");
+                _ = Executor.ExecuteAsync(async () =>
+                {
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|     -Command Issued: {c.Name}");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|        -Args Passed: {args.Trim()}");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|        -Time Issued: {DateTime.Now}");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        $"|              -After: {sw.Elapsed.Humanize()}");
+                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
+                        "-------------------------------------------------");
+                });
             }
         }
 
