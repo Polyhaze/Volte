@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -23,7 +24,7 @@ namespace Gommon
                 .Replace("Usage: ", string.Empty);
         }
 
-        internal static void AddTypeParsers(this CommandService service)
+        internal static Task AddTypeParsersAsync(this CommandService service)
         {
             service.AddTypeParser(new UserParser<SocketGuildUser>());
             service.AddTypeParser(new UserParser<SocketUser>());
@@ -32,6 +33,7 @@ namespace Gommon
             service.AddTypeParser(new EmoteParser());
             service.AddTypeParser(new GuildParser());
             service.AddTypeParser(new BooleanParser(), true);
+            return Task.CompletedTask;
         }
     }
 }

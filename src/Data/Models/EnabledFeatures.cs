@@ -7,12 +7,11 @@
     {
         internal EnabledFeatures() { } //restrict non-Volte assembly instantiation
 
-        public bool Antilink { get; set; } = true;
-        public bool Blacklist { get; set; } = true;
-        public bool ModLog { get; set; } = true;
-        public bool Welcome { get; set; } = true;
-        public bool Autorole { get; set; } = true;
-        public bool PingChecks { get; set; } = true;
-
+        public bool Antilink { get; } = true;
+        public bool Blacklist { get; } = true;
+        public bool ModLog { get; } = true;
+        public bool Welcome { get; } = true;
+        public bool Autorole { get; } = true;
+        public bool PingChecks { get; } = true;
     }
 }

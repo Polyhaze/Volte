@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Gommon;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Services;
 
 namespace Volte.Core
@@ -41,9 +41,9 @@ namespace Volte.Core
             _logger = loggingService;
         }
 
-        public async Task InitAsync(IServiceProvider provider)
+        public async Task InitAsync(ServiceProvider provider)
         {
-            _service.AddTypeParsers();
+            await _service.AddTypeParsersAsync();
             var sw = Stopwatch.StartNew();
             var loaded = _service.AddModules(Assembly.GetExecutingAssembly());
             sw.Stop();
@@ -64,7 +64,7 @@ namespace Volte.Core
                 if (Config.EnabledFeatures.Welcome)
                     await _welcome.LeaveAsync(new UserLeftEventArgs(user));
             };
-            _client.ShardReady += async (client) => { await _event.OnReady(new ReadyEventArgs(client)); };
+            _client.ShardReady += (client) => _event.OnReady(new ReadyEventArgs(client));
             _client.MessageReceived += async (s) =>
             {
                 if (!(s is IUserMessage msg)) return;
