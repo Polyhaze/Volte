@@ -8,7 +8,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class ChannelParser<TChannel> : TypeParser<TChannel> where TChannel : SocketTextChannel
+    public sealed class ChannelParser<TChannel> : TypeParser<TChannel> where TChannel : ITextChannel
     {
         public override async Task<TypeParserResult<TChannel>> ParseAsync(
             Parameter param,
@@ -17,10 +17,10 @@ namespace Volte.Commands.TypeParsers
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            TChannel channel = null;
+            TChannel channel = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseChannel(value, out id))
-                channel = (await ctx.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Id == id) as TChannel;
+                channel = (await ctx.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Id == id).Cast<TChannel>();
 
             if (channel is null)
             {

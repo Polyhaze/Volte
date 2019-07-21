@@ -8,7 +8,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class UserParser<TUser> : TypeParser<TUser> where TUser : SocketUser
+    public sealed class UserParser<TUser> : TypeParser<TUser> where TUser : IUser
     {
         public override async Task<TypeParserResult<TUser>> ParseAsync(
             Parameter param,
@@ -19,7 +19,7 @@ namespace Volte.Commands.TypeParsers
             var ctx = context.Cast<VolteContext>();
             var users = (await ctx.Guild.GetUsersAsync()).OfType<TUser>().ToList();
 
-            TUser user = null;
+            TUser user = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = users.FirstOrDefault(x => x.Id == id);

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class GuildParser : TypeParser<SocketGuild>
+    public sealed class GuildParser : TypeParser<IGuild>
     {
-        public override Task<TypeParserResult<SocketGuild>> ParseAsync(
+        public override Task<TypeParserResult<IGuild>> ParseAsync(
             Parameter parameter,
             string value,
             ICommandContext context,
@@ -28,15 +29,15 @@ namespace Volte.Commands.TypeParsers
                 var match = guilds.Where(x =>
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<SocketGuild>.Unsuccessful(
+                    return Task.FromResult(TypeParserResult<IGuild>.Unsuccessful(
                         "Multiple guilds found, try or using its ID."));
 
                 guild = match.FirstOrDefault();
             }
 
             return Task.FromResult(guild is null
-                ? TypeParserResult<SocketGuild>.Unsuccessful("Guild not found.")
-                : TypeParserResult<SocketGuild>.Successful(guild));
+                ? TypeParserResult<IGuild>.Unsuccessful("Guild not found.")
+                : TypeParserResult<IGuild>.Successful(guild));
         }
     }
 }

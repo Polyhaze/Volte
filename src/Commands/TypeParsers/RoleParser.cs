@@ -8,7 +8,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : SocketRole
+    public sealed class RoleParser<TRole> : TypeParser<TRole> where TRole : IRole
     {
         public override Task<TypeParserResult<TRole>> ParseAsync(
             Parameter param,
@@ -17,9 +17,9 @@ namespace Volte.Commands.TypeParsers
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
-            TRole role = null;
+            TRole role = default;
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
-                role = ctx.Guild.GetRole(id) as TRole;
+                role = ctx.Guild.GetRole(id).Cast<TRole>();
 
             if (role is null)
             {
@@ -29,7 +29,7 @@ namespace Volte.Commands.TypeParsers
                         "Multiple roles found. Try mentioning the role or using its ID.")
                     );
 
-                role = match.FirstOrDefault() as TRole;
+                role = match.FirstOrDefault().Cast<TRole>();
             }
 
             return role is null
