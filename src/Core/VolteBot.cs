@@ -31,8 +31,12 @@ namespace Volte.Core
 
             var rest = new DiscordRestClient();
             await rest.LoginAsync(TokenType.Bot, Config.Token);
+            var shardCount = await rest.GetRecommendedShardCountAsync();
+            await rest.LogoutAsync();
+            rest.Dispose();
 
-            var provider = BuildServiceProvider(await rest.GetRecommendedShardCountAsync());
+            var provider = BuildServiceProvider(shardCount);
+
             var client = provider.GetRequiredService<DiscordShardedClient>();
             var cts = provider.GetRequiredService<CancellationTokenSource>();
             var handler = provider.GetRequiredService<VolteHandler>();
