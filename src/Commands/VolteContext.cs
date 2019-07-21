@@ -18,7 +18,7 @@ namespace Volte.Commands
             _emojiService = provider.GetRequiredService<EmojiService>();
             Client = client.Cast<DiscordShardedClient>();
             ServiceProvider = provider;
-            Guild = (msg.Channel.Cast<ITextChannel>())?.Guild;
+            Guild = msg.Channel.Cast<ITextChannel>()?.Guild;
             Channel = msg.Channel.Cast<ITextChannel>();
             User = msg.Author.Cast<IGuildUser>();
             Message = msg;
