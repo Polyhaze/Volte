@@ -33,7 +33,7 @@ namespace Volte.Commands
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 
-        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BALLOT_BOX_WITH_CHECK));
+        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BallotBoxWithCheck));
 
         public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
             .WithDescription(content).Build();

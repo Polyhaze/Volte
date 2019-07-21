@@ -22,44 +22,44 @@ namespace Volte.Commands.Modules
             {
                 case 1:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n\n" +
                                 "Click the number below to vote.";
                     break;
                 }
 
                 case 2:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
 
                 case 3:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
 
                 case 4:
                 {
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n" +
+                                $"{new Emoji(EmojiService.Four)} {choices[4]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
                 }
 
                 case 5:
-                    embedBody = $"{new Emoji(EmojiService.ONE)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.TWO)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.THREE)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.FOUR)} {choices[4]}\n" +
-                                $"{new Emoji(EmojiService.FIVE)} {choices[5]}\n\n" +
+                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
+                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
+                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n" +
+                                $"{new Emoji(EmojiService.Four)} {choices[4]}\n" +
+                                $"{new Emoji(EmojiService.Five)} {choices[5]}\n\n" +
                                 "Click one of the numbers below to vote.";
                     break;
 
@@ -88,41 +88,41 @@ namespace Volte.Commands.Modules
                     {
                         case 1:
                         {
-                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.One));
                             break;
                         }
 
                         case 2:
                         {
-                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.One));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Two));
                             break;
                         }
 
                         case 3:
                         {
-                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.One));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Two));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Three));
                             break;
                         }
 
                         case 4:
                         {
-                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.One));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Two));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Three));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Four));
                             break;
                         }
 
                         case 5:
                         {
-                            await msg.AddReactionAsync(new Emoji(EmojiService.ONE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.TWO));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.THREE));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.FOUR));
-                            await msg.AddReactionAsync(new Emoji(EmojiService.FIVE));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.One));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Two));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Three));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Four));
+                            await msg.AddReactionAsync(new Emoji(EmojiService.Five));
                             break;
                         }
                     }

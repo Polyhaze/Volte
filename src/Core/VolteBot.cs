@@ -19,9 +19,8 @@ namespace Volte.Core
     public class VolteBot : IDisposable
     {
         private static readonly ServiceProvider _serviceProvider = BuildServiceProvider();
-        private readonly CommandService _commandService = _serviceProvider.GetRequiredService<CommandService>();
         private readonly DiscordSocketClient _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
-        public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = _serviceProvider.GetRequiredService<CancellationTokenSource>();
         private readonly VolteHandler _handler = _serviceProvider.GetRequiredService<VolteHandler>();
         private readonly LoggingService _logger = _serviceProvider.GetRequiredService<LoggingService>();
 
@@ -31,8 +30,9 @@ namespace Volte.Core
         private static ServiceProvider BuildServiceProvider()
             => new ServiceCollection()
                 .AddSingleton<VolteHandler>()
-                .AddSingleton(new RestClient { UserAgent = $"Volte/{Version.FullVersion}" })
+                .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton(new HttpClient())
+                .AddSingleton(new CancellationTokenSource())
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,
@@ -58,7 +58,7 @@ namespace Volte.Core
             => Console.CancelKeyPress += (s, e) =>
             {
                 e.Cancel = true;
-                Cts.Cancel();
+                _cts.Cancel();
             };
 
         private async Task LoginAsync()
@@ -81,7 +81,7 @@ namespace Volte.Core
             await _handler.InitAsync(_serviceProvider);
             try
             {
-                await Task.Delay(-1, Cts.Token);
+                await Task.Delay(-1, _cts.Token);
             }
             catch (TaskCanceledException)
             {
@@ -101,7 +101,7 @@ namespace Volte.Core
 
         public void Dispose()
         {
-            Cts.Dispose();
+            _cts.Dispose();
             _serviceProvider.Dispose();
             _client.Dispose();
         }

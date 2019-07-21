@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
                 AuditLogReason = $"Message deleted by Moderator {Context.User}."
             });
 
-            return Ok($"{EmojiService.BALLOT_BOX_WITH_CHECK} Deleted that message.", async m =>
+            return Ok($"{EmojiService.BallotBoxWithCheck} Deleted that message.", async m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(3000, async () =>
                 {

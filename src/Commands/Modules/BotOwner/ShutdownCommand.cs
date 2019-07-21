@@ -1,23 +1,24 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Preconditions;
-using Volte.Core;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule : VolteModule
     {
+        public CancellationTokenSource Cts { get; set; }
+
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
         [Remarks("Usage: |prefix|shutdown")]
         [RequireBotOwner]
         public Task<VolteCommandResult> ShutdownAsync()
         {
-            return Ok($"Goodbye! {EmojiService.WAVE}", _ =>
+            return Ok($"Goodbye! {EmojiService.Wave}", _ =>
             {
-                VolteBot.Cts.Cancel();
+                Cts.Cancel();
                 return Task.CompletedTask;
             });
         }
