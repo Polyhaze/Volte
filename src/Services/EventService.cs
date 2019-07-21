@@ -131,13 +131,15 @@ namespace Volte.Services
             switch (res)
             {
                 case OkResult okRes:
-                    await okRes.ExecuteResultAsync(ctx);
+                    await ctx.Channel.TriggerTypingAsync().ContinueWith(x => okRes.ExecuteResultAsync(ctx));
                     break;
                 case FailedResult failedRes:
-                    await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
+                    await ctx.Channel.TriggerTypingAsync()
+                        .ContinueWith(x => OnCommandFailureAsync(c, failedRes, ctx, args, sw));
                     return;
                 case BadRequestResult badreq:
-                    await OnBadRequestResultAsync(c, badreq, ctx, args, sw);
+                    await ctx.Channel.TriggerTypingAsync()
+                        .ContinueWith(x => OnBadRequestResultAsync(c, badreq, ctx, args, sw));
                     return;
             }
 
