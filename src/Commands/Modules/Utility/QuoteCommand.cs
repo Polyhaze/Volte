@@ -20,15 +20,13 @@ namespace Volte.Commands.Modules
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in this channel.");
 
-            var shouldHaveImage = m.Attachments.Count > 0;
-
             var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
-                .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
+                .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (shouldHaveImage)
+            if (m.Attachments.Count > 0)
             {
-                e.WithImageUrl(m.Attachments.ElementAt(0).Url);
+                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
             }
 
             return Ok(e);
@@ -43,15 +41,13 @@ namespace Volte.Commands.Modules
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in the given channel.");
 
-            var shouldHaveImage = m.Attachments.Count > 0;
-
             var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
-                .WithAuthor($"{m.Author.Username}#{m.Author.Discriminator}, in #{m.Channel.Name}",
+                .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (shouldHaveImage)
+            if (m.Attachments.Count > 0)
             {
-                e.WithImageUrl(m.Attachments.ElementAt(0).Url);
+                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
             }
 
             return Ok(e);
