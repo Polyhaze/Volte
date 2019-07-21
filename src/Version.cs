@@ -4,13 +4,13 @@ namespace Volte
 {
     public static class Version
     {
-        internal static int Major { get; } = 3;
-        internal static int Minor { get; } = 0;
-        internal static int Patch { get; } = 0;
-        internal static int Hotfix { get; } = 0;
-        public static ReleaseType ReleaseType { get; } = ReleaseType.Development;
-        public static string FullVersion { get; } = $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        public static string DiscordNetVersion { get; } = DiscordConfig.Version;
+        private static uint Major => 3;
+        private static uint Minor => 0;
+        private static uint Patch => 0;
+        private static uint Hotfix => 0;
+        public static ReleaseType ReleaseType => ReleaseType.Development;
+        public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
+        public static string DiscordNetVersion => DiscordConfig.Version;
     }
 
     public enum ReleaseType
