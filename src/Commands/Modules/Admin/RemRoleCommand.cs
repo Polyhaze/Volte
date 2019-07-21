@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public async Task<VolteCommandResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
-            if (role.Position > (await Context.Guild.GetCurrentUserAsync() as SocketGuildUser)?.Hierarchy)
+            if (role.Position > (await Context.Guild.GetCurrentUserAsync()).Cast<SocketGuildUser>()?.Hierarchy)
             {
                 return BadRequest("Role position is too high for me to be able to remove it from anyone.");
             }

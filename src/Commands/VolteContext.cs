@@ -16,11 +16,11 @@ namespace Volte.Commands
         public VolteContext(IDiscordClient client, IUserMessage msg, IServiceProvider provider)
         {
             _emojiService = provider.GetRequiredService<EmojiService>();
-            Client = client as DiscordShardedClient;
+            Client = client.Cast<DiscordShardedClient>();
             ServiceProvider = provider;
-            Guild = (msg.Channel as ITextChannel)?.Guild;
-            Channel = msg.Channel as ITextChannel;
-            User = msg.Author as IGuildUser;
+            Guild = (msg.Channel.Cast<ITextChannel>())?.Guild;
+            Channel = msg.Channel.Cast<ITextChannel>();
+            User = msg.Author.Cast<IGuildUser>();
             Message = msg;
         }
 

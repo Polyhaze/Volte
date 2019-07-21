@@ -1,6 +1,7 @@
 using System;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Data.Models.Guild;
@@ -17,7 +18,7 @@ namespace Volte.Data.Models.EventArgs
 
         public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
         {
-            Message = s as IUserMessage;
+            Message = s.Cast<IUserMessage>();
             _db = provider.GetRequiredService<DatabaseService>();
             Context = new VolteContext(provider.GetRequiredService<DiscordShardedClient>(), Message, provider);
             Data = _db.GetData(Context.Guild);

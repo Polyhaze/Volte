@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
@@ -15,7 +16,7 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin, RequireBotGuildPermission(GuildPermission.ManageRoles)]
         public async Task<VolteCommandResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
-            if (role.Position > (await Context.Guild.GetCurrentUserAsync() as SocketGuildUser)?.Hierarchy)
+            if (role.Position > (await Context.Guild.GetCurrentUserAsync()).Cast<SocketGuildUser>()?.Hierarchy)
             {
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");
             }

@@ -30,7 +30,7 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = users.Where(x =>
                     x.Username.EqualsIgnoreCase(value)
-                    || (x as IGuildUser).Nickname.EqualsIgnoreCase(value)).ToList();
+                    || x.Cast<IGuildUser>().Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
                     return TypeParserResult<TUser>.Unsuccessful(
                         "Multiple users found, try mentioning the user or using their ID.");
