@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Commands;
-using Volte.Extensions;
+using Gommon;
 
 namespace Volte.Data.Models.Results
 {

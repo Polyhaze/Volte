@@ -5,7 +5,6 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {

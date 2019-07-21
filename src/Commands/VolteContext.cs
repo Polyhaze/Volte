@@ -4,7 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
-using Volte.Extensions;
+using Gommon;
 using Volte.Services;
 
 namespace Volte.Commands

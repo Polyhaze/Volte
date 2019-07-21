@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Discord;
 using Volte.Data;
 
-namespace Volte.Extensions
+namespace Gommon
 {
-    public static class EmbedExtensions
+    public static partial class Extensions
     {
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
             c.SendMessageAsync(string.Empty, false, e.Build());

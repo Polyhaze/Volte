@@ -5,9 +5,9 @@ using Volte.Commands;
 using Volte.Commands.TypeParsers;
 using Volte.Services;
 
-namespace Volte.Extensions
+namespace Gommon
 {
-    public static class CommandExtensions
+    public static partial class Extensions
     {
         public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
@@ -17,7 +17,9 @@ namespace Volte.Extensions
             var aliases = $"({string.Join("|", c.FullAliases)})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|", ctx.ServiceProvider.GetRequiredService<DatabaseService>().GetData(ctx.Guild).Configuration.CommandPrefix)
+                .Replace("|prefix|",
+                    ctx.ServiceProvider.GetRequiredService<DatabaseService>().GetData(ctx.Guild).Configuration
+                        .CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 

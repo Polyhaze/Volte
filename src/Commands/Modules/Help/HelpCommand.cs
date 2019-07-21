@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Extensions;
 using Gommon;
 using Volte.Data.Models.Results;
 

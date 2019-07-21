@@ -11,14 +11,12 @@ using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Volte.Commands;
 using Volte.Data.Models;
-using Volte.Extensions;
 
 namespace Volte.Services
 {
     [Service("Eval", "Handles C# code evaluation.")]
     public sealed class EvalService
     {
-
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
         private readonly BinService _bin;

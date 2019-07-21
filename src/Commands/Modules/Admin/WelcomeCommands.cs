@@ -6,7 +6,7 @@ using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
+using Gommon;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

@@ -7,7 +7,6 @@ using Qmmands;
 using RestSharp;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {

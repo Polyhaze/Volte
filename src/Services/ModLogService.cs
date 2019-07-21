@@ -4,7 +4,6 @@ using Gommon;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
-using Volte.Extensions;
 
 namespace Volte.Services
 {

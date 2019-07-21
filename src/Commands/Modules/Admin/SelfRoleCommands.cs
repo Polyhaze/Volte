@@ -5,7 +5,6 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {

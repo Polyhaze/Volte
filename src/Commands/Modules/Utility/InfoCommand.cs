@@ -7,7 +7,6 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {

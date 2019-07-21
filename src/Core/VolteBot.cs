@@ -11,7 +11,6 @@ using Qmmands;
 using RestSharp;
 using Volte.Data;
 using Volte.Data.Models;
-using Volte.Extensions;
 using Volte.Services;
 
 namespace Volte.Core
@@ -29,28 +28,6 @@ namespace Volte.Core
 
         private static ServiceProvider BuildServiceProvider()
             => new ServiceCollection()
-                .AddSingleton<VolteHandler>()
-                .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
-                .AddSingleton(new HttpClient())
-                .AddSingleton(new CancellationTokenSource())
-                .AddSingleton(new CommandService(new CommandServiceConfiguration
-                {
-                    IgnoreExtraArguments = true,
-                    CaseSensitive = false,
-                    DefaultRunMode = RunMode.Sequential,
-                    SeparatorRequirement = SeparatorRequirement.Separator,
-                    Separator = "irrelevant",
-                    NullableNouns = null
-                }))
-                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
-                {
-                    LogLevel = Version.ReleaseType is ReleaseType.Release
-                        ? LogSeverity.Verbose
-                        : LogSeverity.Debug,
-                    AlwaysDownloadUsers = true,
-                    ConnectionTimeout = 10000,
-                    MessageCacheSize = 50
-                }))
                 .AddVolteServices()
                 .BuildServiceProvider();
 

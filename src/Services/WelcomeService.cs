@@ -2,7 +2,6 @@
 using Discord;
 using Gommon;
 using Volte.Data.Models.EventArgs;
-using Volte.Extensions;
 
 namespace Volte.Services
 {

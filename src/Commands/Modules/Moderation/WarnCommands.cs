@@ -10,7 +10,6 @@ using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Guild;
 using Volte.Data.Models.Results;
-using Volte.Extensions;
 
 namespace Volte.Commands.Modules
 {

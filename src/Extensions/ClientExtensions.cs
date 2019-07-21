@@ -2,9 +2,9 @@
 using Discord.WebSocket;
 using Volte.Data;
 
-namespace Volte.Extensions
+namespace Gommon
 {
-    public static class ClientExtensions
+    public static partial class Extensions
     {
         public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin = true)
         {
