@@ -17,13 +17,13 @@ namespace Volte.Services
     [Service("Bin", "The main Service that handles HTTP POST requests for debug reports to bin.scarsz.me.")]
     public sealed class BinService
     {
-        private DiscordSocketClient _client;
+        private DiscordShardedClient _client;
         private RestClient _http;
 
-        public BinService(DiscordSocketClient discordSocketClient,
+        public BinService(DiscordShardedClient DiscordShardedClient,
             RestClient restClient)
         {
-            _client = discordSocketClient;
+            _client = DiscordShardedClient;
             _http = restClient;
         }
 
@@ -77,7 +77,7 @@ namespace Volte.Services
                 using (var ms = new MemoryStream())
                 using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
                 using (var sw = new StreamWriter(cs))
-                { 
+                {
                     sw.Write(text);
                     enc = ms.ToArray();
                 }

@@ -16,7 +16,7 @@ namespace Volte.Core
 {
     internal sealed class VolteHandler
     {
-        private readonly DiscordSocketClient _client;
+        private readonly DiscordShardedClient _client;
         private readonly CommandService _service;
         private readonly GuildService _guild;
         private readonly WelcomeService _welcome;
@@ -24,7 +24,7 @@ namespace Volte.Core
         private readonly EventService _event;
         private readonly LoggingService _logger;
 
-        public VolteHandler(DiscordSocketClient client,
+        public VolteHandler(DiscordShardedClient client,
             CommandService commandService,
             GuildService guildService,
             WelcomeService welcomeService,
@@ -64,7 +64,7 @@ namespace Volte.Core
                 if (Config.EnabledFeatures.Welcome)
                     await _welcome.LeaveAsync(new UserLeftEventArgs(user));
             };
-            _client.Ready += async () => await _event.OnReady(new ReadyEventArgs(_client));
+            _client.ShardReady += async (client) => { await _event.OnReady(new ReadyEventArgs(client)); };
             _client.MessageReceived += async (s) =>
             {
                 if (!(s is IUserMessage msg)) return;

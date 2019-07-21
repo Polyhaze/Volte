@@ -19,7 +19,7 @@ namespace Volte.Data.Models.EventArgs
         {
             Message = s as IUserMessage;
             _db = provider.GetRequiredService<DatabaseService>();
-            Context = new VolteContext(provider.GetRequiredService<DiscordSocketClient>(), Message, provider);
+            Context = new VolteContext(provider.GetRequiredService<DiscordShardedClient>(), Message, provider);
             Data = _db.GetData(Context.Guild);
         }
     }

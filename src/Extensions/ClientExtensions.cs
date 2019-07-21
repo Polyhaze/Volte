@@ -13,8 +13,8 @@ namespace Gommon
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
         }
 
-        public static IUser GetOwner(this DiscordSocketClient client) => client.GetUser(Config.Owner);
+        public static IUser GetOwner(this DiscordShardedClient client) => client.GetUser(Config.Owner);
 
-        public static IGuild GetPrimaryGuild(this DiscordSocketClient client) => client.GetGuild(405806471578648588);
+        public static IGuild GetPrimaryGuild(this DiscordShardedClient client) => client.GetGuild(405806471578648588);
     }
 }

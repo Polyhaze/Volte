@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Volte;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static IServiceCollection AddVolteServices(this IServiceCollection provider)
+        public static IServiceCollection AddVolteServices(this IServiceCollection provider, int shardCount)
         {
             //get all the classes that implement the IService interface, arent an interface themselves, and haven't been marked as Obsolete like the GitHubService.
             foreach (var service in Assembly.GetEntryAssembly().GetTypes()
@@ -26,6 +27,7 @@ namespace Gommon
             {
                 provider.AddSingleton(service);
             }
+
 
             provider.AddSingleton<VolteHandler>()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
@@ -40,14 +42,15 @@ namespace Gommon
                     Separator = "irrelevant",
                     NullableNouns = null
                 }))
-                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+                .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
                     LogLevel = Version.ReleaseType is ReleaseType.Release
                         ? LogSeverity.Verbose
                         : LogSeverity.Debug,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
-                    MessageCacheSize = 50
+                    MessageCacheSize = 50,
+                    TotalShards = shardCount
                 }));
 
             return provider;

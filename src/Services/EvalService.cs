@@ -110,7 +110,7 @@ namespace Volte.Services
         {
             "System", "System.Collections.Generic", "System.Linq", "System.Text",
             "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
-            "System.Threading", "Volte.Extensions", "Gommon", "Volte.Data", "Humanizer",
+            "System.Threading", "Gommon", "Volte.Data", "Humanizer",
             "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
         };
     }

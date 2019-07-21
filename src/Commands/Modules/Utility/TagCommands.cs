@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
             if (tag is null)
                 return BadRequest($"The tag **{name}** doesn't exist in this guild.");
 
-            var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
+            var u = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle($"Tag {tag.Name}")

@@ -16,7 +16,7 @@ namespace Volte.Commands
         public VolteContext(IDiscordClient client, IUserMessage msg, IServiceProvider provider)
         {
             _emojiService = provider.GetRequiredService<EmojiService>();
-            Client = client as DiscordSocketClient;
+            Client = client as DiscordShardedClient;
             ServiceProvider = provider;
             Guild = (msg.Channel as ITextChannel)?.Guild;
             Channel = msg.Channel as ITextChannel;
@@ -24,7 +24,7 @@ namespace Volte.Commands
             Message = msg;
         }
 
-        public DiscordSocketClient Client { get; }
+        public DiscordShardedClient Client { get; }
         public IServiceProvider ServiceProvider { get; }
         public IGuild Guild { get; }
         public ITextChannel Channel { get; }

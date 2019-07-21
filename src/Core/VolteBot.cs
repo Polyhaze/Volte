@@ -1,86 +1,73 @@
 using System;
-using System.IO;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
-using Qmmands;
-using RestSharp;
 using Volte.Data;
-using Volte.Data.Models;
-using Volte.Services;
 
 namespace Volte.Core
 {
-    public class VolteBot : IDisposable
+    public class VolteBot
     {
-        private static readonly ServiceProvider _serviceProvider = BuildServiceProvider();
-        private readonly DiscordSocketClient _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
-        private readonly CancellationTokenSource _cts = _serviceProvider.GetRequiredService<CancellationTokenSource>();
-        private readonly VolteHandler _handler = _serviceProvider.GetRequiredService<VolteHandler>();
-        private readonly LoggingService _logger = _serviceProvider.GetRequiredService<LoggingService>();
-
         public static Task StartAsync()
             => new VolteBot().LoginAsync();
 
-        private static ServiceProvider BuildServiceProvider()
+        private static ServiceProvider BuildServiceProvider(int shardCount)
             => new ServiceCollection()
-                .AddVolteServices()
+                .AddVolteServices(shardCount)
                 .BuildServiceProvider();
 
-        private VolteBot()
-            => Console.CancelKeyPress += (s, e) =>
-            {
-                e.Cancel = true;
-                _cts.Cancel();
-            };
+        private VolteBot() { }
 
         private async Task LoginAsync()
         {
             Console.Title = "Volte";
             Console.CursorVisible = false;
-            if (!Directory.Exists("data"))
-            {
-                await _logger.LogAsync(LogSeverity.Critical, LogSource.Volte,
-                    "The \"data\" directory didn't exist, so I created it for you.");
-                Directory.CreateDirectory("data");
-                return;
-            }
 
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
-            await _client.LoginAsync(TokenType.Bot, Config.Token);
-            await _client.StartAsync();
 
-            await _client.SetStatusAsync(UserStatus.Online);
-            await _handler.InitAsync(_serviceProvider);
+            var rest = new DiscordRestClient();
+            await rest.LoginAsync(TokenType.Bot, Config.Token);
+
+            var provider = BuildServiceProvider(await rest.GetRecommendedShardCountAsync());
+            var client = provider.GetRequiredService<DiscordShardedClient>();
+            var cts = provider.GetRequiredService<CancellationTokenSource>();
+            var handler = provider.GetRequiredService<VolteHandler>();
+
+            await client.LoginAsync(TokenType.Bot, Config.Token);
+            await client.StartAsync();
+
+            await client.SetStatusAsync(UserStatus.Online);
+            await handler.InitAsync(provider);
             try
             {
-                await Task.Delay(-1, _cts.Token);
+                await Task.Delay(-1, cts.Token);
             }
             catch (TaskCanceledException)
             {
                 //this exception should occur, so put the shutdown logic inside the catch block
-                await ShutdownAsync();
+                await ShutdownAsync(client, cts, provider);
             }
         }
 
-        private async Task ShutdownAsync()
+        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts,
+            ServiceProvider provider)
         {
-            await _client.SetStatusAsync(UserStatus.Invisible);
-            await _client.LogoutAsync();
-            await _client.StopAsync();
-            Dispose();
+            await client.SetStatusAsync(UserStatus.Invisible);
+            await client.LogoutAsync();
+            await client.StopAsync();
+            Dispose(cts, provider, client);
             Environment.Exit(0);
         }
 
-        public void Dispose()
+        public void Dispose(CancellationTokenSource cts, ServiceProvider provider, DiscordShardedClient client)
         {
-            _cts.Dispose();
-            _serviceProvider.Dispose();
-            _client.Dispose();
+            cts.Dispose();
+            provider.Dispose();
+            client.Dispose();
         }
     }
 }

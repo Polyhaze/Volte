@@ -24,6 +24,7 @@ namespace Volte.Commands.Modules
                 //.AddField("RAM Usage", $"{GetRamUsage()}MB", true)
                 .AddField("Language", $"C# - Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Servers", Context.Client.Guilds.Count, true)
+                .AddField("Shards", Context.Client.Shards.Count, true)
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{Db.GetData(Context.Guild).Configuration.CommandPrefix}invite`", true)

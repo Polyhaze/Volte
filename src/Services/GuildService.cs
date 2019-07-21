@@ -15,13 +15,13 @@ namespace Volte.Services
     public sealed class GuildService
     {
         private readonly LoggingService _logger;
-        private readonly DiscordSocketClient _client;
+        private readonly DiscordShardedClient _client;
 
         public GuildService(LoggingService loggingService,
-            DiscordSocketClient discordSocketClient)
+            DiscordShardedClient discordShardedClient)
         {
             _logger = loggingService;
-            _client = discordSocketClient;
+            _client = discordShardedClient;
         }
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)

@@ -15,11 +15,11 @@ namespace Volte.Services
     {
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
-        private DiscordSocketClient _client;
+        private DiscordShardedClient _client;
 
-        public DatabaseService(DiscordSocketClient discordSocketClient)
+        public DatabaseService(DiscordShardedClient DiscordShardedClient)
         {
-            _client = discordSocketClient;
+            _client = DiscordShardedClient;
         }
 
         public GuildData GetData(IGuild guild) => GetData(guild.Id);
@@ -55,7 +55,8 @@ namespace Volte.Services
                     Configuration = new GuildConfiguration
                     {
                         Autorole = _client.GetGuild(record.ServerId)?.Roles
-                                       .FirstOrDefault(x => x.Name.EqualsIgnoreCase(record.Autorole))?.Id ?? ulong.MinValue,
+                                       .FirstOrDefault(x => x.Name.EqualsIgnoreCase(record.Autorole))?.Id ??
+                                   ulong.MinValue,
                         CommandPrefix = record.CommandPrefix ?? Config.CommandPrefix,
                         DeleteMessageOnCommand = record.DeleteMessageOnCommand,
                         Moderation = new ModerationOptions
@@ -71,7 +72,8 @@ namespace Volte.Services
                         {
                             LeavingMessage = record.WelcomeOptions.LeavingMessage ?? string.Empty,
                             WelcomeChannel = record.WelcomeOptions.WelcomeChannel,
-                            WelcomeColor = new Color(record.WelcomeOptions.WelcomeColorR, record.WelcomeOptions.WelcomeColorG, record.WelcomeOptions.WelcomeColorB).RawValue,
+                            WelcomeColor = new Color(record.WelcomeOptions.WelcomeColorR,
+                                record.WelcomeOptions.WelcomeColorG, record.WelcomeOptions.WelcomeColorB).RawValue,
                             WelcomeMessage = record.WelcomeOptions.WelcomeMessage ?? string.Empty
                         }
                     },
