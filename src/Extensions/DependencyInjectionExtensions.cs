@@ -18,17 +18,9 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static IServiceCollection AddVolteServices(this IServiceCollection provider, int shardCount)
+        public static IServiceCollection AddAllServices(this IServiceCollection provider, int shardCount)
         {
-            //get all the classes that implement the IService interface, arent an interface themselves, and haven't been marked as Obsolete like the GitHubService.
-            foreach (var service in Assembly.GetEntryAssembly().GetTypes()
-                .Where(t => !t.HasAttribute<ObsoleteAttribute>() &&
-                            t.HasAttribute<ServiceAttribute>()))
-            {
-                provider.AddSingleton(service);
-            }
-
-
+            //add all other services; formerly in the VolteBot class
             provider.AddSingleton<VolteHandler>()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton(new HttpClient())
@@ -51,7 +43,21 @@ namespace Gommon
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50,
                     TotalShards = shardCount
-                }));
+                }))
+                .AddVolteServices();
+
+            return provider;
+        }
+
+        public static IServiceCollection AddVolteServices(this IServiceCollection provider)
+        {
+            //get all the classes that have the ServiceAttribute attribute and don't have the System.ObsoleteAttribute attribute.
+            foreach (var service in Assembly.GetEntryAssembly()?.GetTypes()?
+                .Where(t => !t.HasAttribute<ObsoleteAttribute>() &&
+                            t.HasAttribute<ServiceAttribute>()))
+            {
+                provider.AddSingleton(service);
+            }
 
             return provider;
         }

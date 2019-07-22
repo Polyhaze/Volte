@@ -17,7 +17,7 @@ namespace Volte.Core
 
         private static ServiceProvider BuildServiceProvider(int shardCount)
             => new ServiceCollection()
-                .AddVolteServices(shardCount)
+                .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
         private VolteBot() { }
@@ -32,8 +32,7 @@ namespace Volte.Core
             var rest = new DiscordRestClient();
             await rest.LoginAsync(TokenType.Bot, Config.Token);
             var shardCount = await rest.GetRecommendedShardCountAsync();
-            await rest.LogoutAsync();
-            rest.Dispose();
+            await rest.LogoutAsync().ContinueWith(_ => rest.Dispose());
 
             var provider = BuildServiceProvider(shardCount);
 
@@ -42,9 +41,8 @@ namespace Volte.Core
             var handler = provider.GetRequiredService<VolteHandler>();
 
             await client.LoginAsync(TokenType.Bot, Config.Token);
-            await client.StartAsync();
+            await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
 
-            await client.SetStatusAsync(UserStatus.Online);
             await handler.InitAsync(provider);
             try
             {
