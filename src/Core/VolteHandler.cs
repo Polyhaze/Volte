@@ -49,20 +49,22 @@ namespace Volte.Core
             sw.Stop();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            _client.Log += async m => await _logger.Log(new LogEventArgs(m));
-            _client.JoinedGuild += async guild => await _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
-            _client.LeftGuild += async guild => await _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
-            _client.UserJoined += async user =>
+            _client.Log += m => _logger.Log(new LogEventArgs(m));
+            _client.JoinedGuild += guild => _guild.OnJoinAsync(new JoinedGuildEventArgs(guild));
+            _client.LeftGuild += guild => _guild.OnLeaveAsync(new LeftGuildEventArgs(guild));
+            _client.UserJoined += user =>
             {
                 if (Config.EnabledFeatures.Welcome)
-                    await _welcome.JoinAsync(new UserJoinedEventArgs(user));
+                    return _welcome.JoinAsync(new UserJoinedEventArgs(user));
                 if (Config.EnabledFeatures.Autorole)
-                    await _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+                    return _autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+                return Task.CompletedTask;
             };
-            _client.UserLeft += async user =>
+            _client.UserLeft += user =>
             {
                 if (Config.EnabledFeatures.Welcome)
-                    await _welcome.LeaveAsync(new UserLeftEventArgs(user));
+                    return _welcome.LeaveAsync(new UserLeftEventArgs(user));
+                return Task.CompletedTask;
             };
             _client.ShardReady += (client) => _event.OnReady(new ReadyEventArgs(client));
             _client.MessageReceived += async (s) =>
