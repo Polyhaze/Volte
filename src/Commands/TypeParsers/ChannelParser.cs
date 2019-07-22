@@ -20,7 +20,7 @@ namespace Volte.Commands.TypeParsers
             TChannel channel = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseChannel(value, out id))
-                channel = (await ctx.Guild.GetTextChannelsAsync()).FirstOrDefault(x => x.Id == id).Cast<TChannel>();
+                channel = ctx.Guild.GetTextChannelAsync(id).Cast<TChannel>();
 
             if (channel is null)
             {

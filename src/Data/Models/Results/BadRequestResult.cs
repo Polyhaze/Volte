@@ -23,7 +23,8 @@ namespace Volte.Data.Models.Results
                 .WithTitle("No can do, partner.")
                 .WithDescription(Reason)
                 .WithColor(new Color(Config.ErrorColor))
-                .WithTimestamp(DateTimeOffset.Now).SendToAsync(ctx.Channel);
+                .WithTimestamp(DateTimeOffset.Now)
+                .SendToAsync(ctx.Channel);
             return new ResultCompletionData(message);
         }
     }

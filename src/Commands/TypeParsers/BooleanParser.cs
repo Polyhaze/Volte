@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Gommon;
@@ -8,15 +9,14 @@ namespace Volte.Commands.TypeParsers
 {
     public sealed class BooleanParser : TypeParser<bool>
     {
-        private List<string> TrueValues =>
+        private IEnumerable<string> TrueValues =>
             new List<string>
             {
                 "true", "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "yar", "aff", "ya", "da", "yas",
-                "enable",
-                "yip", "positive", "1"
+                "enable", "yip", "positive", "1"
             };
 
-        private List<string> FalseValues =>
+        private IEnumerable<string> FalseValues =>
             new List<string>
             {
                 "false", "n", "no", "nah", "na", "nej", "nope", "nop", "neg", "negatory", "disable", "nay", "negative",
@@ -37,7 +37,7 @@ namespace Volte.Commands.TypeParsers
 
             return Task.FromResult(bool.TryParse(value, out var result)
                 ? TypeParserResult<bool>.Successful(result)
-                : TypeParserResult<bool>.Unsuccessful("Failed to parse a boolean (true/false) value."));
+                : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value."));
         }
     }
 }

@@ -22,8 +22,6 @@ namespace Volte.Data.Models.Results
             SeparateLogic = logic;
         }
 
-        public override bool IsSuccessful => true;
-
         private string Message { get; }
         private bool ShouldEmbed { get; }
         private Func<IUserMessage, Task> After { get; }
@@ -65,7 +63,7 @@ namespace Volte.Data.Models.Results
             }
 
 
-            return new ResultCompletionData();
+            return new ResultCompletionData(message);
         }
     }
 }

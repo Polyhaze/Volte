@@ -14,5 +14,15 @@ namespace Volte.Data.Models.Results
         {
             Messages = messages.ToList();
         }
+
+        public static implicit operator Task<ResultCompletionData>(ResultCompletionData data)
+        {
+            return Task.FromResult(data);
+        }
+
+        public static implicit operator ValueTask<ResultCompletionData>(ResultCompletionData data)
+        {
+            return new ValueTask<ResultCompletionData>(data);
+        }
     }
 }

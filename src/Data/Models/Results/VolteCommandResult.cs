@@ -6,7 +6,7 @@ namespace Volte.Data.Models.Results
 {
     public abstract class VolteCommandResult : CommandResult
     {
-        public override bool IsSuccessful { get; }
+        public override bool IsSuccessful { get; } = true;
 
         public abstract Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx);
 
