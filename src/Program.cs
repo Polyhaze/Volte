@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace Volte
+﻿namespace Volte
 {
     internal static class Program
     {
-        private static Task Main() => Core.VolteBot.StartAsync();
+        private static System.Threading.Tasks.Task Main() => Core.VolteBot.StartAsync();
     }
 }

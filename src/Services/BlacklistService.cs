@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Gommon;
-using Volte.Core;
 using Volte.Data.Models.EventArgs;
 
 namespace Volte.Services

@@ -2,7 +2,7 @@ using Discord;
 
 namespace Volte.Data.Models.EventArgs
 {
-    public sealed class LogEventArgs
+    public sealed class LogEventArgs : System.EventArgs
     {
         public string Message { get; }
         public string Source { get; }

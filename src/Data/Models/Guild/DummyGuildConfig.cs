@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Volte.Data.Models.Guild
 {
+    [Obsolete]
     internal sealed class DummyGuildConfig
     {
         internal DummyGuildConfig()

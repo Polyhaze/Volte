@@ -1,12 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Preconditions;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Results;
-using Gommon;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

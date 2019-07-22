@@ -7,7 +7,6 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core;
 using Volte.Data;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;

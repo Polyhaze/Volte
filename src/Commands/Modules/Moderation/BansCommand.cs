@@ -23,8 +23,7 @@ namespace Volte.Commands.Modules
                 return BadRequest("This server doesn't have anyone banned.");
             }
 
-            return Ok(string.Join('\n',
-                banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`")));
+            return Ok(banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`").Join('\n'));
         }
     }
 }

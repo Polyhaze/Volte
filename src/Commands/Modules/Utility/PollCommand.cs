@@ -2,7 +2,6 @@
 using Discord;
 using Qmmands;
 using Volte.Data.Models.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {

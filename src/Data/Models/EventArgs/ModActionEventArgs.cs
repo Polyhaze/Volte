@@ -4,7 +4,7 @@ using Volte.Commands;
 
 namespace Volte.Data.Models.EventArgs
 {
-    public class ModActionEventArgs
+    public class ModActionEventArgs : System.EventArgs
     {
         public IGuildUser Moderator { get; }
         public VolteContext Context { get; }
