@@ -24,13 +24,11 @@ namespace Gommon
         public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
         {
             var welcome = provider.GetRequiredService<WelcomeService>();
-            var logger = provider.GetRequiredService<LoggingService>();
             var guild = provider.GetRequiredService<GuildService>();
             var @event = provider.GetRequiredService<EventService>();
-            var autorole = provider.GetRequiredService<AutoroleService>();
-            return Task.Run(() =>
+            return Executor.ExecuteAsync(() =>
             {
-                client.Log += m => logger.Log(new LogEventArgs(m));
+                client.Log += m => provider.GetRequiredService<LoggingService>().Log(new LogEventArgs(m));
                 client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
                 client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
                 client.UserJoined += user =>
@@ -38,7 +36,8 @@ namespace Gommon
                     if (Config.EnabledFeatures.Welcome)
                         return welcome.JoinAsync(new UserJoinedEventArgs(user));
                     if (Config.EnabledFeatures.Autorole)
-                        return autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+                        return provider.GetRequiredService<AutoroleService>()
+                            .ApplyRoleAsync(new UserJoinedEventArgs(user));
                     return Task.CompletedTask;
                 };
                 client.UserLeft += user =>
@@ -60,6 +59,7 @@ namespace Gommon
 
                     await @event.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
                 };
+                return Task.CompletedTask;
             });
         }
     }

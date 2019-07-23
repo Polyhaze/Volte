@@ -13,7 +13,7 @@ namespace Volte.Commands
     {
         private readonly EmojiService _emojiService;
 
-        public VolteContext(DiscordShardedClient client, IUserMessage msg, IServiceProvider provider)
+        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, IServiceProvider provider)
         {
             _emojiService = provider.GetRequiredService<EmojiService>();
             Client = client;
