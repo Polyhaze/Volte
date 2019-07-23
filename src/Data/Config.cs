@@ -4,7 +4,7 @@ using System.IO;
 using Discord;
 using Gommon;
 using Newtonsoft.Json;
-using Volte.Data.Models;
+using Volte.Data.Models.BotConfig;
 
 namespace Volte.Data
 {

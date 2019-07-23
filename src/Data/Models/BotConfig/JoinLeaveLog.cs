@@ -1,4 +1,4 @@
-namespace Volte.Data.Models
+namespace Volte.Data.Models.BotConfig
 {
     public sealed class JoinLeaveLog
     {

@@ -1,4 +1,4 @@
-﻿namespace Volte.Data.Models
+﻿namespace Volte.Data.Models.BotConfig
 {
     /// <summary>
     ///     Model that represents enabled/disabled features as defined in your config.

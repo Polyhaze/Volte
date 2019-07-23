@@ -44,13 +44,14 @@ namespace Volte.Core
             await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
 
             await handler.InitAsync(provider);
+
             try
             {
                 await Task.Delay(-1, cts.Token);
             }
             catch (TaskCanceledException)
             {
-                //this exception should occur, so put the shutdown logic inside the catch block
+                //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
                 await ShutdownAsync(client, cts, provider);
             }
         }
