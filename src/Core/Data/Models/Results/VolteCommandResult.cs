@@ -14,10 +14,5 @@ namespace Volte.Core.Data.Models.Results
         {
             return Task.FromResult(res);
         }
-
-        public static implicit operator ValueTask<VolteCommandResult>(VolteCommandResult res)
-        {
-            return new ValueTask<VolteCommandResult>(res);
-        }
     }
 }

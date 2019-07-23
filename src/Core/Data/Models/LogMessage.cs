@@ -19,24 +19,15 @@ namespace Volte.Core.Data.Models
                 Exception = message.Exception
             };
 
-            switch (message.Source)
-            {
-                case "Rest":
-                    s.Source = LogSource.Rest;
-                    return s;
-
-                case "Discord":
-                    s.Source = LogSource.Discord;
-                    return s;
-
-                case "Gateway":
-                    s.Source = LogSource.Gateway;
-                    return s;
-
-                default:
-                    s.Source = LogSource.Unknown;
-                    return s;
-            }
+            var logSource = message.Source switch
+                {
+                "Rest" => LogSource.Rest,
+                "Discord" => LogSource.Discord,
+                "Gateway" => LogSource.Gateway,
+                _ => LogSource.Unknown
+                };
+            s.Source = logSource;
+            return s;
         }
     }
 }

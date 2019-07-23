@@ -12,31 +12,20 @@ namespace Volte.Commands.Modules
         [Description("Sets the bot's status.")]
         [Remarks("Usage: |prefix|setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
-        public async Task<VolteCommandResult> SetStatusAsync([Remainder] string status)
+        public Task<VolteCommandResult> SetStatusAsync([Remainder] string status)
         {
-            switch (status.ToLower())
-            {
-                case "dnd":
-                    await Context.Client.SetStatusAsync(UserStatus.DoNotDisturb);
-                    return Ok("Set the status to Do Not Disturb.");
-
-                case "idle":
-                    await Context.Client.SetStatusAsync(UserStatus.Idle);
-                    return Ok("Set the status to Idle.");
-
-                case "invisible":
-                    await Context.Client.SetStatusAsync(UserStatus.Invisible);
-                    return Ok("Set the status to Invisible.");
-
-                case "online":
-                    await Context.Client.SetStatusAsync(UserStatus.Online);
-                    return Ok("Set the status to Online.");
-
-                default:
-                    await Context.Client.SetStatusAsync(UserStatus.Online);
-                    return BadRequest(
-                        "Your option wasn't known, so I set the status to Online.\nAvailable options for this command are `dnd`, `idle`, `invisible`, or `online`.");
-            }
+            return status.ToLower() switch
+                {
+                "dnd" => Ok("Set the status to Do Not Disturb.",
+                    _ => Context.Client.SetStatusAsync(UserStatus.DoNotDisturb)),
+                "idle" => Ok("Set the status to Idle.", _ => Context.Client.SetStatusAsync(UserStatus.Idle)),
+                "invisible" => Ok("Set the status to Invisible.",
+                    _ => Context.Client.SetStatusAsync(UserStatus.Invisible)),
+                "online" => Ok("Set the status to Online.",
+                    _ => Context.Client.SetStatusAsync(UserStatus.Online)),
+                _ => BadRequest(
+                    "Your option wasn't known, so I didn't modify the status.\nAvailable options for this command are `dnd`, `idle`, `invisible`, or `online`.")
+                };
         }
     }
 }

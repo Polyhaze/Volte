@@ -10,16 +10,18 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static string GetInviteUrl(this IDiscordClient client, bool shouldHaveAdmin = true)
+        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
         {
-            return shouldHaveAdmin
+            return withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
         }
 
-        public static IUser GetOwner(this DiscordShardedClient client) => client.GetUser(Config.Owner);
+        public static SocketUser GetOwner(this DiscordShardedClient client)
+            => client.GetUser(Config.Owner);
 
-        public static IGuild GetPrimaryGuild(this DiscordShardedClient client) => client.GetGuild(405806471578648588);
+        public static SocketGuild GetPrimaryGuild(this DiscordShardedClient client)
+            => client.GetGuild(405806471578648588);
 
         public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
         {
@@ -46,8 +48,8 @@ namespace Gommon
                         return welcome.LeaveAsync(new UserLeftEventArgs(user));
                     return Task.CompletedTask;
                 };
-                client.ShardReady += (c) => @event.OnReady(new ReadyEventArgs(c));
-                client.MessageReceived += async (s) =>
+                client.ShardReady += c => @event.OnReady(new ReadyEventArgs(c));
+                client.MessageReceived += async s =>
                 {
                     if (!(s is IUserMessage msg)) return;
                     if (msg.Author.IsBot) return;

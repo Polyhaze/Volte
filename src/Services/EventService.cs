@@ -127,10 +127,12 @@ namespace Volte.Services
             var args = ctx.Message.Content.Replace($"{commandName}", "");
             if (string.IsNullOrEmpty(args)) args = "None";
 
+            ResultCompletionData data = null;
             switch (res)
             {
                 case OkResult okRes:
-                    await ctx.Channel.TriggerTypingAsync().ContinueWith(x => okRes.ExecuteResultAsync(ctx));
+                    await ctx.Channel.TriggerTypingAsync();
+                    data = await okRes.ExecuteResultAsync(ctx);
                     break;
                 case FailedResult failedRes:
                     await ctx.Channel.TriggerTypingAsync()
@@ -162,6 +164,12 @@ namespace Volte.Services
                     $"|           -Executed: {res.IsSuccessful} ");
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
                     $"|              -After: {sw.Elapsed.Humanize()}");
+                if (!(data is null))
+                {
+                    await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
+                        $"|              -Result Message: {data.Message.Id}");
+                }
+
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
                     "-------------------------------------------------");
             });

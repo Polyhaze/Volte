@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Volte.Core.Data.Models;
 using Volte.Core.Data.Models.EventArgs;
 using Color = System.Drawing.Color;
@@ -52,59 +54,30 @@ namespace Volte.Services
             await Console.Out.WriteAsync(m);
         }
 
-        private (Color Color, string Source) VerifySource(LogSource source)
-        {
-            switch (source)
-            {
-                case LogSource.Discord:
-                case LogSource.Gateway:
-                    return (Color.RoyalBlue, "DSCD");
+        private (Color Color, string Source) VerifySource(LogSource source) =>
+            source switch
+                {
+                LogSource.Discord => (Color.RoyalBlue, "DSCD"),
+                LogSource.Gateway => (Color.RoyalBlue, "DSCD"),
+                LogSource.Volte => (Color.Crimson, "CORE"),
+                LogSource.Service => (Color.Gold, "SERV"),
+                LogSource.Module => (Color.LimeGreen, "MDLE"),
+                LogSource.Rest => (Color.Tomato, "REST"),
+                LogSource.Unknown => (Color.Teal, "UNKN"),
+                _ => throw new ArgumentNullException(nameof(source), "source cannot be null")
+                };
 
-                case LogSource.Volte:
-                    return (Color.Crimson, "CORE");
 
-                case LogSource.Service:
-                    return (Color.Gold, "SERV");
-
-                case LogSource.Module:
-                    return (Color.LimeGreen, "MDLE");
-
-                case LogSource.Rest:
-                    return (Color.Tomato, "REST");
-
-                case LogSource.Unknown:
-                    return (Color.Teal, "UNKN");
-
-                default:
-                    throw new ArgumentNullException(nameof(source), "source cannot be null.");
-            }
-        }
-
-        private (Color Color, string Level) VerifySeverity(LogSeverity s)
-        {
-            switch (s)
-            {
-                case LogSeverity.Critical:
-                    return (Color.Maroon, "CRIT");
-
-                case LogSeverity.Error:
-                    return (Color.DarkRed, "EROR");
-
-                case LogSeverity.Warning:
-                    return (Color.Yellow, "WARN");
-
-                case LogSeverity.Info:
-                    return (Color.SpringGreen, "INFO");
-
-                case LogSeverity.Verbose:
-                    return (Color.Pink, "VRBS");
-
-                case LogSeverity.Debug:
-                    return (Color.SandyBrown, "DEBG");
-
-                default:
-                    throw new ArgumentNullException(nameof(s), "s cannot be null.");
-            }
-        }
+        private (Color Color, string Level) VerifySeverity(LogSeverity severity) =>
+            severity switch
+                {
+                LogSeverity.Critical => (Color.Maroon, "CRIT"),
+                LogSeverity.Error => (Color.DarkRed, "EROR"),
+                LogSeverity.Warning => (Color.Yellow, "WARN"),
+                LogSeverity.Info => (Color.SpringGreen, "INFO"),
+                LogSeverity.Verbose => (Color.Pink, "VRBS"),
+                LogSeverity.Debug => (Color.SandyBrown, "DEBG"),
+                _ => throw new ArgumentNullException(nameof(severity), "severity cannot be null")
+                };
     }
 }

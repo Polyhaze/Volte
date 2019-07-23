@@ -2,26 +2,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
+using Gommon;
 
 namespace Volte.Core.Data.Models.Results
 {
     public class ResultCompletionData
     {
-        public List<IUserMessage> Messages { get; }
+        public IUserMessage Message { get; }
 
-        public ResultCompletionData(params IUserMessage[] messages)
+        public ResultCompletionData(IUserMessage message)
         {
-            Messages = messages.ToList();
+            Message = message;
+        }
+
+        public ResultCompletionData()
+        {
+            Message = null;
         }
 
         public static implicit operator Task<ResultCompletionData>(ResultCompletionData data)
         {
             return Task.FromResult(data);
-        }
-
-        public static implicit operator ValueTask<ResultCompletionData>(ResultCompletionData data)
-        {
-            return new ValueTask<ResultCompletionData>(data);
         }
     }
 }

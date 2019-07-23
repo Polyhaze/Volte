@@ -12,12 +12,11 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|feedback {feedback}")]
         public Task<VolteCommandResult> FeedbackAsync([Remainder] string feedback)
         {
-            return Ok($"Feedback sent! Message: ```{feedback}```", async _ =>
-            {
-                await Context.CreateEmbedBuilder($"```{feedback}```")
+            return Ok($"Feedback sent! Message: ```{feedback}```", _ =>
+                Context.CreateEmbedBuilder($"```{feedback}```")
                     .WithTitle($"Feedback from {Context.User}")
-                    .SendToAsync(await Context.Client.GetPrimaryGuild().GetTextChannelAsync(415182876326232064));
-            });
+                    .SendToAsync(Context.Client.GetPrimaryGuild().GetTextChannel(415182876326232064))
+            );
         }
     }
 }
