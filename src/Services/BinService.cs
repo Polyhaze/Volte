@@ -10,8 +10,8 @@ using Gommon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Volte.Data.Models;
-using Volte.Data.Models.Guild;
+using Volte.Core.Data.Models;
+using Volte.Core.Data.Models.Guild;
 
 namespace Volte.Services
 {

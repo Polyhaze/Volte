@@ -5,8 +5,8 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using LiteDB;
-using Volte.Data;
-using Volte.Data.Models.Guild;
+using Volte.Core.Data;
+using Volte.Core.Data.Models.Guild;
 
 namespace Volte.Services
 {

@@ -6,10 +6,10 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
-using Volte.Data.Models.Guild;
-using Volte.Data.Models.Results;
+using Volte.Core.Data.Models;
+using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Data.Models.Guild;
+using Volte.Core.Data.Models.Results;
 
 namespace Volte.Commands.Modules
 {

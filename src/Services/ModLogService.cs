@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Gommon;
-using Volte.Data;
-using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
+using Volte.Core.Data;
+using Volte.Core.Data.Models;
+using Volte.Core.Data.Models.EventArgs;
 
 namespace Volte.Services
 {

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
+using Volte.Core.Data.Models;
+using Volte.Core.Data.Models.EventArgs;
 
 namespace Volte.Services
 {
@@ -31,6 +31,7 @@ namespace Volte.Services
                         $"Guild {args.Guild.Name}'s Autorole is set to an ID of a role that no longer exists.");
                     return;
                 }
+
                 await args.User.AddRoleAsync(targetRole);
             }
         }

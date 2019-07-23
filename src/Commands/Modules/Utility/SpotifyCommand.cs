@@ -3,7 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
-using Volte.Data.Models.Results;
+using Volte.Core.Data.Models.Results;
 using Gommon;
 
 namespace Volte.Commands.Modules

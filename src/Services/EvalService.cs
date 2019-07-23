@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Volte.Commands;
-using Volte.Data.Models;
+using Volte.Core.Data.Models;
 
 namespace Volte.Services
 {

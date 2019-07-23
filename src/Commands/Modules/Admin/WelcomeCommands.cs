@@ -3,8 +3,8 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Data.Models.EventArgs;
-using Volte.Data.Models.Results;
+using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Data.Models.Results;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

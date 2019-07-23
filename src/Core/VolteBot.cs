@@ -6,7 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Data;
+using Volte.Core.Data;
 
 namespace Volte.Core
 {
@@ -66,11 +66,12 @@ namespace Volte.Core
             Environment.Exit(0);
         }
 
-        public void Dispose(CancellationTokenSource cts, ServiceProvider provider, DiscordShardedClient client)
+        private void Dispose(params IDisposable[] disposables)
         {
-            cts.Dispose();
-            provider.Dispose();
-            client.Dispose();
+            foreach (var disposable in disposables)
+            {
+                disposable.Dispose();
+            }
         }
     }
 }

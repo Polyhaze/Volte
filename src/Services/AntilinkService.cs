@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Volte.Data.Models.EventArgs;
+using Volte.Core.Data.Models.EventArgs;
 
 namespace Volte.Services
 {

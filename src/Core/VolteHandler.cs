@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Data.Models;
+using Volte.Core.Data.Models;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Services;

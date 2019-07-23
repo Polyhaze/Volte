@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using Volte.Data;
-using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
+using Volte.Core.Data;
+using Volte.Core.Data.Models;
+using Volte.Core.Data.Models.EventArgs;
 using Gommon;
 
 namespace Volte.Services
