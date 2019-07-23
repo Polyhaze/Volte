@@ -30,8 +30,7 @@ namespace Volte.Data.Models.Results
 
         public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
-            var currentUser = await ctx.Guild.GetCurrentUserAsync();
-            if (!currentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
+            if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
             if (SeparateLogic != null)
             {

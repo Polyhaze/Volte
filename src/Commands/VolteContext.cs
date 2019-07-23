@@ -18,18 +18,18 @@ namespace Volte.Commands
             _emojiService = provider.GetRequiredService<EmojiService>();
             Client = client;
             ServiceProvider = provider;
-            Guild = msg.Channel.Cast<ITextChannel>()?.Guild;
-            Channel = msg.Channel.Cast<ITextChannel>();
-            User = msg.Author.Cast<IGuildUser>();
-            Message = msg;
+            Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
+            Channel = msg.Channel.Cast<SocketTextChannel>();
+            User = msg.Author.Cast<SocketGuildUser>();
+            Message = msg.Cast<SocketUserMessage>();
         }
 
         public DiscordShardedClient Client { get; }
         public IServiceProvider ServiceProvider { get; }
-        public IGuild Guild { get; }
-        public ITextChannel Channel { get; }
-        public IGuildUser User { get; }
-        public IUserMessage Message { get; }
+        public SocketGuild Guild { get; }
+        public SocketTextChannel Channel { get; }
+        public SocketGuildUser User { get; }
+        public SocketUserMessage Message { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 

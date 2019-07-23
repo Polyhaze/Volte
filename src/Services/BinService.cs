@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using Discord.WebSocket;
@@ -20,11 +21,11 @@ namespace Volte.Services
         private DiscordShardedClient _client;
         private RestClient _http;
 
-        public BinService(DiscordShardedClient DiscordShardedClient,
-            RestClient restClient)
+        public BinService(DiscordShardedClient discordShardedClient,
+            RestClient http)
         {
-            _client = DiscordShardedClient;
-            _http = restClient;
+            _client = discordShardedClient;
+            _http = http;
         }
 
         public string Execute(GuildData config)

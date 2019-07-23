@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
             "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
         [Remarks("Usage: |prefix|welcomemessage [message]")]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> WelcomeMessageAsync([Remainder] string message = null)
+        public Task<VolteCommandResult> WelcomeMessageAsync([Remainder] string message = null)
         {
             var data = Db.GetData(Context.Guild);
 
@@ -42,15 +42,15 @@ namespace Volte.Commands.Modules
 
             data.Configuration.Welcome.WelcomeMessage = message;
             Db.UpdateData(data);
-            var welcomeChannel = await Context.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+            var welcomeChannel = Context.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
             var sendingTest = data.Configuration.Welcome.WelcomeChannel is 0 || welcomeChannel is null
                 ? "Not sending a test message as you do not have a welcome channel set." +
                   "Set a welcome channel to fully complete the setup!"
                 : $"Sending a test message to {welcomeChannel.Mention}.";
             if (welcomeChannel is null || data.Configuration.Welcome.WelcomeChannel is 0) return None();
 
-            await WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User));
-            return Ok($"Set this server's welcome message to ```{message}```\n\n{sendingTest}");
+            return Ok($"Set this server's welcome message to ```{message}```\n\n{sendingTest}",
+                _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
         }
 
         [Command("WelcomeColor", "WelcomeColour", "Wcl")]
@@ -75,7 +75,7 @@ namespace Volte.Commands.Modules
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
         [Remarks("Usage: |prefix|leavingmessage [message]")]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> LeavingMessageAsync([Remainder] string message = null)
+        public Task<VolteCommandResult> LeavingMessageAsync([Remainder] string message = null)
         {
             var data = Db.GetData(Context.Guild);
 
@@ -88,15 +88,15 @@ namespace Volte.Commands.Modules
             {
                 data.Configuration.Welcome.LeavingMessage = message;
                 Db.UpdateData(data);
-                var welcomeChannel = await Context.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+                var welcomeChannel = Context.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
                 var sendingTest = data.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
                 if (welcomeChannel is null || data.Configuration.Welcome.WelcomeChannel is 0) return None();
 
-                await WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User));
-                return Ok($"Set this server's leaving message to ```{message}```\n\n{sendingTest}");
+                return Ok($"Set this server's leaving message to ```{message}```\n\n{sendingTest}",
+                    _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
             }
         }
     }

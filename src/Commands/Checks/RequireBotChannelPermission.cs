@@ -13,20 +13,20 @@ namespace Volte.Commands.Checks
 
         public RequireBotChannelPermission(params ChannelPermission[] permissions) => _permissions = permissions;
 
-        public override async Task<CheckResult> CheckAsync(
+        public override Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
-            var currentUser = await ctx.Guild.GetCurrentUserAsync();
-            foreach (var perm in currentUser.GetPermissions(ctx.Channel).ToList())
+            foreach (var perm in ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).ToList())
             {
-                if (currentUser.GuildPermissions.Administrator)
-                    return CheckResult.Successful;
+                if (ctx.Guild.CurrentUser.GuildPermissions.Administrator)
+                    return Task.FromResult(CheckResult.Successful);
                 if (_permissions.Contains(perm))
-                    return CheckResult.Successful;
+                    return Task.FromResult(CheckResult.Successful);
             }
 
-            return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
+            return Task.FromResult(
+                CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command."));
         }
     }
 }

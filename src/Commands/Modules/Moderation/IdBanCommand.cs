@@ -20,7 +20,6 @@ namespace Volte.Commands.Modules
             [Remainder] string reason = "Banned by a Moderator.")
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
-            await Context.CreateEmbed("Successfully banned that user from this guild.").SendToAsync(Context.Channel);
             return Ok("Successfully banned that user from this guild.", _ => ModLogService.OnModActionCompleteAsync(
                 new ModActionEventArgs(Context, ModActionType.IdBan, user,
                     reason)));

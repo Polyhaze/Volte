@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("Usage: |prefix|tag {name}")]
-        public async Task<VolteCommandResult> TagAsync([Remainder] string name)
+        public Task<VolteCommandResult> TagAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
                 .Replace("{ServerName}", Context.Guild.Name)
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
-                .Replace("{OwnerMention}", (await Context.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
                 .Replace("{UserTag}", Context.User.Discriminator), null, false);
         }
 
