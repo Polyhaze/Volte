@@ -15,7 +15,7 @@ namespace Volte.Services
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        internal Task Log(LogEventArgs args) => 
+        internal Task LogAsync(LogEventArgs args) =>
             LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
 
@@ -43,7 +43,7 @@ namespace Volte.Services
             if (e != null)
                 await AppendAsync($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
 
-            Console.Write(Environment.NewLine);
+            await Console.Out.WriteAsync(Environment.NewLine);
         }
 
         private async Task AppendAsync(string m, Color c)

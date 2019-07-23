@@ -1,13 +1,14 @@
 using Discord;
+using Discord.WebSocket;
 
 namespace Volte.Data.Models.EventArgs
 {
     public sealed class UserJoinedEventArgs : System.EventArgs
     {
-        public IGuildUser User { get; }
-        public IGuild Guild { get; }
+        public SocketGuildUser User { get; }
+        public SocketGuild Guild { get; }
 
-        public UserJoinedEventArgs(IGuildUser user)
+        public UserJoinedEventArgs(SocketGuildUser user)
         {
             User = user;
             Guild = user.Guild;

@@ -24,11 +24,11 @@ namespace Volte.Services
                 .Replace("{ServerName}", args.Guild.Name)
                 .Replace("{UserName}", args.User.Username)
                 .Replace("{UserMention}", args.User.Mention)
-                .Replace("{OwnerMention}", (await args.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", args.Guild.Owner.Mention)
                 .Replace("{UserTag}", args.User.Discriminator)
-                .Replace("{MemberCount}", (await args.Guild.GetUsersAsync()).Count.ToString())
+                .Replace("{MemberCount}", args.Guild.MemberCount.ToString())
                 .Replace("{UserString}", args.User.ToString());
-            var c = await args.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+            var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
             if (!(c is null))
             {
@@ -50,11 +50,11 @@ namespace Volte.Services
                 .Replace("{ServerName}", args.Guild.Name)
                 .Replace("{UserName}", args.User.Username)
                 .Replace("{UserMention}", args.User.Mention)
-                .Replace("{OwnerMention}", (await args.Guild.GetOwnerAsync()).Mention)
+                .Replace("{OwnerMention}", args.Guild.Owner.Mention)
                 .Replace("{UserTag}", args.User.Discriminator)
-                .Replace("{MemberCount}", (await args.Guild.GetUsersAsync()).Count.ToString())
+                .Replace("{MemberCount}", args.Guild.MemberCount.ToString())
                 .Replace("{UserString}", args.User.ToString());
-            var c = await args.Guild.GetTextChannelAsync(data.Configuration.Welcome.WelcomeChannel);
+            var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
             if (!(c is null))
             {
                 var embed = new EmbedBuilder()

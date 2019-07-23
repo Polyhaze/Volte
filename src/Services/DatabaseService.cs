@@ -41,58 +41,6 @@ namespace Volte.Services
             collection.Update(newConfig);
         }
 
-        public Task MigrateAsync()
-        {
-            var oldDb = new LiteDatabase("data/Volte-old.db");
-            var collection = oldDb.GetCollection<DummyGuildConfig>("serverconfigs");
-            var newColl = Database.GetCollection<GuildData>("guilds");
-            foreach (var record in collection.FindAll())
-            {
-                var @new = new GuildData
-                {
-                    Id = record.ServerId,
-                    OwnerId = record.GuildOwnerId,
-                    Configuration = new GuildConfiguration
-                    {
-                        Autorole = _client.GetGuild(record.ServerId)?.Roles
-                                       .FirstOrDefault(x => x.Name.EqualsIgnoreCase(record.Autorole))?.Id ??
-                                   ulong.MinValue,
-                        CommandPrefix = record.CommandPrefix ?? Config.CommandPrefix,
-                        DeleteMessageOnCommand = record.DeleteMessageOnCommand,
-                        Moderation = new ModerationOptions
-                        {
-                            AdminRole = record.ModerationOptions.AdminRole,
-                            Antilink = record.ModerationOptions.Antilink,
-                            Blacklist = record.ModerationOptions.Blacklist ?? new List<string>(),
-                            MassPingChecks = record.ModerationOptions.MassPingChecks,
-                            ModActionLogChannel = record.ModerationOptions.ModActionLogChannel,
-                            ModRole = record.ModerationOptions.ModRole
-                        },
-                        Welcome = new WelcomeOptions
-                        {
-                            LeavingMessage = record.WelcomeOptions.LeavingMessage ?? string.Empty,
-                            WelcomeChannel = record.WelcomeOptions.WelcomeChannel,
-                            WelcomeColor = new Color(record.WelcomeOptions.WelcomeColorR,
-                                record.WelcomeOptions.WelcomeColorG, record.WelcomeOptions.WelcomeColorB).RawValue,
-                            WelcomeMessage = record.WelcomeOptions.WelcomeMessage ?? string.Empty
-                        }
-                    },
-                    Extras = new GuildExtras
-                    {
-                        ModActionCaseNumber = record.ModerationOptions.ModActionCaseNumber,
-                        SelfRoles = record.SelfRoles ?? new List<string>(),
-                        Tags = record.Tags ?? new List<Tag>(),
-                        Warns = record.Warns ?? new List<Warn>()
-                    }
-                };
-
-                newColl.EnsureIndex(x => x.Id, true);
-                newColl.Upsert(@new);
-            }
-
-            return Task.CompletedTask;
-        }
-
         private GuildData Create(IGuild guild)
             => new GuildData
             {

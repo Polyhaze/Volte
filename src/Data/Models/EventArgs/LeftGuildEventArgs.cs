@@ -6,11 +6,11 @@ namespace Volte.Data.Models.EventArgs
 {
     public sealed class LeftGuildEventArgs : System.EventArgs
     {
-        public IGuild Guild { get; }
+        public SocketGuild Guild { get; }
 
         public LeftGuildEventArgs(SocketGuild guild)
         {
-            Guild = guild.Cast<IGuild>();
+            Guild = guild.Cast<SocketGuild>();
         }
     }
 }

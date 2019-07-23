@@ -8,10 +8,10 @@ namespace Volte.Data.Models.EventArgs
 {
     public sealed class UserLeftEventArgs : System.EventArgs
     {
-        public IGuildUser User { get; }
-        public IGuild Guild { get; }
+        public SocketGuildUser User { get; }
+        public SocketGuild Guild { get; }
 
-        public UserLeftEventArgs(IGuildUser user)
+        public UserLeftEventArgs(SocketGuildUser user)
         {
             User = user;
             Guild = user.Guild;

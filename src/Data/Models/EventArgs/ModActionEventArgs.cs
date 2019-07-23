@@ -1,20 +1,21 @@
 using System;
 using Discord;
+using Discord.WebSocket;
 using Volte.Commands;
 
 namespace Volte.Data.Models.EventArgs
 {
     public class ModActionEventArgs : System.EventArgs
     {
-        public IGuildUser Moderator { get; }
+        public SocketGuildUser Moderator { get; }
         public VolteContext Context { get; }
         public ModActionType ActionType { get; }
         public string Reason { get; }
         public ulong? TargetId { get; }
-        public IUser TargetUser { get; }
+        public SocketUser TargetUser { get; }
         public int? Count { get; }
         public DateTimeOffset Time { get; }
-        public IGuild Guild { get; }
+        public SocketGuild Guild { get; }
 
         public ModActionEventArgs(VolteContext ctx, ModActionType type)
         {
@@ -25,7 +26,7 @@ namespace Volte.Data.Models.EventArgs
             Guild = ctx.Guild;
         }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type, IUser target, string reason)
+        public ModActionEventArgs(VolteContext ctx, ModActionType type, SocketUser target, string reason)
         {
             Moderator = ctx.User;
             Context = ctx;

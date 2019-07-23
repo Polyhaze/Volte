@@ -23,7 +23,7 @@ namespace Volte.Services
                 return;
 
             var data = _db.GetData(args.Guild);
-            var c = await args.Guild.GetTextChannelAsync(data.Configuration.Moderation.ModActionLogChannel);
+            var c = args.Guild.GetTextChannel(data.Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
             var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
             switch (args.ActionType)

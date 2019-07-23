@@ -28,7 +28,7 @@ namespace Gommon
             var @event = provider.GetRequiredService<EventService>();
             return Executor.ExecuteAsync(() =>
             {
-                client.Log += m => provider.GetRequiredService<LoggingService>().Log(new LogEventArgs(m));
+                client.Log += m => provider.GetRequiredService<LoggingService>().LogAsync(new LogEventArgs(m));
                 client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
                 client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
                 client.UserJoined += user =>
