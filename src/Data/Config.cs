@@ -12,18 +12,20 @@ namespace Volte.Data
     {
         private const string ConfigFile = "data/config.json";
         private static BotConfig _configuration;
-        private static bool _valid = File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
+
+        private static readonly bool IsValidConfig =
+            File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
 
         static Config()
         {
             CreateIfNotExists();
-            if (_valid)
+            if (IsValidConfig)
                 _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
         public static void CreateIfNotExists()
         {
-            if (_valid) return;
+            if (IsValidConfig) return;
             _configuration = new BotConfig
             {
                 Token = "token here",

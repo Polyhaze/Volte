@@ -2,7 +2,7 @@ namespace Volte.Data.Models
 {
     public sealed class JoinLeaveLog
     {
-        public JoinLeaveLog()
+        internal JoinLeaveLog()
         {
             Enabled = false;
             GuildId = ulong.MinValue;

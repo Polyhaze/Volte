@@ -8,6 +8,8 @@ namespace Volte.Data.Models
 {
     public sealed class EvalObjects
     {
+        internal EvalObjects() { }
+
         public VolteContext Context { get; set; }
         public DiscordShardedClient Client { get; set; }
         public GuildData Data { get; set; }
