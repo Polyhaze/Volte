@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -14,19 +15,21 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|bigemoji {emoji}")]
         public Task<VolteCommandResult> BigEmojiAsync(IEmote emoteIn)
         {
-            switch (emoteIn)
+            string url = null;
+            try
             {
-                case Emote emote:
-                    return Ok(Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url));
-
-                case Emoji emoji:
-                    var url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
-                                  emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
-                              ".png";
-                    return Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url));
-                default:
-                    return None();
+                url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
+                          emoteIn.Cast<Emoji>()?.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
+                      ".png";
             }
+            catch (ArgumentNullException) { }
+
+            return emoteIn switch
+                {
+                Emote emote => Ok(Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url)),
+                Emoji _ => Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url)),
+                _ => None()
+                };
         }
     }
 }
