@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Commands.Preconditions
+namespace Volte.Commands.Checks
 {
     public sealed class RequireBotOwnerAttribute : CheckBaseAttribute
     {

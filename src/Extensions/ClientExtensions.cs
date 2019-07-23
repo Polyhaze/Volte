@@ -21,7 +21,7 @@ namespace Gommon
 
         public static IGuild GetPrimaryGuild(this DiscordShardedClient client) => client.GetGuild(405806471578648588);
 
-        public static Task AddClientEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
+        public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
         {
             var welcome = provider.GetRequiredService<WelcomeService>();
             var logger = provider.GetRequiredService<LoggingService>();

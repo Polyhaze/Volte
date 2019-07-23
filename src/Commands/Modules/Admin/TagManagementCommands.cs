@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands.Preconditions;
+using Volte.Commands.Checks;
 using Volte.Data.Models.Guild;
 using Volte.Data.Models.Results;
 

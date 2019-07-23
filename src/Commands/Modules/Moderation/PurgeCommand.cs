@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands.Preconditions;
+using Volte.Commands.Checks;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Results;

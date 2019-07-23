@@ -5,7 +5,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Preconditions;
+using Volte.Commands.Checks;
 using Volte.Data.Models;
 using Volte.Data.Models.EventArgs;
 using Volte.Data.Models.Guild;

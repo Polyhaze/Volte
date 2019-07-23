@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Data;
 using Volte.Data.Models;
-using Volte.Data.Models.EventArgs;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Services;
@@ -37,7 +35,7 @@ namespace Volte.Core
             sw.Stop();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            await _client.AddClientEventHandlersAsync(provider);
+            await _client.RegisterVolteEventHandlersAsync(provider);
         }
     }
 }
