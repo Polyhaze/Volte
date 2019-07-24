@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
         [Remarks("Usage: |prefix|spotify [user]")]
-        public async Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
+        public Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
         {
             var user = target ?? Context.User;
             if (user.Activity is SpotifyGame spotify)
@@ -27,7 +27,6 @@ namespace Volte.Commands.Modules
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
 
-            await Context.CreateEmbed("Target user isn't listening to Spotify!").SendToAsync(Context.Channel);
             return BadRequest("Target user isn't listening to Spotify!");
         }
     }
