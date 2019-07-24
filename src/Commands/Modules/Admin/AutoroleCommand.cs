@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("Usage: |prefix|autorole {roleName}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> AutoroleAsync([Remainder] SocketRole role)
+        public Task<ActionResult> AutoroleAsync([Remainder] SocketRole role)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Autorole = role.Id;

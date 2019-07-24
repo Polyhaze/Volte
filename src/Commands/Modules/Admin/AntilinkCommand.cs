@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Enable/Disable Antilink for the current guild.")]
         [Remarks("Usage: |prefix|antilink {true|false}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> AntilinkAsync(bool enabled)
+        public Task<ActionResult> AntilinkAsync(bool enabled)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.Antilink = enabled;

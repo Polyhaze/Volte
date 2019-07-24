@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistadd {phrase}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> BlacklistAddAsync([Remainder] string phrase)
+        public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.Blacklist.Add(phrase);
@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistremove {phrase}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> BlacklistRemoveAsync([Remainder] string phrase)
+        public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {
             var data = Db.GetData(Context.Guild);
             if (data.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
@@ -41,7 +41,7 @@ namespace Volte.Commands.Modules
         [Description("Clears the blacklist for this guild.")]
         [Remarks("Usage: |prefix|blacklistclear")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> BlacklistClearAsync()
+        public Task<ActionResult> BlacklistClearAsync()
         {
             var data = Db.GetData(Context.Guild);
             var count = data.Configuration.Moderation.Blacklist.Count;

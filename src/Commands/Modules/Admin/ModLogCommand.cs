@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the channel to be used for mod log.")]
         [Remarks("Usage: |prefix|modlog {channel}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> ModLogAsync(SocketTextChannel c)
+        public Task<ActionResult> ModLogAsync(SocketTextChannel c)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.Moderation.ModActionLogChannel = c.Id;

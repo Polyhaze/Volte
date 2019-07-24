@@ -118,7 +118,7 @@ namespace Volte.Services
 
         private async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             var commandName = ctx.Message.Content.Split(" ")[0];
             var args = ctx.Message.Content.Replace($"{commandName}", "");
             if (string.IsNullOrEmpty(args)) args = "None";
@@ -126,21 +126,27 @@ namespace Volte.Services
             ResultCompletionData data = null;
             switch (res)
             {
-                case OkResult okRes:
-                    await ctx.Channel.TriggerTypingAsync();
-                    data = await okRes.ExecuteResultAsync(ctx);
+                case ActionResult actionRes:
+                {
+                    data = await actionRes.ExecuteResultAsync(ctx);
                     await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
-                        $"Executed {commandName}'s resulting OkResult.");
+                        $"Executed {commandName}'s resulting ActionResult.");
+
+                    switch (res)
+                    {
+                        case BadRequestResult badreq:
+                            await OnBadRequestResultAsync(c, badreq, ctx, args, sw);
+                            return;
+                    }
+
                     break;
+                }
+
                 case FailedResult failedRes:
-                    await ctx.Channel.TriggerTypingAsync()
-                        .ContinueWith(x => OnCommandFailureAsync(c, failedRes, ctx, args, sw));
-                    return;
-                case BadRequestResult badreq:
-                    await ctx.Channel.TriggerTypingAsync()
-                        .ContinueWith(x => OnBadRequestResultAsync(c, badreq, ctx, args, sw));
+                    await OnCommandFailureAsync(c, failedRes, ctx, args, sw);
                     return;
             }
+
 
             if (!Config.LogAllCommands) return;
 
@@ -232,8 +238,6 @@ namespace Volte.Services
         public async Task OnBadRequestResultAsync(Command c, BadRequestResult res, VolteContext ctx, string args,
             Stopwatch sw)
         {
-            await res.ExecuteResultAsync(ctx);
-
             await _logger.LogAsync(LogSeverity.Error, LogSource.Module,
                 $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
             await _logger.LogAsync(LogSeverity.Error, LogSource.Module,

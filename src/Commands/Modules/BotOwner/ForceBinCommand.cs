@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
             "Forcefully creates a debug dump on bin.greemdev.net with debug information used for Support, using the configuration from the target guild.")]
         [Remarks("Usage: |prefix|forcebin")]
         [RequireBotOwner]
-        public Task<VolteCommandResult> ForceBinAsync([Remainder] SocketGuild guild)
+        public Task<ActionResult> ForceBinAsync([Remainder] SocketGuild guild)
         {
             return Ok(
                 "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +

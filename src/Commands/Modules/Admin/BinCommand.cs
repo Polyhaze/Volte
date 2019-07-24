@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
         [Command("Bin")]
         [Description("Create a debug dump on bin.greemdev.net with debug information used for Support.")]
         [Remarks("Usage: |prefix|bin")]
-        public Task<VolteCommandResult> BinAsync()
+        public Task<ActionResult> BinAsync()
         {
             return Ok(
                 "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +

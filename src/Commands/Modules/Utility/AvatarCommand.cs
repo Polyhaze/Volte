@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
         [Remarks("Usage: |prefix|avatar [@user]")]
-        public Task<VolteCommandResult> AvatarAsync(SocketGuildUser user = null)
+        public Task<ActionResult> AvatarAsync(SocketGuildUser user = null)
         {
             var u = user ?? Context.User;
             return Ok(Context.CreateEmbedBuilder()

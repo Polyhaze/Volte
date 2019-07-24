@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("Ping")]
         [Description("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
-        public Task<VolteCommandResult> PingAsync()
+        public Task<ActionResult> PingAsync()
         {
             return Ok(async () =>
             {

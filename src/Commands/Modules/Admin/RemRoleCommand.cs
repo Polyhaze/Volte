@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Description("Remove a role from the mentioned user.")]
         [Remarks("Usage: |prefix|remrole {@user} {roleName}")]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<ActionResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
             if (role.Position > Context.Guild.CurrentUser.Hierarchy)
             {

@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|bans")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task<VolteCommandResult> BansAsync()
+        public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
             if (!banList.Any())

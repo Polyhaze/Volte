@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Description("Grants a role to the mentioned user.")]
         [Remarks("Usage: |prefix|addrole {@user} {roleName}")]
         [RequireGuildAdmin, RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public async Task<VolteCommandResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<ActionResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
             if (role.Position > Context.Guild.CurrentUser.Hierarchy)
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");

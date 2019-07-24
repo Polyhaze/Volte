@@ -3,7 +3,7 @@ using Volte.Commands;
 
 namespace Volte.Commands.Results
 {
-    public class NoResult : VolteCommandResult
+    public class NoResult : ActionResult
     {
         public override Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {

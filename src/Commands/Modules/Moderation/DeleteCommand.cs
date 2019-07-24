@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|delete {messageId}")]
         [RequireGuildModerator]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        public async Task<VolteCommandResult> DeleteAsync(ulong messageId)
+        public async Task<ActionResult> DeleteAsync(ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
             if (target is null)

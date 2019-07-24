@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
         [Command("Prefix")]
         [Description("Shows the command prefix for this guild.")]
         [Remarks("Usage: |prefix|prefix")]
-        public Task<VolteCommandResult> PrefixAsync()
+        public Task<ActionResult> PrefixAsync()
         {
             return Ok($"The prefix for this server is **{Db.GetData(Context.Guild).Configuration.CommandPrefix}**.");
         }

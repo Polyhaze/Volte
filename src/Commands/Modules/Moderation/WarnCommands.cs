@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         [Description("Warns the target user for the given reason.")]
         [Remarks("Usage: |prefix|warn {user} {reason}")]
         [RequireGuildModerator]
-        public async Task<VolteCommandResult> WarnAsync(SocketGuildUser user, [Remainder] string reason)
+        public async Task<ActionResult> WarnAsync(SocketGuildUser user, [Remainder] string reason)
         {
             var data = Db.GetData(Context.Guild);
             data.Extras.Warns.Add(new Warn
@@ -47,7 +47,7 @@ namespace Volte.Commands.Modules
         [Description("Shows all the warns for the given user.")]
         [Remarks("Usage: |prefix|warns {user}")]
         [RequireGuildModerator]
-        public Task<VolteCommandResult> WarnsAsync(SocketGuildUser user)
+        public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10).ToList();
             return Ok("Showing the last 10 warnings, or less if the user doesn't have 10 yet." +
@@ -60,7 +60,7 @@ namespace Volte.Commands.Modules
         [Description("Clears the warnings for the given user.")]
         [Remarks("Usage: |prefix|clearwarns {user}")]
         [RequireGuildModerator]
-        public Task<VolteCommandResult> ClearWarnsAsync(SocketGuildUser user)
+        public Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {
             var data = Db.GetData(Context.Guild);
             var newWarnList = data.Extras.Warns.Where(x => x.User != user.Id).ToList();

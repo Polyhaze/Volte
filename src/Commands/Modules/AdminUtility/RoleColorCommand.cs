@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|rolecolor {role} {r} {g} {b}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> RoleColorAsync(SocketRole role, int r, int g, int b)
+        public async Task<ActionResult> RoleColorAsync(SocketRole role, int r, int g, int b)
         {
             await role.ModifyAsync(x => x.Color = new Color(r, g, b));
             return Ok($"Successfully changed the color of the role **{role.Name}**.");

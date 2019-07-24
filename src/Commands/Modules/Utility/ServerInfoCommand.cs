@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("ServerInfo", "Si")]
         [Description("Shows some info about the current guild.")]
         [Remarks("Usage: |prefix|serverinfo")]
-        public Task<VolteCommandResult> ServerInfoAsync()
+        public Task<ActionResult> ServerInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;
 

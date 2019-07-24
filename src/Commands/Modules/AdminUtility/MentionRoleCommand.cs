@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|mentionrole {role}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> MentionRoleAsync([Remainder] SocketRole role)
+        public async Task<ActionResult> MentionRoleAsync([Remainder] SocketRole role)
         {
             if (role.IsMentionable)
             {

@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Enable/Disable deleting the command message upon execution of a command for this guild.")]
         [Remarks("Usage: |prefix|deletemessageoncommand {true|false}")]
         [RequireGuildAdmin]
-        public Task<VolteCommandResult> DeleteMessageOnCommandAsync(bool enabled)
+        public Task<ActionResult> DeleteMessageOnCommandAsync(bool enabled)
         {
             var data = Db.GetData(Context.Guild);
             data.Configuration.DeleteMessageOnCommand = enabled;

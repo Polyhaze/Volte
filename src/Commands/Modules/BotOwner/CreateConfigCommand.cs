@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
         [Remarks("Usage: |prefix|createconfig [serverId]")]
         [RequireBotOwner]
-        public Task<VolteCommandResult> CreateConfigAsync(ulong serverId = 0)
+        public Task<ActionResult> CreateConfigAsync(ulong serverId = 0)
         {
             if (serverId is 0) serverId = Context.Guild.Id;
 

@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|channelname {name}")]
         [RequireBotChannelPermission(ChannelPermission.ManageChannels)]
         [RequireGuildAdmin]
-        public async Task<VolteCommandResult> ChannelNameAsync([Remainder] string name)
+        public async Task<ActionResult> ChannelNameAsync([Remainder] string name)
         {
             await Context.Channel.ModifyAsync(c => c.Name = name);
             return Ok($"Set this channel's name to **{name}**.");

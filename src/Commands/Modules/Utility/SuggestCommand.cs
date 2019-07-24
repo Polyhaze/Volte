@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
         [Command("Suggest")]
         [Description("Suggest features for Volte.")]
         [Remarks("Usage: |prefix|suggest")]
-        public Task<VolteCommandResult> SuggestAsync()
+        public Task<ActionResult> SuggestAsync()
         {
             return Ok("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).");
         }

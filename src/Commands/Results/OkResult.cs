@@ -6,7 +6,7 @@ using Gommon;
 
 namespace Volte.Commands.Results
 {
-    public class OkResult : VolteCommandResult
+    public class OkResult : ActionResult
     {
         public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
             Func<IUserMessage, Task> func = null)

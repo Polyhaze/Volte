@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current server.")]
         [Remarks("Usage: |prefix|color {role}")]
-        public Task<VolteCommandResult> RoleColorAsync([Remainder] SocketRole role)
+        public Task<ActionResult> RoleColorAsync([Remainder] SocketRole role)
         {
             return Ok($"**Dec:** {role.Color.RawValue}" +
                       "\n" +

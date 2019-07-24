@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Command("Uptime")]
         [Description("Shows the bot's uptime in a human-friendly fashion.")]
         [Remarks("Usage: |prefix|uptime")]
-        public Task<VolteCommandResult> UptimeAsync()
+        public Task<ActionResult> UptimeAsync()
         {
             return Ok(
                 $"I've been online for **{(DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3)}**!");

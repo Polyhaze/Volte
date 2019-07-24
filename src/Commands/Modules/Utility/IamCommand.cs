@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("Iam")]
         [Description("Gives yourself a role, if it is in the current guild's self role list.")]
         [Remarks("Usage: |prefix|iam {roleName}")]
-        public async Task<VolteCommandResult> IamAsync([Remainder] string roleName)
+        public async Task<ActionResult> IamAsync([Remainder] string roleName)
         {
             var data = Db.GetData(Context.Guild);
             if (!data.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(roleName)))

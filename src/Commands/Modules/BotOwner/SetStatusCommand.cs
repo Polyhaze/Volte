@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the bot's status.")]
         [Remarks("Usage: |prefix|setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
-        public Task<VolteCommandResult> SetStatusAsync([Remainder] string status)
+        public Task<ActionResult> SetStatusAsync([Remainder] string status)
         {
             return status.ToLower() switch
                 {

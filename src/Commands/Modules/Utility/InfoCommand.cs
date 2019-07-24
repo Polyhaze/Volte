@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("Usage: |prefix|info")]
-        public Task<VolteCommandResult> InfoAsync()
+        public Task<ActionResult> InfoAsync()
         {
             return Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)

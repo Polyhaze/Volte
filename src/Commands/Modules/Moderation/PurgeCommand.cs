@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|purge {count} [targetAuthor]")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         [RequireGuildModerator]
-        public async Task<VolteCommandResult> PurgeAsync(int count, SocketGuildUser targetAuthor = null)
+        public async Task<ActionResult> PurgeAsync(int count, SocketGuildUser targetAuthor = null)
         {
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
             //lets you theoretically use 0 to delete only the invocation message, for testing or something.

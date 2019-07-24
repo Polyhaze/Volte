@@ -18,38 +18,38 @@ namespace Volte.Commands
         public LoggingService Logger { get; set; }
 
 
-        protected VolteCommandResult Ok(string text, Func<IUserMessage, Task> afterCompletion = null,
+        protected ActionResult Ok(string text, Func<IUserMessage, Task> afterCompletion = null,
             bool shouldEmbed = true)
         {
             return new OkResult(text, shouldEmbed, null, afterCompletion);
         }
 
-        protected VolteCommandResult Ok(Func<Task> logic)
+        protected ActionResult Ok(Func<Task> logic)
         {
             return new OkResult(logic);
         }
 
-        protected VolteCommandResult Ok(EmbedBuilder embed, Func<IUserMessage, Task> afterCompletion = null)
+        protected ActionResult Ok(EmbedBuilder embed, Func<IUserMessage, Task> afterCompletion = null)
         {
             return new OkResult(null, true, embed, afterCompletion);
         }
 
-        protected VolteCommandResult Ok(string text)
+        protected ActionResult Ok(string text)
         {
             return new OkResult(text);
         }
 
-        protected VolteCommandResult Ok(EmbedBuilder embed)
+        protected ActionResult Ok(EmbedBuilder embed)
         {
             return new OkResult(null, true, embed);
         }
 
-        protected VolteCommandResult BadRequest(string reason)
+        protected ActionResult BadRequest(string reason)
         {
             return new BadRequestResult(reason);
         }
 
-        protected VolteCommandResult None()
+        protected ActionResult None()
         {
             return new NoResult();
         }

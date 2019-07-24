@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the bot's game (presence).")]
         [Remarks("Usage: |prefix|setgame {game}")]
         [RequireBotOwner]
-        public async Task<VolteCommandResult> SetGameAsync([Remainder] string game)
+        public async Task<ActionResult> SetGameAsync([Remainder] string game)
         {
             await Context.Client.SetGameAsync(game);
             return Ok($"Set the bot's game to **{game}**.");

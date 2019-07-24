@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("Usage: |prefix|userinfo [user]")]
-        public Task<VolteCommandResult> UserInfoAsync(SocketGuildUser user = null)
+        public Task<ActionResult> UserInfoAsync(SocketGuildUser user = null)
         {
             var target = user ?? Context.User;
 

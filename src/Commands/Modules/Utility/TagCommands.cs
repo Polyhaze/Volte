@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("Usage: |prefix|tag {name}")]
-        public Task<VolteCommandResult> TagAsync([Remainder] string name)
+        public Task<ActionResult> TagAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules
         [Priority(1)]
         [Description("Shows stats for a tag.")]
         [Remarks("Usage: |prefix|tagstats {name}")]
-        public async Task<VolteCommandResult> TagStatsAsync([Remainder] string name)
+        public async Task<ActionResult> TagStatsAsync([Remainder] string name)
         {
             var data = Db.GetData(Context.Guild);
             var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -55,7 +55,7 @@ namespace Volte.Commands.Modules
         [Command("Tags")]
         [Description("Lists all available tags in the current guild.")]
         [Remarks("Usage: |prefix|tags")]
-        public Task<VolteCommandResult> TagsAsync()
+        public Task<ActionResult> TagsAsync()
         {
             var data = Db.GetData(Context.Guild);
             return Ok(Context.CreateEmbedBuilder(

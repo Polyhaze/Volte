@@ -7,7 +7,7 @@ using Volte.Core.Data;
 
 namespace Volte.Commands.Results
 {
-    public class BadRequestResult : VolteCommandResult
+    public class BadRequestResult : ActionResult
     {
         public BadRequestResult(string reason)
         {

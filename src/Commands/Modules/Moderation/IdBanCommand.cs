@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|idban {id} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task<VolteCommandResult> IdBanAsync(ulong user,
+        public async Task<ActionResult> IdBanAsync(ulong user,
             [Remainder] string reason = "Banned by a Moderator.")
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
