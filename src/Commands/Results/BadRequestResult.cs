@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Discord;
 using Volte.Commands;
 using Gommon;
+using Volte.Core.Data;
 
-namespace Volte.Core.Data.Models.Results
+namespace Volte.Commands.Results
 {
     public class BadRequestResult : VolteCommandResult
     {

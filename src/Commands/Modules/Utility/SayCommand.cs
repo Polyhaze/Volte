@@ -2,7 +2,7 @@
 using Discord;
 using Qmmands;
 using Volte.Core.Data;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {

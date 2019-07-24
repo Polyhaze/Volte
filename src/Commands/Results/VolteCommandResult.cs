@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Data.Models.Results
+namespace Volte.Commands.Results
 {
     public abstract class VolteCommandResult : CommandResult
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {

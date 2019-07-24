@@ -4,7 +4,7 @@ using Discord;
 using Volte.Commands;
 using Gommon;
 
-namespace Volte.Core.Data.Models.Results
+namespace Volte.Commands.Results
 {
     public class OkResult : VolteCommandResult
     {

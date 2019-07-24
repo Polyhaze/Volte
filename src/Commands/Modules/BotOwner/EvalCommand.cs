@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

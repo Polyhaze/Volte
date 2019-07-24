@@ -5,7 +5,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 
-namespace Volte.Core.Data.Models.Results
+namespace Volte.Commands.Results
 {
     public class ResultCompletionData
     {

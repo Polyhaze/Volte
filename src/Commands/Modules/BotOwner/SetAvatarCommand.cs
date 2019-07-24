@@ -6,7 +6,7 @@ using Gommon;
 using Qmmands;
 using RestSharp;
 using Volte.Commands.Checks;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {

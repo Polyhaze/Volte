@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 using Gommon;
 
 namespace Volte.Commands.Modules

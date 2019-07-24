@@ -10,7 +10,7 @@ using Volte.Commands;
 using Volte.Core.Data;
 using Volte.Core.Data.Models;
 using Volte.Core.Data.Models.EventArgs;
-using Volte.Core.Data.Models.Results;
+using Volte.Commands.Results;
 
 namespace Volte.Services
 {
