@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using Volte.Core.Data;
 using Volte.Core.Data.Models;
@@ -11,10 +12,13 @@ namespace Volte.Services
     public sealed class ModLogService
     {
         private readonly DatabaseService _db;
+        private readonly LoggingService _logger;
 
-        public ModLogService(DatabaseService databaseService)
+        public ModLogService(DatabaseService databaseService,
+            LoggingService loggingService)
         {
             _db = databaseService;
+            _logger = loggingService;
         }
 
         public async Task OnModActionCompleteAsync(ModActionEventArgs args)
@@ -26,6 +30,7 @@ namespace Volte.Services
             var c = args.Guild.GetTextChannel(data.Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
             var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service, "Received a signal to send a ModLog message.");
             switch (args.ActionType)
             {
                 case ModActionType.Purge:
@@ -134,8 +139,11 @@ namespace Volte.Services
                 }
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new InvalidOperationException();
             }
+
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                "Sent a ModLog message or threw an exception.");
         }
     }
 }

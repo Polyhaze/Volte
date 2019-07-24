@@ -87,13 +87,9 @@ namespace Volte.Services
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl()}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, "Connected to:");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {"guild".ToQuantity(guilds)}");
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {"user".ToQuantity(users)}");
-
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
-                $"    {"channel".ToQuantity(channels)}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"    {"guild".ToQuantity(guilds)}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"    {"user".ToQuantity(users)}");
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"    {"channel".ToQuantity(channels)}");
 
             if (_shouldStream)
             {
@@ -133,6 +129,8 @@ namespace Volte.Services
                 case OkResult okRes:
                     await ctx.Channel.TriggerTypingAsync();
                     data = await okRes.ExecuteResultAsync(ctx);
+                    await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                        $"Executed {commandName}'s resulting OkResult.");
                     break;
                 case FailedResult failedRes:
                     await ctx.Channel.TriggerTypingAsync()
@@ -179,48 +177,22 @@ namespace Volte.Services
             Stopwatch sw)
         {
             var embed = new EmbedBuilder();
-            string reason;
-            switch (res)
-            {
-                case CommandNotFoundResult _:
-                    reason = "Unknown command.";
-                    break;
+            var reason = res switch
+                {
+                CommandNotFoundResult _ => "Unknown command.",
+                ExecutionFailedResult efr =>
+                $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}",
+                ChecksFailedResult _ => "Insufficient permission.",
+                ParameterChecksFailedResult pcfr => $"Checks failed on parameter *{pcfr.Parameter.Name}**.",
+                ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**."
+                ,
+                TypeParseFailedResult tpfr => tpfr.Reason,
+                OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
+                _ => "Unknown error."
+                };
 
-                case ExecutionFailedResult efr:
-                    reason = $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}";
-                    await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, efr.Exception);
-                    break;
-
-                case ChecksFailedResult _:
-                    reason = "Insufficient permission.";
-                    break;
-
-                case ParameterChecksFailedResult pcfr:
-                    reason = $"Checks failed on parameter *{pcfr.Parameter.Name}**.";
-                    break;
-
-                case ArgumentParseFailedResult apfr:
-                    if (apfr.Parameter is null)
-                    {
-                        reason = "Parsing for an argument failed.";
-                        break;
-                    }
-
-                    reason = $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**.";
-                    break;
-
-                case TypeParseFailedResult tpfr:
-                    reason = tpfr.Reason;
-                    break;
-
-                case OverloadsFailedResult _:
-                    reason = "A suitable overload could not be found for the given parameter type/order.";
-                    break;
-
-                default:
-                    reason = "Unknown error.";
-                    break;
-            }
+            if (res is ExecutionFailedResult efr2)
+                await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, efr2.Exception);
 
             if (!(res is CommandNotFoundResult) && !(res is ChecksFailedResult))
             {

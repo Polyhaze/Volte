@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Volte.Core.Data;
 using Volte.Core.Data.Models;
 using Volte.Core.Data.Models.EventArgs;
 using Color = System.Drawing.Color;
@@ -26,6 +27,13 @@ namespace Volte.Services
 
         public async Task LogAsync(LogSeverity s, LogSource src, string message, Exception e = null)
         {
+            if (s is LogSeverity.Debug)
+            {
+                if (src is LogSource.Discord || src is LogSource.Gateway) { }
+
+                if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
+            }
+
             await _semaphore.WaitAsync();
             await DoLogAsync(s, src, message, e);
             _ = _semaphore.Release();

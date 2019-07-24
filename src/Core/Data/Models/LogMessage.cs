@@ -10,7 +10,7 @@ namespace Volte.Core.Data.Models
         public string Message { get; private set; }
         public Exception Exception { get; private set; }
 
-        public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message)
+        public static LogMessage FromDiscordLogMessage(Discord.LogMessage message)
             => new LogMessage
             {
                 Message = message.Message,

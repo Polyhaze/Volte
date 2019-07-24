@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Gommon;
 using LiteDB;
 using Volte.Core.Data;
+using Volte.Core.Data.Models;
 using Volte.Core.Data.Models.Guild;
 
 namespace Volte.Services
@@ -16,16 +17,20 @@ namespace Volte.Services
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
         private DiscordShardedClient _client;
+        private LoggingService _logger;
 
-        public DatabaseService(DiscordShardedClient DiscordShardedClient)
+        public DatabaseService(DiscordShardedClient DiscordShardedClient,
+            LoggingService loggingService)
         {
             _client = DiscordShardedClient;
+            _logger = loggingService;
         }
 
         public GuildData GetData(IGuild guild) => GetData(guild.Id);
 
         public GuildData GetData(ulong id)
         {
+            _ = _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, $"Getting data for guild {id}.");
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
@@ -36,6 +41,7 @@ namespace Volte.Services
 
         public void UpdateData(GuildData newConfig)
         {
+            _ = _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, $"Updating data for guild {newConfig.Id}");
             var collection = Database.GetCollection<GuildData>("guilds");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);

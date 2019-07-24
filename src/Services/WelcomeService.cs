@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Volte.Core.Data.Models;
 using Volte.Core.Data.Models.EventArgs;
 
 namespace Volte.Services
@@ -9,10 +10,13 @@ namespace Volte.Services
     public sealed class WelcomeService
     {
         private readonly DatabaseService _db;
+        private readonly LoggingService _logger;
 
-        public WelcomeService(DatabaseService databaseService)
+        public WelcomeService(DatabaseService databaseService,
+            LoggingService loggingService)
         {
             _db = databaseService;
+            _logger = loggingService;
         }
 
         internal async Task JoinAsync(UserJoinedEventArgs args)
@@ -20,6 +24,8 @@ namespace Volte.Services
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
                 return; //we don't want to send an empty join message
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                "User joined a guild, let's check to see if we should send a welcome embed.");
             var welcomeMessage = data.Configuration.Welcome.WelcomeMessage
                 .Replace("{ServerName}", args.Guild.Name)
                 .Replace("{UserName}", args.User.Username)
@@ -39,13 +45,20 @@ namespace Volte.Services
                     .WithCurrentTimestamp();
 
                 await embed.SendToAsync(c);
+                await _logger.LogAsync(LogSeverity.Debug, LogSource.Service, $"Sent a welcome embed to #{c.Name}.");
+                return;
             }
+
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
         }
 
         internal async Task LeaveAsync(UserLeftEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                "User left a guild, let's check to see if we should send a leaving embed.");
             var leavingMessage = data.Configuration.Welcome.LeavingMessage
                 .Replace("{ServerName}", args.Guild.Name)
                 .Replace("{UserName}", args.User.Username)
@@ -64,7 +77,12 @@ namespace Volte.Services
                     .WithCurrentTimestamp();
 
                 await embed.SendToAsync(c);
+                await _logger.LogAsync(LogSeverity.Debug, LogSource.Service, $"Sent a leaving embed to #{c.Name}.");
+                return;
             }
+
+            await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
         }
     }
 }

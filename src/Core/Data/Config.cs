@@ -11,7 +11,7 @@ namespace Volte.Core.Data
 {
     public sealed class Config
     {
-        private const string ConfigFile = "data/config.json";
+        private static readonly string ConfigFile = "data/config.json";
         private static BotConfig _configuration;
 
         private static readonly bool IsValidConfig =
@@ -24,7 +24,7 @@ namespace Volte.Core.Data
                 _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        public static Task CreateIfNotExistsAsync()
+        private static Task CreateIfNotExistsAsync()
         {
             if (IsValidConfig) return Task.CompletedTask;
             _configuration = new BotConfig
@@ -34,6 +34,7 @@ namespace Volte.Core.Data
                 Owner = 0,
                 Game = "in Volte V2 Code!",
                 Streamer = "streamer here",
+                EnableDebugLogging = false,
                 SuccessEmbedColor = 0x7000FB,
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
@@ -54,6 +55,8 @@ namespace Volte.Core.Data
         public static string Game => _configuration.Game;
 
         public static string Streamer => _configuration.Streamer;
+
+        public static bool EnableDebugLogging => _configuration.EnableDebugLogging;
 
         public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
 
@@ -86,6 +89,9 @@ namespace Volte.Core.Data
 
             [JsonProperty("status_twitch_streamer")]
             public string Streamer { get; internal set; }
+
+            [JsonProperty("enable_debug_logging")]
+            public bool EnableDebugLogging { get; internal set; }
 
             [JsonProperty("color_success")]
             public uint SuccessEmbedColor { get; internal set; }
