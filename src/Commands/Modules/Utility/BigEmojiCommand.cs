@@ -18,9 +18,8 @@ namespace Volte.Commands.Modules
             string url = null;
             try
             {
-                url = "https://i.kuro.mu/emoji/512x512/" + string.Join("-",
-                          emoteIn.Cast<Emoji>()?.ToString().GetUnicodePoints().Select(x => x.ToString("x2"))) +
-                      ".png";
+                url =
+                    $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>().ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
             }
             catch (ArgumentNullException) { }
 

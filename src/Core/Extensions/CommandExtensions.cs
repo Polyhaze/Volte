@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -15,7 +16,7 @@ namespace Gommon
 
         public static string SanitizeRemarks(this Command c, VolteContext ctx)
         {
-            var aliases = $"({string.Join("|", c.FullAliases)})";
+            var aliases = $"({c.FullAliases.Join('|')})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
                 .Replace("|prefix|",
@@ -27,9 +28,13 @@ namespace Gommon
         internal static Task AddTypeParsersAsync(this CommandService service)
         {
             service.AddTypeParser(new UserParser<SocketGuildUser>());
+            service.AddTypeParser(new UserParser<IUser>());
+            service.AddTypeParser(new UserParser<IGuildUser>());
             service.AddTypeParser(new UserParser<SocketUser>());
             service.AddTypeParser(new RoleParser<SocketRole>());
+            service.AddTypeParser(new RoleParser<IRole>());
             service.AddTypeParser(new ChannelParser<SocketTextChannel>());
+            service.AddTypeParser(new ChannelParser<ITextChannel>());
             service.AddTypeParser(new EmoteParser());
             service.AddTypeParser(new GuildParser());
             service.AddTypeParser(new BooleanParser(), true);

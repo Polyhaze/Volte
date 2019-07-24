@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule : VolteModule
     {
-        public RestClient Http { get; set; }
+        public HttpClient Http { get; set; }
 
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar.")]
@@ -25,7 +25,7 @@ namespace Volte.Commands.Modules
                 return BadRequest("That URL is malformed or empty.");
             }
 
-            using (var sr = await Http.GetAsync<HttpResponseMessage>(new RestRequest(url)))
+            using (var sr = await Http.GetAsync(url))
             {
                 if (!sr.IsImage())
                 {

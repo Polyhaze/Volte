@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
                     .WithDescription($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})\n" +
                                      $"**Album:** {spotify.AlbumTitle}\n" +
                                      $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}\n" +
-                                     $"**Artists:** {string.Join(", ", spotify.Artists)}")
+                                     $"**Artists:** {spotify.Artists.Join(", ")}")
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
 
