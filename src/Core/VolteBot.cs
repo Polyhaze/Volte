@@ -43,7 +43,7 @@ namespace Volte.Core
             await client.LoginAsync(TokenType.Bot, Config.Token);
             await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
 
-            await handler.InitAsync(provider);
+            await handler.InitializeAsync(provider);
 
             try
             {

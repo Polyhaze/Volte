@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Newtonsoft.Json;
@@ -18,14 +19,14 @@ namespace Volte.Core.Data
 
         static Config()
         {
-            CreateIfNotExists();
+            _ = CreateIfNotExistsAsync();
             if (IsValidConfig)
                 _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        public static void CreateIfNotExists()
+        public static Task CreateIfNotExistsAsync()
         {
-            if (IsValidConfig) return;
+            if (IsValidConfig) return Task.CompletedTask;
             _configuration = new BotConfig
             {
                 Token = "token here",
@@ -40,7 +41,7 @@ namespace Volte.Core.Data
                 BlacklistedServerOwners = new ulong[] { },
                 EnabledFeatures = new EnabledFeatures()
             };
-            File.WriteAllText(ConfigFile,
+            return File.WriteAllTextAsync(ConfigFile,
                 JsonConvert.SerializeObject(_configuration, Formatting.Indented));
         }
 

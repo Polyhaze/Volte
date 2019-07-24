@@ -11,23 +11,18 @@ namespace Volte.Core.Data.Models
         public Exception Exception { get; private set; }
 
         public static LogMessage FromDiscordLogMessage(global::Discord.LogMessage message)
-        {
-            var s = new LogMessage
+            => new LogMessage
             {
                 Message = message.Message,
                 Severity = message.Severity,
-                Exception = message.Exception
+                Exception = message.Exception,
+                Source = message.Source switch
+                    {
+                    "Rest" => LogSource.Rest,
+                    "Discord" => LogSource.Discord,
+                    "Gateway" => LogSource.Gateway,
+                    _ => LogSource.Unknown
+                    }
             };
-
-            var logSource = message.Source switch
-                {
-                "Rest" => LogSource.Rest,
-                "Discord" => LogSource.Discord,
-                "Gateway" => LogSource.Gateway,
-                _ => LogSource.Unknown
-                };
-            s.Source = logSource;
-            return s;
-        }
     }
 }
