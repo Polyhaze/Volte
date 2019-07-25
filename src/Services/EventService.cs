@@ -112,7 +112,7 @@ namespace Volte.Services
                     await guild.LeaveAsync();
                 }
 
-                _ = _db.GetData(guild);
+                _ = _db.GetData(guild); //ensuring all guilds have data available, to prevent exceptions later on 
             }
         }
 
@@ -120,7 +120,7 @@ namespace Volte.Services
         {
             var ctx = context.Cast<VolteContext>();
             var commandName = ctx.Message.Content.Split(" ")[0];
-            var args = ctx.Message.Content.Replace($"{commandName}", "");
+            var args = ctx.Message.Content.Replace($"{commandName}", "").Trim();
             if (string.IsNullOrEmpty(args)) args = "None";
 
             ResultCompletionData data = null;
@@ -130,7 +130,7 @@ namespace Volte.Services
                 {
                     data = await actionRes.ExecuteResultAsync(ctx);
                     await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
-                        $"Executed {commandName}'s resulting ActionResult.");
+                        $"Executed {c.Name}'s resulting ActionResult.");
 
                     switch (res)
                     {
@@ -157,7 +157,7 @@ namespace Volte.Services
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
                     $"|     -Command Issued: {c.Name}");
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
-                    $"|        -Args Passed: {args.Trim()}");
+                    $"|        -Args Passed: {args}");
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,
                     $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
                 await _logger.LogAsync(LogSeverity.Info, LogSource.Module,

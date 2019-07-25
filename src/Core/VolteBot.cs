@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -7,6 +8,7 @@ using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Data;
+using Volte.Core.Data.Models;
 
 namespace Volte.Core
 {
@@ -27,6 +29,17 @@ namespace Volte.Core
             Console.Title = "Volte";
             Console.CursorVisible = false;
 
+            if (!Directory.Exists("data"))
+            {
+                await Console.Out.WriteLineAsync("The \"data\" directory didn't exist, so I created it for you.");
+                Directory.CreateDirectory("data");
+            }
+
+            if (!Config.CreateIfNotExists())
+            {
+                await Console.Out.WriteLineAsync("Please fill in the config.json located in \"data/config.json\"; restart me when you've done so.");
+                return;
+            }
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
 
             var rest = new DiscordRestClient();

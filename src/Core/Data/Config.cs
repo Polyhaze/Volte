@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -11,7 +13,7 @@ namespace Volte.Core.Data
 {
     public sealed class Config
     {
-        private static readonly string ConfigFile = "data/config.json";
+        private const string ConfigFile = "data/config.json";
         private static BotConfig _configuration;
 
         private static readonly bool IsValidConfig =
@@ -19,14 +21,14 @@ namespace Volte.Core.Data
 
         static Config()
         {
-            _ = CreateIfNotExistsAsync();
+            CreateIfNotExists();
             if (IsValidConfig)
                 _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
         }
 
-        private static Task CreateIfNotExistsAsync()
+        public static bool CreateIfNotExists()
         {
-            if (IsValidConfig) return Task.CompletedTask;
+            if (IsValidConfig) return true;
             _configuration = new BotConfig
             {
                 Token = "token here",
@@ -42,8 +44,17 @@ namespace Volte.Core.Data
                 BlacklistedServerOwners = new ulong[] { },
                 EnabledFeatures = new EnabledFeatures()
             };
-            return File.WriteAllTextAsync(ConfigFile,
-                JsonConvert.SerializeObject(_configuration, Formatting.Indented));
+            try
+            {
+                File.WriteAllText(ConfigFile,
+                    JsonConvert.SerializeObject(_configuration, Formatting.Indented));
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
         }
 
         public static string Token => _configuration.Token;
