@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Newtonsoft.Json;
 using Volte.Core.Data.Models.BotConfig;
