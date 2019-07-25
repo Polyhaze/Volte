@@ -11,11 +11,7 @@ namespace Volte.Commands.Modules
         [Command("Choose")]
         [Description("Choose an item from a list separated by |.")]
         [Remarks("Usage: |prefix|choose {option1|option2|option3|...}")]
-        public Task<ActionResult> ChooseAsync([Remainder] string options)
-        {
-            var opts = options.Split('|', StringSplitOptions.RemoveEmptyEntries);
-
-            return Ok($"I choose `{opts.Random()}`.");
-        }
+        public Task<ActionResult> ChooseAsync([Remainder] string options) 
+            => Ok($"I choose `{options.Split('|', StringSplitOptions.RemoveEmptyEntries).Random()}`.");
     }
 }

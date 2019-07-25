@@ -25,20 +25,17 @@ namespace Volte.Commands.Modules
                 return BadRequest("That URL is malformed or empty.");
             }
 
-            using (var sr = await Http.GetAsync(url))
-            {
-                if (!sr.IsImage())
-                {
-                    return BadRequest(
-                        "Provided URL does not lead to an image. Note that I cannot follow redirects; so provide *direct* image URLs please!");
-                }
+            using var sr = await Http.GetAsync(url);
 
-                using (var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream())
-                {
-                    await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
-                    return Ok("Done!");
-                }
+            if (!sr.IsImage())
+            {
+                return BadRequest(
+                    "Provided URL does not lead to an image. Note that I cannot follow redirects; so provide *direct* image URLs please!");
             }
+
+            await using var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream();
+            await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
+            return Ok("Done!");
         }
     }
 }

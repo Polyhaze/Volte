@@ -12,8 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
         public Task<ActionResult> PingAsync()
-        {
-            return Ok(async () =>
+            => Ok(async () =>
             {
                 var e = Context.CreateEmbedBuilder("Pinging...");
                 var sw = new Stopwatch();
@@ -28,6 +27,5 @@ namespace Volte.Commands.Modules
                     x.Embed = e.Build();
                 });
             });
-        }
     }
 }

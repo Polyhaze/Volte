@@ -14,12 +14,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|forcebin")]
         [RequireBotOwner]
         public Task<ActionResult> ForceBinAsync([Remainder] SocketGuild guild)
-        {
-            return Ok(
+            => Ok(
                 "Take this URL to [Volte's Support Discord](https://greemdev.net/Discord) for support with this bot." +
                 "\n" +
                 "\n" +
                 $"https://bin.greemdev.net/{BinService.Execute(Db.GetData(guild))}");
-        }
     }
 }

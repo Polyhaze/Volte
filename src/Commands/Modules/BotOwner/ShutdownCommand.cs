@@ -15,12 +15,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|shutdown")]
         [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
-        {
-            return Ok($"Goodbye! {EmojiService.Wave}", _ =>
+            => Ok($"Goodbye! {EmojiService.Wave}", _ =>
             {
                 Cts.Cancel();
                 return Task.CompletedTask;
             });
-        }
     }
 }

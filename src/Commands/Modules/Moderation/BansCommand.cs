@@ -18,12 +18,9 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
-            if (!banList.Any())
-            {
-                return BadRequest("This server doesn't have anyone banned.");
-            }
-
-            return Ok(banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`").Join('\n'));
+            return !banList.Any() 
+                ? BadRequest("This server doesn't have anyone banned.") 
+                : Ok(banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`").Join('\n'));
         }
     }
 }

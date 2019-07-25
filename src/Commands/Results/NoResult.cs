@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Volte.Commands;
 
@@ -5,9 +6,25 @@ namespace Volte.Commands.Results
 {
     public class NoResult : ActionResult
     {
-        public override Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+
+        public NoResult(Func<Task> afterCompletion = null)
         {
-            return new ResultCompletionData();
+            _after = afterCompletion;
+        }
+
+        private readonly Func<Task> _after;
+
+        public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        {
+            if (_after is null)
+            {
+                return new ResultCompletionData();
+            }
+            else
+            {
+                await _after();
+                return new ResultCompletionData();
+            }
         }
     }
 }

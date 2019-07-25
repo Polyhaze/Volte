@@ -12,9 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Shows the current date and time, in UTC.")]
         [Remarks("Usage: |prefix|now")]
         public Task<ActionResult> NowAsync()
-        {
-            return Ok($"**Date**: {DateTimeOffset.UtcNow.FormatDate()} UTC\n" +
-                      $"**Time**: {DateTimeOffset.UtcNow.FormatFullTime()} UTC");
-        }
+            => Ok($"**Date**: {DateTimeOffset.UtcNow.FormatDate()} UTC\n" +
+                  $"**Time**: {DateTimeOffset.UtcNow.FormatFullTime()} UTC");
     }
 }
