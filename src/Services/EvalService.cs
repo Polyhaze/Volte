@@ -44,18 +44,6 @@ namespace Volte.Services
                     code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
                 }
 
-                var objects = new EvalObjects
-                {
-                    Context = ctx,
-                    Client = ctx.Client,
-                    Data = _db.GetData(ctx.Guild),
-                    Logger = _logger,
-                    CommandService = _commands,
-
-                    DatabaseService = _db,
-                    EmojiService = _emoji
-                };
-
                 sopts = sopts.WithImports(_imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
@@ -63,7 +51,7 @@ namespace Volte.Services
                 try
                 {
                     var sw = Stopwatch.StartNew();
-                    var res = await CSharpScript.EvaluateAsync(code, sopts, objects);
+                    var res = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
                     sw.Stop();
                     if (res != null)
                     {
@@ -89,17 +77,29 @@ namespace Volte.Services
                             .Build()
                     );
                 }
-                finally
-                {
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                }
             }
             catch (Exception e)
             {
                 await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, e);
             }
+            finally
+            {
+                GC.Collect(int.MaxValue, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+            }
         }
+
+        private EvalObjects GetEvalObjects(VolteContext ctx)
+            => new EvalObjects
+            {
+                Context = ctx,
+                Client = ctx.Client,
+                Data = _db.GetData(ctx.Guild),
+                Logger = _logger,
+                CommandService = _commands,
+                DatabaseService = _db,
+                EmojiService = _emoji
+            };
 
         private readonly List<string> _imports = new List<string>
         {
