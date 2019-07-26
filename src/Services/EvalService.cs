@@ -51,6 +51,7 @@ namespace Volte.Services
                     Data = _db.GetData(ctx.Guild),
                     Logger = _logger,
                     CommandService = _commands,
+
                     DatabaseService = _db,
                     EmojiService = _emoji
                 };
@@ -84,7 +85,6 @@ namespace Volte.Services
                         m.Embed = embed
                             .AddField("Exception Type", e.GetType().FullName, true)
                             .AddField("Message", e.Message, true)
-                            .WithDescription($"{Format.Code(e.StackTrace, "cs")}")
                             .WithTitle("Error")
                             .Build()
                     );
