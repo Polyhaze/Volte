@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -28,17 +27,24 @@ namespace Volte.Commands.TypeParsers
             {
                 try
                 {
-                    _ = int.TryParse(value.Split(" ")[0], out var r);
-                    _ = int.TryParse(value.Split(" ")[1], out var g);
-                    _ = int.TryParse(value.Split(" ")[2], out var b);
+                    var r = int.Parse(value.Split(" ")[0]);
+                    var g = int.Parse(value.Split(" ")[1]);
+                    var b = int.Parse(value.Split(" ")[2]);
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return Task.FromResult(TypeParserResult<Color>.Unsuccessful("A value in an RGB sequence may not be over the value of 255."));
+                        return Task.FromResult(
+                            TypeParserResult<Color>.Unsuccessful(
+                                "A value in an RGB sequence may not be over the value of 255."));
                     }
+
                     color = new Color(r, g, b);
                 }
                 catch (IndexOutOfRangeException)
+                {
+                    color = null;
+                }
+                catch (FormatException)
                 {
                     color = null;
                 }
