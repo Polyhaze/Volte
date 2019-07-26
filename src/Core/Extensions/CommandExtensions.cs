@@ -16,12 +16,11 @@ namespace Gommon
 
         public static string SanitizeRemarks(this Command c, VolteContext ctx)
         {
+            ctx.ServiceProvider.Get<DatabaseService>(out var db);
             var aliases = $"({c.FullAliases.Join('|')})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|",
-                    ctx.ServiceProvider.GetRequiredService<DatabaseService>().GetData(ctx.Guild).Configuration
-                        .CommandPrefix)
+                .Replace("|prefix|", db.GetData(ctx.Guild).Configuration.CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 

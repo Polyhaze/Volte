@@ -23,12 +23,14 @@ namespace Gommon
 
         public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
         {
-            var welcome = provider.GetRequiredService<WelcomeService>();
-            var guild = provider.GetRequiredService<GuildService>();
-            var @event = provider.GetRequiredService<EventService>();
+            provider.Get<WelcomeService>(out var welcome);
+            provider.Get<GuildService>(out var guild);
+            provider.Get<EventService>(out var evt);
+            provider.Get<AutoroleService>(out var autorole);
+            provider.Get<LoggingService>(out var logger);
             return Executor.ExecuteAsync(() =>
             {
-                client.Log += m => provider.GetRequiredService<LoggingService>().LogAsync(new LogEventArgs(m));
+                client.Log += m => logger.LogAsync(new LogEventArgs(m));
                 client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
                 client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
                 client.UserJoined += user =>
@@ -36,20 +38,17 @@ namespace Gommon
                     if (Config.EnabledFeatures.Welcome)
                         return welcome.JoinAsync(new UserJoinedEventArgs(user));
                     if (Config.EnabledFeatures.Autorole)
-                        return provider.GetRequiredService<AutoroleService>()
-                            .ApplyRoleAsync(new UserJoinedEventArgs(user));
+                        return autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
                     return Task.CompletedTask;
                 };
-                client.UserLeft += user =>
-                {
-                    if (Config.EnabledFeatures.Welcome)
-                        return welcome.LeaveAsync(new UserLeftEventArgs(user));
-                    return Task.CompletedTask;
-                };
-                client.ShardReady += c => @event.OnReady(new ReadyEventArgs(c));
+                client.UserLeft += user => 
+                    Config.EnabledFeatures.Welcome 
+                    ? welcome.LeaveAsync(new UserLeftEventArgs(user)) 
+                    : Task.CompletedTask;
+                client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c));
                 client.MessageReceived += async s =>
                 {
-                    if (!(s is IUserMessage msg)) return;
+                    if (!(s is SocketUserMessage msg)) return;
                     if (msg.Author.IsBot) return;
                     if (msg.Channel is IDMChannel)
                     {
@@ -57,7 +56,7 @@ namespace Gommon
                         return;
                     }
 
-                    await @event.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
+                    await evt.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
                 };
                 return Task.CompletedTask;
             });

@@ -13,9 +13,9 @@ namespace Volte.Commands
     {
         private readonly EmojiService _emojiService;
 
-        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, IServiceProvider provider)
+        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, ServiceProvider provider)
         {
-            _emojiService = provider.GetRequiredService<EmojiService>();
+            provider.Get(out _emojiService);
             Client = client;
             ServiceProvider = provider;
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
@@ -25,7 +25,7 @@ namespace Volte.Commands
         }
 
         public DiscordShardedClient Client { get; }
-        public IServiceProvider ServiceProvider { get; }
+        public ServiceProvider ServiceProvider { get; }
         public SocketGuild Guild { get; }
         public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }

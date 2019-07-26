@@ -16,11 +16,12 @@ namespace Volte.Core.Models.EventArgs
         public VolteContext Context { get; }
         public GuildData Data { get; }
 
-        public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
+        public MessageReceivedEventArgs(SocketMessage s, ServiceProvider provider)
         {
             Message = s.Cast<SocketUserMessage>();
-            _db = provider.GetRequiredService<DatabaseService>();
-            Context = new VolteContext(provider.GetRequiredService<DiscordShardedClient>(), Message, provider);
+            provider.Get(out _db);
+            provider.Get<DiscordShardedClient>(out var client);
+            Context = new VolteContext(client, Message, provider);
             Data = _db.GetData(Context.Guild);
         }
     }

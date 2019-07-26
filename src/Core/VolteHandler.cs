@@ -31,7 +31,7 @@ namespace Volte.Core
         {
             await _service.AddTypeParsersAsync();
             var sw = Stopwatch.StartNew();
-            var loaded = _service.AddModules(Assembly.GetAssembly(typeof(VolteBot)));
+            var loaded = _service.AddModules(Assembly.GetAssembly(GetType()));
             sw.Stop();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
