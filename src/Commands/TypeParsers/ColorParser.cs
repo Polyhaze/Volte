@@ -19,9 +19,7 @@ namespace Volte.Commands.TypeParsers
             var colorString = value.StartsWith("#") ? value.Substring(1) : value;
 
             if (int.TryParse(colorString, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
-            {
                 color = new Color(colorInt.Cast<uint>());
-            }
 
             if (color is null)
             {

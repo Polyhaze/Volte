@@ -15,7 +15,6 @@ namespace Volte.Core.Models
         public GuildData Data { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }
-        public BinService BinService { get; set; }
         public DatabaseService DatabaseService { get; set; }
         public EmojiService EmojiService { get; set; }
     }

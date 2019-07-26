@@ -18,19 +18,16 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
-        private readonly BinService _bin;
         private readonly CommandService _commands;
         private readonly EmojiService _emoji;
 
         public EvalService(DatabaseService databaseService,
             LoggingService loggingService,
-            BinService binService,
             CommandService commandService,
             EmojiService emojiService)
         {
             _db = databaseService;
             _logger = loggingService;
-            _bin = binService;
             _commands = commandService;
             _emoji = emojiService;
         }
@@ -54,7 +51,6 @@ namespace Volte.Services
                     Data = _db.GetData(ctx.Guild),
                     Logger = _logger,
                     CommandService = _commands,
-                    BinService = _bin,
                     DatabaseService = _db,
                     EmojiService = _emoji
                 };
