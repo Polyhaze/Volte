@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Volte.Core.Data.Models.BotConfig
+namespace Volte.Core.Models.BotConfig
 {
     public sealed class JoinLeaveLog
     {

@@ -1,10 +1,10 @@
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core.Data.Models.Guild;
+using Volte.Core.Models.Guild;
 using Volte.Services;
 
-namespace Volte.Core.Data.Models
+namespace Volte.Core.Models
 {
     public sealed class EvalObjects
     {

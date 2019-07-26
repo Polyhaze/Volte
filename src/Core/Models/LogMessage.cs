@@ -1,7 +1,7 @@
 using System;
 using Discord;
 
-namespace Volte.Core.Data.Models
+namespace Volte.Core.Models
 {
     public sealed class LogMessage
     {

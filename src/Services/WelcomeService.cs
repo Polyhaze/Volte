@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {

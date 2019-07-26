@@ -11,19 +11,13 @@ namespace Volte.Commands.Results
     {
         public IUserMessage Message { get; }
 
-        public ResultCompletionData(IUserMessage message)
-        {
-            Message = message;
-        }
+        public ResultCompletionData(IUserMessage message) 
+            => Message = message;
 
-        public ResultCompletionData()
-        {
-            Message = null;
-        }
+        public ResultCompletionData() 
+            => Message = null;
 
-        public static implicit operator Task<ResultCompletionData>(ResultCompletionData data)
-        {
-            return Task.FromResult(data);
-        }
+        public static implicit operator Task<ResultCompletionData>(ResultCompletionData data) 
+            => Task.FromResult(data);
     }
 }

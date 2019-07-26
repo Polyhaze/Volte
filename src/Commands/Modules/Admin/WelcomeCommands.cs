@@ -3,7 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
 using Volte.Services;
 
@@ -55,20 +55,14 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeColor", "WelcomeColour", "Wcl")]
         [Description("Sets the color used for welcome embeds for this guild.")]
-        [Remarks("Usage: |prefix|welcomecolor {r} {g} {b}")]
+        [Remarks("Usage: |prefix|welcomecolor {color}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> WelcomeColorAsync(int r, int g, int b)
+        public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
         {
-            if (r > 255 || g > 255 || b > 255)
-            {
-                return BadRequest(
-                    "You cannot have an RGB value greater than 255. Either the R, G, or B value you entered exceeded 255 in value.");
-            }
-
             var data = Db.GetData(Context.Guild);
-            data.Configuration.Welcome.WelcomeColor = new Color(r, g, b).RawValue;
+            data.Configuration.Welcome.WelcomeColor = color.RawValue;
             Db.UpdateData(data);
-            return Ok($"Successfully set this server's welcome message embed colour to `{r}, {g}, {b}`!");
+            return Ok($"Successfully set this server's welcome message embed color!");
         }
 
         [Command("LeavingMessage", "Lmsg")]

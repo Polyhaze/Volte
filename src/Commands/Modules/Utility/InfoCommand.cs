@@ -82,10 +82,10 @@ namespace Volte.Commands.Modules
             }
         }
 
-        [Obsolete] //currently doesn't work properly in production or in debugging, put on the sidelines
+        /*[Obsolete] //currently doesn't work properly in production or in debugging, put on the sidelines
         private string GetRamUsage()
         {
             return Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 3).ToString(CultureInfo.CurrentCulture);
-        }
+        }*/
     }
 }

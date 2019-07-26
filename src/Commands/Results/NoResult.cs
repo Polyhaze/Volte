@@ -6,11 +6,8 @@ namespace Volte.Commands.Results
 {
     public class NoResult : ActionResult
     {
-
         public NoResult(Func<Task> afterCompletion = null)
-        {
-            _after = afterCompletion;
-        }
+            => _after = afterCompletion;
 
         private readonly Func<Task> _after;
 
@@ -20,11 +17,9 @@ namespace Volte.Commands.Results
             {
                 return new ResultCompletionData();
             }
-            else
-            {
-                await _after();
-                return new ResultCompletionData();
-            }
+
+            await _after();
+            return new ResultCompletionData();
         }
     }
 }

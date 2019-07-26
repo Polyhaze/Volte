@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
     [Service("Autorole", "The main Service for automatically applying roles when a user joins any given guild.")]
     public sealed class AutoroleService
     {
-        private LoggingService _logger;
-        private DatabaseService _db;
+        private readonly LoggingService _logger;
+        private readonly DatabaseService _db;
 
         public AutoroleService(LoggingService loggingService,
             DatabaseService databaseService)

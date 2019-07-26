@@ -17,10 +17,8 @@ namespace Volte.Commands.Results
             After = func;
         }
 
-        public OkResult(Func<Task> logic)
-        {
-            SeparateLogic = logic;
-        }
+        public OkResult(Func<Task> logic) 
+            => SeparateLogic = logic;
 
         private string Message { get; }
         private bool ShouldEmbed { get; }

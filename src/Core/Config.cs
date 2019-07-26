@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Gommon;
 using Newtonsoft.Json;
-using Volte.Core.Data.Models.BotConfig;
+using Volte.Core.Models.BotConfig;
 
-namespace Volte.Core.Data
+namespace Volte.Core
 {
     public sealed class Config
     {

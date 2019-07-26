@@ -1,6 +1,6 @@
 using Discord;
 
-namespace Volte.Core.Data.Models.EventArgs
+namespace Volte.Core.Models.EventArgs
 {
     public sealed class LogEventArgs : System.EventArgs
     {

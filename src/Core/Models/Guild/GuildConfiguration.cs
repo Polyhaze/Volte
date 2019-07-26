@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Volte.Core.Data.Models.Guild
+namespace Volte.Core.Models.Guild
 {
     public sealed class GuildConfiguration
     {

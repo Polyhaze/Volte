@@ -1,18 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Commands;
 using Gommon;
-using Volte.Core.Data;
+using Volte.Core;
 
 namespace Volte.Commands.Results
 {
     public class BadRequestResult : ActionResult
     {
-        public BadRequestResult(string reason)
-        {
-            Reason = reason;
-        }
+        public BadRequestResult(string reason) 
+            => Reason = reason;
 
         public string Reason { get; }
 

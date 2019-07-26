@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Volte.Core.Data.Models.BotConfig
+namespace Volte.Core.Models.BotConfig
 {
     /// <summary>
     ///     Model that represents enabled/disabled features as defined in your config.

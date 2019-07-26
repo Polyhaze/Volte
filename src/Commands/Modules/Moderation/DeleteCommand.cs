@@ -3,8 +3,8 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules

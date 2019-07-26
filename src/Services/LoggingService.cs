@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Volte.Core.Data;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 using Color = System.Drawing.Color;
 using Console = Colorful.Console;
 

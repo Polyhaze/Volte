@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Volte.Core.Data.Models.Guild
+namespace Volte.Core.Models.Guild
 {
     public sealed class ModerationOptions
     {
@@ -29,6 +29,7 @@ namespace Volte.Core.Data.Models.Guild
 
     public sealed class WelcomeOptions
     {
+
         [JsonProperty("welcome_channel")]
         public ulong WelcomeChannel { get; set; }
 

@@ -1,14 +1,12 @@
 using Discord.WebSocket;
 
-namespace Volte.Core.Data.Models.EventArgs
+namespace Volte.Core.Models.EventArgs
 {
     public sealed class ReadyEventArgs : System.EventArgs
     {
         public DiscordSocketClient Client { get; }
 
-        public ReadyEventArgs(DiscordSocketClient client)
-        {
-            Client = client;
-        }
+        public ReadyEventArgs(DiscordSocketClient client) 
+            => Client = client;
     }
 }

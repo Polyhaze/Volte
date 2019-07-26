@@ -35,6 +35,7 @@ namespace Gommon
             service.AddTypeParser(new RoleParser<IRole>());
             service.AddTypeParser(new ChannelParser<SocketTextChannel>());
             service.AddTypeParser(new ChannelParser<ITextChannel>());
+            service.AddTypeParser(new ColorParser());
             service.AddTypeParser(new EmoteParser());
             service.AddTypeParser(new GuildParser());
             service.AddTypeParser(new BooleanParser(), true);

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Discord;
-using Volte.Core.Data;
+using Volte.Core;
 
 namespace Gommon
 {

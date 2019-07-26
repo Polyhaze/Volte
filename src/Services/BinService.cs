@@ -10,16 +10,16 @@ using Gommon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.Guild;
+using Volte.Core.Models;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
     [Service("Bin", "The main Service that handles HTTP POST requests for debug reports to bin.scarsz.me.")]
     public sealed class BinService
     {
-        private DiscordShardedClient _client;
-        private RestClient _http;
+        private readonly DiscordShardedClient _client;
+        private readonly RestClient _http;
 
         public BinService(DiscordShardedClient discordShardedClient,
             RestClient http)
@@ -75,13 +75,11 @@ namespace Volte.Services
 
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
-                using (var ms = new MemoryStream())
-                using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                using (var sw = new StreamWriter(cs))
-                {
-                    sw.Write(text);
-                    enc = ms.ToArray();
-                }
+                using var ms = new MemoryStream();
+                using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
+                using var sw = new StreamWriter(cs);
+                sw.Write(text);
+                enc = ms.ToArray();
             }
 
             var combIv = new byte[iv.Length + enc.Length];

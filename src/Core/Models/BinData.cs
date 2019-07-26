@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Volte.Core.Data.Models
+namespace Volte.Core.Models
 {
     public sealed class BinData
     {

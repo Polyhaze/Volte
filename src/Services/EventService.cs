@@ -7,9 +7,9 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core.Data;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
 
 namespace Volte.Services

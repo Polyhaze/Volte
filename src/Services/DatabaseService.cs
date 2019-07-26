@@ -1,28 +1,25 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Gommon;
 using LiteDB;
-using Volte.Core.Data;
-using Volte.Core.Data.Models;
-using Volte.Core.Data.Models.Guild;
+using Volte.Core;
+using Volte.Core.Models;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
     [Service("Database", "The main Service for interacting with the Volte database.")]
     public sealed class DatabaseService
     {
-        public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
+        public readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
-        private DiscordShardedClient _client;
-        private LoggingService _logger;
+        private readonly DiscordShardedClient _client;
+        private readonly LoggingService _logger;
 
-        public DatabaseService(DiscordShardedClient DiscordShardedClient,
+        public DatabaseService(DiscordShardedClient discordShardedClient,
             LoggingService loggingService)
         {
-            _client = DiscordShardedClient;
+            _client = discordShardedClient;
             _logger = loggingService;
         }
 

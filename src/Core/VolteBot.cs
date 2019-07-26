@@ -7,8 +7,6 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Data;
-using Volte.Core.Data.Models;
 
 namespace Volte.Core
 {

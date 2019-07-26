@@ -2,20 +2,18 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Data;
-using Volte.Core.Data.Models.EventArgs;
+using Volte.Core;
+using Volte.Core.Models.EventArgs;
 using Volte.Services;
 
 namespace Gommon
 {
     public static partial class Extensions
     {
-        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
-        {
-            return withAdmin
+        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true) 
+            => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
-        }
 
         public static SocketUser GetOwner(this DiscordShardedClient client)
             => client.GetUser(Config.Owner);

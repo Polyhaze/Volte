@@ -2,7 +2,7 @@
 using System.Linq;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
-using Volte.Core.Data;
+using Volte.Core;
 using Volte.Services;
 
 namespace Gommon
@@ -16,7 +16,7 @@ namespace Gommon
 
         public static bool IsModerator(this IGuildUser user, IServiceProvider provider)
             => HasRole(user,
-                   provider.GetRequiredService<DatabaseService>().GetData(user.Guild.Id).Configuration.Moderation
+                   provider.GetRequiredService<DatabaseService>().GetData(user.Guild).Configuration.Moderation
                        .ModRole) ||
                IsAdmin(user, provider) ||
                IsGuildOwner(user);
