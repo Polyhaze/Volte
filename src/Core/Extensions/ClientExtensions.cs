@@ -10,7 +10,7 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true) 
+        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";

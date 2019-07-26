@@ -38,14 +38,15 @@ namespace Volte.Services
             {
                 var sopts = ScriptOptions.Default;
                 var embed = ctx.CreateEmbedBuilder();
-                if (code.Contains("```cs"))
+                if (code.StartsWith("```cs") && code.EndsWith("```"))
                 {
-                    code = code.Remove(code.IndexOf("```cs", StringComparison.OrdinalIgnoreCase), 5);
+                    code = code.Substring(5);
                     code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
                 }
 
-                sopts = sopts.WithImports(_imports).WithReferences(AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+                sopts = sopts.WithImports(_imports).WithReferences(
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
                 var msg = await embed.WithTitle("Evaluating...").SendToAsync(ctx.Channel);
                 try
@@ -53,18 +54,18 @@ namespace Volte.Services
                     var sw = Stopwatch.StartNew();
                     var res = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
                     sw.Stop();
-                    if (res != null)
+                    if (res is null)
+                    {
+                        await msg.DeleteAsync();
+                        await ctx.ReactSuccessAsync();
+                    }
+                    else
                     {
                         await msg.ModifyAsync(m =>
                             m.Embed = embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms", true)
                                 .AddField("Return Type", res.GetType().FullName, true)
                                 .AddField("Output", Format.Code(res.ToString(), "css")).Build());
-                    }
-                    else
-                    {
-                        await msg.DeleteAsync();
-                        await ctx.ReactSuccessAsync();
                     }
                 }
                 catch (Exception e)
