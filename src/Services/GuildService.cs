@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -10,8 +11,7 @@ using Gommon;
 
 namespace Volte.Services
 {
-    [Service("Guild", "The main Service that handles guild-related Discord gateway events.")]
-    public sealed class GuildService
+    public sealed class GuildService : VolteService
     {
         private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;

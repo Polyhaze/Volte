@@ -6,8 +6,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    [Service("Welcome", "The main Service that handles welcome/leaving functionality.")]
-    public sealed class WelcomeService
+    public sealed class WelcomeService : VolteService
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;

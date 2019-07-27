@@ -13,8 +13,7 @@ using Volte.Core.Models;
 
 namespace Volte.Services
 {
-    [Service("Eval", "Handles C# code evaluation.")]
-    public sealed class EvalService
+    public sealed class EvalService : VolteService
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;

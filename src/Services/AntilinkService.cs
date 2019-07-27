@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
@@ -8,8 +9,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    [Service("Antilink", "The main Service for checking links sent in chat.")]
-    public sealed class AntilinkService
+    public sealed class AntilinkService : VolteEventService
     {
         private readonly Regex _invitePattern =
             new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
@@ -18,6 +18,10 @@ namespace Volte.Services
 
         public AntilinkService(LoggingService loggingService)
             => _logger = loggingService;
+
+        public override Task DoAsync(EventArgs args) 
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+
 
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
@@ -39,7 +43,7 @@ namespace Volte.Services
                 {AuditLogReason = "Deleted as it contained an invite link."});
             var m = await args.Context.CreateEmbed("Don't send invites here.").SendToAsync(args.Context.Channel);
             await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
-                $"Deleted a message in guild {args.Context.Guild.Name} for containing a Discord invite URL.");
+                $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
             _ = Executor.ExecuteAfterDelayAsync(3000, () => m.DeleteAsync());
         }
     }

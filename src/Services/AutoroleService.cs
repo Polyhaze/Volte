@@ -1,13 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    [Service("Autorole", "The main Service for automatically applying roles when a user joins any given guild.")]
-    public sealed class AutoroleService
+    public sealed class AutoroleService : VolteEventService
     {
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
@@ -18,6 +19,9 @@ namespace Volte.Services
             _logger = loggingService;
             _db = databaseService;
         }
+
+        public override Task DoAsync(EventArgs args) 
+            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>());
 
         internal async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {

@@ -48,8 +48,9 @@ namespace Gommon
         {
             //get all the classes that have the ServiceAttribute attribute and don't have the System.ObsoleteAttribute attribute.
             foreach (var service in Assembly.GetEntryAssembly()?.GetTypes()?
-                .Where(t => !t.HasAttribute<ObsoleteAttribute>() &&
-                            t.HasAttribute<ServiceAttribute>()))
+                .Where(t => !t.HasAttribute<ObsoleteAttribute>() && (
+                            typeof(VolteEventService).IsAssignableFrom(t) 
+                            || typeof(VolteService).IsAssignableFrom(t)) && !t.IsAbstract))
             {
                 provider.AddSingleton(service);
             }

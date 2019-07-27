@@ -8,8 +8,7 @@ using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
-    [Service("Database", "The main Service for interacting with the Volte database.")]
-    public sealed class DatabaseService
+    public sealed class DatabaseService : VolteService
     {
         public readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 

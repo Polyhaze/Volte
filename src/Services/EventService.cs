@@ -14,8 +14,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Services
 {
-    [Service("Event", "The main Service for handling some Discord gateway events.")]
-    public sealed class EventService
+    public sealed class EventService : VolteService
     {
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;

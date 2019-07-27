@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Volte.Core.Models;
@@ -6,13 +7,15 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    [Service("Blacklist", "The main Service for checking messages for blacklisted words/phrases in user's messages.")]
-    public sealed class BlacklistService
+    public sealed class BlacklistService : VolteEventService
     {
         private readonly LoggingService _logger;
 
         public BlacklistService(LoggingService loggingService) 
             => _logger = loggingService;
+
+        public override Task DoAsync(EventArgs args) 
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
 
         internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

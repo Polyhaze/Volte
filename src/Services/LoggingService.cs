@@ -11,10 +11,12 @@ using Console = Colorful.Console;
 
 namespace Volte.Services
 {
-    [Service("Logging", "The main Service used to handle logging to the bot's console.")]
-    public sealed class LoggingService
+    public sealed class LoggingService : VolteEventService
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
+        public override Task DoAsync(EventArgs args) 
+            => LogAsync(args.Cast<LogEventArgs>());
 
         internal Task LogAsync(LogEventArgs args) =>
             LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,

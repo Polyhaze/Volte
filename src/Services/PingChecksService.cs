@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -6,13 +7,15 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    [Service("PingChecks", "The main Service used for checking if any given message contains mass mentions.")]
-    public sealed class PingChecksService
+    public sealed class PingChecksService : VolteEventService
     {
         private readonly LoggingService _logger;
 
         public PingChecksService(LoggingService loggingService) 
             => _logger = loggingService;
+
+        public override Task DoAsync(EventArgs args) 
+            => throw new NotImplementedException(); //bruh momentum
 
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

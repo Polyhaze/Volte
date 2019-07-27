@@ -1,7 +1,6 @@
 namespace Volte.Services
 {
-    [Service("Emoji", "The main Service that has properties for all twemoji emojis used by Discord.")]
-    public sealed class EmojiService
+    public sealed class EmojiService : VolteService
     {
         public string Wave { get; } = "\uD83D\uDC4B";
         public string X { get; } = "\u274C";
