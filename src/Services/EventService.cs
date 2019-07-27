@@ -44,11 +44,11 @@ namespace Volte.Services
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
             if (Config.EnabledFeatures.Blacklist)
-                await _blacklist.CheckMessageAsync(args);
+                await _blacklist.DoAsync(args);
             if (Config.EnabledFeatures.Antilink)
-                await _antilink.CheckMessageAsync(args);
+                await _antilink.DoAsync(args);
             if (Config.EnabledFeatures.PingChecks)
-                await _pingchecks.CheckMessageAsync(args);
+                await _pingchecks.DoAsync(args);
 
             var prefixes = new[]
             {

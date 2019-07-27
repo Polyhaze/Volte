@@ -39,7 +39,7 @@ namespace Volte.Commands.Modules
             catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
-                _ => ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Warn, user,
+                _ => ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Warn, user,
                     reason)));
         }
 
@@ -68,7 +68,7 @@ namespace Volte.Commands.Modules
             Db.UpdateData(data);
 
             return Ok($"Cleared all warnings for **{user}**.",
-                _ => ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns,
+                _ => ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns,
                     user, null)));
         }
     }

@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules
             return Ok($"Successfully deleted **{mCount}** {"message".ToQuantity(mCount)}", m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(3000, async () => await m.DeleteAsync());
-                return ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Purge,
+                return ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Purge,
                     count));
             });
         }

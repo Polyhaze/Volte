@@ -31,7 +31,7 @@ namespace Volte.Commands.Modules
             await user.KickAsync(reason);
 
             return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.", _ =>
-                ModLogService.OnModActionCompleteAsync(
+                ModLogService.DoAsync(
                     new ModActionEventArgs(Context, ModActionType.Kick, user, reason)));
         }
     }

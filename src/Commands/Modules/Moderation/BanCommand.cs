@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
 
             await user.BanAsync(daysToDelete, reason);
             return Ok($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.", _ =>
-                ModLogService.OnModActionCompleteAsync(new ModActionEventArgs(Context, ModActionType.Ban, user,
+                ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Ban, user,
                     reason)));
         }
     }

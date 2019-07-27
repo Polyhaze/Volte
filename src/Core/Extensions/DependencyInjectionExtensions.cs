@@ -22,8 +22,8 @@ namespace Gommon
             coll.AddVolteServices()
                 .AddSingleton<VolteHandler>()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
-                .AddSingleton(new HttpClient())
-                .AddSingleton(new CancellationTokenSource())
+                .AddSingleton<HttpClient>()
+                .AddSingleton<CancellationTokenSource>()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoreExtraArguments = true,

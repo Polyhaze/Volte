@@ -30,7 +30,7 @@ namespace Gommon
             provider.Get<LoggingService>(out var logger);
             return Executor.ExecuteAsync(() =>
             {
-                client.Log += m => logger.LogAsync(new LogEventArgs(m));
+                client.Log += m => logger.DoAsync(new LogEventArgs(m));
                 client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
                 client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
                 client.UserJoined += user =>
@@ -38,7 +38,7 @@ namespace Gommon
                     if (Config.EnabledFeatures.Welcome)
                         return welcome.JoinAsync(new UserJoinedEventArgs(user));
                     if (Config.EnabledFeatures.Autorole)
-                        return autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
+                        return autorole.DoAsync(new UserJoinedEventArgs(user));
                     return Task.CompletedTask;
                 };
                 client.UserLeft += user => 
