@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Threading;
 using Discord;
 using Discord.WebSocket;
-using Volte;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
 using RestSharp;
 using Volte.Core;
@@ -29,7 +29,7 @@ namespace Gommon
                     IgnoreExtraArguments = true,
                     CaseSensitive = false,
                     DefaultRunMode = RunMode.Sequential,
-                    SeparatorRequirement = SeparatorRequirement.Separator,
+                    SeparatorRequirement = SeparatorRequirement.None,
                     Separator = "irrelevant",
                     NullableNouns = null
                 }))
@@ -44,18 +44,18 @@ namespace Gommon
                     TotalShards = shardCount
                 }));
 
-        public static IServiceCollection AddVolteServices(this IServiceCollection provider)
+        public static IServiceCollection AddVolteServices(this IServiceCollection coll)
         {
-            //get all the classes that have the ServiceAttribute attribute and don't have the System.ObsoleteAttribute attribute.
-            foreach (var service in Assembly.GetEntryAssembly()?.GetTypes()?
+            //get all the classes that are Volte[Event]Services, aren't abstract, and don't have the System.ObsoleteAttribute attribute.
+            foreach (var service in Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => !t.HasAttribute<ObsoleteAttribute>() && (
                             typeof(VolteEventService).IsAssignableFrom(t) 
                             || typeof(VolteService).IsAssignableFrom(t)) && !t.IsAbstract))
             {
-                provider.AddSingleton(service);
+                coll.TryAddSingleton(service);
             }
 
-            return provider;
+            return coll;
         }
 
         public static void Get<T>(this ServiceProvider provider, out T service) 
