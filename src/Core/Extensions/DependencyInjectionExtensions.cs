@@ -35,9 +35,9 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
-                    LogLevel = Version.ReleaseType is ReleaseType.Release
-                        ? LogSeverity.Verbose
-                        : LogSeverity.Debug,
+                    LogLevel = Config.EnableDebugLogging
+                        ? LogSeverity.Debug
+                        : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50,
