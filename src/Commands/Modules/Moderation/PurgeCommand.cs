@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
             //-1 to show that the correct amount of messages were deleted.
             var mCount = messages.Count - 1;
 
-            return Ok($"Successfully deleted **{mCount}** {"message".ToQuantity(mCount)}", m =>
+            return Ok($"Successfully deleted **{"message".ToQuantity(mCount)}**", m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(3000, async () => await m.DeleteAsync());
                 return ModLogService.DoAsync(ModActionEventArgs.New
