@@ -7,6 +7,8 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Core.Models;
+using Volte.Services;
 
 namespace Volte.Core
 {
@@ -50,6 +52,7 @@ namespace Volte.Core
             provider.Get<DiscordShardedClient>(out var client);
             provider.Get<CancellationTokenSource>(out var cts);
             provider.Get<VolteHandler>(out var handler);
+            provider.Get<LoggingService>(out var logger);
 
             await client.LoginAsync(TokenType.Bot, Config.Token);
             await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
@@ -63,7 +66,8 @@ namespace Volte.Core
             catch (TaskCanceledException)
             {
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
-                await ShutdownAsync(client, cts, provider);
+                await logger.LogAsync(LogSeverity.Critical, LogSource.Volte, "Bot shutdown requested by the bot owner; shutting down.")
+                    .ContinueWith(_ => ShutdownAsync(client, cts, provider));
             }
         }
 

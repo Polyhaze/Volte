@@ -60,12 +60,19 @@ namespace Volte.Commands.Modules
         [Description("Clears the warnings for the given user.")]
         [Remarks("Usage: |prefix|clearwarns {user}")]
         [RequireGuildModerator]
-        public Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
+        public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {
             var data = Db.GetData(Context.Guild);
             var newWarnList = data.Extras.Warns.Where(x => x.User != user.Id).ToList();
             data.Extras.Warns = newWarnList;
             Db.UpdateData(data);
+
+            try
+            {
+                await Context.CreateEmbed($"Your warns in **{Context.Guild.Name}** have been cleared. Hooray!")
+                    .SendToAsync(user);
+            }
+            catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             return Ok($"Cleared all warnings for **{user}**.",
                 _ => ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns,

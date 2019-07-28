@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Net;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Checks;
@@ -26,7 +25,7 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
+            catch (Discord.Net.HttpException ignored) when (ignored.DiscordCode == 50007) { }
 
             await user.BanAsync(daysToDelete, reason);
             return Ok($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.", _ =>

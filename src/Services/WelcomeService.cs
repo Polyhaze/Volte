@@ -37,13 +37,13 @@ namespace Volte.Services
 
             if (!(c is null))
             {
-                var embed = new EmbedBuilder()
+                await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
                     .WithThumbnailUrl(args.User.GetAvatarUrl())
-                    .WithCurrentTimestamp();
+                    .WithCurrentTimestamp()
+                    .SendToAsync(c);
 
-                await embed.SendToAsync(c);
                 await _logger.LogAsync(LogSeverity.Debug, LogSource.Service, $"Sent a welcome embed to #{c.Name}.");
                 return;
             }

@@ -17,7 +17,7 @@ namespace Volte.Services
         public override Task DoAsync(EventArgs args) 
             => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
 
-        internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, "Checking a message for blacklisted words.");
             foreach (var word in args.Data.Configuration.Moderation.Blacklist)

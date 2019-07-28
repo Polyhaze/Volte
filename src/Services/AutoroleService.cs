@@ -23,7 +23,7 @@ namespace Volte.Services
         public override Task DoAsync(EventArgs args) 
             => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>());
 
-        internal async Task ApplyRoleAsync(UserJoinedEventArgs args)
+        private async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             if (!(data.Configuration.Autorole is 0))

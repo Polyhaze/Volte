@@ -14,10 +14,10 @@ namespace Volte.Services
         public PingChecksService(LoggingService loggingService) 
             => _logger = loggingService;
 
-        public override Task DoAsync(EventArgs args) 
-            => throw new NotImplementedException(); //bruh momentum
+        public override Task DoAsync(EventArgs args)
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
 
-        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (args.Data.Configuration.Moderation.MassPingChecks &&
                 !args.Context.User.IsAdmin(args.Context.ServiceProvider))

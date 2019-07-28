@@ -23,7 +23,7 @@ namespace Volte.Services
             => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
 
 
-        internal async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Antilink ||
                 args.Context.User.IsAdmin(args.Context.ServiceProvider)) return;

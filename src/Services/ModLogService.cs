@@ -23,7 +23,7 @@ namespace Volte.Services
         public override Task DoAsync(EventArgs args) 
             => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>());
 
-        public async Task OnModActionCompleteAsync(ModActionEventArgs args)
+        private async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
             if (!Config.EnabledFeatures.ModLog)
                 return;
