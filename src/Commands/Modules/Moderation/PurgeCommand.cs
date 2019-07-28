@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -30,13 +31,18 @@ namespace Volte.Commands.Modules
                 await Context.Channel.DeleteMessagesAsync(messages);
 
             //-1 to show that the correct amount of messages were deleted.
-            var mCount = messages.Count() - 1;
+            var mCount = messages.Count - 1;
 
             return Ok($"Successfully deleted **{mCount}** {"message".ToQuantity(mCount)}", m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(3000, async () => await m.DeleteAsync());
-                return ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Purge,
-                    count));
+                return ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.Purge)
+                    .WithCount(count)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild));
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
@@ -25,12 +26,20 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (Discord.Net.HttpException ignored) when (ignored.DiscordCode == 50007) { }
+            catch (Discord.Net.HttpException ignored) when (ignored.DiscordCode == 50007)
+            { }
 
             await user.BanAsync(daysToDelete, reason);
             return Ok($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.", _ =>
-                ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Ban, user,
-                    reason)));
+                ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.Ban)
+                    .WithTargetUser(user)
+                    .WithReason(reason)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild))
+            );
         }
     }
 }

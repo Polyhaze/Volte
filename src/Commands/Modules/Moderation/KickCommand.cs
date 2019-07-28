@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
@@ -30,8 +31,15 @@ namespace Volte.Commands.Modules
             await user.KickAsync(reason);
 
             return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this server.", _ =>
-                ModLogService.DoAsync(
-                    new ModActionEventArgs(Context, ModActionType.Kick, user, reason)));
+                ModLogService.DoAsync(new ModActionEventArgs()
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.Kick)
+                    .WithTargetUser(user)
+                    .WithReason(reason)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild)
+                ));
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -31,8 +32,13 @@ namespace Volte.Commands.Modules
             await Context.Guild.RemoveBanAsync(user);
 
             return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
-                ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Softban, user,
-                    reason)));
+                ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithTargetUser(user)
+                    .WithReason(reason)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild)));
         }
     }
 }

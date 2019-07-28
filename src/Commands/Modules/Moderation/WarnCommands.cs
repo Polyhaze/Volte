@@ -36,11 +36,19 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been warned in **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
+            catch (HttpException ignored) when (ignored.DiscordCode == 50007)
+            { }
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
-                _ => ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Warn, user,
-                    reason)));
+                _ => ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.Warn)
+                    .WithTargetUser(user)
+                    .WithReason(reason)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild))
+            );
         }
 
         [Command("Warns", "Ws")]
@@ -72,11 +80,17 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"Your warns in **{Context.Guild.Name}** have been cleared. Hooray!")
                     .SendToAsync(user);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode == 50007) { }
+            catch (HttpException ignored) when (ignored.DiscordCode == 50007)
+            { }
 
-            return Ok($"Cleared all warnings for **{user}**.",
-                _ => ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.ClearWarns,
-                    user, null)));
+            return Ok($"Cleared all warnings for **{user}**.", _ => 
+                ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.ClearWarns)
+                    .WithTargetUser(user)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild)));
         }
     }
 }

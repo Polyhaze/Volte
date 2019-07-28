@@ -1,5 +1,4 @@
 using System;
-using Discord;
 using Discord.WebSocket;
 using Volte.Commands;
 
@@ -7,66 +6,70 @@ namespace Volte.Core.Models.EventArgs
 {
     public class ModActionEventArgs : System.EventArgs
     {
-        public SocketGuildUser Moderator { get; }
-        public VolteContext Context { get; }
-        public ModActionType ActionType { get; }
-        public string Reason { get; }
-        public ulong? TargetId { get; }
-        public SocketUser TargetUser { get; }
-        public int? Count { get; }
-        public DateTimeOffset Time { get; }
-        public SocketGuild Guild { get; }
+        public SocketGuildUser Moderator { get; private set; }
+        public VolteContext Context { get; private set; }
+        public ModActionType ActionType { get; private set; }
+        public string Reason { get; private set; }
+        public ulong? TargetId { get; private set; }
+        public SocketUser TargetUser { get; private set; }
+        public int? Count { get; private set; }
+        public DateTimeOffset Time { get; private set; }
+        public SocketGuild Guild { get; private set; }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type)
+        public static ModActionEventArgs New => new ModActionEventArgs();
+
+        public ModActionEventArgs WithContext(VolteContext ctx)
         {
-            Moderator = ctx.User;
             Context = ctx;
-            ActionType = type;
-            Time = DateTimeOffset.UtcNow;
-            Guild = ctx.Guild;
+            return this;
         }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type, SocketUser target, string reason)
+        public ModActionEventArgs WithModerator(SocketGuildUser user)
         {
-            Moderator = ctx.User;
-            Context = ctx;
+            Moderator = user;
+            return this;
+        }
+
+        public ModActionEventArgs WithActionType(ModActionType type)
+        {
             ActionType = type;
+            return this;
+        }
+
+        public ModActionEventArgs WithReason(string reason)
+        {
             Reason = reason;
-            TargetUser = target;
-            TargetId = TargetUser.Id;
-            Time = DateTimeOffset.UtcNow;
-            Guild = ctx.Guild;
+            return this;
         }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type, ulong target, string reason)
+        public ModActionEventArgs WithTargetId(ulong? id)
         {
-            Moderator = ctx.User;
-            Context = ctx;
-            ActionType = type;
-            TargetId = target;
-            Reason = reason;
-            Time = DateTimeOffset.UtcNow;
-            Guild = ctx.Guild;
+            TargetId = id;
+            return this;
         }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type, ulong target)
+        public ModActionEventArgs WithTargetUser(SocketUser user)
         {
-            Moderator = ctx.User;
-            Context = ctx;
-            ActionType = type;
-            TargetId = target;
-            Time = DateTimeOffset.UtcNow;
-            Guild = ctx.Guild;
+            TargetUser = user;
+            return this;
         }
 
-        public ModActionEventArgs(VolteContext ctx, ModActionType type, int count)
+        public ModActionEventArgs WithCount(int? count)
         {
-            Moderator = ctx.User;
-            Context = ctx;
-            ActionType = type;
             Count = count;
-            Time = DateTimeOffset.UtcNow;
-            Guild = ctx.Guild;
+            return this;
+        }
+
+        public ModActionEventArgs WithTime(DateTimeOffset time)
+        {
+            Time = time;
+            return this;
+        }
+
+        public ModActionEventArgs WithGuild(SocketGuild guild)
+        {
+            Guild = guild;
+            return this;
         }
     }
 }

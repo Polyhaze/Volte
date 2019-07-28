@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
@@ -37,8 +38,13 @@ namespace Volte.Commands.Modules
                     await m.DeleteAsync();
                 });
 
-                await ModLogService.DoAsync(new ModActionEventArgs(Context, ModActionType.Delete,
-                    messageId));
+                await ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithContext(Context)
+                    .WithActionType(ModActionType.Delete)
+                    .WithTargetId(messageId)
+                    .WithModerator(Context.User)
+                    .WithTime(DateTimeOffset.UtcNow)
+                    .WithGuild(Context.Guild));
             });
         }
     }
