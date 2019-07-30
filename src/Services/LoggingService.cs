@@ -51,7 +51,7 @@ namespace Volte.Services
                 await AppendAsync(message, Color.White);
 
             if (e != null)
-                await AppendAsync($"{e.Message}\n{e.StackTrace}", Color.IndianRed);
+                await AppendAsync($"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}", Color.IndianRed);
 
             await Console.Out.WriteAsync(Environment.NewLine);
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
@@ -36,8 +38,11 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been warned in **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode == 50007)
-            { }
+            catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            {
+                await Logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                    $"encountered a 403 when trying to message {user}!", e);
+            }
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
                 _ => ModLogService.DoAsync(ModActionEventArgs.New
@@ -80,8 +85,11 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"Your warns in **{Context.Guild.Name}** have been cleared. Hooray!")
                     .SendToAsync(user);
             }
-            catch (HttpException ignored) when (ignored.DiscordCode == 50007)
-            { }
+            catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            {
+                await Logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                    $"encountered a 403 when trying to message {user}!", e);
+            }
 
             return Ok($"Cleared all warnings for **{user}**.", _ => 
                 ModLogService.DoAsync(ModActionEventArgs.New

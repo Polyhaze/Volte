@@ -7,6 +7,9 @@
 
 A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
 
+
+## Thanks To
+ - [abyssal512](https://github.com/abyssal512) for letting me ~~steal your code~~ use your bot as a reference.
 ## Quick Links 
  
  - [Invite the bot](https://greemdev.net/Invite)
@@ -17,6 +20,6 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
 ## Bots made by Cool People
 
- * [abyssal512/Abyss](https://github.com/abyssal512/Abyss)
+ * [abyssal512/Abyss](https://github.com/abyssal512/Abyss) 
  * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
  

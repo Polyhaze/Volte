@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -26,8 +27,11 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (Discord.Net.HttpException ignored) when (ignored.DiscordCode == 50007)
-            { }
+            catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            {
+                await Logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                    $"encountered a 403 when trying to message {user}!", e);
+            }
 
             await user.BanAsync(daysToDelete, reason);
             return Ok($"Successfully banned **{user.Username}#{user.Discriminator}** from this guild.", _ =>

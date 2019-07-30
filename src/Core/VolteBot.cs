@@ -71,6 +71,7 @@ namespace Volte.Core
             }
         }
 
+        // ReSharper disable SuggestBaseTypeForParameter
         private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts,
             ServiceProvider provider)
         {
