@@ -1,6 +1,6 @@
 ﻿namespace Volte
 {
-    public static class Version
+    public struct Version
     {
         private static uint Major => 3;
         private static uint Minor => 0;
