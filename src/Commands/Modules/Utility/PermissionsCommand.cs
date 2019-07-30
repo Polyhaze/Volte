@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -17,7 +15,7 @@ namespace Volte.Commands.Modules
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]
         [Remarks("Usage: |prefix|permissions [user]")]
-        public async Task<ActionResult> PermissionsAsync(SocketGuildUser user = null)
+        public Task<ActionResult> PermissionsAsync(SocketGuildUser user = null)
         {
             user ??= Context.User; // Get the user (or the invoker, if none specified)
 
@@ -33,23 +31,32 @@ namespace Volte.Commands.Modules
             }
 
 
+            var perms = GetPermissions(user);
+
+            var allowed = perms.Allowed.Select(a => $"- {a.Name}").Join('\n');
+            var disallowed = perms.Disallowed.Select(a => $"- {a.Name}").Join('\n');
+            return Ok(Context.CreateEmbedBuilder().WithAuthor(user)
+                .AddField("Allowed", string.IsNullOrEmpty(allowed) ? "- None" : allowed, true)
+                .AddField("Denied", string.IsNullOrEmpty(disallowed) ? "- None" : disallowed, true));
+        }
+
+        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
+            SocketGuildUser user)
+        {
             var booleanTypeProperties = user.GuildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.IsAssignableFrom(typeof(bool)))
                 .ToList();
 
             var propDict = booleanTypeProperties.Select(a => (a.Name.Humanize(), a.GetValue(user.GuildPermissions).Cast<bool>()))
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
-                .ToList(); 
+                .ToList();
 
             var accept =
                 propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1);
             var deny = propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2);
 
-            var allowString = accept.Select(a => $"- {a.Item1}").Join('\n');
-            var denyString = deny.Select(a => $"- {a.Item1}").Join('\n');
-            return Ok(Context.CreateEmbedBuilder().WithAuthor(user)
-                .AddField("Allowed", string.IsNullOrEmpty(allowString) ? "- None" : allowString, true)
-                .AddField("Denied", string.Join("\n", string.IsNullOrEmpty(denyString) ? "- None" : denyString), true));
+            return (accept, deny);
+
         }
     }
 }
