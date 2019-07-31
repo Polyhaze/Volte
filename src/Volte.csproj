@@ -23,11 +23,14 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Colorful.Console" Version="1.2.9" />
-        <PackageReference Include="Discord.Net" Version="2.2.0-dev-20190722.9" />
+        <PackageReference Include="Discord.Net.Core" Version="2.1.1" />
+        <PackageReference Include="Discord.Net.Rest" Version="2.1.1" />
+        <PackageReference Include="Discord.Net.WebSocket" Version="2.1.1" />
         <PackageReference Include="Gommon" Version="1.1.0" />
         <PackageReference Include="Humanizer.Core" Version="2.6.2" />
         <PackageReference Include="LiteDB" Version="4.1.4" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.3.0-beta1-final" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview7.19362.4" />
         <PackageReference Include="Qmmands" Version="2.3.0" />
         <PackageReference Include="RestSharp" Version="106.6.10" />
     </ItemGroup>

@@ -12,11 +12,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|createconfig [serverId]")]
         [RequireBotOwner]
         public Task<ActionResult> CreateConfigAsync(ulong serverId = 0)
-        {
-            if (serverId is 0) serverId = Context.Guild.Id;
-
-            Db.GetData(serverId);
-            return Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.");
-        }
+            => Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.", m =>
+            {
+                _ = Db.GetData(serverId is 0 ? Context.Guild.Id : serverId);
+                return Task.CompletedTask;
+            });
     }
 }
