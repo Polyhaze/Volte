@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -10,18 +10,12 @@ namespace Volte.Commands.Modules
     {
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
-        [Remarks("Usage: |prefix|forceleave {serverName}")]
+        [Remarks("Usage: |prefix|forceleave {guild}")]
         [RequireBotOwner]
-        public async Task<ActionResult> ForceLeaveAsync([Remainder] string serverName)
+        public async Task<ActionResult> ForceLeaveAsync([Remainder]IGuild guild)
         {
-            var target = Context.Client.Guilds.FirstOrDefault(g => g.Name == serverName);
-            if (target is null)
-            {
-                return BadRequest($"I'm not in the guild **{serverName}**.");
-            }
-
-            await target.LeaveAsync();
-            return Ok($"Successfully left **{target.Name}**");
+            await guild.LeaveAsync();
+            return Ok($"Successfully left **{guild.Name}**.");
         }
     }
 }

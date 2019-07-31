@@ -11,14 +11,14 @@ namespace Volte.Commands.Results
 
         private readonly Func<Task> _after;
 
-        public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        public override Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (_after is null)
             {
                 return new ResultCompletionData();
             }
 
-            await _after();
+            _ = _after();
             return new ResultCompletionData();
         }
     }

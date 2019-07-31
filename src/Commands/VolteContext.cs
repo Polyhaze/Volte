@@ -13,6 +13,7 @@ namespace Volte.Commands
     {
         private readonly EmojiService _emojiService;
 
+        // ReSharper disable once SuggestBaseTypeForParameter
         public VolteContext(DiscordShardedClient client, SocketUserMessage msg, ServiceProvider provider)
         {
             provider.Get(out _emojiService);

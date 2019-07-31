@@ -17,7 +17,7 @@ namespace Volte.Commands.TypeParsers
             IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
-            var guild = default(SocketGuild);
+            IGuild guild = default;
 
             var guilds = ctx.Client.Guilds;
 
@@ -30,7 +30,7 @@ namespace Volte.Commands.TypeParsers
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
                     return Task.FromResult(TypeParserResult<IGuild>.Unsuccessful(
-                        "Multiple guilds found, try or using its ID."));
+                        "Multiple guilds found, try using its ID."));
 
                 guild = match.FirstOrDefault();
             }

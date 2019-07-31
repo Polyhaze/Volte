@@ -24,7 +24,6 @@ namespace Volte.Commands.Modules
             {
                 return Ok("User is owner of server, and has all permissions");
             }
-
             if (user.GuildPermissions.Administrator)
             {
                 return Ok("User has Administrator permission, and has all permissions");

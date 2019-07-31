@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
-using Gommon;
 
 namespace Volte.Commands.Results
 {
