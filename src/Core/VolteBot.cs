@@ -22,7 +22,8 @@ namespace Volte.Core
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
-        private VolteBot() { }
+        private VolteBot()
+        { }
 
         private async Task LoginAsync()
         {
@@ -37,15 +38,18 @@ namespace Volte.Core
 
             if (!Config.CreateIfNotExists())
             {
-                await Console.Out.WriteLineAsync("Please fill in the config.json located in \"data/config.json\"; restart me when you've done so.");
+                await Console.Out.WriteLineAsync(
+                    "Please fill in the config.json located in \"data/config.json\"; restart me when you've done so.");
                 return;
             }
+
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
 
-            var rest = new DiscordRestClient();
+            using var rest = new DiscordRestClient();
+
             await rest.LoginAsync(TokenType.Bot, Config.Token);
             var shardCount = await rest.GetRecommendedShardCountAsync();
-            await rest.LogoutAsync().ContinueWith(_ => rest.Dispose());
+            await rest.LogoutAsync();
 
             BuildServiceProvider(shardCount, out var provider);
 
@@ -66,7 +70,8 @@ namespace Volte.Core
             catch (TaskCanceledException)
             {
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
-                await logger.LogAsync(LogSeverity.Critical, LogSource.Volte, "Bot shutdown requested by the bot owner; shutting down.")
+                await logger.LogAsync(LogSeverity.Critical, LogSource.Volte,
+                        "Bot shutdown requested by the bot owner; shutting down.")
                     .ContinueWith(_ => ShutdownAsync(client, cts, provider));
             }
         }
