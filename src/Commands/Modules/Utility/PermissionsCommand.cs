@@ -42,19 +42,13 @@ namespace Volte.Commands.Modules
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
             SocketGuildUser user)
         {
-            var booleanTypeProperties = user.GuildPermissions.GetType().GetProperties()
+            var propDict = user.GuildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.IsAssignableFrom(typeof(bool)))
-                .ToList();
-
-            var propDict = booleanTypeProperties.Select(a => (a.Name.Humanize(), a.GetValue(user.GuildPermissions).Cast<bool>()))
+                .Select(a => (a.Name.Humanize(), a.GetValue(user.GuildPermissions).Cast<bool>()))
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
-                .ToList();
+                .ToList(); //holy reflection
 
-            var accept =
-                propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1);
-            var deny = propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2);
-
-            return (accept, deny);
+            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1), propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
 
         }
     }
