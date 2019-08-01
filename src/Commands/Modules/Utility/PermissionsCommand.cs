@@ -30,13 +30,13 @@ namespace Volte.Commands.Modules
             }
 
 
-            var perms = GetPermissions(user);
+            var (allowed, disallowed) = GetPermissions(user);
 
-            var allowed = perms.Allowed.Select(a => $"- {a.Name}").Join('\n');
-            var disallowed = perms.Disallowed.Select(a => $"- {a.Name}").Join('\n');
+            var allowedString = allowed.Select(a => $"- {a.Name}").Join('\n');
+            var disallowedString = disallowed.Select(a => $"- {a.Name}").Join('\n');
             return Ok(Context.CreateEmbedBuilder().WithAuthor(user)
-                .AddField("Allowed", string.IsNullOrEmpty(allowed) ? "- None" : allowed, true)
-                .AddField("Denied", string.IsNullOrEmpty(disallowed) ? "- None" : disallowed, true));
+                .AddField("Allowed", allowedString.IsNullOrEmpty() ? "- None" : allowedString, true)
+                .AddField("Denied", disallowedString.IsNullOrEmpty() ? "- None" : disallowedString, true));
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(

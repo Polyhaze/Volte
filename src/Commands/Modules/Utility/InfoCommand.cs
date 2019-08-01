@@ -55,6 +55,7 @@ namespace Volte.Commands.Modules
                     };
                     process.Start();
                     version = process.StandardOutput.ReadToEnd();
+                    process.Dispose();
                     return true;
                 }
 
@@ -74,6 +75,7 @@ namespace Volte.Commands.Modules
                     };
                     process.Start();
                     version = process.StandardOutput.ReadToEnd();
+                    process.Dispose();
                     return true;
 
                 default:
