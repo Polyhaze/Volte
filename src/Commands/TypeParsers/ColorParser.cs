@@ -7,6 +7,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
+    [VolteTypeParser]
     public sealed class ColorParser : TypeParser<Color>
     {
         public override Task<TypeParserResult<Color>> ParseAsync(

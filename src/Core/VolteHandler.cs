@@ -29,8 +29,13 @@ namespace Volte.Core
 
         public async Task InitializeAsync(ServiceProvider provider)
         {
-            await _service.AddTypeParsersAsync();
             var sw = Stopwatch.StartNew();
+            var l = await _service.AddTypeParsersAsync();
+            sw.Stop();
+            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.Name.Replace("Parser", string.Empty)).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
+            sw.Reset();
+            sw.Start();
+
             var loaded = _service.AddModules(Assembly.GetAssembly(GetType()));
             sw.Stop();
             await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,

@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
 using Volte.Services;
+using Module = Qmmands.Module;
 
 namespace Gommon
 {
@@ -23,21 +26,25 @@ namespace Gommon
                 .Replace("Usage: ", string.Empty);
         }
 
-        internal static Task AddTypeParsersAsync(this CommandService service)
+        internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
-            service.AddTypeParser(new UserParser<SocketGuildUser>());
-            service.AddTypeParser(new UserParser<IUser>());
-            service.AddTypeParser(new UserParser<IGuildUser>());
-            service.AddTypeParser(new UserParser<SocketUser>());
-            service.AddTypeParser(new RoleParser<SocketRole>());
-            service.AddTypeParser(new RoleParser<IRole>());
-            service.AddTypeParser(new ChannelParser<SocketTextChannel>());
-            service.AddTypeParser(new ChannelParser<ITextChannel>());
-            service.AddTypeParser(new ColorParser());
-            service.AddTypeParser(new EmoteParser());
-            service.AddTypeParser(new GuildParser());
-            service.AddTypeParser(new BooleanParser(), true);
-            return Task.CompletedTask;
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var addTypeParserMethod = typeof(CommandService).GetMethod("AddTypeParser");
+
+            var loadedTypes = new List<Type>();
+
+            foreach (var type in currentAssembly.ExportedTypes)
+            {
+                if (!(type.GetCustomAttributes().FirstOrDefault(a => a is VolteTypeParserAttribute) is VolteTypeParserAttribute attr)) continue;
+
+                var parser = type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                var method = addTypeParserMethod?.MakeGenericMethod(type.BaseType?.GenericTypeArguments[0]);
+                method?.Invoke(service, new [] { parser, attr.OverridePrimitive });
+                loadedTypes.Add(type);
+            }
+
+
+            return Task.FromResult(loadedTypes);
         }
     }
 }

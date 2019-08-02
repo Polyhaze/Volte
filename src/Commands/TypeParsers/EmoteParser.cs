@@ -6,6 +6,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
+    [VolteTypeParser]
     public sealed class EmoteParser : TypeParser<IEmote>
     {
         public override Task<TypeParserResult<IEmote>> ParseAsync(

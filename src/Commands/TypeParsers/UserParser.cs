@@ -2,23 +2,25 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    public sealed class UserParser<TUser> : TypeParser<TUser> where TUser : IUser
+    [VolteTypeParser]
+    public sealed class UserParser : TypeParser<SocketGuildUser>
     {
-        public override Task<TypeParserResult<TUser>> ParseAsync(
+        public override Task<TypeParserResult<SocketGuildUser>> ParseAsync(
             Parameter param,
             string value,
             ICommandContext context,
             IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
-            var users = ctx.Guild.Users.OfType<TUser>().ToList();
+            var users = ctx.Guild.Users.ToList();
 
-            TUser user = default;
+            SocketGuildUser user = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = users.FirstOrDefault(x => x.Id == id);
@@ -31,15 +33,15 @@ namespace Volte.Commands.TypeParsers
                     x.Username.EqualsIgnoreCase(value)
                     || x.Cast<IGuildUser>().Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<TUser>.Unsuccessful(
+                    return Task.FromResult(TypeParserResult<SocketGuildUser>.Unsuccessful(
                         "Multiple users found, try mentioning the user or using their ID."));
 
                 user = match.FirstOrDefault();
             }
 
             return Task.FromResult(user is null
-                ? TypeParserResult<TUser>.Unsuccessful("User not found.")
-                : TypeParserResult<TUser>.Successful(user));
+                ? TypeParserResult<SocketGuildUser>.Unsuccessful("User not found.")
+                : TypeParserResult<SocketGuildUser>.Successful(user));
         }
     }
 }
