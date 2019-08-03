@@ -22,7 +22,7 @@ namespace Volte.Services
             if (args.Data.Configuration.Moderation.MassPingChecks &&
                 !args.Context.User.IsAdmin(args.Context.ServiceProvider))
             {
-                await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                _logger.Log(LogSeverity.Debug, LogSource.Service,
                     "Received a message to check for ping threshold violations.");
                 var content = args.Message.Content;
                 if (content.ContainsIgnoreCase("@everyone") ||
@@ -30,7 +30,7 @@ namespace Volte.Services
                     args.Message.MentionedUsers.Count > 10)
                 {
                     await args.Message.DeleteAsync();
-                    await _logger.LogAsync(LogSeverity.Debug, LogSource.Service,
+                    _logger.Log(LogSeverity.Debug, LogSource.Service,
                         "Deleted a message for violating the ping threshold.");
                 }
             }

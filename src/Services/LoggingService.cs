@@ -13,53 +13,60 @@ namespace Volte.Services
 {
     public sealed class LoggingService : VolteEventService
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly object _lock = new object();
 
-        public override Task DoAsync(EventArgs args) 
-            => LogAsync(args.Cast<LogEventArgs>());
+        public override Task DoAsync(EventArgs args)
+        {
+            Log(args.Cast<LogEventArgs>());
+            return Task.CompletedTask;
+        }
 
-        internal Task LogAsync(LogEventArgs args) =>
-            LogAsync(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
+        internal void Log(LogEventArgs args) =>
+            Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
 
-        internal Task PrintVersionAsync() => LogAsync(LogSeverity.Info, LogSource.Volte,
+        internal void PrintVersion() => Log(LogSeverity.Info, LogSource.Volte,
             $"Currently running Volte V{Version.FullVersion}.");
 
-        public async Task LogAsync(LogSeverity s, LogSource src, string message, Exception e = null)
+        public void Log(LogSeverity s, LogSource src, string message, Exception e = null)
         {
-            if (s is LogSeverity.Debug)
+            lock (_lock)
             {
-                if (src is LogSource.Discord || src is LogSource.Gateway) { }
+                if (s is LogSeverity.Debug)
+                {
+                    if (src is LogSource.Discord || src is LogSource.Gateway) { }
 
-                if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
+                    if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
+                }
+
+                DoLogAsync(s, src, message, e);
             }
-
-            await _semaphore.WaitAsync();
-            await DoLogAsync(s, src, message, e);
-            _ = _semaphore.Release();
         }
 
-        private async Task DoLogAsync(LogSeverity s, LogSource src, string message, Exception e)
+        public void LogException(Exception e)
+            => Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+
+        private void DoLogAsync(LogSeverity s, LogSource src, string message, Exception e)
         {
             var (color, value) = VerifySeverity(s);
-            await AppendAsync($"{value} -> ", color);
+            Append($"{value} -> ", color);
 
             (color, value) = VerifySource(src);
-            await AppendAsync($"{value} -> ", color);
+            Append($"{value} -> ", color);
 
             if (!message.IsNullOrWhitespace())
-                await AppendAsync(message, Color.White);
+                Append(message, Color.White);
 
             if (e != null)
-                await AppendAsync($"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}", Color.IndianRed);
+                Append($"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}", Color.IndianRed);
 
-            await Console.Out.WriteAsync(Environment.NewLine);
+            Console.Write(Environment.NewLine);
         }
 
-        private async Task AppendAsync(string m, Color c)
+        private void Append(string m, Color c)
         {
             Console.ForegroundColor = c;
-            await Console.Out.WriteAsync(m);
+            Console.Write(m);
         }
 
         private (Color Color, string Source) VerifySource(LogSource source) =>

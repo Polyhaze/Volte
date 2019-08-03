@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -51,20 +52,25 @@ namespace Volte.Services
                 try
                 {
                     var sw = Stopwatch.StartNew();
-                    var res = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
+                    var result = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
                     sw.Stop();
-                    if (res is null)
+                    if (result is null)
                     {
                         await msg.DeleteAsync();
                         await ctx.ReactSuccessAsync();
                     }
                     else
                     {
+                        var res = result switch
+                            {
+                            IEnumerable enumerable => enumerable.Cast<object>().Select(x => x.ToString()).Join(", "),
+                            _ => result.ToString()
+                            };
                         await msg.ModifyAsync(m =>
                             m.Embed = embed.WithTitle("Eval")
                                 .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms", true)
-                                .AddField("Return Type", res.GetType().FullName, true)
-                                .AddField("Output", Format.Code(res.ToString(), "css")).Build());
+                                .AddField("Return Type", result.GetType().FullName, true)
+                                .AddField("Output", Format.Code(res, "css")).Build());
                     }
                 }
                 catch (Exception e)
@@ -80,7 +86,7 @@ namespace Volte.Services
             }
             catch (Exception e)
             {
-                await _logger.LogAsync(LogSeverity.Error, LogSource.Module, string.Empty, e);
+                _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
             }
             finally
             {

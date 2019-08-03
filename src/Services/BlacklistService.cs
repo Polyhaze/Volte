@@ -19,13 +19,12 @@ namespace Volte.Services
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, "Checking a message for blacklisted words.");
+            _logger.Log(LogSeverity.Debug, LogSource.Volte, "Checking a message for blacklisted words.");
             foreach (var word in args.Data.Configuration.Moderation.Blacklist)
                 if (args.Message.Content.ContainsIgnoreCase(word))
                 {
                     await args.Message.DeleteAsync();
-                    await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
-                        $"Deleted a message for containing {word}.");
+                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Deleted a message for containing {word}.");
                     return;
                 }
         }

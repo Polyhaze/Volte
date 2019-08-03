@@ -31,13 +31,13 @@ namespace Volte.Services
                 var targetRole = args.Guild.Roles.FirstOrDefault(r => r.Id == data.Configuration.Autorole);
                 if (targetRole is null)
                 {
-                    await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                    _logger.Log(LogSeverity.Debug, LogSource.Volte,
                         $"Guild {args.Guild.Name}'s Autorole is set to an ID of a role that no longer exists.");
                     return;
                 }
 
                 await args.User.AddRoleAsync(targetRole);
-                await _logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                _logger.Log(LogSeverity.Debug, LogSource.Volte,
                     $"Applied role {targetRole.Name} to user {args.User} in guild {args.Guild.Name}.");
             }
         }

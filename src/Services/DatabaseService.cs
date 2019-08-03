@@ -26,7 +26,7 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            _ = _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, $"Getting data for guild {id}.");
+            _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Getting data for guild {id}.");
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
@@ -37,7 +37,7 @@ namespace Volte.Services
 
         public void UpdateData(GuildData newConfig)
         {
-            _ = _logger.LogAsync(LogSeverity.Debug, LogSource.Volte, $"Updating data for guild {newConfig.Id}");
+            _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Updating data for guild {newConfig.Id}");
             var collection = Database.GetCollection<GuildData>("guilds");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);

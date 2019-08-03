@@ -29,7 +29,7 @@ namespace Volte.Commands.Modules
             }
             catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
             {
-                await Logger.LogAsync(LogSeverity.Debug, LogSource.Volte,
+                Logger.Log(LogSeverity.Debug, LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!", e);
             }
 

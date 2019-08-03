@@ -32,13 +32,13 @@ namespace Volte.Core
             var sw = Stopwatch.StartNew();
             var l = await _service.AddTypeParsersAsync();
             sw.Stop();
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.Name.Replace("Parser", string.Empty)).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
+            _logger.Log(LogSeverity.Info, LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.SanitizeParserName()).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
             sw.Reset();
             sw.Start();
 
             var loaded = _service.AddModules(Assembly.GetAssembly(GetType()));
             sw.Stop();
-            await _logger.LogAsync(LogSeverity.Info, LogSource.Volte,
+            _logger.Log(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
             await _client.RegisterVolteEventHandlersAsync(provider);
         }
