@@ -31,11 +31,10 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
-
             if (message is null)
             {
                 return Ok(
-                    $"The current welcome message for this server is ```\n{data.Configuration.Welcome.WelcomeMessage}```");
+                    $"The current welcome message for this server is ```\n{Context.GuildData.Configuration.Welcome.WelcomeMessage}```");
             }
 
             Context.GuildData.Configuration.Welcome.WelcomeMessage = message;

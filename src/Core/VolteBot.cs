@@ -32,14 +32,13 @@ namespace Volte.Core
 
             if (!Directory.Exists("data"))
             {
-                await Console.Out.WriteLineAsync("The \"data\" directory didn't exist, so I created it for you.");
+                Console.WriteLine("The \"data\" directory didn't exist, so I created it for you.");
                 Directory.CreateDirectory("data");
             }
 
             if (!Config.CreateIfNotExists())
             {
-                await Console.Out.WriteLineAsync(
-                    "Please fill in the config.json located in \"data/config.json\"; restart me when you've done so.");
+                Console.WriteLine("Please fill in the config.json located in \"data/config.json\"; restart me when you've done so.");
                 return;
             }
 
