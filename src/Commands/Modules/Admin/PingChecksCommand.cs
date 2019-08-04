@@ -13,9 +13,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> PingChecksAsync(bool enabled)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Configuration.Moderation.MassPingChecks = enabled;
-            Db.UpdateData(data);
+            Context.GuildData.Configuration.Moderation.MassPingChecks = enabled;
+            Db.UpdateData(Context.GuildData);
             return Ok(enabled ? "MassPingChecks has been enabled." : "MassPingChecks has been disabled.");
         }
     }

@@ -18,8 +18,7 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
-            var data = Db.GetData(Context.Guild);
-            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
                 var user = Context.Client.GetUser(tag.CreatorId);
@@ -36,8 +35,8 @@ namespace Volte.Commands.Modules
                 Uses = 0
             };
 
-            data.Extras.Tags.Add(newTag);
-            Db.UpdateData(data);
+            Context.GuildData.Extras.Tags.Add(newTag);
+            Db.UpdateData(Context.GuildData);
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
@@ -52,15 +51,14 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|tagdelete {name}")]
         public Task<ActionResult> TagDeleteAsync([Remainder] string name)
         {
-            var data = Db.GetData(Context.Guild);
-            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag is null)
                 return BadRequest($"Cannot delete the tag **{name}**, as it doesn't exist.");
 
             var user = Context.Client.GetUser(tag.CreatorId);
 
-            data.Extras.Tags.Remove(tag);
-            Db.UpdateData(data);
+            Context.GuildData.Extras.Tags.Remove(tag);
+            Db.UpdateData(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
                       $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
                       $"{"use".ToQuantity(tag.Uses)}.");

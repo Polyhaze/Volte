@@ -14,14 +14,13 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|tag {name}")]
         public Task<ActionResult> TagAsync([Remainder] string name)
         {
-            var data = Db.GetData(Context.Guild);
-            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
                 return BadRequest($"The tag **{name}** doesn't exist in this guild.");
 
             tag.Uses += 1;
-            Db.UpdateData(data);
+            Db.UpdateData(Context.GuildData);
 
             return Ok(tag.SanitizeContent()
                 .Replace("{ServerName}", Context.Guild.Name)
@@ -37,8 +36,7 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|tagstats {name}")]
         public async Task<ActionResult> TagStatsAsync([Remainder] string name)
         {
-            var data = Db.GetData(Context.Guild);
-            var tag = data.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
+            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
 
             if (tag is null)
                 return BadRequest($"The tag **{name}** doesn't exist in this guild.");
@@ -57,11 +55,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|tags")]
         public Task<ActionResult> TagsAsync()
         {
-            var data = Db.GetData(Context.Guild);
             return Ok(Context.CreateEmbedBuilder(
-                data.Extras.Tags.Count == 0
+                Context.GuildData.Extras.Tags.Count == 0
                     ? "None"
-                    : $"`{data.Extras.Tags.Select(x => x.Name).Join("`, `")}`"
+                    : $"`{Context.GuildData.Extras.Tags.Select(x => x.Name).Join("`, `")}`"
             ).WithTitle($"Available Tags for {Context.Guild.Name}"));
         }
     }

@@ -30,8 +30,7 @@ namespace Volte.Services
 
             _logger.Log(LogSeverity.Debug, LogSource.Volte, "Attempting to post a modlog message.");
 
-            var data = _db.GetData(args.Guild);
-            var c = args.Guild.GetTextChannel(data.Configuration.Moderation.ModActionLogChannel);
+            var c = args.Guild.GetTextChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
             if (c is null)
             {
                 _logger.Log(LogSeverity.Debug, LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
@@ -67,11 +66,11 @@ namespace Volte.Services
 
                 case ModActionType.Kick:
                 {
-                    data.Extras.ModActionCaseNumber += 1;
-                    _db.UpdateData(data);
+                    args.Context.GuildData.Extras.ModActionCaseNumber += 1;
+                    _db.UpdateData(args.Context.GuildData);
                     await e.WithDescription($"**Action:** {args.ActionType}\n" +
                                             $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {data.Extras.ModActionCaseNumber}\n" +
+                                            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}\n" +
                                             $"**User:** {args.TargetUser} ({args.TargetId})\n" +
                                             $"**Reason:** {args.Reason}\n" +
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
@@ -82,11 +81,11 @@ namespace Volte.Services
 
                 case ModActionType.Warn:
                 {
-                    data.Extras.ModActionCaseNumber += 1;
-                    _db.UpdateData(data);
+                    args.Context.GuildData.Extras.ModActionCaseNumber += 1;
+                    _db.UpdateData(args.Context.GuildData);
                     await e.WithDescription($"**Action:** {args.ActionType}\n" +
                                             $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {data.Extras.ModActionCaseNumber}\n" +
+                                            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}\n" +
                                             $"**User:** {args.TargetUser} ({args.TargetId})\n" +
                                             $"**Reason:** {args.Reason}\n" +
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
@@ -108,11 +107,11 @@ namespace Volte.Services
 
                 case ModActionType.Softban:
                 {
-                    data.Extras.ModActionCaseNumber += 1;
-                    _db.UpdateData(data);
+                    args.Context.GuildData.Extras.ModActionCaseNumber += 1;
+                    _db.UpdateData(args.Context.GuildData);
                     await e.WithDescription($"**Action:** {args.ActionType}\n" +
                                             $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {data.Extras.ModActionCaseNumber}\n" +
+                                            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}\n" +
                                             $"**User:** {args.TargetUser} ({args.TargetId})\n" +
                                             $"**Reason:** {args.Reason}\n" +
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
@@ -123,11 +122,11 @@ namespace Volte.Services
 
                 case ModActionType.Ban:
                 {
-                    data.Extras.ModActionCaseNumber += 1;
-                    _db.UpdateData(data);
+                    args.Context.GuildData.Extras.ModActionCaseNumber += 1;
+                    _db.UpdateData(args.Context.GuildData);
                     await e.WithDescription($"**Action:** {args.ActionType}\n" +
                                             $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {data.Extras.ModActionCaseNumber}\n" +
+                                            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}\n" +
                                             $"**User:** {args.TargetUser} ({args.TargetId})\n" +
                                             $"**Reason:** {args.Reason}\n" +
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
@@ -138,11 +137,11 @@ namespace Volte.Services
 
                 case ModActionType.IdBan:
                 {
-                    data.Extras.ModActionCaseNumber += 1;
-                    _db.UpdateData(data);
+                    args.Context.GuildData.Extras.ModActionCaseNumber += 1;
+                    _db.UpdateData(args.Context.GuildData);
                     await e.WithDescription($"**Action:** {args.ActionType}\n" +
                                             $"**Moderator:** {args.Moderator} ({args.Moderator.Id})\n" +
-                                            $"**Case:** {data.Extras.ModActionCaseNumber}\n" +
+                                            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}\n" +
                                             $"**User:** {args.TargetId}\n" +
                                             $"**Reason:** {args.Reason}\n" +
                                             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")

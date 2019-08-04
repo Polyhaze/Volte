@@ -2,6 +2,6 @@
 {
     public abstract class VolteService
     {
-        //used for things that aren't eventargs-based
+        //used for things that aren't single-eventargs-based, like WelcomeService
     }
 }

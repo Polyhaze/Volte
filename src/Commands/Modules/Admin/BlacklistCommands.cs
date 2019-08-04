@@ -43,10 +43,9 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistClearAsync()
         {
-            var data = Db.GetData(Context.Guild);
-            var count = data.Configuration.Moderation.Blacklist.Count;
-            data.Configuration.Moderation.Blacklist.Clear();
-            Db.UpdateData(data);
+            var count = Context.GuildData.Configuration.Moderation.Blacklist.Count;
+            Context.GuildData.Configuration.Moderation.Blacklist.Clear();
+            Db.UpdateData(Context.GuildData);
             return Ok(
                 $"Cleared the this guild's blacklist, containing **{count}** words.");
         }

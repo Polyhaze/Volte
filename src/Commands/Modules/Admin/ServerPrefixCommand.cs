@@ -13,9 +13,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> ServerPrefixAsync([Remainder] string newPrefix)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Configuration.CommandPrefix = newPrefix;
-            Db.UpdateData(data);
+            Context.GuildData.Configuration.CommandPrefix = newPrefix;
+            Db.UpdateData(Context.GuildData);
             return Ok($"Set this server's prefix to **{newPrefix}**.");
         }
     }

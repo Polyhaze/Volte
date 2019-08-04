@@ -13,9 +13,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> DeleteMessageOnCommandAsync(bool enabled)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Configuration.DeleteMessageOnCommand = enabled;
-            Db.UpdateData(data);
+            Context.GuildData.Configuration.DeleteMessageOnCommand = enabled;
+            Db.UpdateData(Context.GuildData);
             return Ok(enabled
                 ? "Enabled DeleteMessageOnCommand in this server."
                 : "Disabled DeleteMessageOnCommand in this server.");

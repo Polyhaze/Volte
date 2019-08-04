@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Gommon;
+using Volte.Core.Models.Guild;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -17,12 +18,14 @@ namespace Volte.Commands
         public VolteContext(DiscordShardedClient client, SocketUserMessage msg, ServiceProvider provider)
         {
             provider.Get(out _emojiService);
+            provider.Get<DatabaseService>(out var db);
             Client = client;
             ServiceProvider = provider;
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
+            GuildData = db.GetData(Guild);
         }
 
         public DiscordShardedClient Client { get; }
@@ -31,6 +34,8 @@ namespace Volte.Commands
         public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }
+
+        public GuildData GuildData { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 

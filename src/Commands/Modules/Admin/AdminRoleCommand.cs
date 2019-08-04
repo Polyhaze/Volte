@@ -14,9 +14,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> AdminRoleAsync([Remainder] SocketRole role)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Configuration.Moderation.AdminRole = role.Id;
-            Db.UpdateData(data);
+            Context.GuildData.Configuration.Moderation.AdminRole = role.Id;
+            Db.UpdateData(Context.GuildData);
             return Ok($"Set **{role.Name}** as the Admin role for this server.");
         }
     }

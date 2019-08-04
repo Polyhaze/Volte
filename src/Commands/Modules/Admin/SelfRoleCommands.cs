@@ -16,12 +16,11 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleAddAsync([Remainder] SocketRole role)
         {
-            var data = Db.GetData(Context.Guild);
-            var target = data.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
+            var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
             if (target is null)
             {
-                data.Extras.SelfRoles.Add(role.Name);
-                Db.UpdateData(data);
+                Context.GuildData.Extras.SelfRoles.Add(role.Name);
+                Db.UpdateData(Context.GuildData);
                 return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
             }
 

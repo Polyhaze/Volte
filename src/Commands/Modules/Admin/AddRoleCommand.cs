@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
