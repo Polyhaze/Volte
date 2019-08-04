@@ -10,7 +10,7 @@ namespace Volte.Core
 {
     public sealed class Config
     {
-        private const string ConfigFile = "data/config.json";
+        public const string ConfigFile = "data/volte.json";
         private static BotConfig _configuration;
 
         private static readonly bool IsValidConfig =
@@ -31,7 +31,7 @@ namespace Volte.Core
                 Token = "token here",
                 CommandPrefix = "$",
                 Owner = 0,
-                Game = "in Volte V2 Code!",
+                Game = "in Volte V3 Code!",
                 Streamer = "streamer here",
                 EnableDebugLogging = false,
                 SuccessEmbedColor = 0x7000FB,
