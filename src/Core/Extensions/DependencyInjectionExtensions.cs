@@ -58,7 +58,7 @@ namespace Gommon
             return coll;
         }
 
-        public static void Get<T>(this ServiceProvider provider, out T service) 
+        public static void Get<T>(this IServiceProvider provider, out T service) 
             => service = provider.GetRequiredService<T>();
     }
 }

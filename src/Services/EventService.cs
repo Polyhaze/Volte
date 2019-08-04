@@ -170,7 +170,7 @@ namespace Volte.Services
                 if (!(data is null))
                 {
                     _logger.Log(LogSeverity.Info, LogSource.Module,
-                        $"|              -Result Message: {data.Message.Id}");
+                        $"|              -Result Message: {data?.Message?.Id}");
                 }
 
                 _logger.Log(LogSeverity.Info, LogSource.Module,

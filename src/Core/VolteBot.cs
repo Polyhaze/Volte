@@ -42,6 +42,8 @@ namespace Volte.Core
                 return;
             }
 
+            Config.Load();
+
             if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
 
             using var rest = new DiscordRestClient();

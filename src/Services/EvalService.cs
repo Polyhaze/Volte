@@ -63,6 +63,7 @@ namespace Volte.Services
                     {
                         var res = result switch
                             {
+                            string str => str,
                             IEnumerable enumerable => enumerable.Cast<object>().Select(x => x.ToString()).Join(", "),
                             _ => result.ToString()
                             };

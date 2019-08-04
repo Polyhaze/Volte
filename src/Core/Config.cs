@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Gommon;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Volte.Core.Models.BotConfig;
+using Volte.Services;
 
 namespace Volte.Core
 {
@@ -15,13 +17,6 @@ namespace Volte.Core
 
         private static readonly bool IsValidConfig =
             File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
-
-        static Config()
-        {
-            CreateIfNotExists();
-            if (IsValidConfig)
-                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
-        }
 
         public static bool CreateIfNotExists()
         {
@@ -50,6 +45,28 @@ namespace Volte.Core
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        public static void Load()
+        {
+            CreateIfNotExists();
+            if (IsValidConfig)
+                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
+        }
+
+        public static bool Reload(IServiceProvider provider)
+        {
+            provider.Get<LoggingService>(out var logger);
+            try
+            {
+                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
+                return true;
+            }
+            catch (JsonException e)
+            {
+                logger.LogException(e);
                 return false;
             }
         }
