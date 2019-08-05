@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -36,14 +35,11 @@ namespace Volte.Commands.Modules
             await user.BanAsync(daysToDelete, reason);
             return Ok($"Successfully banned **{user}** from this guild.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Ban)
-                    .WithTargetUser(user)
-                    .WithReason(reason)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild))
-            );
+                    .WithTarget(user)
+                    .WithReason(reason))
+                );
         }
     }
 }

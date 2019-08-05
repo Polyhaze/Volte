@@ -21,9 +21,7 @@ namespace Volte.Commands.Modules
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
             if (target is null)
-            {
                 return BadRequest("That message doesn't exist in this channel.");
-            }
 
             await target.DeleteAsync(new RequestOptions
             {
@@ -39,12 +37,10 @@ namespace Volte.Commands.Modules
                 });
 
                 await ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Delete)
-                    .WithTargetId(messageId)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild));
+                    .WithTarget(messageId)
+                );
             });
         }
     }

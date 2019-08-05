@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Volte.Core
             sw.Reset();
             sw.Start();
 
-            var loaded = _service.AddModules(Assembly.GetAssembly(GetType()));
+            var loaded = _service.AddModules(GetType().Assembly);
             sw.Stop();
             _logger.Log(LogSeverity.Info, LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");

@@ -42,13 +42,13 @@ namespace Volte.Core.Models.EventArgs
             return this;
         }
 
-        public ModActionEventArgs WithTargetId(ulong? id)
+        public ModActionEventArgs WithTarget(ulong? id)
         {
             TargetId = id;
             return this;
         }
 
-        public ModActionEventArgs WithTargetUser(SocketUser user)
+        public ModActionEventArgs WithTarget(SocketUser user)
         {
             TargetUser = user;
             return this;
@@ -69,6 +69,17 @@ namespace Volte.Core.Models.EventArgs
         public ModActionEventArgs WithGuild(SocketGuild guild)
         {
             Guild = guild;
+            return this;
+        }
+
+        public ModActionEventArgs WithDefaultsFromContext(VolteContext ctx)
+        {
+            WithContext(ctx)
+                .WithTime(DateTimeOffset.UtcNow)
+                .WithGuild(ctx.Guild)
+                .WithModerator(ctx.User);
+
+
             return this;
         }
     }

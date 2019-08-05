@@ -38,12 +38,10 @@ namespace Volte.Commands.Modules
 
             return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
-                    .WithTargetUser(user)
-                    .WithReason(reason)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild)));
+                    .WithDefaultsFromContext(Context)
+                    .WithTarget(user)
+                    .WithReason(reason))
+                );
         }
     }
 }

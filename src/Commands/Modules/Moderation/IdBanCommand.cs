@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
@@ -6,7 +5,6 @@ using Volte.Commands.Checks;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -23,13 +21,10 @@ namespace Volte.Commands.Modules
             await Context.Guild.AddBanAsync(user, 0, reason);
             return Ok("Successfully banned that user from this guild.", _ => 
                 ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.IdBan)
-                    .WithTargetId(user)
-                    .WithReason(reason)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild))
+                    .WithTarget(user)
+                    .WithReason(reason))
             );
         }
     }

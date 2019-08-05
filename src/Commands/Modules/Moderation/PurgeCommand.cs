@@ -37,12 +37,9 @@ namespace Volte.Commands.Modules
             {
                 _ = Executor.ExecuteAfterDelayAsync(3000, async () => await m.DeleteAsync());
                 return ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Purge)
-                    .WithCount(count)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild));
+                    .WithCount(count));
             });
         }
     }

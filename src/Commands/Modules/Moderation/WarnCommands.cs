@@ -46,13 +46,10 @@ namespace Volte.Commands.Modules
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
                 _ => ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Warn)
-                    .WithTargetUser(user)
-                    .WithReason(reason)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild))
+                    .WithTarget(user)
+                    .WithReason(reason))
             );
         }
 
@@ -62,8 +59,8 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
-            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10).ToList();
-            return Ok("Showing the last 10 warnings, or less if the user doesn't have 10 yet." +
+            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10);
+            return Ok("Showing the last 10 warnings, or less if the user doesn't have 10 yet, or none if the user's record is clean." +
                       "\n" +
                       "\n" +
                       $"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}");
@@ -91,14 +88,12 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!", e);
             }
 
-            return Ok($"Cleared all warnings for **{user}**.", _ => 
+            return Ok($"Cleared all warnings for **{user}**.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithContext(Context)
+                    .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.ClearWarns)
-                    .WithTargetUser(user)
-                    .WithModerator(Context.User)
-                    .WithTime(DateTimeOffset.UtcNow)
-                    .WithGuild(Context.Guild)));
+                    .WithTarget(user))
+            );
         }
     }
 }
