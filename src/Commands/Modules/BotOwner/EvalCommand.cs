@@ -6,7 +6,7 @@ using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
-    public partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule : VolteModule
     {
         public EvalService Eval { get; set; }
 

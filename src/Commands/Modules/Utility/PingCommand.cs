@@ -6,7 +6,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Ping")]
         [Description("Show the Gateway latency to Discord.")]

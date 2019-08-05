@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class HelpModule : VolteModule
+    public sealed class HelpModule : VolteModule
     {
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]

@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("ServerInfo", "Si")]
         [Description("Shows some info about the current guild.")]

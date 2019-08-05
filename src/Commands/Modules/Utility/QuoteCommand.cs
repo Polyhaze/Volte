@@ -8,7 +8,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]

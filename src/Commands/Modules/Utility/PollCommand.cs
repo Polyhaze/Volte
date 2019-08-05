@@ -5,7 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Poll")]
         [Description("Create a poll.")]

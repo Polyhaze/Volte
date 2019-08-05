@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("Autorole")]
         [Description("Sets the role to be used for Autorole.")]

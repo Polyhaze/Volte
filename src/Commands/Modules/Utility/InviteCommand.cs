@@ -5,7 +5,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Invite")]
         [Description("Get an invite to use Volte in your own guild.")]

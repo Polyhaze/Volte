@@ -7,7 +7,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]

@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("UserInfo", "UI")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]

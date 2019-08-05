@@ -9,7 +9,7 @@ using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         public WelcomeService WelcomeService { get; set; }
 

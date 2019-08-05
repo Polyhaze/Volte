@@ -8,7 +8,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]

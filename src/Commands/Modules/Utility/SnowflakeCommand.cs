@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Snowflake")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]

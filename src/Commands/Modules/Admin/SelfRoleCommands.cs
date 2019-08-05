@@ -8,7 +8,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("SelfRoleAdd", "SrA", "SrAdd")]
         [Description("Adds a role to the list of self roles for this guild.")]

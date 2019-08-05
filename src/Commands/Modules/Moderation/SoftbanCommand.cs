@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using Discord;
@@ -12,7 +11,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule : VolteModule
     {
         [Command("Softban")]
         [Description("Softbans the mentioned user, kicking them and deleting the last 7 days of messages.")]

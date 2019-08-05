@@ -10,7 +10,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]

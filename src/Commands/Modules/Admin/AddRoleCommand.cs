@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("AddRole", "Ar")]
         [Description("Grants a role to the mentioned user.")]

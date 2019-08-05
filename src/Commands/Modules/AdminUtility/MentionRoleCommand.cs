@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminUtilityModule : VolteModule
+    public sealed partial class AdminUtilityModule : VolteModule
     {
         [Command("MentionRole", "Menro", "Mr")]
         [Description(

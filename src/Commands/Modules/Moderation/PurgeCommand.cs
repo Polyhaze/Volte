@@ -13,7 +13,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule : VolteModule
     {
         [Command("Purge", "clear", "clean")]
         [Description("Purges the last x messages, or the last x messages by a given user.")]

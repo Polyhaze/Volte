@@ -5,7 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("PingChecks")]
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]

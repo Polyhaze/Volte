@@ -9,13 +9,13 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class ModerationModule : VolteModule
     {
         [Command("TagCreate", "TagAdd", "TagNew")]
         [Priority(1)]
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("Usage: |prefix|tagcreate {name} {response}")]
-        [RequireGuildAdmin]
+        [RequireGuildModerator]
         public Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -49,6 +49,7 @@ namespace Volte.Commands.Modules
         [Priority(1)]
         [Description("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tagdelete {name}")]
+        [RequireGuildModerator]
         public Task<ActionResult> TagDeleteAsync([Remainder] string name)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));

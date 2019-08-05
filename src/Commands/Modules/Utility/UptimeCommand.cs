@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Uptime")]
         [Description("Shows the bot's uptime in a human-friendly fashion.")]

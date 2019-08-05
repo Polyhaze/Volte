@@ -5,7 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("ServerPrefix")]
         [Description("Sets the command prefix for this guild.")]

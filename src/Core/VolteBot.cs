@@ -34,6 +34,7 @@ namespace Volte.Core
             {
                 Console.WriteLine("The \"data\" directory didn't exist, so I created it for you.");
                 Directory.CreateDirectory("data");
+                //99.9999999999% of the time the config also won't exist if this block is reached
             }
 
             if (!Config.CreateIfNotExists())

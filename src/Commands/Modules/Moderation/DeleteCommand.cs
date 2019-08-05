@@ -10,7 +10,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule : VolteModule
     {
         [Command("Delete")]
         [Description("Deletes a message by its ID. Creates an audit log entry for abuse prevention.")]

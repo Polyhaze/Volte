@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule : VolteModule
     {
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]

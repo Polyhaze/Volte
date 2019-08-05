@@ -5,7 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current server.")]

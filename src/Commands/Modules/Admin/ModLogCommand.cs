@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule
+    public sealed partial class AdminModule : VolteModule
     {
         [Command("ModLog")]
         [Description("Sets the channel to be used for mod log.")]

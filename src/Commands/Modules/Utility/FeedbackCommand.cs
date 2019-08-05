@@ -5,7 +5,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule : VolteModule
     {
         [Command("Feedback", "Fb")]
         [Description("Submit feedback directly to the Volte guild.")]
