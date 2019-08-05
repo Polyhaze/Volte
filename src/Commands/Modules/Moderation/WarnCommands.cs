@@ -23,15 +23,14 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> WarnAsync(SocketGuildUser user, [Remainder] string reason)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Extras.Warns.Add(new Warn
+            Context.GuildData.Extras.Warns.Add(new Warn
             {
                 User = user.Id,
                 Reason = reason,
                 Issuer = Context.User.Id,
                 Date = DateTimeOffset.UtcNow
             });
-            Db.UpdateData(data);
+            Db.UpdateData(Context.GuildData);
 
             try
             {
@@ -72,10 +71,9 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {
-            var data = Db.GetData(Context.Guild);
-            var newWarnList = data.Extras.Warns.Where(x => x.User != user.Id).ToList();
-            data.Extras.Warns = newWarnList;
-            Db.UpdateData(data);
+            var newWarnList = Context.GuildData.Extras.Warns.Where(x => x.User != user.Id).ToList();
+            Context.GuildData.Extras.Warns = newWarnList;
+            Db.UpdateData(Context.GuildData);
 
             try
             {

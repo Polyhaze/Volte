@@ -14,9 +14,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
-            var data = Db.GetData(Context.Guild);
-            data.Configuration.Moderation.Blacklist.Add(phrase);
-            Db.UpdateData(data);
+            Context.GuildData.Configuration.Moderation.Blacklist.Add(phrase);
+            Db.UpdateData(Context.GuildData);
             return Ok($"Added **{phrase}** to the blacklist.");
         }
 
@@ -26,11 +25,10 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {
-            var data = Db.GetData(Context.Guild);
-            if (data.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
+            if (Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
             {
-                data.Configuration.Moderation.Blacklist.Remove(phrase);
-                Db.UpdateData(data);
+                Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
+                Db.UpdateData(Context.GuildData);
                 return Ok($"Removed **{phrase}** from the word blacklist.");
             }
 

@@ -13,12 +13,11 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|help")]
         public Task<ActionResult> HelpAsync(string moduleOrCommand = null)
         {
-            var data = Db.GetData(Context.Guild);
             if (moduleOrCommand is null)
             {
                 return Ok("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out. \n" +
-                          $"Use `{data.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
-                          $"and `{data.Configuration.CommandPrefix}help {{commandName}}` to show information about a command." +
+                          $"Use `{Context.GuildData.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
+                          $"and `{Context.GuildData.Configuration.CommandPrefix}help {{commandName}}` to show information about a command." +
                           "\n\n" +
                           $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`" +
                           "\n\n" +

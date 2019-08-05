@@ -34,12 +34,11 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
-            var data = Db.GetData(Context.Guild);
 
-            if (data.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
+            if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
             {
-                data.Extras.SelfRoles.Remove(role.Name);
-                Db.UpdateData(data);
+                Context.GuildData.Extras.SelfRoles.Remove(role.Name);
+                Db.UpdateData(Context.GuildData);
                 return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
             }
 
@@ -52,9 +51,8 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleClearAsync()
         {
-            var data = Db.GetData(Context.Guild);
-            data.Extras.SelfRoles.Clear();
-            Db.UpdateData(data);
+            Context.GuildData.Extras.SelfRoles.Clear();
+            Db.UpdateData(Context.GuildData);
             return Ok("Successfully cleared all Self Roles for this guild.");
         }
     }
