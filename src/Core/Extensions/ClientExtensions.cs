@@ -13,12 +13,12 @@ namespace Gommon
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
-                : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=0";
+                : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
 
-        public static SocketUser GetOwner(this DiscordShardedClient client)
+        public static SocketUser GetOwner(this BaseSocketClient client)
             => client.GetUser(Config.Owner);
 
-        public static SocketGuild GetPrimaryGuild(this DiscordShardedClient client)
+        public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
             => client.GetGuild(405806471578648588);
 
         public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
