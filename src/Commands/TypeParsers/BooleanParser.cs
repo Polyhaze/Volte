@@ -6,7 +6,7 @@ using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
-    [VolteTypeParser(overridePrimitive: true)]
+    [VolteTypeParser(true)]
     public sealed class BooleanParser : TypeParser<bool>
     {
         private IEnumerable<string> TrueValues =>

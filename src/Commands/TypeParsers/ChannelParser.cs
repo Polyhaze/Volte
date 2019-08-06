@@ -21,7 +21,7 @@ namespace Volte.Commands.TypeParsers
             SocketTextChannel channel = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseChannel(value, out id))
-                channel = ctx.Guild.GetTextChannel(id).Cast<SocketTextChannel>();
+                channel = ctx.Client.GetChannel(id).Cast<SocketTextChannel>();
 
             if (channel is null)
             {
