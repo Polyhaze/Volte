@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -19,7 +20,11 @@ namespace Volte.Commands.Modules
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in this channel.");
 
-            var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
+            var e = Context.CreateEmbedBuilder(new StringBuilder()
+                .AppendLine($"{m.Content}")
+                .AppendLine()
+                .AppendLine($"[Jump!]({m.GetJumpUrl()})")
+                .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
@@ -40,7 +45,11 @@ namespace Volte.Commands.Modules
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in the given channel.");
 
-            var e = Context.CreateEmbedBuilder($"{m.Content}\n\n[Jump!]({m.GetJumpUrl()})")
+            var e = Context.CreateEmbedBuilder(new StringBuilder()
+                    .AppendLine($"{m.Content}")
+                    .AppendLine()
+                    .AppendLine($"[Jump!]({m.GetJumpUrl()})")
+                    .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());

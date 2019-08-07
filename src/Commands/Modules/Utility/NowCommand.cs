@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
@@ -12,7 +13,9 @@ namespace Volte.Commands.Modules
         [Description("Shows the current date and time, in UTC.")]
         [Remarks("Usage: |prefix|now")]
         public Task<ActionResult> NowAsync()
-            => Ok($"**Date**: {DateTimeOffset.UtcNow.FormatDate()} UTC\n" +
-                  $"**Time**: {DateTimeOffset.UtcNow.FormatFullTime()} UTC");
+            => Ok(new StringBuilder()
+                .AppendLine($"**Date**: {DateTimeOffset.UtcNow.FormatDate()} UTC")
+                .AppendLine($"**Time**: {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
+                .ToString());
     }
 }

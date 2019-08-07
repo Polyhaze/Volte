@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
@@ -15,13 +16,18 @@ namespace Volte.Commands.Modules
         {
             if (moduleOrCommand is null)
             {
-                return Ok("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out. \n" +
-                          $"Use `{Context.GuildData.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
-                          $"and `{Context.GuildData.Configuration.CommandPrefix}help {{commandName}}` to show information about a command." +
-                          "\n\n" +
-                          $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`" +
-                          "\n\n" +
-                          $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`");
+                return Ok(new StringBuilder()
+                    .AppendLine("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out.")
+                    .AppendLine(
+                        $"Use `{Context.GuildData.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
+                        $"and `{Context.GuildData.Configuration.CommandPrefix}help {{commandName}}` to show information about a command.")
+                    .AppendLine()
+                    .AppendLine(
+                        $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`")
+                    .AppendLine()
+                    .AppendLine(
+                        $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`")
+                    .ToString());
             }
 
             var module = GetTargetModule(moduleOrCommand);
@@ -29,7 +35,7 @@ namespace Volte.Commands.Modules
 
             if (module is null && command is null)
             {
-                return BadRequest($"{EmojiService.X} No matching module/command was found.");
+                return BadRequest($"{EmojiService.X} No matching Module/Command was found.");
             }
 
             if (module != null && command is null)
@@ -41,17 +47,21 @@ namespace Volte.Commands.Modules
 
             if (module is null && command != null)
             {
-                return Ok($"**Command**: {command.Name}\n" +
-                          $"**Module**: {command.Module.SanitizeName()}\n" +
-                          $"**Description**: {command.Description ?? "No summary provided."}\n" +
-                          $"**Usage**: {command.SanitizeRemarks(Context)}");
+                return Ok(new StringBuilder()
+                    .AppendLine($"**Command**: {command.Name}")
+                    .AppendLine($"**Module**: {command.Module.SanitizeName()}")
+                    .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
+                    .AppendLine($"**Usage**: {command.SanitizeRemarks(Context)}")
+                    .ToString());
             }
 
             if (module != null && command != null)
             {
-                return BadRequest($"{EmojiService.X} Found more than one Module or Command. Results:\n" +
-                                  $"**{module.SanitizeName()}**\n" +
-                                  $"**{command.Name}**");
+                return BadRequest(new StringBuilder()
+                    .AppendLine($"{EmojiService.X} Found more than one Module or Command. Results:")
+                    .AppendLine($"**{module.SanitizeName()}**")
+                    .AppendLine($"**{command.Name}**")
+                    .ToString());
             }
 
             return None();

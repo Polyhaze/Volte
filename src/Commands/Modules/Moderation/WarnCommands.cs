@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -59,10 +60,12 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10);
-            return Ok("Showing the last 10 warnings, or less if the user doesn't have 10 yet, or none if the user's record is clean." +
-                      "\n" +
-                      "\n" +
-                      $"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}");
+            return Ok(new StringBuilder()
+                .AppendLine(
+                    "Showing the last 10 warnings, or less if the user doesn't have 10 yet, or none if the user's record is clean.")
+                .AppendLine()
+                .AppendLine($"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}")
+                .ToString());
         }
 
         [Command("ClearWarns", "Cw")]

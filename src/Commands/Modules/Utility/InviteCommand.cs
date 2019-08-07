@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Results;
 using Gommon;
@@ -11,10 +12,15 @@ namespace Volte.Commands.Modules
         [Description("Get an invite to use Volte in your own guild.")]
         [Remarks("Usage: |prefix|invite")]
         public Task<ActionResult> InviteAsync()
-            => Ok("Do you like Volte? If you do, that's awesome! If not then I'm sorry (please tell me what you don't like [here](https://forms.gle/CJ9XtKmKf2Q2mQwb7)!) :( \n\n" +
-                "[Website](https://greemdev.net/Volte)\n" +
-                $"[Invite Me]({Context.Client.GetInviteUrl()})\n" +
-                "[Support Server Invite](https://greemdev.net/discord)\n\n" +
-                "And again, thanks for using me!");
+            => Ok(new StringBuilder()
+                .AppendLine(
+                    "Do you like Volte? If you do, that's awesome! If not then I'm sorry (please tell me what you don't like [here](https://forms.gle/CJ9XtKmKf2Q2mQwb7)!) :( ")
+                .AppendLine()
+                .AppendLine("[Website](https://greemdev.net/Volte)")
+                .AppendLine($"[Invite Me]({Context.Client.GetInviteUrl()})")
+                .AppendLine("[Support Server Invite](https://discord.gg/H8bcFr2)")
+                .AppendLine()
+                .AppendLine("And again, thanks for using me!")
+                .ToString());
     }
 }

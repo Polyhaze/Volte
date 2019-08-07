@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
@@ -46,7 +47,10 @@ namespace Volte.Commands.Modules
                 : $"Sending a test message to {welcomeChannel.Mention}.";
             if (welcomeChannel is null || Context.GuildData.Configuration.Welcome.WelcomeChannel is 0) return None();
 
-            return Ok($"Set this server's welcome message to ```{message}```\n\n{sendingTest}",
+            return Ok(new StringBuilder()
+                .AppendLine($"Set this server's welcome message to ```{message}```")
+                .AppendLine()
+                .AppendLine($"{sendingTest}").ToString(),
                 _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
         }
 
@@ -70,8 +74,10 @@ namespace Volte.Commands.Modules
 
             if (message is null)
             {
-                return Ok(
-                    $"The current leaving message for this server is ```\n{Context.GuildData.Configuration.Welcome.WelcomeMessage}```");
+                return Ok(new StringBuilder()
+                    .AppendLine("The current leaving message for this server is ```")
+                    .AppendLine($"{Context.GuildData.Configuration.Welcome.WelcomeMessage}```")
+                    .ToString());
             }
 
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
@@ -83,8 +89,11 @@ namespace Volte.Commands.Modules
                     : $"Sending a test message to {welcomeChannel.Mention}.";
                 if (welcomeChannel is null || Context.GuildData.Configuration.Welcome.WelcomeChannel is 0) return None();
 
-                return Ok($"Set this server's leaving message to ```{message}```\n\n{sendingTest}",
-                    _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
+            return Ok(new StringBuilder()
+                    .AppendLine($"Set this server's leaving message to ```{message}```")
+                    .AppendLine()
+                    .AppendLine($"{sendingTest}").ToString(),
+                _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
         }
     }
 }

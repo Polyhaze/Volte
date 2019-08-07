@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Humanizer;
@@ -18,12 +19,16 @@ namespace Volte.Commands.Modules
             var user = target ?? Context.User;
             if (user.Activity is SpotifyGame spotify)
             {
+
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(user)
-                    .WithDescription($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})\n" +
-                                     $"**Album:** {spotify.AlbumTitle}\n" +
-                                     $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}\n" +
-                                     $"**Artists:** {spotify.Artists.Join(", ")}")
+                    .WithDescription(new StringBuilder()
+                        .AppendLine("$ **Track:** [{ spotify.TrackTitle}]({ spotify.TrackUrl})")
+                        .AppendLine($"**Album:** {spotify.AlbumTitle}")
+                        .AppendLine(
+                            $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
+                        .AppendLine($"**Artists:** {spotify.Artists.Join(", ")}")
+                        .ToString())
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
 
