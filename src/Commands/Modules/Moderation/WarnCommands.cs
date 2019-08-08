@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+ 
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
