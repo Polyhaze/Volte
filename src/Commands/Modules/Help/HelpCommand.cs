@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Qmmands;
+using Discord;
+using Discord.Commands;
 using Gommon;
+using Qmmands;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -15,7 +17,6 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> HelpAsync(string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
-            {
                 return Ok(new StringBuilder()
                     .AppendLine("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out.")
                     .AppendLine(
@@ -28,15 +29,12 @@ namespace Volte.Commands.Modules
                     .AppendLine(
                         $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`")
                     .ToString());
-            }
 
             var module = GetTargetModule(moduleOrCommand);
             var command = GetTargetCommand(moduleOrCommand);
 
             if (module is null && command is null)
-            {
                 return BadRequest($"{EmojiService.X} No matching Module/Command was found.");
-            }
 
             if (module != null && command is null)
             {
@@ -46,31 +44,31 @@ namespace Volte.Commands.Modules
             }
 
             if (module is null && command != null)
-            {
                 return Ok(new StringBuilder()
                     .AppendLine($"**Command**: {command.Name}")
                     .AppendLine($"**Module**: {command.Module.SanitizeName()}")
                     .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
                     .AppendLine($"**Usage**: {command.SanitizeRemarks(Context)}")
                     .ToString());
-            }
 
             if (module != null && command != null)
-            {
                 return BadRequest(new StringBuilder()
                     .AppendLine($"{EmojiService.X} Found more than one Module or Command. Results:")
                     .AppendLine($"**{module.SanitizeName()}**")
                     .AppendLine($"**{command.Name}**")
                     .ToString());
-            }
 
             return None();
         }
 
         private Module GetTargetModule(string input)
-            => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
+        {
+            return CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
+        }
 
         private Command GetTargetCommand(string input)
-            => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
+        {
+            return CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
+        }
     }
 }

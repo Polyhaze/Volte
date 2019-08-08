@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Commands;
+using Discord.Commands;
 using Gommon;
 
 namespace Volte.Commands.Results
@@ -17,8 +17,10 @@ namespace Volte.Commands.Results
             After = func;
         }
 
-        public OkResult(Func<Task> logic) 
-            => SeparateLogic = logic;
+        public OkResult(Func<Task> logic)
+        {
+            SeparateLogic = logic;
+        }
 
         private string Message { get; }
         private bool ShouldEmbed { get; }
@@ -40,13 +42,9 @@ namespace Volte.Commands.Results
             if (Embed is null)
             {
                 if (ShouldEmbed)
-                {
                     message = await ctx.CreateEmbed(Message).SendToAsync(ctx.Channel);
-                }
                 else
-                {
                     message = await ctx.Channel.SendMessageAsync(Message);
-                }
             }
             else
             {
@@ -54,10 +52,7 @@ namespace Volte.Commands.Results
             }
 
 
-            if (After != null)
-            {
-                await After(message);
-            }
+            if (After != null) await After(message);
 
 
             return new ResultCompletionData(message);

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Results
 {
@@ -10,7 +11,9 @@ namespace Volte.Commands.Results
 
         public abstract Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx);
 
-        public static implicit operator Task<ActionResult>(ActionResult res) 
-            => Task.FromResult(res);
+        public static implicit operator Task<ActionResult>(ActionResult res)
+        {
+            return Task.FromResult(res);
+        }
     }
 }

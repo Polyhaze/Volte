@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
@@ -14,16 +15,20 @@ namespace Volte.Core
 {
     public class VolteBot
     {
-        public static Task StartAsync()
-            => new VolteBot().LoginAsync();
-
-        private static void BuildServiceProvider(int shardCount, out ServiceProvider provider)
-            => provider = new ServiceCollection()
-                .AddAllServices(shardCount)
-                .BuildServiceProvider();
-
         private VolteBot()
         { }
+
+        public static Task StartAsync()
+        {
+            return new VolteBot().LoginAsync();
+        }
+
+        private static void BuildServiceProvider(int shardCount, out ServiceProvider provider)
+        {
+            provider = new ServiceCollection()
+                .AddAllServices(shardCount)
+                .BuildServiceProvider();
+        }
 
         private async Task LoginAsync()
         {
@@ -39,7 +44,8 @@ namespace Volte.Core
 
             if (!Config.CreateIfNotExists())
             {
-                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFile}\"; restart me when you've done so.");
+                Console.WriteLine(
+                    $"Please fill in the configuration located at \"{Config.ConfigFile}\"; restart me when you've done so.");
                 return;
             }
 
@@ -91,10 +97,7 @@ namespace Volte.Core
 
         private void Dispose(params IDisposable[] disposables)
         {
-            foreach (var disposable in disposables)
-            {
-                disposable.Dispose();
-            }
+            foreach (var disposable in disposables) disposable.Dispose();
         }
     }
 }

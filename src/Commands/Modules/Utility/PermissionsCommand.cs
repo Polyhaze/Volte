@@ -1,7 +1,7 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
@@ -20,14 +20,9 @@ namespace Volte.Commands.Modules
             user ??= Context.User; // Get the user (or the invoker, if none specified)
 
 
-            if (user.Id == Context.Guild.OwnerId)
-            {
-                return Ok("User is owner of server, and has all permissions");
-            }
+            if (user.Id == Context.Guild.OwnerId) return Ok("User is owner of server, and has all permissions");
             if (user.GuildPermissions.Administrator)
-            {
                 return Ok("User has Administrator permission, and has all permissions");
-            }
 
 
             var (allowed, disallowed) = GetPermissions(user);
@@ -39,8 +34,9 @@ namespace Volte.Commands.Modules
                 .AddField("Denied", disallowedString.IsNullOrEmpty() ? "- None" : disallowedString, true));
         }
 
-        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
-            SocketGuildUser user)
+        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
+            Disallowed) GetPermissions(
+                SocketGuildUser user)
         {
             var propDict = user.GuildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.IsAssignableFrom(typeof(bool)))
@@ -48,8 +44,8 @@ namespace Volte.Commands.Modules
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
                 .ToList(); //holy reflection
 
-            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1), propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
-
+            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1),
+                propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
         }
     }
 }

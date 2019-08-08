@@ -1,5 +1,6 @@
 using System;
 using Discord;
+using Discord.Commands;
 
 namespace Volte.Core.Models
 {
@@ -11,7 +12,8 @@ namespace Volte.Core.Models
         public Exception Exception { get; private set; }
 
         public static LogMessage FromDiscordLogMessage(Discord.LogMessage message)
-            => new LogMessage
+        {
+            return new LogMessage
             {
                 Message = message.Message,
                 Severity = message.Severity,
@@ -24,5 +26,6 @@ namespace Volte.Core.Models
                     _ => LogSource.Unknown
                     }
             };
+        }
     }
 }

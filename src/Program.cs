@@ -1,7 +1,15 @@
-﻿namespace Volte
+﻿using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Volte.Core;
+
+namespace Volte
 {
     internal static class Program
     {
-        private static System.Threading.Tasks.Task Main() => Core.VolteBot.StartAsync();
+        private static Task Main()
+        {
+            return VolteBot.StartAsync();
+        }
     }
 }

@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -15,6 +17,8 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|eval {code}")]
         [RequireBotOwner]
         public Task<ActionResult> EvalAsync([Remainder] string code)
-            => None(() => Eval.EvaluateAsync(Context, code));
+        {
+            return None(() => Eval.EvaluateAsync(Context, code));
+        }
     }
 }

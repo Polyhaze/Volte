@@ -1,14 +1,13 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using Qmmands;
-using Volte.Core.Models;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
+using Qmmands;
+using Volte.Core.Models;
 using Volte.Services;
 
 namespace Volte.Core
@@ -16,8 +15,8 @@ namespace Volte.Core
     internal sealed class VolteHandler
     {
         private readonly DiscordShardedClient _client;
-        private readonly CommandService _service;
         private readonly LoggingService _logger;
+        private readonly CommandService _service;
 
         public VolteHandler(DiscordShardedClient client,
             CommandService commandService,
@@ -33,7 +32,8 @@ namespace Volte.Core
             var sw = Stopwatch.StartNew();
             var l = await _service.AddTypeParsersAsync();
             sw.Stop();
-            _logger.Info(LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.SanitizeParserName()).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
+            _logger.Info(LogSource.Volte,
+                $"Loaded TypeParsers: \"{l.Select(x => x.SanitizeParserName()).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
             sw.Reset();
             sw.Start();
 

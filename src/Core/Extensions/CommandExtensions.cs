@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
@@ -14,7 +16,9 @@ namespace Gommon
     public static partial class Extensions
     {
         public static string SanitizeName(this Module m)
-            => m.Name.Replace("Module", string.Empty);
+        {
+            return m.Name.Replace("Module", string.Empty);
+        }
 
         public static string SanitizeRemarks(this Command c, VolteContext ctx)
         {
@@ -35,11 +39,12 @@ namespace Gommon
 
             foreach (var type in currentAssembly.ExportedTypes)
             {
-                if (!(type.GetCustomAttributes().FirstOrDefault(a => a is VolteTypeParserAttribute) is VolteTypeParserAttribute attr)) continue;
+                if (!(type.GetCustomAttributes().FirstOrDefault(a => a is VolteTypeParserAttribute) is
+                    VolteTypeParserAttribute attr)) continue;
 
                 var parser = type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
                 var method = addTypeParserMethod?.MakeGenericMethod(type.BaseType?.GenericTypeArguments[0]);
-                method?.Invoke(service, new [] { parser, attr.OverridePrimitive });
+                method?.Invoke(service, new[] {parser, attr.OverridePrimitive});
                 loadedTypes.Add(type);
             }
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;

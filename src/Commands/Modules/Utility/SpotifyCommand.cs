@@ -1,11 +1,12 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -18,8 +19,6 @@ namespace Volte.Commands.Modules
         {
             var user = target ?? Context.User;
             if (user.Activity is SpotifyGame spotify)
-            {
-
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(user)
                     .WithDescription(new StringBuilder()
@@ -30,7 +29,6 @@ namespace Volte.Commands.Modules
                         .AppendLine($"**Artists:** {spotify.Artists.Join(", ")}")
                         .ToString())
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
-            }
 
             return BadRequest("Target user isn't listening to Spotify!");
         }

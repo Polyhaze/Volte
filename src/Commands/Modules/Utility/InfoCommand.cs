@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -16,7 +17,8 @@ namespace Volte.Commands.Modules
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("Usage: |prefix|info")]
         public Task<ActionResult> InfoAsync()
-            => Ok(Context.CreateEmbedBuilder()
+        {
+            return Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
                 .AddField("Author",
                     "<@168548441939509248> and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
@@ -32,6 +34,7 @@ namespace Volte.Commands.Modules
                 .AddField("Operating System", Environment.OSVersion.Platform, true)
                 .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
+        }
 
         private bool GetNetCoreVersion(out string version)
         {

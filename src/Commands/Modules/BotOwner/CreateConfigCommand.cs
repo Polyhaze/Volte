@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -12,10 +14,12 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|createconfig [serverId]")]
         [RequireBotOwner]
         public Task<ActionResult> CreateConfigAsync(ulong serverId = 0)
-            => Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.", m =>
+        {
+            return Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.", m =>
             {
                 _ = Db.GetData(serverId is 0 ? Context.Guild.Id : serverId);
                 return Task.CompletedTask;
             });
+        }
     }
 }

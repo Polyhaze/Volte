@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Core;
@@ -13,8 +15,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|reload")]
         [RequireBotOwner]
         public Task ReloadAsync()
-            => Config.Reload(Context.ServiceProvider)
+        {
+            return Config.Reload(Context.ServiceProvider)
                 ? Ok("Config reloaded!")
                 : BadRequest("Something bad happened. Check console for more detailed information.");
+        }
     }
 }

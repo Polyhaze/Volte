@@ -1,8 +1,10 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -12,7 +14,8 @@ namespace Volte.Commands.Modules
         [Description("Get an invite to use Volte in your own guild.")]
         [Remarks("Usage: |prefix|invite")]
         public Task<ActionResult> InviteAsync()
-            => Ok(new StringBuilder()
+        {
+            return Ok(new StringBuilder()
                 .AppendLine(
                     "Do you like Volte? If you do, that's awesome! If not then I'm sorry (please tell me what you don't like [here](https://forms.gle/CJ9XtKmKf2Q2mQwb7)!) :( ")
                 .AppendLine()
@@ -22,5 +25,6 @@ namespace Volte.Commands.Modules
                 .AppendLine()
                 .AppendLine("And again, thanks for using me!")
                 .ToString());
+        }
     }
 }

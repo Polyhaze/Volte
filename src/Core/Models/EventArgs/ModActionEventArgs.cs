@@ -1,4 +1,6 @@
 using System;
+using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Volte.Commands;
 

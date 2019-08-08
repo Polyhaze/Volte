@@ -1,5 +1,5 @@
-using System;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +12,6 @@ namespace Volte.Core.Models.EventArgs
     public sealed class MessageReceivedEventArgs : System.EventArgs
     {
         private readonly DatabaseService _db;
-        public SocketUserMessage Message { get; }
-        public VolteContext Context { get; }
-        public GuildData Data { get; }
 
         public MessageReceivedEventArgs(SocketMessage s, ServiceProvider provider)
         {
@@ -24,5 +21,9 @@ namespace Volte.Core.Models.EventArgs
             Context = new VolteContext(client, Message, provider);
             Data = _db.GetData(Context.Guild);
         }
+
+        public SocketUserMessage Message { get; }
+        public VolteContext Context { get; }
+        public GuildData Data { get; }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Volte
+﻿using Discord;
+using Discord.Commands;
+
+namespace Volte
 {
     public struct Version
     {
@@ -8,7 +11,7 @@
         private static uint Hotfix => 0;
         public static ReleaseType ReleaseType => ReleaseType.Development;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        public static string DiscordNetVersion => Discord.DiscordConfig.Version;
+        public static string DiscordNetVersion => DiscordConfig.Version;
     }
 
     public enum ReleaseType

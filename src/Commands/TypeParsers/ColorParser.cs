@@ -2,8 +2,10 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Gommon;
 using Qmmands;
+using ICommandContext = Qmmands.ICommandContext;
 
 namespace Volte.Commands.TypeParsers
 {
@@ -11,9 +13,9 @@ namespace Volte.Commands.TypeParsers
     public sealed class ColorParser : TypeParser<Color>
     {
         public override Task<TypeParserResult<Color>> ParseAsync(
-            Parameter parameter, 
-            string value, 
-            ICommandContext context, 
+            Parameter parameter,
+            string value,
+            ICommandContext context,
             IServiceProvider provider)
         {
             Color? color = null;
@@ -23,7 +25,6 @@ namespace Volte.Commands.TypeParsers
                 color = new Color(colorInt.Cast<uint>());
 
             if (color is null)
-            {
                 try
                 {
                     var r = int.Parse(value.Split(" ")[0]);
@@ -31,11 +32,9 @@ namespace Volte.Commands.TypeParsers
                     var b = int.Parse(value.Split(" ")[2]);
 
                     if (r > 255 || g > 255 || b > 255)
-                    {
                         return Task.FromResult(
                             TypeParserResult<Color>.Unsuccessful(
                                 "A value in an RGB sequence may not be over the value of 255."));
-                    }
 
                     color = new Color(r, g, b);
                 }
@@ -47,10 +46,10 @@ namespace Volte.Commands.TypeParsers
                 {
                     color = null;
                 }
-            }
 
             return Task.FromResult(color is null
-                ? TypeParserResult<Color>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
+                ? TypeParserResult<Color>.Unsuccessful(
+                    "A color could not be determined from your input text. Try using a hex value.")
                 : TypeParserResult<Color>.Successful(color.Value));
         }
     }

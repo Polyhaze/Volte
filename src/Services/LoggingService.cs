@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Gommon;
 using Volte.Core;
 using Volte.Core.Models;
@@ -21,12 +21,17 @@ namespace Volte.Services
             return Task.CompletedTask;
         }
 
-        internal void Log(LogEventArgs args) =>
+        internal void Log(LogEventArgs args)
+        {
             Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
+        }
 
-        internal void PrintVersion() => Log(LogSeverity.Info, LogSource.Volte,
-            $"Currently running Volte V{Version.FullVersion}.");
+        internal void PrintVersion()
+        {
+            Log(LogSeverity.Info, LogSource.Volte,
+                $"Currently running Volte V{Version.FullVersion}.");
+        }
 
         private void Log(LogSeverity s, LogSource src, string message, Exception e = null)
         {
@@ -34,7 +39,8 @@ namespace Volte.Services
             {
                 if (s is LogSeverity.Debug)
                 {
-                    if (src is LogSource.Discord || src is LogSource.Gateway) { }
+                    if (src is LogSource.Discord || src is LogSource.Gateway)
+                    { }
 
                     if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
                 }
@@ -43,25 +49,40 @@ namespace Volte.Services
             }
         }
 
-        public void Debug(LogSource src, string message, Exception e = null) 
-            => Log(LogSeverity.Debug, src, message, e);
+        public void Debug(LogSource src, string message, Exception e = null)
+        {
+            Log(LogSeverity.Debug, src, message, e);
+        }
 
         public void Info(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Info, src, message, e);
+        {
+            Log(LogSeverity.Info, src, message, e);
+        }
 
         public void Error(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Error, src, message, e);
+        {
+            Log(LogSeverity.Error, src, message, e);
+        }
+
         public void Critical(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Critical, src, message, e);
+        {
+            Log(LogSeverity.Critical, src, message, e);
+        }
 
         public void Warn(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Warning, src, message, e);
+        {
+            Log(LogSeverity.Warning, src, message, e);
+        }
 
         public void Verbose(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Verbose, src, message, e);
+        {
+            Log(LogSeverity.Verbose, src, message, e);
+        }
 
         public void LogException(Exception e)
-            => Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+        {
+            Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+        }
 
         private void DoLogAsync(LogSeverity s, LogSource src, string message, Exception e)
         {
@@ -86,8 +107,9 @@ namespace Volte.Services
             Console.Write(m);
         }
 
-        private (Color Color, string Source) VerifySource(LogSource source) =>
-            source switch
+        private (Color Color, string Source) VerifySource(LogSource source)
+        {
+            return source switch
                 {
                 LogSource.Discord => (Color.RoyalBlue, "DSCD"),
                 LogSource.Gateway => (Color.RoyalBlue, "DSCD"),
@@ -98,10 +120,12 @@ namespace Volte.Services
                 LogSource.Unknown => (Color.Teal, "UNKN"),
                 _ => throw new ArgumentNullException(nameof(source), "source cannot be null")
                 };
+        }
 
 
-        private (Color Color, string Level) VerifySeverity(LogSeverity severity) =>
-            severity switch
+        private (Color Color, string Level) VerifySeverity(LogSeverity severity)
+        {
+            return severity switch
                 {
                 LogSeverity.Critical => (Color.Maroon, "CRIT"),
                 LogSeverity.Error => (Color.DarkRed, "EROR"),
@@ -111,5 +135,6 @@ namespace Volte.Services
                 LogSeverity.Debug => (Color.SandyBrown, "DEBG"),
                 _ => throw new ArgumentNullException(nameof(severity), "severity cannot be null")
                 };
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
@@ -21,17 +22,14 @@ namespace Volte.Commands.Modules
                 return BadRequest("A message with that ID doesn't exist in this channel.");
 
             var e = Context.CreateEmbedBuilder(new StringBuilder()
-                .AppendLine($"{m.Content}")
-                .AppendLine()
-                .AppendLine($"[Jump!]({m.GetJumpUrl()})")
-                .ToString())
+                    .AppendLine($"{m.Content}")
+                    .AppendLine()
+                    .AppendLine($"[Jump!]({m.GetJumpUrl()})")
+                    .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (m.Attachments.Count > 0)
-            {
-                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
-            }
+            if (m.Attachments.Count > 0) e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
 
             return Ok(e);
         }
@@ -53,10 +51,7 @@ namespace Volte.Commands.Modules
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (m.Attachments.Count > 0)
-            {
-                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
-            }
+            if (m.Attachments.Count > 0) e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
 
             return Ok(e);
         }

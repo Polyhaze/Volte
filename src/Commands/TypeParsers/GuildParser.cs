@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
+using ICommandContext = Qmmands.ICommandContext;
 
 namespace Volte.Commands.TypeParsers
 {

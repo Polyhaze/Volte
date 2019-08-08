@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -13,7 +15,8 @@ namespace Volte.Commands.Modules
         [Description("Show the Gateway latency to Discord.")]
         [Remarks("Usage: |prefix|ping")]
         public Task<ActionResult> PingAsync()
-            => Ok(async () =>
+        {
+            return Ok(async () =>
             {
                 var e = Context.CreateEmbedBuilder("Pinging...");
                 var sw = new Stopwatch();
@@ -29,5 +32,6 @@ namespace Volte.Commands.Modules
                     x.Embed = e.Build();
                 });
             });
+        }
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Gommon;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -10,11 +12,15 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
 
-        public PingChecksService(LoggingService loggingService) 
-            => _logger = loggingService;
+        public PingChecksService(LoggingService loggingService)
+        {
+            _logger = loggingService;
+        }
 
         public override Task DoAsync(EventArgs args)
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+        {
+            return CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+        }
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

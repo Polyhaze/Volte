@@ -1,3 +1,5 @@
+using Discord;
+using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Models.BotConfig
@@ -10,10 +12,13 @@ namespace Volte.Core.Models.BotConfig
             GuildId = ulong.MinValue;
             ChannelId = ulong.MinValue;
         }
+
         [JsonProperty("enabled")]
         public bool Enabled { get; set; }
+
         [JsonProperty("guild_id")]
         public ulong GuildId { get; set; }
+
         [JsonProperty("channel_id")]
         public ulong ChannelId { get; set; }
     }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Discord;
+using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Models.Guild
@@ -6,7 +8,9 @@ namespace Volte.Core.Models.Guild
     public sealed class ModerationOptions
     {
         internal ModerationOptions()
-            => Blacklist = new List<string>();
+        {
+            Blacklist = new List<string>();
+        }
 
         [JsonProperty("mass_ping_checks")]
         public bool MassPingChecks { get; set; }
@@ -29,7 +33,6 @@ namespace Volte.Core.Models.Guild
 
     public sealed class WelcomeOptions
     {
-
         [JsonProperty("welcome_channel")]
         public ulong WelcomeChannel { get; set; }
 

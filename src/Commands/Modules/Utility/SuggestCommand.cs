@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -9,7 +11,9 @@ namespace Volte.Commands.Modules
         [Command("Suggest")]
         [Description("Suggest features for Volte.")]
         [Remarks("Usage: |prefix|suggest")]
-        public Task<ActionResult> SuggestAsync() 
-            => Ok("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).");
+        public Task<ActionResult> SuggestAsync()
+        {
+            return Ok("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).");
+        }
     }
 }

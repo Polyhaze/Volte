@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Gommon;
 using Qmmands;
+using ICommandContext = Qmmands.ICommandContext;
 
 namespace Volte.Commands.Checks
 {
@@ -11,7 +13,10 @@ namespace Volte.Commands.Checks
     {
         private readonly ChannelPermission[] _permissions;
 
-        public RequireBotChannelPermission(params ChannelPermission[] permissions) => _permissions = permissions;
+        public RequireBotChannelPermission(params ChannelPermission[] permissions)
+        {
+            _permissions = permissions;
+        }
 
         public override Task<CheckResult> CheckAsync(
             ICommandContext context, IServiceProvider provider)

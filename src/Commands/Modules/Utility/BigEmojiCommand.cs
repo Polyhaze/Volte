@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -21,7 +22,8 @@ namespace Volte.Commands.Modules
                 url =
                     $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>().ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
             }
-            catch (ArgumentNullException) { }
+            catch (ArgumentNullException)
+            { }
 
             return emoteIn switch
                 {

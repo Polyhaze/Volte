@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Gommon;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -16,10 +17,19 @@ namespace Volte.Services
 {
     public sealed class EvalService : VolteService
     {
-        private readonly DatabaseService _db;
-        private readonly LoggingService _logger;
         private readonly CommandService _commands;
+        private readonly DatabaseService _db;
         private readonly EmojiService _emoji;
+
+        private readonly List<string> _imports = new List<string>
+        {
+            "System", "System.Collections.Generic", "System.Linq", "System.Text",
+            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
+            "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
+            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+        };
+
+        private readonly LoggingService _logger;
 
         public EvalService(DatabaseService databaseService,
             LoggingService loggingService,
@@ -97,7 +107,8 @@ namespace Volte.Services
         }
 
         private EvalObjects GetEvalObjects(VolteContext ctx)
-            => new EvalObjects
+        {
+            return new EvalObjects
             {
                 Context = ctx,
                 Client = ctx.Client,
@@ -107,13 +118,6 @@ namespace Volte.Services
                 DatabaseService = _db,
                 EmojiService = _emoji
             };
-
-        private readonly List<string> _imports = new List<string>
-        {
-            "System", "System.Collections.Generic", "System.Linq", "System.Text",
-            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
-            "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
-            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-        };
+        }
     }
 }

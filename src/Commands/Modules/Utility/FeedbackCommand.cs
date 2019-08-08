@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -11,10 +13,12 @@ namespace Volte.Commands.Modules
         [Description("Submit feedback directly to the Volte guild.")]
         [Remarks("Usage: |prefix|feedback {feedback}")]
         public Task<ActionResult> FeedbackAsync([Remainder] string feedback)
-            => Ok($"Feedback sent! Message: ```{feedback}```", _ =>
+        {
+            return Ok($"Feedback sent! Message: ```{feedback}```", _ =>
                 Context.CreateEmbedBuilder($"```{feedback}```")
                     .WithTitle($"Feedback from {Context.User}")
                     .SendToAsync(Context.Client.GetPrimaryGuild().GetTextChannel(415182876326232064))
             );
+        }
     }
 }
