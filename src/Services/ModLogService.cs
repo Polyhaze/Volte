@@ -31,16 +31,16 @@ namespace Volte.Services
             if (!Config.EnabledFeatures.ModLog)
                 return;
 
-            _logger.Log(LogSeverity.Debug, LogSource.Volte, "Attempting to post a modlog message.");
+            _logger.Debug(LogSource.Volte, "Attempting to post a modlog message.");
 
             var c = args.Guild.GetTextChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
             if (c is null)
             {
-                _logger.Log(LogSeverity.Debug, LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
+                _logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
                 return;
             }
             var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
-            _logger.Log(LogSeverity.Debug, LogSource.Service, "Received a signal to send a ModLog message.");
+            _logger.Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
             var sb = new StringBuilder();
 
             switch (args.ActionType)
@@ -54,7 +54,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Purge)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Purge)}");
                     break;
                 }
 
@@ -67,7 +67,7 @@ namespace Volte.Services
                             .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                             .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Delete)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Delete)}");
                     break;
                 }
 
@@ -82,7 +82,7 @@ namespace Volte.Services
                             .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                             .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Kick)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Kick)}");
                     break;
                 }
 
@@ -97,7 +97,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                     break;
                 }
 
@@ -109,7 +109,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
                     break;
                 }
 
@@ -124,7 +124,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
                     break;
                 }
 
@@ -139,7 +139,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
                     break;
                 }
 
@@ -154,7 +154,7 @@ namespace Volte.Services
                         .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
                         .ToString())
                         .SendToAsync(c);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                     break;
                 }
 
@@ -162,7 +162,7 @@ namespace Volte.Services
                     throw new InvalidOperationException();
             }
 
-            _logger.Log(LogSeverity.Debug, LogSource.Volte,
+            _logger.Debug(LogSource.Volte,
                 "Sent a ModLog message or threw an exception.");
         }
 

@@ -28,7 +28,7 @@ namespace Volte.Services
         internal void PrintVersion() => Log(LogSeverity.Info, LogSource.Volte,
             $"Currently running Volte V{Version.FullVersion}.");
 
-        public void Log(LogSeverity s, LogSource src, string message, Exception e = null)
+        private void Log(LogSeverity s, LogSource src, string message, Exception e = null)
         {
             lock (_lock)
             {
@@ -42,6 +42,23 @@ namespace Volte.Services
                 DoLogAsync(s, src, message, e);
             }
         }
+
+        public void Debug(LogSource src, string message, Exception e = null) 
+            => Log(LogSeverity.Debug, src, message, e);
+
+        public void Info(LogSource src, string message, Exception e = null)
+            => Log(LogSeverity.Info, src, message, e);
+
+        public void Error(LogSource src, string message, Exception e = null)
+            => Log(LogSeverity.Error, src, message, e);
+        public void Critical(LogSource src, string message, Exception e = null)
+            => Log(LogSeverity.Critical, src, message, e);
+
+        public void Warn(LogSource src, string message, Exception e = null)
+            => Log(LogSeverity.Warning, src, message, e);
+
+        public void Verbose(LogSource src, string message, Exception e = null)
+            => Log(LogSeverity.Verbose, src, message, e);
 
         public void LogException(Exception e)
             => Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);

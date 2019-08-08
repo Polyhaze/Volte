@@ -26,10 +26,10 @@ namespace Volte.Services
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
-            _logger.Log(LogSeverity.Debug, LogSource.Volte, "Joined a guild.");
+            _logger.Debug(LogSource.Volte, "Joined a guild.");
             if (Config.BlacklistedOwners.Contains(args.Guild.Owner.Id))
             {
-                _logger.Log(LogSeverity.Warning, LogSource.Volte,
+                _logger.Warn(LogSource.Volte,
                     $"Left guild \"{args.Guild.Name}\" owned by blacklisted owner {args.Guild.Owner}.");
                 await args.Guild.LeaveAsync();
                 return;
@@ -48,18 +48,18 @@ namespace Volte.Services
                     .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
-            _logger.Log(LogSeverity.Debug, LogSource.Volte,
+            _logger.Error(LogSource.Volte,
                 "Attempting to send the guild owner the introduction message.");
             try
             {
                 await embed.SendToAsync(args.Guild.Owner);
-                _logger.Log(LogSeverity.Debug, LogSource.Volte,
+                _logger.Error(LogSource.Volte,
                     "Sent the guild owner the introduction message.");
             }
             catch (HttpException ex) when (ex.DiscordCode is 50007)
             {
                 var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
-                _logger.Log(LogSeverity.Debug, LogSource.Volte,
+                _logger.Error(LogSource.Volte,
                     "Could not DM the guild owner; sending to the upper-most channel instead.");
                 if (c != null) await embed.SendToAsync(c);
             }
@@ -68,7 +68,7 @@ namespace Volte.Services
             var joinLeave = Config.JoinLeaveLog;
             if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
             {
-                _logger.Log(LogSeverity.Error, LogSource.Volte,
+                _logger.Error(LogSource.Volte,
                     "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                     "To fix, set Enabled to false, or correctly fill in your options.");
                 return;
@@ -77,8 +77,7 @@ namespace Volte.Services
             var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
             if (channel is null)
             {
-                _logger.Log(LogSeverity.Error, LogSource.Volte,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
+                _logger.Error(LogSource.Volte, "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
                 return;
             }
 
@@ -106,12 +105,12 @@ namespace Volte.Services
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
-            _logger.Log(LogSeverity.Debug, LogSource.Volte, "Left a guild.");
+            _logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.JoinLeaveLog.Enabled) return;
             var joinLeave = Config.JoinLeaveLog;
             if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
             {
-                _logger.Log(LogSeverity.Error, LogSource.Volte,
+                _logger.Error(LogSource.Volte,
                     "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
                     "To fix, set Enabled to false, or correctly fill in your options.");
                 return;
@@ -120,7 +119,7 @@ namespace Volte.Services
             var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
             if (channel is null)
             {
-                _logger.Log(LogSeverity.Error, LogSource.Volte,
+                _logger.Error(LogSource.Volte,
                     "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
                 return;
             }

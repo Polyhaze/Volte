@@ -23,7 +23,7 @@ namespace Volte.Services
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
                 return; //we don't want to send an empty join message
-            _logger.Log(LogSeverity.Debug, LogSource.Service,
+            _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
             var welcomeMessage = data.Configuration.Welcome.WelcomeMessage
                 .Replace("{ServerName}", args.Guild.Name)
@@ -44,11 +44,11 @@ namespace Volte.Services
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 
-                _logger.Log(LogSeverity.Debug, LogSource.Service, $"Sent a welcome embed to #{c.Name}.");
+                _logger.Debug(LogSource.Volte, $"Sent a welcome embed to #{c.Name}.");
                 return;
             }
 
-            _logger.Log(LogSeverity.Debug, LogSource.Service,
+            _logger.Debug(LogSource.Volte,
                 "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
         }
 
@@ -56,7 +56,7 @@ namespace Volte.Services
         {
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
-            _logger.Log(LogSeverity.Debug, LogSource.Service,
+            _logger.Debug(LogSource.Volte,
                 "User left a guild, let's check to see if we should send a leaving embed.");
             var leavingMessage = data.Configuration.Welcome.LeavingMessage
                 .Replace("{ServerName}", args.Guild.Name)
@@ -76,11 +76,11 @@ namespace Volte.Services
                     .WithCurrentTimestamp();
 
                 await embed.SendToAsync(c);
-                _logger.Log(LogSeverity.Debug, LogSource.Service, $"Sent a leaving embed to #{c.Name}.");
+                _logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");
                 return;
             }
 
-            _logger.Log(LogSeverity.Debug, LogSource.Service,
+            _logger.Debug(LogSource.Volte,
                 "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
         }
     }

@@ -72,7 +72,7 @@ namespace Volte.Core
             catch (TaskCanceledException)
             {
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
-                logger.Log(LogSeverity.Critical, LogSource.Volte,
+                logger.Critical(LogSource.Volte,
                     "Bot shutdown requested by the bot owner; shutting down.");
                 await ShutdownAsync(client, cts, provider);
             }

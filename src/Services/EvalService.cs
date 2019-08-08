@@ -87,7 +87,7 @@ namespace Volte.Services
             }
             catch (Exception e)
             {
-                _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, e);
+                _logger.Error(LogSource.Module, string.Empty, e);
             }
             finally
             {

@@ -82,23 +82,23 @@ namespace Volte.Services
             var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
             _logger.PrintVersion();
-            _logger.Log(LogSeverity.Info, LogSource.Volte, "Use this URL to invite me to your servers:");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, $"{args.Client.GetInviteUrl()}");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, "Connected to:");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, $"    {"guild".ToQuantity(guilds)}");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, $"    {"user".ToQuantity(users)}");
-            _logger.Log(LogSeverity.Info, LogSource.Volte, $"    {"channel".ToQuantity(channels)}");
+            _logger.Info(LogSource.Volte, "Use this URL to invite me to your servers:");
+            _logger.Info(LogSource.Volte, $"{args.Client.GetInviteUrl()}");
+            _logger.Info(LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
+            _logger.Info(LogSource.Volte, "Connected to:");
+            _logger.Info(LogSource.Volte, $"    {"guild".ToQuantity(guilds)}");
+            _logger.Info(LogSource.Volte, $"    {"user".ToQuantity(users)}");
+            _logger.Info(LogSource.Volte, $"    {"channel".ToQuantity(channels)}");
 
             if (_shouldStream)
             {
                 await args.Client.SetGameAsync(Config.Game);
-                _logger.Log(LogSeverity.Info, LogSource.Volte, $"Set the bot's game to {Config.Game}.");
+                _logger.Info(LogSource.Volte, $"Set the bot's game to {Config.Game}.");
             }
             else
             {
                 await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
-                _logger.Log(LogSeverity.Info, LogSource.Volte,
+                _logger.Info(LogSource.Volte,
                     $"Set the bot's activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
             }
 
@@ -106,7 +106,7 @@ namespace Volte.Services
             {
                 if (Config.BlacklistedOwners.Contains(guild.OwnerId))
                 {
-                    _logger.Log(LogSeverity.Warning, LogSource.Volte,
+                    _logger.Warn(LogSource.Volte,
                         $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
                     await guild.LeaveAsync();
                 }
@@ -128,7 +128,7 @@ namespace Volte.Services
                 case ActionResult actionRes:
                 {
                     data = await actionRes.ExecuteResultAsync(ctx);
-                    _logger.Log(LogSeverity.Debug, LogSource.Volte,
+                    _logger.Debug(LogSource.Volte,
                         $"Executed {c.Name}'s resulting ActionResult.");
 
                     switch (res)
@@ -151,29 +151,29 @@ namespace Volte.Services
 
             Executor.Execute(() =>
             {
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|     -Command Issued: {c.Name}");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|        -Args Passed: {args}");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|        -Time Issued: {DateTime.Now}");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|           -Executed: {res.IsSuccessful} ");
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     $"|              -After: {sw.Elapsed.Humanize()}");
                 if (!(data is null))
                 {
-                    _logger.Log(LogSeverity.Info, LogSource.Module,
+                    _logger.Info(LogSource.Module,
                         $"|              -Result Message: {data?.Message?.Id}");
                 }
 
-                _logger.Log(LogSeverity.Info, LogSource.Module,
+                _logger.Info(LogSource.Module,
                     "-------------------------------------------------");
             });
         }
@@ -196,7 +196,7 @@ namespace Volte.Services
                 };
 
             if (res is ExecutionFailedResult efr2)
-                _logger.Log(LogSeverity.Error, LogSource.Module, string.Empty, efr2.Exception);
+                _logger.Error(LogSource.Module, string.Empty, efr2.Exception);
 
             if (!(res is CommandNotFoundResult) && !(res is ChecksFailedResult))
             {
@@ -211,23 +211,23 @@ namespace Volte.Services
 
                 Executor.Execute(() =>
                 {
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|     -Command Issued: {c.Name}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|        -Args Passed: {args.Trim()}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|        -Time Issued: {DateTime.Now}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         $"|              -After: {sw.Elapsed.Humanize()}");
-                    _logger.Log(LogSeverity.Error, LogSource.Module,
+                    _logger.Error(LogSource.Module,
                         "-------------------------------------------------");
                 });
             }
@@ -236,23 +236,23 @@ namespace Volte.Services
         public Task OnBadRequestResultAsync(Command c, BadRequestResult res, VolteContext ctx, string args,
             Stopwatch sw)
         {
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|  -Command from user: {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|     -Command Issued: {c.Name}");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|        -Args Passed: {args.Trim()}");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|           -In Guild: {ctx.Guild.Name} ({ctx.Guild.Id})");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|        -Time Issued: {DateTime.Now}");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|           -Executed: {res.IsSuccessful} | Reason: {res.Reason}");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 $"|              -After: {sw.Elapsed.Humanize()}");
-            _logger.Log(LogSeverity.Error, LogSource.Module,
+            _logger.Error(LogSource.Module,
                 "-------------------------------------------------");
             return Task.CompletedTask;
         }

@@ -28,13 +28,13 @@ namespace Volte.Services
             if (!args.Data.Configuration.Moderation.Antilink ||
                 args.Context.User.IsAdmin(args.Context.ServiceProvider)) return;
 
-            _logger.Log(LogSeverity.Debug, LogSource.Volte,
+            _logger.Debug(LogSource.Volte,
                 $"Checking a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for Discord invite URLs.");
 
             var matches = _invitePattern.Matches(args.Message.Content);
             if (!matches.Any())
             {
-                _logger.Log(LogSeverity.Debug, LogSource.Volte,
+                _logger.Debug(LogSource.Volte,
                     $"Message checked in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) did not contain any detectable invites; aborted.");
                 return;
             }
@@ -42,7 +42,7 @@ namespace Volte.Services
             await args.Message.DeleteAsync(new RequestOptions
                 {AuditLogReason = "Deleted as it contained an invite link."});
             var m = await args.Context.CreateEmbed("Don't send invites here.").SendToAsync(args.Context.Channel);
-            _logger.Log(LogSeverity.Debug, LogSource.Volte,
+            _logger.Debug(LogSource.Volte,
                 $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
             _ = Executor.ExecuteAfterDelayAsync(3000, () => m.DeleteAsync());
         }
