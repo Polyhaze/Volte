@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -41,9 +42,10 @@ namespace Volte.Services
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
                 .AddField("Set your moderator role", "$modrole {roleName}", true)
-                .AddField("Permissions",
-                    "It is recommended to give me admin permission, to avoid any permission errors that may happen." +
-                    "\nYou *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
+                .AddField("Permissions", new StringBuilder()
+                    .AppendLine("It is recommended to give me admin permission, to avoid any permission errors that may happen.")
+                    .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
+                    .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
             _logger.Log(LogSeverity.Debug, LogSource.Volte,
@@ -76,7 +78,7 @@ namespace Volte.Services
             if (channel is null)
             {
                 _logger.Log(LogSeverity.Error, LogSource.Volte,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
+                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
                 return;
             }
 

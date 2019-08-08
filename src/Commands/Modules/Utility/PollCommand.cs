@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands.Results;
@@ -16,50 +17,61 @@ namespace Volte.Commands.Modules
             var choices = pollText.Split(';');
 
             string embedBody;
+            var sb = new StringBuilder();
 
             switch (choices.Length - 1)
             {
                 case 1:
                 {
-                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n\n" +
-                                "Click the number below to vote.";
+                    embedBody = sb.AppendLine($"{new Emoji(EmojiService.One)} {choices[1]}")
+                        .AppendLine()
+                        .AppendLine("Click the number below to vote.")
+                        .ToString();
                     break;
                 }
 
                 case 2:
                 {
-                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n\n" +
-                                "Click one of the numbers below to vote.";
+                    embedBody = sb.AppendLine($"{new Emoji(EmojiService.One)} {choices[1]}")
+                        .AppendLine($"{new Emoji(EmojiService.Two)} {choices[2]}")
+                        .AppendLine()
+                        .AppendLine("Click the number below to vote.")
+                        .ToString();
                     break;
                 }
 
                 case 3:
                 {
-                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n\n" +
-                                "Click one of the numbers below to vote.";
+                    embedBody = sb.AppendLine($"{new Emoji(EmojiService.One)} {choices[1]}")
+                        .AppendLine($"{new Emoji(EmojiService.Two)} {choices[2]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[3]}")
+                        .AppendLine()
+                        .AppendLine("Click the number below to vote.")
+                        .ToString();
                     break;
                 }
 
                 case 4:
                 {
-                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.Four)} {choices[4]}\n\n" +
-                                "Click one of the numbers below to vote.";
+                    embedBody = sb.AppendLine($"{new Emoji(EmojiService.One)} {choices[1]}")
+                        .AppendLine($"{new Emoji(EmojiService.Two)} {choices[2]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[3]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[4]}")
+                        .AppendLine()
+                        .AppendLine("Click the number below to vote.")
+                        .ToString();
                     break;
                 }
 
                 case 5:
-                    embedBody = $"{new Emoji(EmojiService.One)} {choices[1]}\n" +
-                                $"{new Emoji(EmojiService.Two)} {choices[2]}\n" +
-                                $"{new Emoji(EmojiService.Three)} {choices[3]}\n" +
-                                $"{new Emoji(EmojiService.Four)} {choices[4]}\n" +
-                                $"{new Emoji(EmojiService.Five)} {choices[5]}\n\n" +
-                                "Click one of the numbers below to vote.";
+                    embedBody = sb.AppendLine($"{new Emoji(EmojiService.One)} {choices[1]}")
+                        .AppendLine($"{new Emoji(EmojiService.Two)} {choices[2]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[3]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[4]}")
+                        .AppendLine($"{new Emoji(EmojiService.Three)} {choices[5]}")
+                        .AppendLine()
+                        .AppendLine("Click the number below to vote.")
+                        .ToString();
                     break;
 
                 default:

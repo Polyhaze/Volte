@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Results;
@@ -21,9 +22,10 @@ namespace Volte.Commands.Modules
                 sw.Stop();
                 await msg.ModifyAsync(x =>
                 {
-                    e.WithDescription(
-                        $"{EmojiService.Clap} **Ping**: {sw.ElapsedMilliseconds}ms \n" +
-                        $"{EmojiService.OkHand} **API**: {Context.Client.Latency}ms");
+                    e.WithDescription(new StringBuilder()
+                        .AppendLine($"{EmojiService.Clap} **Ping**: {sw.ElapsedMilliseconds}ms")
+                        .AppendLine($"{EmojiService.OkHand} **API**: {Context.Client.Latency}ms")
+                        .ToString());
                     x.Embed = e.Build();
                 });
             });

@@ -34,8 +34,10 @@ namespace Volte.Commands.Modules
         {
             if (message is null)
             {
-                return Ok(
-                    $"The current welcome message for this server is ```\n{Context.GuildData.Configuration.Welcome.WelcomeMessage}```");
+                return Ok(new StringBuilder()
+                    .AppendLine("The current welcome message for this server is ```")
+                    .AppendLine($"{Context.GuildData.Configuration.Welcome.WelcomeChannel}```")
+                    .ToString());
             }
 
             Context.GuildData.Configuration.Welcome.WelcomeMessage = message;
@@ -76,7 +78,7 @@ namespace Volte.Commands.Modules
             {
                 return Ok(new StringBuilder()
                     .AppendLine("The current leaving message for this server is ```")
-                    .AppendLine($"{Context.GuildData.Configuration.Welcome.WelcomeMessage}```")
+                    .AppendLine($"{Context.GuildData.Configuration.Welcome.LeavingMessage}```")
                     .ToString());
             }
 
