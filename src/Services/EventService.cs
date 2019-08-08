@@ -3,27 +3,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
-using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
-using ICommandContext = Qmmands.ICommandContext;
+using Volte.Commands.Results;
 
 namespace Volte.Services
 {
     public sealed class EventService : VolteService
     {
+        private readonly LoggingService _logger;
+        private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
         private readonly BlacklistService _blacklist;
-        private readonly CommandService _commandService;
-        private readonly DatabaseService _db;
-        private readonly LoggingService _logger;
         private readonly PingChecksService _pingchecks;
+        private readonly CommandService _commandService;
 
         private readonly bool _shouldStream =
             !Config.Streamer.EqualsIgnoreCase("streamer here") || !Config.Streamer.IsNullOrWhitespace();
@@ -170,8 +168,10 @@ namespace Volte.Services
                 _logger.Info(LogSource.Module,
                     $"|              -After: {sw.Elapsed.Humanize()}");
                 if (!(data is null))
+                {
                     _logger.Info(LogSource.Module,
                         $"|              -Result Message: {data?.Message?.Id}");
+                }
 
                 _logger.Info(LogSource.Module,
                     "-------------------------------------------------");
@@ -185,8 +185,7 @@ namespace Volte.Services
             var reason = res switch
                 {
                 CommandNotFoundResult _ => "Unknown command.",
-                ExecutionFailedResult efr =>
-                $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}",
+                ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}",
                 ChecksFailedResult _ => "Insufficient permission.",
                 ParameterChecksFailedResult pcfr => $"Checks failed on parameter *{pcfr.Parameter.Name}**.",
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**."

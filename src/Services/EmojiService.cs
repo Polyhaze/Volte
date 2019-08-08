@@ -1,6 +1,3 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Services
 {
     public sealed class EmojiService : VolteService

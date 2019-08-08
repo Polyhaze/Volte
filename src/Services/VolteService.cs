@@ -1,7 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-
-namespace Volte.Services
+﻿namespace Volte.Services
 {
     public abstract class VolteService
     {

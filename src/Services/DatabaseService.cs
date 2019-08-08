@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using LiteDB;
 using Volte.Core;
@@ -11,9 +10,10 @@ namespace Volte.Services
 {
     public sealed class DatabaseService : VolteService
     {
+        public readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
+
         private readonly DiscordShardedClient _client;
         private readonly LoggingService _logger;
-        public readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
         public DatabaseService(DiscordShardedClient discordShardedClient,
             LoggingService loggingService)
@@ -22,10 +22,7 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        public GuildData GetData(SocketGuild guild)
-        {
-            return GetData(guild.Id);
-        }
+        public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
 
         public GuildData GetData(ulong id)
         {
@@ -47,8 +44,7 @@ namespace Volte.Services
         }
 
         private GuildData Create(SocketGuild guild)
-        {
-            return new GuildData
+            => new GuildData
             {
                 Id = guild.Id,
                 OwnerId = guild.OwnerId,
@@ -82,6 +78,5 @@ namespace Volte.Services
                     Warns = new List<Warn>()
                 }
             };
-        }
     }
 }

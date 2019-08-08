@@ -1,6 +1,3 @@
-using Discord;
-using Discord.Commands;
-
 namespace Volte.Core.Models.Guild
 {
     public sealed class Tag
@@ -11,11 +8,9 @@ namespace Volte.Core.Models.Guild
         public ulong GuildId { get; set; }
         public long Uses { get; set; }
 
-        public string SanitizeContent()
-        {
-            return Response
+        public string SanitizeContent() 
+            => Response
                 .Replace("@everyone", "@\u200Beveryone")
                 .Replace("@here", "@\u200Bhere");
-        }
     }
 }

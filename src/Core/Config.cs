@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Gommon;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Volte.Core.Models.BotConfig;
 using Volte.Services;
@@ -16,32 +17,6 @@ namespace Volte.Core
 
         private static readonly bool IsValidConfig =
             File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
-
-        public static string Token => _configuration.Token;
-
-        public static string CommandPrefix => _configuration.CommandPrefix;
-
-        public static ulong Owner => _configuration.Owner;
-
-        public static string Game => _configuration.Game;
-
-        public static string Streamer => _configuration.Streamer;
-
-        public static bool EnableDebugLogging => _configuration.EnableDebugLogging;
-
-        public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
-
-        public static uint SuccessColor => _configuration.SuccessEmbedColor;
-
-        public static uint ErrorColor => _configuration.ErrorEmbedColor;
-
-        public static bool LogAllCommands => _configuration.LogAllCommands;
-
-        public static JoinLeaveLog JoinLeaveLog => _configuration.JoinLeaveLog;
-
-        public static IEnumerable<ulong> BlacklistedOwners => _configuration.BlacklistedServerOwners;
-
-        public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
 
         public static bool CreateIfNotExists()
         {
@@ -95,6 +70,32 @@ namespace Volte.Core
                 return false;
             }
         }
+
+        public static string Token => _configuration.Token;
+
+        public static string CommandPrefix => _configuration.CommandPrefix;
+
+        public static ulong Owner => _configuration.Owner;
+
+        public static string Game => _configuration.Game;
+
+        public static string Streamer => _configuration.Streamer;
+
+        public static bool EnableDebugLogging => _configuration.EnableDebugLogging;
+
+        public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
+
+        public static uint SuccessColor => _configuration.SuccessEmbedColor;
+
+        public static uint ErrorColor => _configuration.ErrorEmbedColor;
+
+        public static bool LogAllCommands => _configuration.LogAllCommands;
+
+        public static JoinLeaveLog JoinLeaveLog => _configuration.JoinLeaveLog;
+
+        public static IEnumerable<ulong> BlacklistedOwners => _configuration.BlacklistedServerOwners;
+
+        public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
 
         [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
         private struct BotConfig

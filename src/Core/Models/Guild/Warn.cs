@@ -1,6 +1,4 @@
 ﻿using System;
-using Discord;
-using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Models.Guild
@@ -13,8 +11,6 @@ namespace Volte.Core.Models.Guild
         public DateTimeOffset Date { get; set; }
 
         public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+            => JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }

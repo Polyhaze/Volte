@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -13,9 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the bot's game (presence).")]
         [Remarks("Usage: |prefix|setgame {game}")]
         [RequireBotOwner]
-        public Task<ActionResult> SetGameAsync([Remainder] string game)
-        {
-            return Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game));
-        }
+        public Task<ActionResult> SetGameAsync([Remainder] string game) 
+            => Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game));
     }
 }

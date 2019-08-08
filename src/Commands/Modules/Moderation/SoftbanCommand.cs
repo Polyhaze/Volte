@@ -1,15 +1,13 @@
 using System.Net;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
-using Discord.Net;
 using Discord.WebSocket;
-using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
-using Volte.Commands.Results;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
+using Volte.Commands.Results;
+using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -28,7 +26,7 @@ namespace Volte.Commands.Modules
                 await Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")
                     .SendToAsync(user);
             }
-            catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
             {
                 Logger.Debug(LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!", e);
@@ -42,7 +40,7 @@ namespace Volte.Commands.Modules
                     .WithDefaultsFromContext(Context)
                     .WithTarget(user)
                     .WithReason(reason))
-            );
+                );
         }
     }
 }

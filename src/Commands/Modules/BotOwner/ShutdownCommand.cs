@@ -1,7 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -17,12 +15,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|shutdown")]
         [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
-        {
-            return Ok($"Goodbye! {EmojiService.Wave}", _ =>
+            => Ok($"Goodbye! {EmojiService.Wave}", _ =>
             {
                 Cts.Cancel();
                 return Task.CompletedTask;
             });
-        }
     }
 }

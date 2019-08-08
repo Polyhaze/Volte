@@ -1,21 +1,21 @@
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
-using Gommon;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
+using Gommon;
 
 namespace Volte.Services
 {
     public sealed class GuildService : VolteService
     {
-        private readonly DiscordShardedClient _client;
         private readonly LoggingService _logger;
+        private readonly DiscordShardedClient _client;
 
         public GuildService(LoggingService loggingService,
             DiscordShardedClient discordShardedClient)
@@ -43,10 +43,8 @@ namespace Volte.Services
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
                 .AddField("Set your moderator role", "$modrole {roleName}", true)
                 .AddField("Permissions", new StringBuilder()
-                    .AppendLine(
-                        "It is recommended to give me admin permission, to avoid any permission errors that may happen.")
-                    .AppendLine(
-                        "You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
+                    .AppendLine("It is recommended to give me admin permission, to avoid any permission errors that may happen.")
+                    .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
                     .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
@@ -79,8 +77,7 @@ namespace Volte.Services
             var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
             if (channel is null)
             {
-                _logger.Error(LogSource.Volte,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
+                _logger.Error(LogSource.Volte, "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
                 return;
             }
 

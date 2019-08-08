@@ -2,12 +2,12 @@
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Gommon;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
@@ -23,10 +23,8 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        public override Task DoAsync(EventArgs args)
-        {
-            return OnModActionCompleteAsync(args.Cast<ModActionEventArgs>());
-        }
+        public override Task DoAsync(EventArgs args) 
+            => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>());
 
         private async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
@@ -41,7 +39,6 @@ namespace Volte.Services
                 _logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
                 return;
             }
-
             var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
             _logger.Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
             var sb = new StringBuilder();
@@ -51,11 +48,11 @@ namespace Volte.Services
                 case ModActionType.Purge:
                 {
                     await e.WithDescription(sb.AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Moderator:** {args.Moderator}")
-                            .AppendLine($"**Messages Cleared:** {args.Count}")
-                            .AppendLine($"**Channel:** {args.Context.Channel.Mention}")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Moderator:** {args.Moderator}")
+                        .AppendLine($"**Messages Cleared:** {args.Count}")
+                        .AppendLine($"**Channel:** {args.Context.Channel.Mention}")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Purge)}");
                     break;
@@ -93,12 +90,12 @@ namespace Volte.Services
                 {
                     IncrementAndSave(args.Context);
                     await e.WithDescription(sb.AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
-                            .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
-                            .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
-                            .AppendLine($"**Reason:** {args.Reason}")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
+                        .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
+                        .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
+                        .AppendLine($"**Reason:** {args.Reason}")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                     break;
@@ -107,10 +104,10 @@ namespace Volte.Services
                 case ModActionType.ClearWarns:
                 {
                     await e.WithDescription(sb.AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Modertor:** {args.Moderator} ({args.Moderator.Id})")
-                            .AppendLine($"**User:** {args.TargetUser} ({args.TargetUser.Id})")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Modertor:** {args.Moderator} ({args.Moderator.Id})")
+                        .AppendLine($"**User:** {args.TargetUser} ({args.TargetUser.Id})")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
                     break;
@@ -120,12 +117,12 @@ namespace Volte.Services
                 {
                     IncrementAndSave(args.Context);
                     await e.WithDescription(sb.AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
-                            .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
-                            .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
-                            .AppendLine($"**Reason:** {args.Reason}")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
+                        .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
+                        .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
+                        .AppendLine($"**Reason:** {args.Reason}")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
                     break;
@@ -135,12 +132,12 @@ namespace Volte.Services
                 {
                     IncrementAndSave(args.Context);
                     await e.WithDescription(sb.AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
-                            .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
-                            .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
-                            .AppendLine($"**Reason:** {args.Reason}")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
+                        .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
+                        .AppendLine($"**User:** {args.TargetUser} ({args.TargetId})")
+                        .AppendLine($"**Reason:** {args.Reason}")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
                     break;
@@ -150,12 +147,12 @@ namespace Volte.Services
                 {
                     IncrementAndSave(args.Context);
                     await e.WithDescription(sb.AppendLine()
-                            .AppendLine($"**Action:** {args.ActionType}")
-                            .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
-                            .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
-                            .AppendLine($"**User:** {args.TargetId}")
-                            .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
-                            .ToString())
+                        .AppendLine($"**Action:** {args.ActionType}")
+                        .AppendLine($"**Moderator:** {args.Moderator} ({args.Moderator.Id})")
+                        .AppendLine($"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}")
+                        .AppendLine($"**User:** {args.TargetId}")
+                        .AppendLine($"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}")
+                        .ToString())
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                     break;

@@ -1,6 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Volte.Core.Models.Guild
 {
@@ -25,8 +23,6 @@ namespace Volte.Core.Models.Guild
         public GuildExtras Extras { get; set; }
 
         public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+            => JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }

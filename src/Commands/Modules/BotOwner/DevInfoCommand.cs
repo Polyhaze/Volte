@@ -3,8 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -17,9 +15,8 @@ namespace Volte.Commands.Modules
         [Description("Shows information about the bot and about the system it's hosted on.")]
         [Remarks("Usage: |prefix|devinfo")]
         [RequireBotOwner]
-        public Task<ActionResult> DevInfoAsync()
-        {
-            return Ok(new StringBuilder()
+        public Task<ActionResult> DevInfoAsync() 
+            => Ok(new StringBuilder()
                 .AppendLine("```json")
                 .AppendLine("== Core ==")
                 .AppendLine($"{Context.Client.Guilds.Count} guilds")
@@ -37,6 +34,6 @@ namespace Volte.Commands.Modules
                 .AppendLine($".NET Core Version: {Environment.Version}")
                 .AppendLine($"Culture: {CultureInfo.InstalledUICulture.EnglishName}")
                 .AppendLine("```").ToString());
-        }
+
     }
 }

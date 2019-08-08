@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
-using Gommon;
 using Microsoft.Extensions.DependencyInjection;
+using Qmmands;
+using Gommon;
 using Volte.Core.Models.Guild;
 using Volte.Services;
-using ICommandContext = Qmmands.ICommandContext;
 
 namespace Volte.Commands
 {
@@ -37,46 +37,22 @@ namespace Volte.Commands
 
         public GuildData GuildData { get; }
 
-        public Task ReactFailureAsync()
-        {
-            return Message.AddReactionAsync(new Emoji(_emojiService.X));
-        }
+        public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 
-        public Task ReactSuccessAsync()
-        {
-            return Message.AddReactionAsync(new Emoji(_emojiService.BallotBoxWithCheck));
-        }
+        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BallotBoxWithCheck));
 
-        public Embed CreateEmbed(string content)
-        {
-            return new EmbedBuilder().WithSuccessColor().WithAuthor(User)
-                .WithDescription(content).Build();
-        }
+        public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
+            .WithDescription(content).Build();
 
-        public EmbedBuilder CreateEmbedBuilder(string content = null)
-        {
-            return new EmbedBuilder()
-                .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
-        }
+        public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
+            .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
 
-        public Task ReplyAsync(string content)
-        {
-            return Channel.SendMessageAsync(content);
-        }
+        public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
 
-        public Task ReplyAsync(Embed embed)
-        {
-            return embed.SendToAsync(Channel);
-        }
+        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
 
-        public Task ReplyAsync(EmbedBuilder embed)
-        {
-            return embed.SendToAsync(Channel);
-        }
+        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
 
-        public Task ReactAsync(string unicode)
-        {
-            return Message.AddReactionAsync(new Emoji(unicode));
-        }
+        public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
     }
 }

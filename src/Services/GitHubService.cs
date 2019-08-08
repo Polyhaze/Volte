@@ -1,5 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using System;
 
 namespace Volte.Services
 {

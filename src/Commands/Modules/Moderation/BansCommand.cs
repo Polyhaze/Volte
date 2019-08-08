@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
-using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
+using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -19,8 +18,8 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
-            return !banList.Any()
-                ? BadRequest("This server doesn't have anyone banned.")
+            return !banList.Any() 
+                ? BadRequest("This server doesn't have anyone banned.") 
                 : Ok(banList.Select(b => $"**{b.User}**: `{b.Reason ?? "No reason provided."}`").Join('\n'));
         }
     }

@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
@@ -36,6 +34,7 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
+
             if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
             {
                 Context.GuildData.Extras.SelfRoles.Remove(role.Name);

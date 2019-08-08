@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Checks;
@@ -18,7 +17,10 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public async Task<ActionResult> MentionRoleAsync([Remainder] SocketRole role)
         {
-            if (role.IsMentionable) return Ok(role.Mention, null, false);
+            if (role.IsMentionable)
+            {
+                return Ok(role.Mention, null, false);
+            }
 
             await role.ModifyAsync(x => x.Mentionable = true);
             return Ok(role.Mention, async _ => await role.ModifyAsync(x => x.Mentionable = false), false);

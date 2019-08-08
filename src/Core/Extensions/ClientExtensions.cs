@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core;
@@ -12,21 +11,15 @@ namespace Gommon
     public static partial class Extensions
     {
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
-        {
-            return withAdmin
+            => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
-        }
 
         public static SocketUser GetOwner(this BaseSocketClient client)
-        {
-            return client.GetUser(Config.Owner);
-        }
+            => client.GetUser(Config.Owner);
 
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
-        {
-            return client.GetGuild(405806471578648588);
-        }
+            => client.GetGuild(405806471578648588);
 
         public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
         {
@@ -48,10 +41,10 @@ namespace Gommon
                         return autorole.DoAsync(new UserJoinedEventArgs(user));
                     return Task.CompletedTask;
                 };
-                client.UserLeft += user =>
-                    Config.EnabledFeatures.Welcome
-                        ? welcome.LeaveAsync(new UserLeftEventArgs(user))
-                        : Task.CompletedTask;
+                client.UserLeft += user => 
+                    Config.EnabledFeatures.Welcome 
+                    ? welcome.LeaveAsync(new UserLeftEventArgs(user)) 
+                    : Task.CompletedTask;
                 client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c));
                 client.MessageReceived += async s =>
                 {
