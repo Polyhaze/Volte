@@ -1,5 +1,5 @@
 ﻿using Discord;
- 
+using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Models.BotConfig

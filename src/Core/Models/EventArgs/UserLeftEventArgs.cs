@@ -1,5 +1,5 @@
 using Discord;
- 
+using Discord.Commands;
 using Discord.WebSocket;
 
 namespace Volte.Core.Models.EventArgs

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using Discord;
- 
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

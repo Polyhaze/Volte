@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
- 
+using Discord.Commands;
 using Qmmands;
 using ICommandContext = Qmmands.ICommandContext;
 

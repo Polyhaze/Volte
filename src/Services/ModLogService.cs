@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
- 
+using Discord.Commands;
 using Gommon;
 using Volte.Commands;
 using Volte.Core;

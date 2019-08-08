@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using Discord;
- 
+using Discord.Commands;
 using Gommon;
 using Qmmands;
 using ICommandContext = Qmmands.ICommandContext;

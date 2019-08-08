@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
- 
+using Discord.Commands;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
