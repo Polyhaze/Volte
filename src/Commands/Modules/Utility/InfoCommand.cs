@@ -27,62 +27,10 @@ namespace Volte.Commands.Modules
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{Db.GetData(Context.Guild).Configuration.CommandPrefix}invite`", true)
-                .AddField(".NET Core Version",
-                    GetNetCoreVersion(out var ver) ? ver : "Couldn't fetch the version of .NET Core.", true)
+                .AddField(".NET Core Version", Environment.Version, true)
                 .AddField("Operating System", Environment.OSVersion.Platform, true)
                 .AddField("Uptime", (DateTime.Now - Process.GetCurrentProcess().StartTime).Humanize(3), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
-
-        private bool GetNetCoreVersion(out string version)
-        {
-            Process process;
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix:
-                {
-                    process = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            FileName = "/bin/bash",
-                            Arguments = "-c \"dotnet --version\"",
-                            RedirectStandardError = true,
-                            RedirectStandardOutput = true
-                        }
-                    };
-                    process.Start();
-                    version = process.StandardOutput.ReadToEnd();
-                    process.Dispose();
-                    return true;
-                }
-
-                case PlatformID.Win32NT:
-                    process = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            FileName = "cmd.exe",
-                            Arguments = "/C dotnet --version",
-                            RedirectStandardError = true,
-                            RedirectStandardOutput = true
-                        }
-                    };
-                    process.Start();
-                    version = process.StandardOutput.ReadToEnd();
-                    process.Dispose();
-                    return true;
-
-                default:
-                    version = string.Empty;
-                    return false;
-            }
-        }
 
         /*[Obsolete] //currently doesn't work properly in production or in debugging, put on the sidelines
         private string GetRamUsage()
