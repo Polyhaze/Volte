@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
 using RestSharp;
+using Volte;
 using Volte.Core;
 using Volte.Services;
 using Version = Volte.Version;
@@ -35,7 +36,7 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
-                    LogLevel = Config.EnableDebugLogging
+                    LogLevel = Version.ReleaseType is ReleaseType.Development
                         ? LogSeverity.Debug
                         : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
