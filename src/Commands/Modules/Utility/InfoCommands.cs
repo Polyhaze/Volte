@@ -38,20 +38,20 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|userinfo [user]")]
         public Task<ActionResult> UserInfoAsync(SocketGuildUser user = null)
         {
-            var target = user ?? Context.User;
+            user ??= Context.User;
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithThumbnailUrl(target.GetAvatarUrl())
+                .WithThumbnailUrl(user.GetAvatarUrl())
                 .WithTitle("User Info")
-                .AddField("User ID", target.Id, true)
-                .AddField("Game", target.Activity?.Name ?? "Nothing", true)
-                .AddField("Status", target.Status, true)
-                .AddField("Is Bot", target.IsBot, true)
+                .AddField("User ID", user.Id, true)
+                .AddField("Game", user.Activity?.Name ?? "Nothing", true)
+                .AddField("Status", user.Status, true)
+                .AddField("Is Bot", user.IsBot, true)
                 .AddField("Account Created",
-                    $"{target.CreatedAt.FormatDate()}, {target.CreatedAt.FormatFullTime()}")
+                    $"{user.CreatedAt.FormatDate()}, {user.CreatedAt.FormatFullTime()}")
                 .AddField("Joined This Guild",
-                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatDate() : "\u200B")}, " +
-                    $"{(target.JoinedAt.HasValue ? target.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
+                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatDate() : "\u200B")}, " +
+                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
         }
 
         [Command("ServerInfo", "Si")]
