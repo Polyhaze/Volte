@@ -17,19 +17,16 @@ namespace Volte.Commands.Modules
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("Usage: |prefix|info")]
-        public Task<ActionResult> InfoAsync()
+        public async Task<ActionResult> InfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
-                .AddField("Author",
-                    "<@168548441939509248> and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
-                .AddField("Language", $"C# - Discord.Net {Version.DiscordNetVersion}", true)
+                .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)} and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
+                .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Servers", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
-                .AddField("Invite Me", $"`{Db.GetData(Context.Guild).Configuration.CommandPrefix}invite`", true)
-                .AddField(".NET Core Version", Environment.Version, true)
-                .AddField("Operating System", Environment.OSVersion.Platform, true)
+                .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
                 .AddField("Uptime", GetUptime(), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
 

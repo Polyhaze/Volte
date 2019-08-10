@@ -202,7 +202,7 @@ namespace Volte.Services
             {
                 await embed.AddField("Error in Command:", c.Name)
                     .AddField("Error Reason:", reason)
-                    .AddField("Correct Usage", c.SanitizeRemarks(ctx))
+                    .AddField("Correct Usage", c.GetUsage(ctx))
                     .WithAuthor(ctx.User)
                     .WithErrorColor()
                     .SendToAsync(ctx.Channel);

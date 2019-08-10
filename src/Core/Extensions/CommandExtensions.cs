@@ -16,13 +16,12 @@ namespace Gommon
         public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
 
-        public static string SanitizeRemarks(this Command c, VolteContext ctx)
+        public static string GetUsage(this Command c, VolteContext ctx)
         {
-            ctx.ServiceProvider.Get<DatabaseService>(out var db);
             var aliases = $"({c.FullAliases.Join('|')})";
             return (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
-                .Replace("|prefix|", db.GetData(ctx.Guild).Configuration.CommandPrefix)
+                .Replace("|prefix|", ctx.GuildData.Configuration.CommandPrefix)
                 .Replace("Usage: ", string.Empty);
         }
 
@@ -46,5 +45,8 @@ namespace Gommon
 
             return Task.FromResult(loadedTypes);
         }
+
+        public static Command GetCommand(this CommandService service, string name) 
+            => service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
     }
 }

@@ -51,7 +51,7 @@ namespace Volte.Commands.Modules
                     .AppendLine($"**Command**: {command.Name}")
                     .AppendLine($"**Module**: {command.Module.SanitizeName()}")
                     .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
-                    .AppendLine($"**Usage**: {command.SanitizeRemarks(Context)}")
+                    .AppendLine($"**Usage**: {command.GetUsage(Context)}")
                     .ToString());
             }
 
