@@ -162,7 +162,7 @@ namespace Volte.Services
                 _logger.Info(LogSource.Module,
                     $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
                 _logger.Info(LogSource.Module,
-                    $"|        -Time Issued: {DateTime.Now}");
+                    $"|        -Time Issued: {DateTime.UtcNow.Humanize()}");
                 _logger.Info(LogSource.Module,
                     $"|           -Executed: {res.IsSuccessful} ");
                 _logger.Info(LogSource.Module,
@@ -186,10 +186,9 @@ namespace Volte.Services
                 {
                 CommandNotFoundResult _ => "Unknown command.",
                 ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}",
-                ChecksFailedResult _ => "Insufficient permission.",
+                ChecksFailedResult cfr => cfr.Reason,
                 ParameterChecksFailedResult pcfr => $"Checks failed on parameter *{pcfr.Parameter.Name}**.",
-                ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**."
-                ,
+                ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**.",
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 _ => "Unknown error."
@@ -198,10 +197,10 @@ namespace Volte.Services
             if (res is ExecutionFailedResult efr2)
                 _logger.Error(LogSource.Module, string.Empty, efr2.Exception);
 
-            if (!(res is CommandNotFoundResult) && !(res is ChecksFailedResult))
+            if (!(res is CommandNotFoundResult) && reason.EqualsIgnoreCase("Insufficient permission."))
             {
-                await embed.AddField("Error in Command:", c.Name)
-                    .AddField("Error Reason:", reason)
+                await embed.AddField("Error in Command", c.Name)
+                    .AddField("Error Reason", reason)
                     .AddField("Correct Usage", c.GetUsage(ctx))
                     .WithAuthor(ctx.User)
                     .WithErrorColor()
@@ -222,7 +221,7 @@ namespace Volte.Services
                     _logger.Error(LogSource.Module,
                         $"|         -In Channel: #{ctx.Channel.Name} ({ctx.Channel.Id})");
                     _logger.Error(LogSource.Module,
-                        $"|        -Time Issued: {DateTime.Now}");
+                        $"|        -Time Issued: {DateTime.UtcNow.Humanize()}");
                     _logger.Error(LogSource.Module,
                         $"|           -Executed: {res.IsSuccessful} | Reason: {reason}");
                     _logger.Error(LogSource.Module,

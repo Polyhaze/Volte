@@ -1,5 +1,3 @@
-using System;
-using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;

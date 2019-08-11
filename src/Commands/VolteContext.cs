@@ -34,7 +34,6 @@ namespace Volte.Commands
         public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }
-
         public GuildData GuildData { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));

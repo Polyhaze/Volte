@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
             try
             {
                 url =
-                    $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>().ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
+                    $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>()?.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
             }
             catch (ArgumentNullException) { }
 
