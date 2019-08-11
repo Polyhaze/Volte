@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Volte.Services;
 
 namespace Volte.Commands
 {
-    public sealed class VolteContext : ICommandContext
+    public sealed class VolteContext : CommandContext
     {
         private readonly EmojiService _emojiService;
 

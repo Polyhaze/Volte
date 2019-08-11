@@ -10,10 +10,10 @@ namespace Volte.Commands.TypeParsers
     [VolteTypeParser]
     public sealed class ColorParser : TypeParser<Color>
     {
-        public override Task<TypeParserResult<Color>> ParseAsync(
+        public override ValueTask<TypeParserResult<Color>> ParseAsync(
             Parameter parameter, 
             string value, 
-            ICommandContext context, 
+            CommandContext context, 
             IServiceProvider provider)
         {
             Color? color = null;
@@ -32,9 +32,8 @@ namespace Volte.Commands.TypeParsers
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return Task.FromResult(
-                            TypeParserResult<Color>.Unsuccessful(
-                                "A value in an RGB sequence may not be over the value of 255."));
+                        return new ValueTask<TypeParserResult<Color>>(TypeParserResult<Color>.Unsuccessful(
+                            "A value in an RGB sequence may not be over the value of 255."));
                     }
 
                     color = new Color(r, g, b);
@@ -49,7 +48,7 @@ namespace Volte.Commands.TypeParsers
                 }
             }
 
-            return Task.FromResult(color is null
+            return new ValueTask<TypeParserResult<Color>>(color is null
                 ? TypeParserResult<Color>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
                 : TypeParserResult<Color>.Successful(color.Value));
         }

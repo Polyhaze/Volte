@@ -5,9 +5,9 @@ using Qmmands;
 
 namespace Volte.Commands.Checks
 {
-    public sealed class RequireBotOwnerAttribute : CheckBaseAttribute
+    public sealed class RequireBotOwnerAttribute : CheckAttribute
     {
-        public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider services)
+        public override async ValueTask<CheckResult> CheckAsync(CommandContext context, IServiceProvider services)
         {
             var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsBotOwner()) return CheckResult.Successful;

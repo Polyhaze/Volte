@@ -11,10 +11,10 @@ namespace Volte.Commands.TypeParsers
     [VolteTypeParser]
     public sealed class UserParser : TypeParser<SocketGuildUser>
     {
-        public override Task<TypeParserResult<SocketGuildUser>> ParseAsync(
+        public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(
             Parameter param,
             string value,
-            ICommandContext context,
+            CommandContext context,
             IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
@@ -33,13 +33,13 @@ namespace Volte.Commands.TypeParsers
                     x.Username.EqualsIgnoreCase(value)
                     || x.Cast<IGuildUser>().Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<SocketGuildUser>.Unsuccessful(
+                    return new ValueTask<TypeParserResult<SocketGuildUser>>(TypeParserResult<SocketGuildUser>.Unsuccessful(
                         "Multiple users found, try mentioning the user or using their ID."));
 
                 user = match.FirstOrDefault();
             }
 
-            return Task.FromResult(user is null
+            return new ValueTask<TypeParserResult<SocketGuildUser>>(user is null
                 ? TypeParserResult<SocketGuildUser>.Unsuccessful("User not found.")
                 : TypeParserResult<SocketGuildUser>.Successful(user));
         }

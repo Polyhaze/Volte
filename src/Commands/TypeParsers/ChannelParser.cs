@@ -11,10 +11,10 @@ namespace Volte.Commands.TypeParsers
     [VolteTypeParser]
     public sealed class ChannelParser : TypeParser<SocketTextChannel>
     {
-        public override Task<TypeParserResult<SocketTextChannel>> ParseAsync(
+        public override ValueTask<TypeParserResult<SocketTextChannel>> ParseAsync(
             Parameter param,
             string value,
-            ICommandContext context,
+            CommandContext context,
             IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
@@ -28,11 +28,11 @@ namespace Volte.Commands.TypeParsers
                 var match = ctx.Guild.TextChannels.Where(x => x.Name.EqualsIgnoreCase(value))
                     .ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<SocketTextChannel>.Unsuccessful(
+                    return new ValueTask<TypeParserResult<SocketTextChannel>>(TypeParserResult<SocketTextChannel>.Unsuccessful(
                         "Multiple channels found. Try mentioning the channel or using its ID."));
             }
 
-            return Task.FromResult(channel is null
+            return new ValueTask<TypeParserResult<SocketTextChannel>>(channel is null
                 ? TypeParserResult<SocketTextChannel>.Unsuccessful("Channel not found.")
                 : TypeParserResult<SocketTextChannel>.Successful(channel));
         }

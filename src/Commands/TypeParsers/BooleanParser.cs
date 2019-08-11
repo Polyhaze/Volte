@@ -23,19 +23,19 @@ namespace Volte.Commands.TypeParsers
                 "0"
             };
 
-        public override Task<TypeParserResult<bool>> ParseAsync(
+        public override ValueTask<TypeParserResult<bool>> ParseAsync(
             Parameter param,
             string value,
-            ICommandContext context,
+            CommandContext context,
             IServiceProvider provider)
         {
             if (TrueValues.ContainsIgnoreCase(value))
-                return Task.FromResult(TypeParserResult<bool>.Successful(true));
+                return new ValueTask<TypeParserResult<bool>>(TypeParserResult<bool>.Successful(true));
 
             if (FalseValues.ContainsIgnoreCase(value))
-                return Task.FromResult(TypeParserResult<bool>.Successful(false));
+                return new ValueTask<TypeParserResult<bool>>(TypeParserResult<bool>.Successful(false));
 
-            return Task.FromResult(bool.TryParse(value, out var result)
+            return new ValueTask<TypeParserResult<bool>>(bool.TryParse(value, out var result)
                 ? TypeParserResult<bool>.Successful(result)
                 : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value."));
         }

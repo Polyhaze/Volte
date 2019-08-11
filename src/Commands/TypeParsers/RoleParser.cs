@@ -11,10 +11,10 @@ namespace Volte.Commands.TypeParsers
     [VolteTypeParser]
     public sealed class RoleParser : TypeParser<SocketRole>
     {
-        public override Task<TypeParserResult<SocketRole>> ParseAsync(
+        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(
             Parameter param,
             string value,
-            ICommandContext context,
+            CommandContext context,
             IServiceProvider provider)
         {
             var ctx = (VolteContext) context;
@@ -26,16 +26,15 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return Task.FromResult(TypeParserResult<SocketRole>.Unsuccessful(
-                        "Multiple roles found. Try mentioning the role or using its ID.")
-                    );
+                    return new ValueTask<TypeParserResult<SocketRole>>(TypeParserResult<SocketRole>.Unsuccessful(
+                        "Multiple roles found. Try mentioning the role or using its ID."));
 
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }
 
-            return role is null
+            return new ValueTask<TypeParserResult<SocketRole>>(role is null
                 ? Task.FromResult(TypeParserResult<SocketRole>.Unsuccessful($"Role `{value}` not found."))
-                : Task.FromResult(TypeParserResult<SocketRole>.Successful(role));
+                : Task.FromResult(TypeParserResult<SocketRole>.Successful(role)));
         }
     }
 }

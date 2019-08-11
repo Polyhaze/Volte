@@ -27,10 +27,10 @@ namespace Gommon
                 .AddSingleton<CancellationTokenSource>()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
-                    IgnoreExtraArguments = true,
-                    CaseSensitive = false,
+                    IgnoresExtraArguments = true,
+                    StringComparison = StringComparison.OrdinalIgnoreCase,
                     DefaultRunMode = RunMode.Sequential,
-                    SeparatorRequirement = SeparatorRequirement.None,
+                    SeparatorRequirement = SeparatorRequirement.SeparatorOrWhitespace,
                     Separator = "irrelevant",
                     NullableNouns = null
                 }))

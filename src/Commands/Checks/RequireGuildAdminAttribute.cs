@@ -6,9 +6,9 @@ using Qmmands;
 
 namespace Volte.Commands.Checks
 {
-    public sealed class RequireGuildAdminAttribute : CheckBaseAttribute
+    public sealed class RequireGuildAdminAttribute : CheckAttribute
     {
-        public override async Task<CheckResult> CheckAsync(ICommandContext context, IServiceProvider provider)
+        public override async ValueTask<CheckResult> CheckAsync(CommandContext context, IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsAdmin(provider.Cast<ServiceProvider>())) return CheckResult.Successful;

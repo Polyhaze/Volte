@@ -115,7 +115,7 @@ namespace Volte.Services
             }
         }
 
-        private async Task OnCommandAsync(Command c, IResult res, ICommandContext context, Stopwatch sw)
+        private async Task OnCommandAsync(Command c, IResult res, CommandContext context, Stopwatch sw)
         {
             var ctx = context.Cast<VolteContext>();
             var commandName = ctx.Message.Content.Split(" ")[0];
@@ -197,7 +197,7 @@ namespace Volte.Services
             if (res is ExecutionFailedResult efr2)
                 _logger.Error(LogSource.Module, string.Empty, efr2.Exception);
 
-            if (!(res is CommandNotFoundResult) && reason.EqualsIgnoreCase("Insufficient permission."))
+            if (!(res is CommandNotFoundResult) && !(res is ChecksFailedResult))
             {
                 await embed.AddField("Error in Command", c.Name)
                     .AddField("Error Reason", reason)
