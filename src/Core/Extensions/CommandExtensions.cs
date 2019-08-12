@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
+using Volte.Core;
 using Volte.Services;
 using Module = Qmmands.Module;
 
@@ -48,5 +49,11 @@ namespace Gommon
 
         public static Command GetCommand(this CommandService service, string name) 
             => service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
+
+        public static int GetTotalTypeParsers(this CommandService _)
+        {
+            var customParsers = typeof(VolteBot).Assembly.GetTypes().Count(x => x.HasAttribute<VolteTypeParserAttribute>());
+            return customParsers + 12; //add the number of primitive typeparsers, minus bool since we override that one.
+        }
     }
 }

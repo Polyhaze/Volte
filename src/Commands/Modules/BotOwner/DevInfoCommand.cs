@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -19,11 +20,12 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> DevInfoAsync() 
             => Ok(Format.Code(new StringBuilder()
                     .AppendLine("== Core ==")
-                    .AppendLine($"{Context.Client.Guilds.Count} guilds")
-                    .AppendLine($"{Context.Client.Guilds.Sum(x => x.Channels.Count)} channels")
+                    .AppendLine($"{Context.Client.Guilds.Count} Guilds")
+                    .AppendLine($"{Context.Client.Guilds.Sum(x => x.Channels.Count)} Text/Voice Channels")
                     .AppendLine("== Commands ==")
-                    .AppendLine($"{CommandService.GetAllModules().Count} modules")
-                    .AppendLine($"{CommandService.GetAllCommands().Count} commands")
+                    .AppendLine($"{CommandService.GetAllModules().Count} Modules")
+                    .AppendLine($"{CommandService.GetAllCommands().Count} Commands")
+                    .AppendLine($"{CommandService.GetTotalTypeParsers()} TypeParsers")
                     .AppendLine("== Environment ==")
                     .AppendLine($"OS: {Environment.OSVersion}")
                     .AppendLine($"Processor Count: {Environment.ProcessorCount}")
