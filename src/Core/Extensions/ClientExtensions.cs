@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace Gommon
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
             => client.GetGuild(405806471578648588);
 
-        public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, ServiceProvider provider)
+        public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, IServiceProvider provider)
         {
             provider.Get<WelcomeService>(out var welcome);
             provider.Get<GuildService>(out var guild);

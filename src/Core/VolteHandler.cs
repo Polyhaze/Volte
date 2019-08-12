@@ -28,7 +28,7 @@ namespace Volte.Core
             _logger = loggingService;
         }
 
-        public async Task InitializeAsync(ServiceProvider provider)
+        public async Task InitializeAsync(IServiceProvider provider)
         {
             var sw = Stopwatch.StartNew();
             var l = await _service.AddTypeParsersAsync();

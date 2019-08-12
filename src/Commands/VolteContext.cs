@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@ namespace Volte.Commands
         private readonly EmojiService _emojiService;
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, ServiceProvider provider)
+        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, IServiceProvider provider)
         {
             provider.Get(out _emojiService);
             provider.Get<DatabaseService>(out var db);
@@ -28,7 +29,7 @@ namespace Volte.Commands
         }
 
         public DiscordShardedClient Client { get; }
-        public ServiceProvider ServiceProvider { get; }
+        public IServiceProvider ServiceProvider { get; }
         public SocketGuild Guild { get; }
         public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }

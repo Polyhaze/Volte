@@ -1,6 +1,6 @@
+using System;
 using Discord.WebSocket;
 using Gommon;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Core.Models.Guild;
 using Volte.Services;
@@ -14,7 +14,7 @@ namespace Volte.Core.Models.EventArgs
         public VolteContext Context { get; }
         public GuildData Data { get; }
 
-        public MessageReceivedEventArgs(SocketMessage s, ServiceProvider provider)
+        public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
         {
             Message = s.Cast<SocketUserMessage>();
             provider.Get(out _db);

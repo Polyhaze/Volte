@@ -17,7 +17,7 @@ namespace Volte.Commands.TypeParsers
             CommandContext context,
             IServiceProvider provider)
         {
-            var ctx = (VolteContext) context;
+            var ctx = context.Cast<VolteContext>();
             SocketRole role = default;
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
                 role = ctx.Guild.GetRole(id).Cast<SocketRole>();

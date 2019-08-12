@@ -17,7 +17,7 @@ namespace Volte.Core
         public static Task StartAsync()
             => new VolteBot().LoginAsync();
 
-        private static void BuildServiceProvider(int shardCount, out ServiceProvider provider)
+        private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
             => provider = new ServiceCollection()
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
@@ -74,18 +74,17 @@ namespace Volte.Core
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested by the bot owner; shutting down.");
-                await ShutdownAsync(client, cts, provider);
+                await ShutdownAsync(client, cts);
             }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts,
-            ServiceProvider provider)
+        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts)
         {
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();
-            Dispose(cts, provider, client);
+            Dispose(cts, client);
             Environment.Exit(0);
         }
 
