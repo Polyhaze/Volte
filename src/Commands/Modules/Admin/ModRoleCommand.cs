@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("Usage: |prefix|modrole {role}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> ModRoleAsync(SocketRole role)
+        public Task<ActionResult> ModRoleAsync([Remainder] SocketRole role)
         {
             Context.GuildData.Configuration.Moderation.ModRole = role.Id;
             Db.UpdateData(Context.GuildData);

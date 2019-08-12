@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Gommon;
 using Qmmands;
+using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -16,13 +17,18 @@ namespace Volte.Commands.Modules
         {
             if (role.Color.RawValue is 0) return BadRequest("Role does not have a color.");
 
-            await Context.Channel.SendFileAsync(await role.Color.ToPureColorImageAsync(), "color.png", null, embed: Context.CreateEmbedBuilder(new StringBuilder()
-                    .AppendLine($"**Dec:** {role.Color.RawValue}")
-                    .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}")
-                    .ToString())
-                .WithTitle($"Color of Role \"{role.Name}\"")
-                .WithImageUrl("attachment://color.png")
-                .Build());
+            using (var outStream = ImageHelper.CreateColorImage(new Rgba32(role.Color.R, role.Color.G, role.Color.B)))
+            {
+                await Context.Channel.SendFileAsync(outStream, "role.png", null, embed: Context.CreateEmbedBuilder()
+                    .WithColor(role.Color)
+                    .WithTitle($"Color of Role {role.Name}")
+                    .WithDescription(new StringBuilder()
+                        .AppendLine($"**Hex:** {role.Color.ToString().ToUpper()}")
+                        .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}")
+                        .ToString())
+                    .WithImageUrl("attachment://role.png")
+                    .Build());
+            }
             return None();
 
         }
