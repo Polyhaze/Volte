@@ -44,7 +44,7 @@ namespace Volte.Services
             var m = await args.Context.CreateEmbed("Don't send invites here.").SendToAsync(args.Context.Channel);
             _logger.Debug(LogSource.Volte,
                 $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
-            _ = Executor.ExecuteAfterDelayAsync(3000, () => m.DeleteAsync());
+            _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), () => m.DeleteAsync());
         }
     }
 }

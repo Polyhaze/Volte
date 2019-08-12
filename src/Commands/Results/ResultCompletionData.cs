@@ -13,7 +13,7 @@ namespace Volte.Commands.Results
         public ResultCompletionData() 
             => Message = null;
 
-        public static implicit operator Task<ResultCompletionData>(ResultCompletionData data) 
-            => Task.FromResult(data);
+        public static implicit operator ValueTask<ResultCompletionData>(ResultCompletionData data) 
+            => new ValueTask<ResultCompletionData>(data);
     }
 }

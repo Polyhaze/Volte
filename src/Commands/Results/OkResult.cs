@@ -26,7 +26,7 @@ namespace Volte.Commands.Results
         private Func<Task> SeparateLogic { get; }
         private EmbedBuilder Embed { get; }
 
-        public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 

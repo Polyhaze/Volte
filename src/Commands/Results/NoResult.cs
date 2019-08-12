@@ -11,7 +11,7 @@ namespace Volte.Commands.Results
 
         private readonly Func<Task> _after;
 
-        public override Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        public override ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (_after is null)
             {

@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
 
             return Ok($"{EmojiService.BallotBoxWithCheck} Deleted that message.", async m =>
             {
-                _ = Executor.ExecuteAfterDelayAsync(3000, async () =>
+                _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
                 {
                     await Context.Message.DeleteAsync();
                     await m.DeleteAsync();

@@ -15,7 +15,7 @@ namespace Volte.Commands.Results
 
         public override bool IsSuccessful => false;
 
-        public override async Task<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             var message = await ctx.CreateEmbedBuilder()
                 .WithTitle("No can do, partner.")
