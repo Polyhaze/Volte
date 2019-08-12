@@ -36,8 +36,14 @@ namespace Volte.Core.Models
         public SocketUserMessage Message(ulong id) 
             => Context.Channel.GetCachedMessage(id) as SocketUserMessage;
 
-        public SocketUserMessage Message(string id) 
-            => Message(ulong.Parse(id));
+        public SocketUserMessage Message(string id)
+        {
+            if (ulong.TryParse(id, out var ulongId))
+            {
+                return Message(ulongId);
+            }
+            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
+        }
 
     }
 }
