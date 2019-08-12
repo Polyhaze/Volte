@@ -64,13 +64,9 @@ namespace Volte.Services
                 var result = await _commandService.ExecuteAsync(cmd, args.Context, args.Context.ServiceProvider);
 
                 if (result is CommandNotFoundResult) return;
-                var targetCommand = _commandService.GetAllCommands()
-                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd))
-                                    ?? _commandService.GetAllCommands()
-                                        .FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(cmd.Split(' ')[0]));
 
                 sw.Stop();
-                await _commandsService.OnCommandAsync(targetCommand, result, args.Context, sw);
+                await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
 
                 if (args.Data.Configuration.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
             }
