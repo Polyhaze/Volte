@@ -10,10 +10,8 @@ namespace Volte.Commands.TypeParsers
 
         public bool OverridePrimitive { get; set; }
 
-        public VolteTypeParserAttribute(bool overridePrimitive = false)
-        {
-            OverridePrimitive = overridePrimitive;
-        }
+        public VolteTypeParserAttribute(bool overridePrimitive = false) 
+            => OverridePrimitive = overridePrimitive;
 
     }
 }

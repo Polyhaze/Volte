@@ -50,18 +50,14 @@ namespace Volte.Commands.Modules
         [Description("Deletes a tag if it exists.")]
         [Remarks("Usage: |prefix|tagdelete {name}")]
         [RequireGuildModerator]
-        public Task<ActionResult> TagDeleteAsync([Remainder] string name)
+        public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
         {
-            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag is null)
-                return BadRequest($"Cannot delete the tag **{name}**, as it doesn't exist.");
-
-            var user = Context.Client.GetUser(tag.CreatorId);
+            var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
 
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.UpdateData(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"{(user != null ? user.Mention : $"user with ID **{tag.CreatorId}**")} with **{tag.Uses}** " +
+                      $"**{user}**" +
                       $"{"use".ToQuantity(tag.Uses)}.");
         }
     }

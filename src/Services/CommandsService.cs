@@ -5,7 +5,6 @@ using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands;
 using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Models;
@@ -17,10 +16,8 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
 
-        public CommandsService(LoggingService loggingService)
-        {
-            _logger = loggingService;
-        }
+        public CommandsService(LoggingService loggingService) 
+            => _logger = loggingService;
 
         public async Task OnCommandAsync(CommandCalledEventArgs args)
         {
