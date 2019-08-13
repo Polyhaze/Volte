@@ -21,9 +21,9 @@ namespace Volte.Commands.Modules
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
-                var user = Context.Client.GetUser(tag.CreatorId);
+                var user = Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(
-                    $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by {user.Mention}.");
+                    $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
             }
 
             var newTag = new Tag

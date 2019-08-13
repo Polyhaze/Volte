@@ -8,7 +8,7 @@ using Volte.Core.Models.Guild;
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class TagTypeParser : TypeParser<Tag>
+    public sealed class TagParser : TypeParser<Tag>
     {
         public override ValueTask<TypeParserResult<Tag>> ParseAsync(
             Parameter parameter,

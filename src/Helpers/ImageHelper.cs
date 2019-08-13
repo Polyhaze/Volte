@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿/*using System;
+using System.IO;
 using RestSharp;
 using RestSharp.Extensions;
 using SixLabors.ImageSharp.Formats.Png;
@@ -8,6 +9,8 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace Volte.Helpers
 {
+    //doesn't currently work i just wanted to get this release out
+    [Obsolete]
     public static class ImageHelper
     {
         private static readonly RestClient Http = new RestClient("https://raw.githubusercontent.com/abyssal512/Abyss/master/src/Abyss.Core/Assets/transparent_200x200.png");
@@ -25,4 +28,4 @@ namespace Volte.Helpers
             return @out;
         }
     }
-}
+}*/
