@@ -60,6 +60,6 @@ namespace Gommon
         }
 
         public static void Get<T>(this IServiceProvider provider, out T service) 
-            => service = provider.GetRequiredService<T>();
+            => service = provider.GetService(typeof(T)).Cast<T>();
     }
 }

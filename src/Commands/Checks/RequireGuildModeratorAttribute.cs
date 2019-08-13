@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Gommon;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
 namespace Volte.Commands.Checks

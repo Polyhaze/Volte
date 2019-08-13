@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Gommon;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Volte.Core.Models.BotConfig;
 using Volte.Services;

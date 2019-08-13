@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;

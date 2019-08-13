@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -18,7 +19,7 @@ namespace Volte.Core
             => new VolteBot().LoginAsync();
 
         private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
-            => provider = new ServiceCollection()
+            => provider = new ServiceCollection() 
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 

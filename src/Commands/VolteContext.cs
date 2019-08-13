@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Gommon;
 using Volte.Core.Models.Guild;
