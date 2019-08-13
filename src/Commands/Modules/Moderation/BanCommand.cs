@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules
             }
             catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
             {
-                Logger.Debug(LogSource.Volte,
+                Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!", e);
             }
 

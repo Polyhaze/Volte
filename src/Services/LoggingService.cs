@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -21,12 +20,11 @@ namespace Volte.Services
             return Task.CompletedTask;
         }
 
-        internal void Log(LogEventArgs args) =>
+        private void Log(LogEventArgs args) =>
             Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
 
-        internal void PrintVersion() => Log(LogSeverity.Info, LogSource.Volte,
-            $"Currently running Volte V{Version.FullVersion}.");
+        internal void PrintVersion() => Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
 
         private void Log(LogSeverity s, LogSource src, string message, Exception e = null)
         {
@@ -34,36 +32,70 @@ namespace Volte.Services
             {
                 if (s is LogSeverity.Debug)
                 {
-                    if (src is LogSource.Discord || src is LogSource.Gateway) { }
-
                     if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
                 }
 
-                DoLogAsync(s, src, message, e);
+                Execute(s, src, message, e);
             }
         }
 
-        public void Debug(LogSource src, string message, Exception e = null) 
-            => Log(LogSeverity.Debug, src, message, e);
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Debug"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        public void Debug(LogSource src, string message) 
+            => Log(LogSeverity.Debug, src, message);
 
-        public void Info(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Info, src, message, e);
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Info"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        public void Info(LogSource src, string message)
+            => Log(LogSeverity.Info, src, message);
 
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        /// <param name="e">Optional Exception to print.</param>
         public void Error(LogSource src, string message, Exception e = null)
             => Log(LogSeverity.Error, src, message, e);
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        /// <param name="e">Optional Exception to print.</param>
         public void Critical(LogSource src, string message, Exception e = null)
             => Log(LogSeverity.Critical, src, message, e);
 
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        /// <param name="e">Optional Exception to print.</param>
         public void Warn(LogSource src, string message, Exception e = null)
             => Log(LogSeverity.Warning, src, message, e);
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Verbose"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="message">Message to print.</param>
+        public void Verbose(LogSource src, string message)
+            => Log(LogSeverity.Verbose, src, message);
 
-        public void Verbose(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Verbose, src, message, e);
-
+        /// <summary>
+        ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
+        /// </summary>
+        /// <param name="e">Exception to print.</param>
         public void LogException(Exception e)
             => Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);
 
-        private void DoLogAsync(LogSeverity s, LogSource src, string message, Exception e)
+        private void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);

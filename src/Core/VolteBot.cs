@@ -84,7 +84,7 @@ namespace Volte.Core
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();
-            Dispose(cts, client);
+            Dispose(cts, client, DatabaseService.Database);
             Environment.Exit(0);
         }
 

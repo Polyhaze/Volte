@@ -10,7 +10,7 @@ namespace Volte.Services
 {
     public sealed class DatabaseService : VolteService
     {
-        public readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
+        public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
         private readonly DiscordShardedClient _client;
         private readonly LoggingService _logger;
