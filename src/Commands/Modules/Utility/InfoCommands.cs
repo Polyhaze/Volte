@@ -9,6 +9,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -27,7 +28,7 @@ namespace Volte.Commands.Modules
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
-                .AddField("Uptime", GetUptime(), true)
+                .AddField("Uptime", CalculationHelper.GetUptime(), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
 
         [Command("UserInfo", "Ui")]
