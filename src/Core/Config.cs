@@ -40,13 +40,13 @@ namespace Volte.Core
             {
                 File.WriteAllText(ConfigFile,
                     JsonConvert.SerializeObject(_configuration, Formatting.Indented));
-                return false;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return false;
             }
+
+            return false;
         }
 
         public static void Load()

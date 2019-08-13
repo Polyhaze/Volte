@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Commands;
 using Gommon;
 
 namespace Volte.Commands.Results
@@ -9,54 +8,61 @@ namespace Volte.Commands.Results
     public class OkResult : ActionResult
     {
         public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
-            Func<IUserMessage, Task> func = null)
+            Func<IUserMessage, Task> func = null, bool awaitCallback = true)
         {
-            Message = text;
-            ShouldEmbed = shouldEmbed;
-            Embed = embed;
-            After = func;
+            _message = text;
+            _shouldEmbed = shouldEmbed;
+            _embed = embed;
+            _callback = func;
+            _shouldAwaitCallbackOrLogic = awaitCallback;
         }
 
-        public OkResult(Func<Task> logic) 
-            => SeparateLogic = logic;
+        public OkResult(Func<Task> logic, bool awaitFunc = true)
+        {
+            _separateLogic = logic;
+            _shouldAwaitCallbackOrLogic = awaitFunc;
+        }
 
-        private string Message { get; }
-        private bool ShouldEmbed { get; }
-        private Func<IUserMessage, Task> After { get; }
-        private Func<Task> SeparateLogic { get; }
-        private EmbedBuilder Embed { get; }
+        private readonly bool _shouldAwaitCallbackOrLogic;
+
+        private readonly string _message;
+        private readonly bool _shouldEmbed;
+        private readonly Func<IUserMessage, Task> _callback;
+        private readonly Func<Task> _separateLogic;
+        private readonly EmbedBuilder _embed;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
-            if (SeparateLogic != null)
+            if (_separateLogic != null)
             {
-                await SeparateLogic();
+                if (_shouldAwaitCallbackOrLogic)
+                    await _separateLogic();
+                else
+                    _ = _separateLogic();
+
                 return new ResultCompletionData();
             }
 
             IUserMessage message;
-            if (Embed is null)
+            if (_embed is null)
             {
-                if (ShouldEmbed)
-                {
-                    message = await ctx.CreateEmbed(Message).SendToAsync(ctx.Channel);
-                }
+                if (_shouldEmbed)
+                    message = await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel);
                 else
-                {
-                    message = await ctx.Channel.SendMessageAsync(Message);
-                }
+                    message = await ctx.Channel.SendMessageAsync(_message);
             }
             else
-            {
-                message = await Embed.SendToAsync(ctx.Channel);
-            }
+                message = await _embed.SendToAsync(ctx.Channel);
 
 
-            if (After != null)
+            if (_callback != null)
             {
-                await After(message);
+                if (_shouldAwaitCallbackOrLogic)
+                    await _callback(message);
+                else
+                    _ = _callback(message);
             }
 
 

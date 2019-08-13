@@ -1,24 +1,30 @@
 using System;
 using System.Threading.Tasks;
-using Volte.Commands;
 
 namespace Volte.Commands.Results
 {
     public class NoResult : ActionResult
     {
-        public NoResult(Func<Task> afterCompletion = null)
-            => _after = afterCompletion;
+        public NoResult(Func<Task> afterCompletion = null, bool awaitCallback = true)
+        {
+            _after = afterCompletion;
+            _awaitCallback = awaitCallback;
+        }
 
         private readonly Func<Task> _after;
+        private readonly bool _awaitCallback;
 
-        public override ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
+        public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (_after is null)
             {
                 return new ResultCompletionData();
             }
 
-            _ = _after();
+            if (_awaitCallback)
+                await _after();
+            else
+                _ = _after();
             return new ResultCompletionData();
         }
     }

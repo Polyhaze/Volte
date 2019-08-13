@@ -21,8 +21,9 @@ namespace Volte.Commands
             bool shouldEmbed = true) 
             => new OkResult(text, shouldEmbed, null, afterCompletion);
 
-        protected ActionResult Ok(Func<Task> logic) 
-            => new OkResult(logic);
+        protected ActionResult Ok(Func<Task> logic, bool awaitLogic = true) 
+            => new OkResult(logic, awaitLogic);
+
 
         protected ActionResult Ok(EmbedBuilder embed, Func<IUserMessage, Task> afterCompletion = null) 
             => new OkResult(null, true, embed, afterCompletion);
@@ -36,7 +37,7 @@ namespace Volte.Commands
         protected ActionResult BadRequest(string reason) 
             => new BadRequestResult(reason);
 
-        protected ActionResult None(Func<Task> afterCompletion = null) 
-            => new NoResult(afterCompletion);
+        protected ActionResult None(Func<Task> afterCompletion = null, bool awaitCallback = true) 
+            => new NoResult(afterCompletion, awaitCallback);
     }
 }

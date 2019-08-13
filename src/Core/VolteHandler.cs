@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Models;
 using Gommon;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Services;
 
 namespace Volte.Core
