@@ -8,8 +8,6 @@
 A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
 
 
-## Thanks To
- - [abyssal512](https://github.com/abyssal512) for letting me ~~steal your code~~ use your bot as a reference.
 ## Quick Links 
  
  - [Invite the bot](https://greemdev.net/Invite)
@@ -20,6 +18,21 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
 ## Bots made by Cool People
 
- * [abyssal512/Abyss](https://github.com/abyssal512/Abyss) 
+ * [abyssal/Abyss](https://github.com/abyssal/Abyss) 
  * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
  
+
+## Thanks To
+<table>
+    <tr>
+        <td align="center" width="50%">
+            <a href="https://www.jetbrains.com/resharper/"><img src="https://pbs.twimg.com/profile_images/674917637646716928/lni0by_I.png" alt="Jetbrains ReSharper" width="150px"></img></a>
+            <p><strong>For providing me with an open-source license for developement of Volte.</strong></p>            
+        </td>
+        <td align="center" width="50%">
+            <a href="https://github.com/abyssal"><img src="https://img.greemdev.net/cpaXCdXden/74743c3b2052a828788a5bd4aeb0fa1e.png" alt="JProfiler" width="150px"></img></a>
+            <p><strong>For letting me <strike>steal your code</strike> use <a href="https://github.com/abyssal/Abyss">Abyss</a> as a reference.</strong></p>
+        </td>
+    </tr>
+</table>
+
