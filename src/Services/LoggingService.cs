@@ -26,16 +26,16 @@ namespace Volte.Services
 
         internal void PrintVersion() => Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
 
-        private void Log(LogSeverity s, LogSource src, string message, Exception e = null)
+        private void Log(LogSeverity s, LogSource from, string message, Exception e = null)
         {
             lock (_lock)
             {
                 if (s is LogSeverity.Debug)
                 {
-                    if (src is LogSource.Volte && !Config.EnableDebugLogging) return;
+                    if (from is LogSource.Volte && !Config.EnableDebugLogging) return;
                 }
 
-                Execute(s, src, message, e);
+                Execute(s, from, message, e);
             }
         }
 

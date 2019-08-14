@@ -31,8 +31,7 @@ namespace Volte.Core
             var l = await _service.AddTypeParsersAsync();
             sw.Stop();
             _logger.Info(LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.SanitizeParserName()).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
-            sw.Reset();
-            sw.Start();
+            sw = Stopwatch.StartNew();
 
             var loaded = _service.AddModules(GetType().Assembly);
             sw.Stop();
