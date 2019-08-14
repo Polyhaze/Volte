@@ -14,8 +14,8 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|now")]
         public Task<ActionResult> NowAsync()
             => Ok(new StringBuilder()
-                .AppendLine($"**Date**: {DateTimeOffset.UtcNow.FormatDate()} UTC")
-                .AppendLine($"**Time**: {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
+                .AppendLine($"**Date**: {Context.Now.FormatDate()} UTC")
+                .AppendLine($"**Time**: {Context.Now.FormatFullTime()} UTC")
                 .ToString());
     }
 }

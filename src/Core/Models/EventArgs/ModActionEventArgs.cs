@@ -75,7 +75,7 @@ namespace Volte.Core.Models.EventArgs
         public ModActionEventArgs WithDefaultsFromContext(VolteContext ctx)
         {
             WithContext(ctx)
-                .WithTime(DateTimeOffset.UtcNow)
+                .WithTime(ctx.Now)
                 .WithGuild(ctx.Guild)
                 .WithModerator(ctx.User);
 

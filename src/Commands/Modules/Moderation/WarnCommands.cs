@@ -29,7 +29,7 @@ namespace Volte.Commands.Modules
                 User = user.Id,
                 Reason = reason,
                 Issuer = Context.User.Id,
-                Date = DateTimeOffset.UtcNow
+                Date = Context.Now
             });
             Db.UpdateData(Context.GuildData);
 

@@ -65,7 +65,7 @@ namespace Volte.Services
                 _logger.Info(LogSource.Module,
                     $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})");
                 _logger.Info(LogSource.Module,
-                    $"|        -Time Issued: {DateTimeOffset.UtcNow.FormatFullTime()}, {DateTimeOffset.UtcNow.FormatDate()}");
+                    $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}");
                 _logger.Info(LogSource.Module,
                     $"|           -Executed: {args.Result.IsSuccessful} ");
                 _logger.Info(LogSource.Module,
@@ -123,7 +123,7 @@ namespace Volte.Services
                     _logger.Error(LogSource.Module,
                         $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})");
                     _logger.Error(LogSource.Module,
-                        $"|        -Time Issued: {DateTimeOffset.UtcNow.FormatFullTime()}, {DateTimeOffset.UtcNow.FormatDate()}");
+                        $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}");
                     _logger.Error(LogSource.Module,
                         $"|           -Executed: {args.FailedResult.IsSuccessful} | Reason: {reason}");
                     _logger.Error(LogSource.Module,
@@ -149,7 +149,7 @@ namespace Volte.Services
                 _logger.Error(LogSource.Module,
                     $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})");
                 _logger.Error(LogSource.Module,
-                    $"|        -Time Issued: {DateTimeOffset.UtcNow.FormatFullTime()}, {DateTimeOffset.UtcNow.FormatDate()}");
+                    $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}");
                 _logger.Error(LogSource.Module,
                     $"|           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}");
                 _logger.Error(LogSource.Module,

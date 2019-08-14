@@ -25,6 +25,7 @@ namespace Volte.Commands
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
             GuildData = db.GetData(Guild);
+            Now = DateTimeOffset.UtcNow;
         }
 
         public DiscordShardedClient Client { get; }
@@ -34,6 +35,8 @@ namespace Volte.Commands
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }
         public GuildData GuildData { get; }
+
+        public DateTimeOffset Now { get; }
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 
