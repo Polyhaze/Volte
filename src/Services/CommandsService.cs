@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Humanizer;
@@ -55,7 +53,7 @@ namespace Volte.Services
             Executor.Execute(() =>
             {
                 _logger.Info(LogSource.Module,
-                    $"|  -Command from user: {args.Context.User.Username}#{args.Context.User.Discriminator} ({args.Context.User.Id})");
+                    $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})");
                 _logger.Info(LogSource.Module,
                     $"|     -Command Issued: {args.Context.Command.Name}");
                 _logger.Info(LogSource.Module,
@@ -113,7 +111,7 @@ namespace Volte.Services
                 Executor.Execute(() =>
                 {
                     _logger.Error(LogSource.Module,
-                        $"|  -Command from user: {args.Context.User.Username}#{args.Context.User.Discriminator} ({args.Context.User.Id})");
+                        $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})");
                     _logger.Error(LogSource.Module,
                         $"|     -Command Issued: {args.Context.Command.Name}");
                     _logger.Error(LogSource.Module,

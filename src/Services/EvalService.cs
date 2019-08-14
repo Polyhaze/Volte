@@ -6,9 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
+using Qommon.Collections;
 using Volte.Commands;
 using Volte.Core.Models;
 
@@ -36,54 +38,14 @@ namespace Volte.Services
         {
             try
             {
-                var sopts = ScriptOptions.Default;
-                var embed = ctx.CreateEmbedBuilder();
                 if (code.StartsWith("```cs") && code.EndsWith("```"))
                 {
                     code = code.Substring(5);
                     code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
                 }
 
-                sopts = sopts.WithImports(_imports).WithReferences(
-                    AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+                await ExecuteScriptAsync(code, ctx);
 
-                var msg = await embed.WithTitle("Evaluating...").SendToAsync(ctx.Channel);
-                try
-                {
-                    var sw = Stopwatch.StartNew();
-                    var result = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
-                    sw.Stop();
-                    if (result is null)
-                    {
-                        await msg.DeleteAsync();
-                        await ctx.ReactSuccessAsync();
-                    }
-                    else
-                    {
-                        var res = result switch
-                            {
-                            string str => str,
-                            IEnumerable enumerable => enumerable.Cast<object>().Select(x => x.ToString()).Join(", "),
-                            _ => result.ToString()
-                            };
-                        await msg.ModifyAsync(m =>
-                            m.Embed = embed.WithTitle("Eval")
-                                .AddField("Elapsed Time", $"{sw.ElapsedMilliseconds}ms", true)
-                                .AddField("Return Type", result.GetType().FullName, true)
-                                .AddField("Output", Format.Code(res, "css")).Build());
-                    }
-                }
-                catch (Exception e)
-                {
-                    await msg.ModifyAsync(m =>
-                        m.Embed = embed
-                            .AddField("Exception Type", e.GetType().FullName, true)
-                            .AddField("Message", e.Message, true)
-                            .WithTitle("Error")
-                            .Build()
-                    );
-                }
             }
             catch (Exception e)
             {
@@ -100,7 +62,7 @@ namespace Volte.Services
             => new EvalObjects
             {
                 Context = ctx,
-                Client = ctx.Client,
+                Client = ctx.Client.GetShardFor(ctx.Guild),
                 Data = _db.GetData(ctx.Guild),
                 Logger = _logger,
                 CommandService = _commands,
@@ -108,12 +70,57 @@ namespace Volte.Services
                 EmojiService = _emoji
             };
 
-        private readonly List<string> _imports = new List<string>
+        private async Task ExecuteScriptAsync(string code, VolteContext ctx)
+        {
+            var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+
+            var embed = ctx.CreateEmbedBuilder();
+            var msg = await embed.WithTitle("Evaluating...").SendToAsync(ctx.Channel);
+            try
+            {
+                var sw = Stopwatch.StartNew();
+                var result = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
+                sw.Stop();
+                if (result is null)
+                {
+                    await msg.DeleteAsync();
+                    await ctx.ReactSuccessAsync();
+                }
+                else
+                {
+                    var res = result switch
+                        {
+                        string str => str,
+                        IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
+                        _ => result.ToString()
+                        };
+                    await msg.ModifyAsync(m =>
+                        m.Embed = embed.WithTitle("Eval")
+                            .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                            .AddField("Return Type", result.GetType(), true)
+                            .AddField("Output", Format.Code(res, "css")).Build());
+                }
+            }
+            catch (Exception e)
+            {
+                await msg.ModifyAsync(m =>
+                    m.Embed = embed
+                        .AddField("Exception Type", e.GetType(), true)
+                        .AddField("Message", e.Message, true)
+                        .WithTitle("Error")
+                        .Build()
+                );
+            }
+        }
+
+        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>
         {
             "System", "System.Collections.Generic", "System.Linq", "System.Text",
             "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
             "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
             "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-        };
+        });
     }
 }

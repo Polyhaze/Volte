@@ -14,7 +14,7 @@ namespace Volte.Core.Models
         internal EvalObjects() { }
 
         public VolteContext Context { get; set; }
-        public DiscordShardedClient Client { get; set; }
+        public DiscordSocketClient Client { get; set; }
         public GuildData Data { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService CommandService { get; set; }
@@ -27,14 +27,14 @@ namespace Volte.Core.Models
         public SocketGuildUser User(string username) 
             => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
 
-        public SocketTextChannel TextChannel(ulong id) 
-            => Context.Guild.GetTextChannel(id);
-
-        public SocketTextChannel TextChannel(string name) 
-            => Context.Guild.TextChannels.FirstOrDefault(a => a.Name.EqualsIgnoreCase(name));
+        public SocketTextChannel TextChannel(ulong id)
+            => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
 
         public SocketUserMessage Message(ulong id) 
             => Context.Channel.GetCachedMessage(id) as SocketUserMessage;
+
+        public SocketGuild Guild(ulong id)
+            => Context.Client.GetGuild(id);
 
         public SocketUserMessage Message(string id)
         {
