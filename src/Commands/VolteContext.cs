@@ -13,12 +13,15 @@ namespace Volte.Commands
     {
         private readonly EmojiService _emojiService;
 
+        public static VolteContext Create(SocketMessage msg, IServiceProvider provider) 
+            => new VolteContext(msg, provider);
+
         // ReSharper disable once SuggestBaseTypeForParameter
-        public VolteContext(DiscordShardedClient client, SocketUserMessage msg, IServiceProvider provider)
+        private VolteContext(SocketMessage msg, IServiceProvider provider)
         {
             provider.Get(out _emojiService);
             provider.Get<DatabaseService>(out var db);
-            Client = client;
+            provider.Get(out Client);
             ServiceProvider = provider;
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Channel = msg.Channel.Cast<SocketTextChannel>();
@@ -28,15 +31,14 @@ namespace Volte.Commands
             Now = DateTimeOffset.UtcNow;
         }
 
-        public DiscordShardedClient Client { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public SocketGuild Guild { get; }
-        public SocketTextChannel Channel { get; }
-        public SocketGuildUser User { get; }
-        public SocketUserMessage Message { get; }
-        public GuildData GuildData { get; }
-
-        public DateTimeOffset Now { get; }
+        public DiscordShardedClient Client;
+        public IServiceProvider ServiceProvider;
+        public SocketGuild Guild;
+        public SocketTextChannel Channel;
+        public SocketGuildUser User;
+        public SocketUserMessage Message;
+        public GuildData GuildData;
+        public DateTimeOffset Now;
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 

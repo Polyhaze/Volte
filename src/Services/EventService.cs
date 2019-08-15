@@ -23,7 +23,7 @@ namespace Volte.Services
         private readonly CommandsService _commandsService;
 
         private readonly bool _shouldStream =
-            !Config.Streamer.EqualsIgnoreCase("streamer here") || !Config.Streamer.IsNullOrWhitespace();
+            !Config.Streamer.ContainsIgnoreCase(" ") || !Config.Streamer.IsNullOrEmpty();
 
         public EventService(LoggingService loggingService,
             DatabaseService databaseService,

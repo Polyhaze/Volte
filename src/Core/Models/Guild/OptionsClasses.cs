@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace Volte.Core.Models.Guild
@@ -41,5 +42,23 @@ namespace Volte.Core.Models.Guild
 
         [JsonProperty("welcome_color")]
         public uint WelcomeColor { get; set; }
+
+        public string FormatWelcomeMessage(SocketGuildUser user) 
+            => WelcomeMessage.Replace("{ServerName}", user.Guild.Name)
+                .Replace("{UserName}", user.Username)
+                .Replace("{UserMention}", user.Mention)
+                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
+                .Replace("{UserTag}", user.Discriminator)
+                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
+                .Replace("{UserString}", user.ToString());
+
+        public string FormatLeavingMessage(SocketGuildUser user) 
+            => LeavingMessage.Replace("{ServerName}", user.Guild.Name)
+                .Replace("{UserName}", user.Username)
+                .Replace("{UserMention}", user.Mention)
+                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
+                .Replace("{UserTag}", user.Discriminator)
+                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
+                .Replace("{UserString}", user.ToString());
     }
 }

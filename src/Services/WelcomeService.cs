@@ -25,14 +25,7 @@ namespace Volte.Services
                 return; //we don't want to send an empty join message
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
-            var welcomeMessage = data.Configuration.Welcome.WelcomeMessage
-                .Replace("{ServerName}", args.Guild.Name)
-                .Replace("{UserName}", args.User.Username)
-                .Replace("{UserMention}", args.User.Mention)
-                .Replace("{OwnerMention}", args.Guild.Owner.Mention)
-                .Replace("{UserTag}", args.User.Discriminator)
-                .Replace("{MemberCount}", args.Guild.MemberCount.ToString())
-                .Replace("{UserString}", args.User.ToString());
+            var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
             if (!(c is null))
@@ -58,14 +51,7 @@ namespace Volte.Services
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
             _logger.Debug(LogSource.Volte,
                 "User left a guild, let's check to see if we should send a leaving embed.");
-            var leavingMessage = data.Configuration.Welcome.LeavingMessage
-                .Replace("{ServerName}", args.Guild.Name)
-                .Replace("{UserName}", args.User.Username)
-                .Replace("{UserMention}", args.User.Mention)
-                .Replace("{OwnerMention}", args.Guild.Owner.Mention)
-                .Replace("{UserTag}", args.User.Discriminator)
-                .Replace("{MemberCount}", args.Guild.MemberCount.ToString())
-                .Replace("{UserString}", args.User.ToString());
+            var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
             if (!(c is null))
             {
