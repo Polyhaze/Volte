@@ -1,15 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -28,7 +24,7 @@ namespace Volte.Commands.Modules
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
-                .AddField("Uptime", CalculationHelper.GetUptime(), true)
+                .AddField("Uptime", Process.GetCurrentProcess().GetUptime(), true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
 
         [Command("UserInfo", "Ui")]
