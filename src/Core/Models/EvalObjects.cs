@@ -42,7 +42,7 @@ namespace Volte.Core.Models
             {
                 return Message(ulongId);
             }
-            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
+            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong)}.");
         }
 
     }
