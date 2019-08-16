@@ -1,4 +1,6 @@
 {
+  //NOTE: the bot automatically generates one of these for you, but you can just use this to know what each config entry does!
+
   "discord_token": "Your Bot Token",
   //bot token obtained from the Discord developer portal
   "command_prefix": "$",
@@ -19,19 +21,20 @@
   //whether or not to log all commands to the bot's console; enabled by default
   "join_leave_log": {
     //send a log of the bot's joins/leaves to a channel within a certain guild
-    "Enabled": false,
-    "GuildId": 0,
-    "ChannelId": 0
+    "enabled": false,
+    "guild_id": 0,
+    "channel_id": 0
   },
   "blacklisted_guild_owners": [],
   //if the bot joins a guild owned by someone whose ID is in this list it leaves immediately
   "enabled_features": {
     //enabled Volte features for this instance; if you want any disabled, just change true to false! none of these will be set to false on public Volte.
-    "Antilink": true,
-    "Blacklist": true,
-    "ModLog": true,
-    "Welcome": true,
-    "Autorole": true,
-    "PingChecks": true
+    "log_to_file": true, //not an end-user feature, toggle this if you don't want Volte to log everything to "data/Volte.log"
+    "antilink": true,
+    "blacklist": true,
+    "mod_log": true,
+    "welcome": true,
+    "autorole": true,
+    "ping_checks": true
   }
 }
