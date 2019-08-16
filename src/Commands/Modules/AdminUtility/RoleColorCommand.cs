@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     public sealed partial class AdminUtilityModule : VolteModule
     {
         [Command("RoleColor", "RoleClr", "Rcl")]
-        [Description("Changes the color of a specified role.")]
+        [Description("Changes the color of a specified role. Accepts a Hex or RGB value.")]
         [Remarks("Usage: |prefix|rolecolor {role} {color}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]

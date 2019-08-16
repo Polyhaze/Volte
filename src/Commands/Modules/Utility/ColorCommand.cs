@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
         {
             if (role.Color.RawValue is 0) return BadRequest("Role does not have a color.");
 
-            var outStream = ImageHelper.CreateColorImage(new Rgba32(role.Color.R, role.Color.G, role.Color.B));
+            await using var outStream = ImageHelper.CreateColorImage(new Rgba32(role.Color.R, role.Color.G, role.Color.B));
             await Context.Channel.SendFileAsync(outStream, "role.png", null, embed: new EmbedBuilder()
                 .WithColor(role.Color)
                 .WithTitle("Role Color")
@@ -28,8 +28,7 @@ namespace Volte.Commands.Modules
                     .ToString())
                 .WithImageUrl("attachment://role.png")
                 .WithCurrentTimestamp()
-                .Build()).ConfigureAwait(false);
-            outStream.Dispose();
+                .Build());
             return None();
 
         }

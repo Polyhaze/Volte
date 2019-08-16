@@ -15,15 +15,19 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|mentionrole {role}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
-        public async Task<ActionResult> MentionRoleAsync([Remainder] SocketRole role)
+        public Task<ActionResult> MentionRoleAsync([Remainder] SocketRole role)
         {
             if (role.IsMentionable)
             {
                 return Ok(role.Mention, null, false);
             }
 
-            await role.ModifyAsync(x => x.Mentionable = true);
-            return Ok(role.Mention, async _ => await role.ModifyAsync(x => x.Mentionable = false), false);
+            return Ok(async () =>
+            {
+                await role.ModifyAsync(x => x.Mentionable = true);
+                await Context.ReplyAsync(role.Mention);
+                await role.ModifyAsync(x => x.Mentionable = false);
+            });
         }
     }
 }
