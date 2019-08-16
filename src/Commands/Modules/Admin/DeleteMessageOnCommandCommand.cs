@@ -19,5 +19,18 @@ namespace Volte.Commands.Modules
                 ? "Enabled DeleteMessageOnCommand in this server."
                 : "Disabled DeleteMessageOnCommand in this server.");
         }
+
+        [Command("DeleteMessageOnTagCommand", "Dmotc")]
+        [Description(
+            "Enable/Disable deleting the command message upon usage of the tag retrieval command for this guild.")]
+        [Remarks("Usage: |prefix|deletemessageontagcommand {true|false}")]
+        public Task<ActionResult> DeleteMessageOnTagCommand(bool enabled)
+        {
+            Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation = enabled;
+            Db.UpdateData(Context.GuildData);
+            return Ok(enabled
+                ? "Enabled DeleteMessageOnTagCommand in this server."
+                : "Disabled DeleteMessageOnTagCommand in this server.");
+        }
     }
 }

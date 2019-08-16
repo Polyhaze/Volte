@@ -24,5 +24,8 @@ namespace Volte.Core.Models.Guild
 
         [JsonProperty("delete_message_on_command")]
         public bool DeleteMessageOnCommand { get; set; }
+
+        [JsonProperty("delete_message_on_tag_command_invocation")]
+        public bool DeleteMessageOnTagCommandInvocation { get; set; }
     }
 }
