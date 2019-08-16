@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -19,6 +19,7 @@ namespace Volte.Services
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
+            if (!args.Data.Configuration.Moderation.Blacklist.Any()) return;
             _logger.Debug(LogSource.Volte, "Checking a message for blacklisted words.");
             foreach (var word in args.Data.Configuration.Moderation.Blacklist)
                 if (args.Message.Content.ContainsIgnoreCase(word))

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -12,6 +15,7 @@ namespace Volte.Services
 {
     public sealed class LoggingService : VolteEventService
     {
+        private const string LogFile = "data/Volte.log";
         private readonly object _lock = new object();
 
         public override Task DoAsync(EventArgs args)
@@ -97,19 +101,35 @@ namespace Volte.Services
 
         private void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
+            var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
             Append($"{value} -> ", color);
+            var dto = DateTimeOffset.UtcNow;
+            content.Append($"[{dto.FormatDate()} | {dto.FormatFullTime()}] {value} -> ");
 
             (color, value) = VerifySource(src);
             Append($"{value} -> ", color);
+            content.Append($"{value} -> ");
 
             if (!message.IsNullOrWhitespace())
+            {
                 Append(message, Color.White);
+                content.Append(message);
+            }
 
             if (e != null)
-                Append($"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}", Color.IndianRed);
+            {
+                var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
+                Append(toWrite, Color.IndianRed);
+                content.Append(toWrite);
+            }
 
             Console.Write(Environment.NewLine);
+            content.AppendLine();
+            if (Config.EnabledFeatures.LogToFile)
+            {
+                File.AppendAllText(LogFile, content.ToString());
+            }
         }
 
         private void Append(string m, Color c)

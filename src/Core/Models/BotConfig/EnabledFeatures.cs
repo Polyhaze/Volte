@@ -10,6 +10,8 @@ namespace Volte.Core.Models.BotConfig
     {
         internal EnabledFeatures() { } //restrict non-Volte assembly instantiation
 
+        [JsonProperty("log_to_file")]
+        public bool LogToFile { get; } = true;
         [JsonProperty("antilink")]
         public bool Antilink { get; } = true;
         [JsonProperty("blacklist")]

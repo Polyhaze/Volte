@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -68,7 +70,15 @@ namespace Volte.Services
                 sw.Stop();
                 await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
 
-                if (args.Data.Configuration.DeleteMessageOnCommand) await args.Context.Message.DeleteAsync();
+                if (args.Data.Configuration.DeleteMessageOnCommand)
+                    try
+                    {
+                        await args.Context.Message.DeleteAsync();
+                    }
+                    catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+                    {
+                        _logger.Warn(LogSource.Service, $"Could not act upon the DeleteMessageOnCommand setting for {args.Context.Guild.Name} as the bot is missing the required permission.");
+                    }
             }
         }
 
