@@ -13,7 +13,7 @@ namespace Volte.Commands.Checks
             if (ctx.User.IsModerator(provider)) return CheckResult.Successful;
 
             await ctx.ReactFailureAsync();
-            return CheckResult.Unsuccessful("Insufficient permission.");
+            return CheckResult.Unsuccessful(string.Empty);
         }
     }
 }

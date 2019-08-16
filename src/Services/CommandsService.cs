@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -71,28 +72,27 @@ namespace Volte.Services
 
         private async Task OnCommandFailureAsync(CommandFailedEventArgs args)
         {
-            var embed = new EmbedBuilder();
             var reason = args.FailedResult switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
-                ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType().FullName}",
+                ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType()}",
                 ChecksFailedResult cfr => cfr.Reason,
-                ParameterChecksFailedResult pcfr => $"Checks failed on parameter **{pcfr.Parameter.Name}**.",
+                ParameterChecksFailedResult pcfr => $"Checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.Reason).Join('\n')}```",
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**.",
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 _ => "Unknown error."
             };
 
-            if (args.FailedResult is ExecutionFailedResult efr2)
-                _logger.Error(LogSource.Module, string.Empty, efr2.Exception);
+            if (args.FailedResult is ExecutionFailedResult e)
+                _logger.LogException(e.Exception);
 
-            if (!(args.FailedResult is ChecksFailedResult))
+            if (!(args.FailedResult is ChecksFailedResult) && reason != string.Empty)
             {
-                await embed.AddField("Error in Command", args.Context.Command.Name)
+                await args.Context.CreateEmbedBuilder()
+                    .AddField("Error in Command", args.Context.Command.Name)
                     .AddField("Error Reason", reason)
                     .AddField("Correct Usage", args.Context.Command.GetUsage(args.Context))
-                    .WithAuthor(args.Context.User)
                     .WithErrorColor()
                     .SendToAsync(args.Context.Channel);
 
@@ -100,7 +100,7 @@ namespace Volte.Services
 
                 Executor.Execute(() =>
                 {
-                    var sb = new StringBuilder()
+                    _logger.Error(LogSource.Volte, new StringBuilder()
                         .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                         .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
                         .AppendLine($"                |        -Args Passed: {args.Arguments.Trim()}")
@@ -109,8 +109,7 @@ namespace Volte.Services
                         .AppendLine($"                |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                         .AppendLine($"                |           -Executed: {args.FailedResult.IsSuccessful} | Reason: {reason}")
                         .AppendLine($"                |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                        .Append("                -------------------------------------------------");
-                    _logger.Error(LogSource.Volte, sb.ToString());
+                        .Append("                -------------------------------------------------").ToString());
                 });
             }
         }
@@ -119,7 +118,7 @@ namespace Volte.Services
         {
             Executor.Execute(() =>
             {
-                var sb = new StringBuilder()
+                _logger.Error(LogSource.Volte, new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
                     .AppendLine($"                |        -Args Passed: {args.Arguments.Trim()}")
@@ -128,8 +127,7 @@ namespace Volte.Services
                     .AppendLine($"                |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                     .AppendLine($"                |           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}")
                     .AppendLine($"                |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                    .Append("                -------------------------------------------------");
-                _logger.Error(LogSource.Volte, sb.ToString());
+                    .Append("                -------------------------------------------------").ToString());
             });
             return Task.CompletedTask;
         }

@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
         [Description("Warns the target user for the given reason.")]
         [Remarks("Usage: |prefix|warn {user} {reason}")]
         [RequireGuildModerator]
-        public async Task<ActionResult> WarnAsync(SocketGuildUser user, [Remainder] string reason)
+        public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
         {
             Context.GuildData.Extras.Warns.Add(new Warn
             {

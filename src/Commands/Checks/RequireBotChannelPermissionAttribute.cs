@@ -7,11 +7,11 @@ using Qmmands;
 
 namespace Volte.Commands.Checks
 {
-    public sealed class RequireBotChannelPermission : CheckAttribute
+    public sealed class RequireBotChannelPermissionAttribute : CheckAttribute
     {
         private readonly ChannelPermission[] _permissions;
 
-        public RequireBotChannelPermission(params ChannelPermission[] permissions) => _permissions = permissions;
+        public RequireBotChannelPermissionAttribute(params ChannelPermission[] permissions) => _permissions = permissions;
 
         public override async ValueTask<CheckResult> CheckAsync(
             CommandContext context, IServiceProvider provider)
