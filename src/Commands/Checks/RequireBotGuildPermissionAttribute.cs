@@ -27,7 +27,7 @@ namespace Volte.Commands.Checks
 
             await new EmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
-                .AddField("Error Reason", $"I am missing the following server-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
+                .AddField("Error Reason", $"I am missing the following guild-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
                 .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
                 .WithAuthor(ctx.User)
                 .WithErrorColor()

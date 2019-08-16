@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
                 .AppendLine()
                 .AppendLine("[Website](https://greemdev.net/Volte)")
                 .AppendLine($"[Invite Me]({Context.Client.GetInviteUrl()})")
-                .AppendLine("[Support Server Invite](https://discord.gg/H8bcFr2)")
+                .AppendLine("[Support Guild Invite](https://discord.gg/H8bcFr2)")
                 .AppendLine()
                 .AppendLine("And again, thanks for using me!")
                 .ToString());

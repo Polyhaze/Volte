@@ -19,9 +19,9 @@ namespace Volte.Commands.Modules
                 .AddField("Version", Version.FullVersion, true)
                 .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)} and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
                 .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
-                .AddField("Servers", Context.Client.Guilds.Count, true)
+                .AddField("Guilds", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
-                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count(),
+                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).Where(x => !(x is SocketCategoryChannel)).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
                 .AddField("Uptime", Process.GetCurrentProcess().GetUptime(), true)
@@ -48,7 +48,7 @@ namespace Volte.Commands.Modules
                     $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
         }
 
-        [Command("ServerInfo", "Si")]
+        [Command("ServerInfo", "Si", "GuildInfo", "Gi")]
         [Description("Shows some info about the current guild.")]
         [Remarks("Usage: |prefix|serverinfo")]
         public Task<ActionResult> ServerInfoAsync()
@@ -56,7 +56,7 @@ namespace Volte.Commands.Modules
             var cAt = Context.Guild.CreatedAt;
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithTitle("Server Info")
+                .WithTitle("Guild Info")
                 .WithThumbnailUrl(Context.Guild.IconUrl)
                 .AddField("Name", Context.Guild.Name)
                 .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")

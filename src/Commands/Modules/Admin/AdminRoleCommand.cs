@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         {
             Context.GuildData.Configuration.Moderation.AdminRole = role.Id;
             Db.UpdateData(Context.GuildData);
-            return Ok($"Set **{role.Name}** as the Admin role for this server.");
+            return Ok($"Set **{role.Name}** as the Admin role for this guild.");
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Volte.Commands.Modules
 
             return Ok(tag.SanitizeContent()
                 .Replace("{ServerName}", Context.Guild.Name)
+                .Replace("{GuildName}", Context.Guild.Name)
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
                 .Replace("{OwnerMention}", Context.Guild.Owner.Mention)

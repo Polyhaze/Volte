@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule : VolteModule
     {
         [Command("Color", "Colour")]
-        [Description("Shows the Hex and RGB representation for a given role in the current server.")]
+        [Description("Shows the Hex and RGB representation for a given role in the current guild.")]
         [Remarks("Usage: |prefix|color {role}")]
         public async Task<ActionResult> RoleColorAsync([Remainder] SocketRole role)
         {

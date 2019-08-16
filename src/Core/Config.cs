@@ -32,7 +32,7 @@ namespace Volte.Core
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
                 JoinLeaveLog = new JoinLeaveLog(),
-                BlacklistedServerOwners = new ulong[] { },
+                BlacklistedGuildOwners = new ulong[] { },
                 EnabledFeatures = new EnabledFeatures()
             };
             try
@@ -92,7 +92,7 @@ namespace Volte.Core
 
         public static JoinLeaveLog JoinLeaveLog => _configuration.JoinLeaveLog;
 
-        public static IEnumerable<ulong> BlacklistedOwners => _configuration.BlacklistedServerOwners;
+        public static IEnumerable<ulong> BlacklistedOwners => _configuration.BlacklistedGuildOwners;
 
         public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
 
@@ -130,7 +130,7 @@ namespace Volte.Core
             public JoinLeaveLog JoinLeaveLog { get; internal set; }
 
             [JsonProperty("blacklisted_guild_owners")]
-            public ulong[] BlacklistedServerOwners { get; internal set; }
+            public ulong[] BlacklistedGuildOwners { get; internal set; }
 
             [JsonProperty("enabled_features")]
             public EnabledFeatures EnabledFeatures { get; internal set; }

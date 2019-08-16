@@ -11,12 +11,12 @@ namespace Volte.Commands.Modules
     {
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role.")]
-        [Remarks("Usage: |prefix|rolecolor {role} {r} {g} {b}")]
+        [Remarks("Usage: |prefix|rolecolor {role} {color}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         [RequireGuildAdmin]
-        public async Task<ActionResult> RoleColorAsync(SocketRole role, int r, int g, int b)
+        public async Task<ActionResult> RoleColorAsync(SocketRole role, [Remainder] Color color)
         {
-            await role.ModifyAsync(x => x.Color = new Color(r, g, b));
+            await role.ModifyAsync(x => x.Color = color);
             return Ok($"Successfully changed the color of the role **{role.Name}**.");
         }
     }

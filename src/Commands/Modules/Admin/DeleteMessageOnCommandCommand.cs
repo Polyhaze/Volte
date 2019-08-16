@@ -16,8 +16,8 @@ namespace Volte.Commands.Modules
             Context.GuildData.Configuration.DeleteMessageOnCommand = enabled;
             Db.UpdateData(Context.GuildData);
             return Ok(enabled
-                ? "Enabled DeleteMessageOnCommand in this server."
-                : "Disabled DeleteMessageOnCommand in this server.");
+                ? "Enabled DeleteMessageOnCommand in this guild."
+                : "Disabled DeleteMessageOnCommand in this guild.");
         }
 
         [Command("DeleteMessageOnTagCommand", "Dmotc")]
@@ -29,8 +29,8 @@ namespace Volte.Commands.Modules
             Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation = enabled;
             Db.UpdateData(Context.GuildData);
             return Ok(enabled
-                ? "Enabled DeleteMessageOnTagCommand in this server."
-                : "Disabled DeleteMessageOnTagCommand in this server.");
+                ? "Enabled DeleteMessageOnTagCommand in this guild."
+                : "Disabled DeleteMessageOnTagCommand in this guild.");
         }
     }
 }

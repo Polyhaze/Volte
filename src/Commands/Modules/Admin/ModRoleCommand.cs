@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         {
             Context.GuildData.Configuration.Moderation.ModRole = role.Id;
             Db.UpdateData(Context.GuildData);
-            return Ok($"Set **{role.Name}** as the Moderator role for this server.");
+            return Ok($"Set **{role.Name}** as the Moderator role for this guild.");
         }
     }
 }

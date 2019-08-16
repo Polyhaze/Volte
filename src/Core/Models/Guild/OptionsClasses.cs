@@ -45,6 +45,7 @@ namespace Volte.Core.Models.Guild
 
         public string FormatWelcomeMessage(SocketGuildUser user) 
             => WelcomeMessage.Replace("{ServerName}", user.Guild.Name)
+                .Replace("{GuildName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)
@@ -54,6 +55,7 @@ namespace Volte.Core.Models.Guild
 
         public string FormatLeavingMessage(SocketGuildUser user) 
             => LeavingMessage.Replace("{ServerName}", user.Guild.Name)
+                .Replace("{GuildName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)
                 .Replace("{OwnerMention}", user.Guild.Owner.Mention)

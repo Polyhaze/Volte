@@ -89,7 +89,7 @@ namespace Volte.Services
             var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
             _logger.PrintVersion();
-            _logger.Info(LogSource.Volte, "Use this URL to invite me to your servers:");
+            _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
             _logger.Info(LogSource.Volte, $"{args.Client.GetInviteUrl()}");
             _logger.Info(LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
             _logger.Info(LogSource.Volte, "Connected to:");

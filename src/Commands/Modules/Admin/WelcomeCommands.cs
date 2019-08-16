@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
         {
             Context.GuildData.Configuration.Welcome.WelcomeChannel = channel.Id;
             Db.UpdateData(Context.GuildData);
-            return Ok($"Set this server's welcome channel to {channel.Mention}.");
+            return Ok($"Set this guild's welcome channel to {channel.Mention}.");
         }
 
         [Command("WelcomeMessage", "Wmsg")]
@@ -35,8 +35,9 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine("The current welcome message for this server is ```")
-                    .AppendLine($"{Context.GuildData.Configuration.Welcome.WelcomeChannel}```")
+                    .AppendLine("The current welcome message for this guild is: ```")
+                    .AppendLine(Context.GuildData.Configuration.Welcome.WelcomeMessage)
+                    .Append("```")
                     .ToString());
             }
 
@@ -50,7 +51,7 @@ namespace Volte.Commands.Modules
             if (welcomeChannel is null || Context.GuildData.Configuration.Welcome.WelcomeChannel is 0) return None();
 
             return Ok(new StringBuilder()
-                .AppendLine($"Set this server's welcome message to ```{message}```")
+                .AppendLine($"Set this guild's welcome message to ```{message}```")
                 .AppendLine()
                 .AppendLine($"{sendingTest}").ToString(),
                 _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
@@ -64,7 +65,7 @@ namespace Volte.Commands.Modules
         {
             Context.GuildData.Configuration.Welcome.WelcomeColor = color.RawValue;
             Db.UpdateData(Context.GuildData);
-            return Ok("Successfully set this server's welcome message embed color!");
+            return Ok("Successfully set this guild's welcome message embed color!");
         }
 
         [Command("LeavingMessage", "Lmsg")]
@@ -77,8 +78,9 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine("The current leaving message for this server is ```")
-                    .AppendLine($"{Context.GuildData.Configuration.Welcome.LeavingMessage}```")
+                    .AppendLine("The current leaving message for this guild is ```")
+                    .AppendLine(Context.GuildData.Configuration.Welcome.LeavingMessage)
+                    .Append("```")
                     .ToString());
             }
 
