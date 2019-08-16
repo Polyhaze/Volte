@@ -23,14 +23,25 @@ namespace Volte.Commands.Modules
                 .Replace("{UserName}", Context.User.Username)
                 .Replace("{UserMention}", Context.User.Mention)
                 .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
-                .Replace("{UserTag}", Context.User.Discriminator), null, false);
+                .Replace("{UserTag}", Context.User.Discriminator), async _ =>
+            {
+                if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
+                {
+                    try
+                    {
+                        await Context.Message.DeleteAsync();
+                    }
+                    catch
+                    { }
+                }
+            }, false);
         }
 
         [Command("TagStats")]
         [Priority(1)]
         [Description("Shows stats for a tag.")]
         [Remarks("Usage: |prefix|tagstats {name}")]
-        public async Task<ActionResult> TagStatsAsync([Remainder]Tag tag)
+        public async Task<ActionResult> TagStatsAsync([Remainder] Tag tag)
         {
             var u = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
 
@@ -44,7 +55,7 @@ namespace Volte.Commands.Modules
         [Command("Tags")]
         [Description("Lists all available tags in the current guild.")]
         [Remarks("Usage: |prefix|tags")]
-        public Task<ActionResult> TagsAsync() 
+        public Task<ActionResult> TagsAsync()
             => Ok(Context.CreateEmbedBuilder(
                 Context.GuildData.Extras.Tags.Count == 0
                     ? "None"
