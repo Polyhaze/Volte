@@ -2,9 +2,9 @@ using Newtonsoft.Json;
 
 namespace Volte.Core.Models.BotConfig
 {
-    public sealed class JoinLeaveLog
+    public sealed class GuildLogging
     {
-        internal JoinLeaveLog()
+        internal GuildLogging()
         {
             Enabled = false;
             GuildId = ulong.MinValue;

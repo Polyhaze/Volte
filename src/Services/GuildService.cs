@@ -1,5 +1,5 @@
-using System;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -48,7 +48,7 @@ namespace Volte.Services
                     .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
-            _logger.Error(LogSource.Volte,
+            _logger.Debug(LogSource.Volte,
                 "Attempting to send the guild owner the introduction message.");
             try
             {
@@ -56,7 +56,7 @@ namespace Volte.Services
                 _logger.Error(LogSource.Volte,
                     "Sent the guild owner the introduction message.");
             }
-            catch (HttpException ex) when (ex.DiscordCode is 50007)
+            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.Forbidden)
             {
                 var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
                 _logger.Error(LogSource.Volte,
@@ -64,20 +64,20 @@ namespace Volte.Services
                 if (c != null) await embed.SendToAsync(c);
             }
 
-            if (!Config.JoinLeaveLog.Enabled) return;
-            var joinLeave = Config.JoinLeaveLog;
-            if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
+            if (!Config.GuildLogging.Enabled) return;
+            var guildLogging = Config.GuildLogging;
+            if (guildLogging.GuildId is 0 || guildLogging.ChannelId is 0)
             {
                 _logger.Error(LogSource.Volte,
-                    "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
-                    "To fix, set Enabled to false, or correctly fill in your options.");
+                    "Invalid value set for the guild_id or channel_id in the guild_logging config section. " +
+                    "To fix, set enabled to false, or correctly fill in your options.");
                 return;
             }
 
-            var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
+            var channel = _client.GetGuild(guildLogging.GuildId)?.GetTextChannel(guildLogging.ChannelId);
             if (channel is null)
             {
-                _logger.Error(LogSource.Volte, "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration. Check your IDs and try again.");
+                _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 
@@ -100,14 +100,14 @@ namespace Volte.Services
                     $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", false,
                     e.WithSuccessColor().Build());
             else
-                await channel.SendMessageAsync("", false, e.WithSuccessColor().Build());
+                await e.WithSuccessColor().SendToAsync(channel);
         }
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Left a guild.");
-            if (!Config.JoinLeaveLog.Enabled) return;
-            var joinLeave = Config.JoinLeaveLog;
+            if (!Config.GuildLogging.Enabled) return;
+            var joinLeave = Config.GuildLogging;
             if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
             {
                 _logger.Error(LogSource.Volte,

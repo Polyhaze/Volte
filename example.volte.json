@@ -19,8 +19,8 @@
   //same as above but for failures
   "log_all_commands": true,
   //whether or not to log all commands to the bot's console; enabled by default
-  "join_leave_log": {
-    //send a log of the bot's joins/leaves to a channel within a certain guild
+  "guild_logging": {
+    //send a log of the bot's guild joins/leaves, as well as any exceptions that occur
     "enabled": false,
     "guild_id": 0,
     "channel_id": 0

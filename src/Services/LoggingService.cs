@@ -1,10 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Humanizer;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -15,8 +21,18 @@ namespace Volte.Services
 {
     public sealed class LoggingService : VolteEventService
     {
+        private readonly DiscordShardedClient _client;
+        private readonly HttpClient _http;
+        private readonly object _lock;
         private const string LogFile = "data/Volte.log";
-        private readonly object _lock = new object();
+
+        public LoggingService(DiscordShardedClient discordShardedClient,
+            HttpClient httpClient)
+        {
+            _client = discordShardedClient;
+            _http = httpClient;
+            _lock = new object();
+        }
 
         public override Task DoAsync(EventArgs args)
         {
@@ -97,7 +113,7 @@ namespace Volte.Services
         /// </summary>
         /// <param name="e">Exception to print.</param>
         public void LogException(Exception e)
-            => Log(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+            => Execute(LogSeverity.Error, LogSource.Volte, string.Empty, e);
 
         private void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
@@ -122,6 +138,7 @@ namespace Volte.Services
                 var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
                 Append(toWrite, Color.IndianRed);
                 content.Append(toWrite);
+                LogExceptionInDiscord(e);
             }
 
             Console.Write(Environment.NewLine);
@@ -163,5 +180,31 @@ namespace Volte.Services
                 LogSeverity.Debug => (Color.SandyBrown, "DEBG"),
                 _ => throw new ArgumentNullException(nameof(severity), "severity cannot be null")
                 };
+
+        private void LogExceptionInDiscord(Exception e)
+        {
+            if (!Config.GuildLogging.Enabled) return;
+            var guildLogging = Config.GuildLogging;
+            var channel = _client.GetGuild(guildLogging.GuildId)?.GetTextChannel(guildLogging.ChannelId);
+            if (channel is null)
+            {
+                Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                return;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
+                var respObj = JObject.Parse(await response.Content.ReadAsStringAsync());
+                var url = $"https://paste.greemdev.net/{respObj.GetValue("key")}.cs";
+                var embed = new EmbedBuilder()
+                    .WithErrorColor()
+                    .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
+                    .AddField("Exception Type", e.GetType(), true)
+                    .AddField("Exception Message", e.Message, true)
+                    .WithDescription($"View the full Stack Trace [here]({url}).");
+                await embed.SendToAsync(channel);
+            });
+        }
     }
 }
