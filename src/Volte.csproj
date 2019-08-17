@@ -9,7 +9,7 @@
         <Authors>GreemDev</Authors>
         <Company>GreemDev</Company>
         <PackageProjectUrl>https://greemdev.net/Volte</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/GreemDev/Volte</RepositoryUrl>
+        <RepositoryUrl>https://github.com/Ultz/Volte</RepositoryUrl>
         <Copyright>MIT</Copyright>
         <Version>3.0.1.0</Version>
         <Platforms>AnyCPU;x64</Platforms>

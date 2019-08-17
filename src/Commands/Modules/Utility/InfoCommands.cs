@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> InfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
-                .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)} and contributors on [GitHub](https://github.com/GreemDev/Volte)", true)
+                .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)} and contributors on [GitHub](https://github.com/Ultz/Volte)", true)
                 .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Guilds", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
