@@ -21,6 +21,14 @@ A free, robust, open-source Discord bot written in C# with [Discord.Net](https:/
 
  * [abyssal/Abyss](https://github.com/abyssal/Abyss) 
  * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
+
+## Like Volte? Here's a few things you can do if you want.
+
+ * Star this repo.
+ * Throw a few dollars at me on [PayPal](https://paypal.me/greemdev).
+ * Join my Discord and be a functioning member of society.
+
+Don't want to do any of these? Using the bot and liking it is enough for me :)
  
 
 ## Thanks To
