@@ -7,14 +7,15 @@
 
 A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
 
+|**Prefix**: $|**Lead Dev:** [@GreemDev](https://github.com/GreemDev)|**Lang:** C#|**Library:** Discord.Net|[Discord Guild](https://discord.gg/H8bcFr2)|[Bot Invite Url](https://greemdev.net/invite)|
+|---|---|---|---|---|---|
 
 ## Quick Links 
- 
+ - [Feature List](https://github.com/Ultz/Volte/wiki/Features)
  - [Invite the bot](https://greemdev.net/Invite)
- - [Issue Tracker](https://github.com/GreemDev/Volte/issues)
- - [Discord Server](https://discord.gg/H8bcFr2)
+ - [Issue Tracker](https://github.com/Ultz/Volte/issues)
  - [Website](https://greemdev.net/Volte)
- - [Source Code](https://github.com/GreemDev/Volte) (literally this site)
+ - [Source Code](https://github.com/Ultz/Volte) (literally this site)
 
 ## Bots made by Cool People
 
