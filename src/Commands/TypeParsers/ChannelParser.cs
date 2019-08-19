@@ -32,9 +32,9 @@ namespace Volte.Commands.TypeParsers
                         "Multiple channels found. Try mentioning the channel or using its ID."));
             }
 
-            return new ValueTask<TypeParserResult<SocketTextChannel>>(channel is null
+            return channel is null
                 ? TypeParserResult<SocketTextChannel>.Unsuccessful("Channel not found.")
-                : TypeParserResult<SocketTextChannel>.Successful(channel));
+                : TypeParserResult<SocketTextChannel>.Successful(channel);
         }
     }
 }

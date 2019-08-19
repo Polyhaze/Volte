@@ -35,9 +35,9 @@ namespace Volte.Commands.TypeParsers
                 guild = match.FirstOrDefault();
             }
 
-            return new ValueTask<TypeParserResult<SocketGuild>>(guild is null
+            return guild is null
                 ? TypeParserResult<SocketGuild>.Unsuccessful("Guild not found.")
-                : TypeParserResult<SocketGuild>.Successful(guild));
+                : TypeParserResult<SocketGuild>.Successful(guild);
         }
     }
 }

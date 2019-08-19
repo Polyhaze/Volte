@@ -14,10 +14,10 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context,
             IServiceProvider provider) 
-            => new ValueTask<TypeParserResult<IEmote>>(Emote.TryParse(value, out var emote)
-                ? new TypeParserResult<IEmote>(emote)
+            => Emote.TryParse(value, out var emote)
+                ? TypeParserResult<IEmote>.Successful(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
-                    ? new TypeParserResult<IEmote>(new Emoji(value))
-                    : new TypeParserResult<IEmote>("Emote not found."));
+                    ? TypeParserResult<IEmote>.Successful(new Emoji(value))
+                    : TypeParserResult<IEmote>.Unsuccessful("Emote not found.");
     }
 }

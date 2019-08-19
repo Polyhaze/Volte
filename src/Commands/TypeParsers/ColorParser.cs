@@ -47,9 +47,9 @@ namespace Volte.Commands.TypeParsers
                 }
             }
 
-            return new ValueTask<TypeParserResult<Color>>(c is null
+            return c is null
                 ? TypeParserResult<Color>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
-                : TypeParserResult<Color>.Successful(c.Value));
+                : TypeParserResult<Color>.Successful(c.Value);
         }
     }
 }

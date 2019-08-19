@@ -18,13 +18,7 @@ namespace Volte.Commands.Modules
             tag.Uses += 1;
             Db.UpdateData(Context.GuildData);
 
-            return Ok(tag.SanitizeContent()
-                .Replace("{ServerName}", Context.Guild.Name)
-                .Replace("{GuildName}", Context.Guild.Name)
-                .Replace("{UserName}", Context.User.Username)
-                .Replace("{UserMention}", Context.User.Mention)
-                .Replace("{OwnerMention}", Context.Guild.Owner.Mention)
-                .Replace("{UserTag}", Context.User.Discriminator), async _ =>
+            return Ok(tag.FormatContent(Context), async _ =>
             {
                 if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                 {

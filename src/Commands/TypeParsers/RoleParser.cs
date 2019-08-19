@@ -32,9 +32,9 @@ namespace Volte.Commands.TypeParsers
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }
 
-            return new ValueTask<TypeParserResult<SocketRole>>(role is null
-                ? Task.FromResult(TypeParserResult<SocketRole>.Unsuccessful($"Role `{value}` not found."))
-                : Task.FromResult(TypeParserResult<SocketRole>.Successful(role)));
+            return role is null
+                ? TypeParserResult<SocketRole>.Unsuccessful($"Role `{value}` not found.")
+                : TypeParserResult<SocketRole>.Successful(role);
         }
     }
 }

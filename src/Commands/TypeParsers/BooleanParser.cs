@@ -30,14 +30,14 @@ namespace Volte.Commands.TypeParsers
             IServiceProvider provider)
         {
             if (TrueValues.ContainsIgnoreCase(value))
-                return new ValueTask<TypeParserResult<bool>>(TypeParserResult<bool>.Successful(true));
+                return TypeParserResult<bool>.Successful(true);
 
             if (FalseValues.ContainsIgnoreCase(value))
-                return new ValueTask<TypeParserResult<bool>>(TypeParserResult<bool>.Successful(false));
+                return TypeParserResult<bool>.Successful(false);
 
-            return new ValueTask<TypeParserResult<bool>>(bool.TryParse(value, out var result)
+            return bool.TryParse(value, out var result)
                 ? TypeParserResult<bool>.Successful(result)
-                : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value."));
+                : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value.");
         }
     }
 }

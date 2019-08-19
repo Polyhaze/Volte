@@ -28,7 +28,7 @@ namespace Volte.Commands.Results
         private readonly string _message;
         private readonly bool _shouldEmbed;
         private readonly Func<IUserMessage, Task> _callback;
-        private readonly Func<Task> _separateLogic;
+        private readonly Func<Task>? _separateLogic;
         private readonly EmbedBuilder _embed;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
