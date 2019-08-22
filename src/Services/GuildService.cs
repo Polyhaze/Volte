@@ -64,18 +64,7 @@ namespace Volte.Services
                 if (c != null) await embed.SendToAsync(c);
             }
 
-            if (!Config.GuildLogging.Enabled) return;
-            var guildLogging = Config.GuildLogging;
-            if (guildLogging.GuildId is 0 || guildLogging.ChannelId is 0)
-            {
-                _logger.Error(LogSource.Volte,
-                    "Invalid value set for the guild_id or channel_id in the guild_logging config section. " +
-                    "To fix, set enabled to false, or correctly fill in your options.");
-                return;
-            }
-
-            var channel = _client.GetGuild(guildLogging.GuildId)?.GetTextChannel(guildLogging.ChannelId);
-            if (channel is null)
+            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
                 _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
@@ -106,21 +95,9 @@ namespace Volte.Services
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Left a guild.");
-            if (!Config.GuildLogging.Enabled) return;
-            var joinLeave = Config.GuildLogging;
-            if (joinLeave.GuildId is 0 || joinLeave.ChannelId is 0)
+            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
-                _logger.Error(LogSource.Volte,
-                    "Invalid value set for the GuildId or ChannelId in the JoinLeaveLog config option. " +
-                    "To fix, set Enabled to false, or correctly fill in your options.");
-                return;
-            }
-
-            var channel = _client.GetGuild(joinLeave.GuildId).GetTextChannel(joinLeave.ChannelId);
-            if (channel is null)
-            {
-                _logger.Error(LogSource.Volte,
-                    "Invalid JoinLeaveLog.GuildId/JoinLeaveLog.ChannelId configuration.");
+                _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 

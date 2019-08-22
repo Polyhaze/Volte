@@ -33,15 +33,11 @@ namespace Volte.Commands.Modules
             });
             Db.UpdateData(Context.GuildData);
 
-            try
-            {
-                await Context.CreateEmbed($"You've been warned in **{Context.Guild.Name}** for **{reason}**.")
-                    .SendToAsync(user);
-            }
-            catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            if (!await user.TrySendMessageAsync(
+                embed: Context.CreateEmbed($"You've been warned in **{Context.Guild.Name}** for **{reason}**.")))
             {
                 Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!", e);
+                    $"encountered a 403 when trying to message {user}!");
             }
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
@@ -89,7 +85,7 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!", e);
             }
 
-            return Ok($"Cleared all warnings for **{user}**.", _ =>
+            return Ok($"Cleared **{newWarnList.Count}** warnings for **{user}**.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.ClearWarns)

@@ -21,15 +21,11 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> SoftBanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {
-            try
-            {
-                await Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")
-                    .SendToAsync(user);
-            }
-            catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            if (!await user.TrySendMessageAsync(
+                embed: Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")))
             {
                 Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!", e);
+                    $"encountered a 403 when trying to message {user}!");
             }
 
             await user.BanAsync(daysToDelete, reason);

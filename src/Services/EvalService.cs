@@ -100,7 +100,7 @@ namespace Volte.Services
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                             .AddField("Return Type", result.GetType(), true)
-                            .AddField("Output", Format.Code(res, "css")).Build());
+                            .WithDescription(Format.Code(res, "ini")).Build());
                 }
             }
             catch (Exception e)

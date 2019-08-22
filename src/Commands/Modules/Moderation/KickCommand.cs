@@ -21,15 +21,11 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> KickAsync([CheckHierarchy] SocketGuildUser user,
             [Remainder] string reason = "Kicked by a Moderator.")
         {
-            try
-            {
-                await Context.CreateEmbed($"You were kicked from **{Context.Guild.Name}** for **{reason}**.")
-                    .SendToAsync(user);
-            }
-            catch (Discord.Net.HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+            if (!await user.TrySendMessageAsync(
+                embed: Context.CreateEmbed($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.")))
             {
                 Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!", e);
+                    $"encountered a 403 when trying to message {user}!");
             }
 
             await user.KickAsync(reason);

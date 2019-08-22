@@ -183,10 +183,7 @@ namespace Volte.Services
 
         private void LogExceptionInDiscord(Exception e)
         {
-            if (!Config.GuildLogging.Enabled) return;
-            var guildLogging = Config.GuildLogging;
-            var channel = _client.GetGuild(guildLogging.GuildId)?.GetTextChannel(guildLogging.ChannelId);
-            if (channel is null)
+            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
                 Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
@@ -197,13 +194,13 @@ namespace Volte.Services
                 var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
                 var respObj = JObject.Parse(await response.Content.ReadAsStringAsync());
                 var url = $"https://paste.greemdev.net/{respObj.GetValue("key")}.cs";
-                var embed = new EmbedBuilder()
+                await new EmbedBuilder()
                     .WithErrorColor()
                     .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
                     .AddField("Exception Type", e.GetType(), true)
                     .AddField("Exception Message", e.Message, true)
-                    .WithDescription($"View the full Stack Trace [here]({url}).");
-                await embed.SendToAsync(channel);
+                    .WithDescription($"View the full Stack Trace [here]({url}).")
+                    .SendToAsync(channel);
             });
         }
     }
