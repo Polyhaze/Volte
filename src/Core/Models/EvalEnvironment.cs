@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Discord;
 using Discord.WebSocket;
 using Gommon;
-using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Models.Guild;
@@ -15,9 +13,10 @@ using Volte.Services;
 
 namespace Volte.Core.Models
 {
-    public sealed class EvalObjects
+    public sealed class EvalEnvironment
     {
-        internal EvalObjects() { }
+
+        internal EvalEnvironment() { }
 
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }

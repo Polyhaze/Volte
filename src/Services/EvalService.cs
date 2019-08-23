@@ -38,7 +38,7 @@ namespace Volte.Services
         {
             try
             {
-                if (code.StartsWith("```cs") && code.EndsWith("```"))
+                if (code.StartsWithIgnoreCase("```cs") && code.EndsWith("```"))
                 {
                     code = code.Substring(5);
                     code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
@@ -58,8 +58,8 @@ namespace Volte.Services
             }
         }
 
-        private EvalObjects GetEvalObjects(VolteContext ctx)
-            => new EvalObjects
+        private EvalEnvironment CreateEvalEnvironment(VolteContext ctx)
+            => new EvalEnvironment
             {
                 Context = ctx,
                 Client = ctx.Client.GetShardFor(ctx.Guild),
@@ -77,11 +77,11 @@ namespace Volte.Services
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = ctx.CreateEmbedBuilder();
-            var msg = await embed.WithTitle("Evaluating...").SendToAsync(ctx.Channel);
+            var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs")).SendToAsync(ctx.Channel);
             try
             {
                 var sw = Stopwatch.StartNew();
-                var result = await CSharpScript.EvaluateAsync(code, sopts, GetEvalObjects(ctx));
+                var result = await CSharpScript.EvaluateAsync(code, sopts, CreateEvalEnvironment(ctx));
                 sw.Stop();
                 if (result is null)
                 {
@@ -120,7 +120,7 @@ namespace Volte.Services
             "System", "System.Collections.Generic", "System.Linq", "System.Text",
             "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO",
             "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
-            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Newtonsoft.Json"
         });
     }
 }

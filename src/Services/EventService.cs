@@ -120,6 +120,16 @@ namespace Volte.Services
 
                 _ = _db.GetData(guild); //ensuring all guilds have data available, to prevent exceptions later on 
             }
+
+            if (Config.GuildLogging.EnsureValidConfiguration(args.ShardedClient, out var channel))
+            {
+                await new EmbedBuilder()
+                    .WithSuccessColor()
+                    .WithAuthor(args.ShardedClient.GetOwner())
+                    .WithDescription(
+                        $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
+                    .SendToAsync(channel);
+            }
         }
     }
 }

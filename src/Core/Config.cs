@@ -70,6 +70,9 @@ namespace Volte.Core
             }
         }
 
+        public static bool IsValidToken() 
+            => !(Token.IsNullOrEmpty() || Token.Equals("token here"));
+
         public static string Token => _configuration.Token;
 
         public static string CommandPrefix => _configuration.CommandPrefix;

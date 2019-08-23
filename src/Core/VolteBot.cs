@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace Volte.Core
                 Console.WriteLine("The \"data\" directory didn't exist, so I created it for you.");
                 Directory.CreateDirectory("data");
                 //99.9999999999% of the time the config also won't exist if this block is reached
+                //if the config does exist when this block is reached, feel free to become the lead developer of this project
             }
 
             if (!Config.CreateIfNotExists())
@@ -45,7 +47,7 @@ namespace Volte.Core
 
             Config.Load();
 
-            if (Config.Token.IsNullOrEmpty() || Config.Token.EqualsIgnoreCase("token here")) return;
+            if (!Config.IsValidToken()) return;
 
             using var rest = new DiscordRestClient();
 
@@ -74,13 +76,23 @@ namespace Volte.Core
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested by the bot owner; shutting down.");
-                await ShutdownAsync(client, cts);
+                await ShutdownAsync(client, cts, logger);
             }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts)
+        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts, LoggingService logger)
         {
+            if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
+            {
+                await new EmbedBuilder()
+                    .WithErrorColor()
+                    .WithAuthor(client.GetOwner())
+                    .WithDescription(
+                        $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().GetUptime()}**!")
+                    .SendToAsync(channel);
+            }
+
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();

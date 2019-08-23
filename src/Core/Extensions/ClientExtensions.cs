@@ -45,7 +45,7 @@ namespace Gommon
                     Config.EnabledFeatures.Welcome 
                     ? welcome.LeaveAsync(new UserLeftEventArgs(user)) 
                     : Task.CompletedTask;
-                client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c));
+                client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c, client));
                 client.MessageReceived += async s =>
                 {
                     if (!(s is SocketUserMessage msg)) return;
