@@ -53,7 +53,7 @@ namespace Volte.Services
             }
             finally
             {
-                GC.Collect(int.MaxValue, GCCollectionMode.Forced, true, true);
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
                 GC.WaitForPendingFinalizers();
             }
         }

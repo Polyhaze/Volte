@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
@@ -8,7 +9,7 @@ using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
-    public sealed class DatabaseService : VolteService
+    public sealed class DatabaseService : VolteService, IDisposable
     {
         public static readonly LiteDatabase Database = new LiteDatabase("data/Volte.db");
 
@@ -78,5 +79,10 @@ namespace Volte.Services
                     Warns = new List<Warn>()
                 }
             };
+
+        public void Dispose()
+        {
+            Database.Dispose();
+        }
     }
 }

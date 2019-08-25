@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -17,6 +18,8 @@ namespace Volte.Core
     {
         public static Task StartAsync()
             => new VolteBot().LoginAsync();
+
+        private IServiceProvider _provider;
 
         private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
             => provider = new ServiceCollection() 
@@ -55,17 +58,17 @@ namespace Volte.Core
             var shardCount = await rest.GetRecommendedShardCountAsync();
             await rest.LogoutAsync();
 
-            BuildServiceProvider(shardCount, out var provider);
+            BuildServiceProvider(shardCount, out _provider);
 
-            provider.Get<DiscordShardedClient>(out var client);
-            provider.Get<CancellationTokenSource>(out var cts);
-            provider.Get<VolteHandler>(out var handler);
-            provider.Get<LoggingService>(out var logger);
+            _provider.Get<DiscordShardedClient>(out var client);
+            _provider.Get<CancellationTokenSource>(out var cts);
+            _provider.Get<VolteHandler>(out var handler);
+            _provider.Get<LoggingService>(out var logger);
 
             await client.LoginAsync(TokenType.Bot, Config.Token);
             await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
 
-            await handler.InitializeAsync(provider);
+            await handler.InitializeAsync(_provider);
 
             try
             {
@@ -76,12 +79,12 @@ namespace Volte.Core
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested by the bot owner; shutting down.");
-                await ShutdownAsync(client, cts, logger);
+                await ShutdownAsync(client, cts);
             }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts, LoggingService logger)
+        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts)
         {
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
@@ -92,7 +95,7 @@ namespace Volte.Core
                         $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().GetUptime()}**!")
                     .SendToAsync(channel);
             }
-
+            
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();
@@ -106,6 +109,7 @@ namespace Volte.Core
             {
                 disposable.Dispose();
             }
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
         }
     }
 }
