@@ -20,6 +20,8 @@ namespace Volte.Core
             => new VolteBot().LoginAsync();
 
         private IServiceProvider _provider;
+        private DiscordShardedClient _client;
+        private CancellationTokenSource _cts;
 
         private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
             => provider = new ServiceCollection() 
@@ -27,7 +29,9 @@ namespace Volte.Core
                 .BuildServiceProvider();
 
         private VolteBot()
-        { }
+        {
+            Console.CancelKeyPress += (s, _) => _cts.Cancel();
+        }
 
         private async Task LoginAsync()
         {
@@ -60,26 +64,26 @@ namespace Volte.Core
 
             BuildServiceProvider(shardCount, out _provider);
 
-            _provider.Get<DiscordShardedClient>(out var client);
-            _provider.Get<CancellationTokenSource>(out var cts);
+            _provider.Get(out _client);
+            _provider.Get(out _cts);
             _provider.Get<VolteHandler>(out var handler);
             _provider.Get<LoggingService>(out var logger);
 
-            await client.LoginAsync(TokenType.Bot, Config.Token);
-            await client.StartAsync().ContinueWith(_ => client.SetStatusAsync(UserStatus.Online));
+            await _client.LoginAsync(TokenType.Bot, Config.Token);
+            await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));
 
             await handler.InitializeAsync(_provider);
 
             try
             {
-                await Task.Delay(-1, cts.Token);
+                await Task.Delay(-1, _cts.Token);
             }
             catch (TaskCanceledException)
             {
                 //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested by the bot owner; shutting down.");
-                await ShutdownAsync(client, cts);
+                await ShutdownAsync(_client, _cts);
             }
         }
 
