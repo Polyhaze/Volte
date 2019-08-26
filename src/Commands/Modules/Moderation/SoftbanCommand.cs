@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         [Command("Softban")]
-        [Description("Softbans the mentioned user, kicking them and deleting the last 7 days of messages.")]
+        [Description("Softbans the mentioned user, kicking them and deleting the last x (where x is defined by the daysToDelete parameter) days of messages.")]
         [Remarks("Usage: |prefix|softban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
         [RequireGuildModerator]
@@ -37,6 +37,32 @@ namespace Volte.Commands.Modules
                     .WithTarget(user)
                     .WithReason(reason))
                 );
+        }
+
+        [Command("Softban")]
+        [Description("Softbans the mentioned user, kicking them and deleting the last 7 days of messages.")]
+        [Remarks("Usage: |prefix|softban {@user} {daysToDelete} [reason]")]
+        [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
+        [RequireGuildModerator]
+        public async Task<ActionResult> SoftBanAsync([CheckHierarchy] SocketGuildUser user,
+            [Remainder] string reason = "Softbanned by a Moderator.")
+        {
+            if (!await user.TrySendMessageAsync(
+                embed: Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")))
+            {
+                Logger.Warn(LogSource.Volte,
+                    $"encountered a 403 when trying to message {user}!");
+            }
+
+            await user.BanAsync(7, reason);
+            await Context.Guild.RemoveBanAsync(user);
+
+            return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
+                ModLogService.DoAsync(ModActionEventArgs.New
+                    .WithDefaultsFromContext(Context)
+                    .WithTarget(user)
+                    .WithReason(reason))
+            );
         }
     }
 }
