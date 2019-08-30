@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 'v3.0.0-preview3'
+        dotnet-version: '3.0.100-preview3-010431'
     - name: Run a multi-line script
       run: |
         bash build.sh
