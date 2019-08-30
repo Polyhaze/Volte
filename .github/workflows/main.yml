@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@master
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 'v3.0.0-preview8'
     - name: Run a multi-line script
       run: |
         bash build.sh
