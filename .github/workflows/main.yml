@@ -12,6 +12,5 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.0.100-preview3-010431'
-    - name: Run a multi-line script
-      run: |
-        bash build.sh
+    - name: build the damn thing
+      run: bash build.sh
