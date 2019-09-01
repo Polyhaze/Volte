@@ -7,8 +7,8 @@
 
 A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
 
-|**Prefix**: $|**Lead Dev:** [@GreemDev](https://github.com/GreemDev)|**Lang:** C#|**Library:** Discord.Net|[Discord Guild](https://discord.gg/H8bcFr2)|[Bot Invite Url](https://greemdev.net/invite)|
-|---|---|---|---|---|---|
+|**Prefix**: $|**Lead:** [@GreemDev](https://github.com/GreemDev)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|[Discord Guild](https://discord.gg/H8bcFr2)|[Bot Invite Url](https://greemdev.net/invite)|**Runtime**: .NET Core 3
+|---|---|---|---|---|---|---|
 
 ## Quick Links 
  - [Feature List](https://github.com/Ultz/Volte/wiki/Features)
