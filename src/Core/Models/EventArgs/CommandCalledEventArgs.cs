@@ -8,7 +8,7 @@ namespace Volte.Core.Models.EventArgs
     public sealed class CommandCalledEventArgs : CommandEventArgs
     {
         public IResult Result { get; }
-        public VolteContext Context { get; }
+        public override VolteContext Context { get; }
         public Stopwatch Stopwatch { get; }
 
         public CommandCalledEventArgs(IResult res, CommandContext context, Stopwatch sw)

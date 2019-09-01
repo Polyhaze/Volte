@@ -29,8 +29,8 @@ namespace Volte.Commands.TypeParsers
                 var match = guilds.Where(x =>
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return new ValueTask<TypeParserResult<SocketGuild>>(TypeParserResult<SocketGuild>.Unsuccessful(
-                        "Multiple guilds found, try using its ID."));
+                    return TypeParserResult<SocketGuild>.Unsuccessful(
+                        "Multiple guilds found, try using its ID.");
 
                 guild = match.FirstOrDefault();
             }

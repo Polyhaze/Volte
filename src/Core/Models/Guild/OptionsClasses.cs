@@ -43,6 +43,9 @@ namespace Volte.Core.Models.Guild
         [JsonProperty("welcome_color")]
         public uint WelcomeColor { get; set; }
 
+        [JsonProperty("welcome_dm_message")]
+        public string WelcomeDmMessage { get; set; }
+
         public string FormatWelcomeMessage(SocketGuildUser user) 
             => WelcomeMessage.Replace("{ServerName}", user.Guild.Name)
                 .Replace("{GuildName}", user.Guild.Name)
@@ -55,6 +58,16 @@ namespace Volte.Core.Models.Guild
 
         public string FormatLeavingMessage(SocketGuildUser user) 
             => LeavingMessage.Replace("{ServerName}", user.Guild.Name)
+                .Replace("{GuildName}", user.Guild.Name)
+                .Replace("{UserName}", user.Username)
+                .Replace("{UserMention}", user.Mention)
+                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
+                .Replace("{UserTag}", user.Discriminator)
+                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
+                .Replace("{UserString}", user.ToString());
+
+        public string FormatDmMessage(SocketGuildUser user)
+            => WelcomeDmMessage.Replace("{ServerName}", user.Guild.Name)
                 .Replace("{GuildName}", user.Guild.Name)
                 .Replace("{UserName}", user.Username)
                 .Replace("{UserMention}", user.Mention)

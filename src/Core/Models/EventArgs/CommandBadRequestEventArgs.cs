@@ -7,7 +7,7 @@ namespace Volte.Core.Models.EventArgs
     public sealed class CommandBadRequestEventArgs : CommandEventArgs
     {
         public BadRequestResult BadRequestResult { get; }
-        public VolteContext Context { get; }
+        public override VolteContext Context { get; }
         public string Arguments { get; }
         public Stopwatch Stopwatch { get; }
 

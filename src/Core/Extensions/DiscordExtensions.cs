@@ -104,11 +104,10 @@ namespace Gommon
                 client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c, client));
                 client.MessageReceived += async s =>
                 {
-                    if (!(s is SocketUserMessage msg)) return;
-                    if (msg.Author.IsBot) return;
-                    if (msg.Channel is IDMChannel)
+                    if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
+                    if (msg.Channel is IDMChannel dmc)
                     {
-                        await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                        await dmc.SendMessageAsync("Currently, I do not support commands via DM."); `
                         return;
                     }
 

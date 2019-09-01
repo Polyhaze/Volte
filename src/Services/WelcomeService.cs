@@ -21,8 +21,12 @@ namespace Volte.Services
         internal async Task JoinAsync(UserJoinedEventArgs args)
         {
             var data = _db.GetData(args.Guild);
-            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
+
+            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty() || data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
                 return; //we don't want to send an empty join message
+
+            _ = await args.User.TrySendMessageAsync(data.Configuration.Welcome.FormatDmMessage(args.User));
+
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
             var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);

@@ -26,8 +26,8 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return new ValueTask<TypeParserResult<SocketRole>>(TypeParserResult<SocketRole>.Unsuccessful(
-                        "Multiple roles found. Try mentioning the role or using its ID."));
+                    return TypeParserResult<SocketRole>.Unsuccessful(
+                        "Multiple roles found. Try mentioning the role or using its ID.");
 
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }

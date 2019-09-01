@@ -31,8 +31,8 @@ namespace Volte.Commands.TypeParsers
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return new ValueTask<TypeParserResult<Color>>(TypeParserResult<Color>.Unsuccessful(
-                            "A value in an RGB sequence may not be over the value of 255."));
+                        return TypeParserResult<Color>.Unsuccessful(
+                            "A value in an RGB sequence may not be over the value of 255.");
                     }
 
                     c = new Color(r, g, b);

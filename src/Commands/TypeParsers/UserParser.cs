@@ -31,10 +31,10 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = users.Where(x =>
                     x.Username.EqualsIgnoreCase(value)
-                    || x.Cast<IGuildUser>().Nickname.EqualsIgnoreCase(value)).ToList();
+                    || x.Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return new ValueTask<TypeParserResult<SocketGuildUser>>(TypeParserResult<SocketGuildUser>.Unsuccessful(
-                        "Multiple users found, try mentioning the user or using their ID."));
+                    return TypeParserResult<SocketGuildUser>.Unsuccessful(
+                        "Multiple users found, try mentioning the user or using their ID.");
 
                 user = match.FirstOrDefault();
             }

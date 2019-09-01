@@ -109,9 +109,8 @@ namespace Volte.Core
         private void Dispose(params IDisposable[] disposables)
         {
             foreach (var disposable in disposables)
-            {
                 disposable.Dispose();
-            }
+
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
         }
     }

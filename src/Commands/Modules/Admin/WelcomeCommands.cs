@@ -99,5 +99,22 @@ namespace Volte.Commands.Modules
                     .AppendLine($"{sendingTest}").ToString(),
                 _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
         }
+
+        [Command("WelcomeDmMessage", "Wdmm")]
+        [Description("Sets the message to be (attempted to) sent to members upon joining.")]
+        [Remarks("Usage: |prefix|welcomedmmessage")]
+        [RequireGuildAdmin]
+        public async Task<ActionResult> WelcomeDmMessageAsync(string message = null)
+        {
+            if (message is null)
+            {
+                return Ok(
+                    $"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
+            }
+
+            Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Set the WelcomeDmMessage to: {Format.Code(message)}");
+        }
     }
 }
