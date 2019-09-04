@@ -46,7 +46,7 @@ namespace Volte.Services
             }
 
             _logger.Debug(LogSource.Volte,
-                "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
+                "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
 
         internal async Task LeaveAsync(UserLeftEventArgs args)
@@ -59,19 +59,18 @@ namespace Volte.Services
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
             if (!(c is null))
             {
-                var embed = new EmbedBuilder()
+                await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(leavingMessage)
                     .WithThumbnailUrl(args.User.GetAvatarUrl())
-                    .WithCurrentTimestamp();
-
-                await embed.SendToAsync(c);
+                    .WithCurrentTimestamp()
+                    .SendToAsync(c);
                 _logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");
                 return;
             }
 
             _logger.Debug(LogSource.Volte,
-                "WelcomeChannel config value was not set or resulted in an invalid channel; aborting.");
+                "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
     }
 }

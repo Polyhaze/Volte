@@ -1,4 +1,3 @@
-using Discord;
 using Discord.WebSocket;
 
 namespace Volte.Core.Models.EventArgs

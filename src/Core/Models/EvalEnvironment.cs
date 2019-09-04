@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Discord.WebSocket;
 using Gommon;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Models.Guild;
@@ -40,6 +41,9 @@ namespace Volte.Core.Models
 
         public SocketGuild Guild(ulong id)
             => Context.Client.GetGuild(id);
+
+        public T GetFromProvider<T>()
+            => Context.ServiceProvider.GetRequiredService<T>();
 
         public SocketUserMessage Message(string id)
         {

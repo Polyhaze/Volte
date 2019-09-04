@@ -107,7 +107,7 @@ namespace Gommon
                     if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
                     if (msg.Channel is IDMChannel dmc)
                     {
-                        await dmc.SendMessageAsync("Currently, I do not support commands via DM."); `
+                        await dmc.SendMessageAsync("Currently, I do not support commands via DM.");
                         return;
                     }
 
