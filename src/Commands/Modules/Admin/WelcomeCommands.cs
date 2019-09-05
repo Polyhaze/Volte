@@ -104,7 +104,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the message to be (attempted to) sent to members upon joining.")]
         [Remarks("Usage: |prefix|welcomedmmessage")]
         [RequireGuildAdmin]
-        public async Task<ActionResult> WelcomeDmMessageAsync(string message = null)
+        public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
         {
             if (message is null)
             {

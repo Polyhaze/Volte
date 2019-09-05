@@ -75,14 +75,14 @@ namespace Volte.Core.Models
 
             foreach (var baseType in baseTypes)
             {
-                sb.Append($"[{FormatTypeGenerics(baseType)}]");
+                sb.Append($"[{FormatTypeParameters(baseType)}]");
                 IList<Type> inheritors = baseType.GetInterfaces();
                 if (baseType.BaseType != null)
                 {
                     inheritors = inheritors.ToList();
                     inheritors.Add(baseType.BaseType);
                 }
-                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(FormatTypeGenerics))}");
+                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(FormatTypeParameters))}");
 
                 sb.AppendLine();
             }
@@ -90,7 +90,7 @@ namespace Volte.Core.Models
             return sb.ToString();
         }
 
-        private string FormatTypeGenerics(Type type)
+        private string FormatTypeParameters(Type type)
         {
             var vs = $"{type.Namespace}.{type.Name}";
 

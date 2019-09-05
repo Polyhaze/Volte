@@ -32,7 +32,7 @@ namespace Volte.Core
                 ErrorEmbedColor = 0xFF0000,
                 LogAllCommands = true,
                 GuildLogging = new GuildLogging(),
-                BlacklistedGuildOwners = new ulong[] { },
+                BlacklistedGuildOwners = Array.Empty<ulong>(),
                 EnabledFeatures = new EnabledFeatures()
             };
             try

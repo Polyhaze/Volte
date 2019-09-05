@@ -21,14 +21,15 @@ namespace Volte.Commands.Modules
                 url =
                     $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>()?.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
             }
-            catch (ArgumentNullException) { }
+            catch (ArgumentNullException)
+            { }
 
             return emoteIn switch
-                {
+            {
                 Emote emote => Ok(Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url)),
                 Emoji _ => Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url)),
-                _ => None()
-                };
+                _ => None() //should never be reached
+            };
         }
     }
 }

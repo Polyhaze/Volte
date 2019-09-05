@@ -27,10 +27,8 @@ namespace Volte.Core
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
-        private VolteBot()
-        {
-            Console.CancelKeyPress += (s, _) => _cts.Cancel();
-        }
+        private VolteBot() 
+            => Console.CancelKeyPress += (s, _) => _cts.Cancel();
 
         private async Task LoginAsync()
         {

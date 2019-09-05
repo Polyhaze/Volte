@@ -44,7 +44,7 @@ namespace Volte.Services
             collection.Update(newConfig);
         }
 
-        private GuildData Create(SocketGuild guild)
+        private static GuildData Create(SocketGuild guild)
             => new GuildData
             {
                 Id = guild.Id,
@@ -80,9 +80,7 @@ namespace Volte.Services
                 }
             };
 
-        public void Dispose()
-        {
-            Database.Dispose();
-        }
+        public void Dispose() 
+            => Database.Dispose();
     }
 }

@@ -77,8 +77,8 @@ namespace Volte.Services
                 CommandNotFoundResult _ => "Unknown command.",
                 ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType()}",
                 ChecksFailedResult cfr => cfr.Reason,
-                ParameterChecksFailedResult pcfr => $"Checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.Reason).Join('\n')}```",
-                ArgumentParseFailedResult apfr => $"Parsing for arguments failed on argument **{apfr.Parameter.Name}**.",
+                ParameterChecksFailedResult pcfr => $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.Reason).Join('\n')}```",
+                ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 _ => "Unknown error."
@@ -87,7 +87,7 @@ namespace Volte.Services
             if (args.FailedResult is ExecutionFailedResult e)
                 _logger.LogException(e.Exception);
 
-            if (!(args.FailedResult is ChecksFailedResult) && reason != string.Empty)
+            if (!(args.FailedResult is ChecksFailedResult) && !reason.IsNullOrEmpty())
             {
                 await args.Context.CreateEmbedBuilder()
                     .AddField("Error in Command", args.Context.Command.Name)

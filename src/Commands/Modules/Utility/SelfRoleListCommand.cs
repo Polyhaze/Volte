@@ -21,7 +21,7 @@ namespace Volte.Commands.Modules
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
                     return currentRole is null ? "" : $"**{currentRole.Name}**";
                 })
-                .Where(x => x != string.Empty).Join("\n");
+                .Where(x => !x.IsNullOrEmpty()).Join("\n");
 
             return Ok(Context.CreateEmbedBuilder(roleList).WithTitle("Roles available to self-assign in this server:"));
         }

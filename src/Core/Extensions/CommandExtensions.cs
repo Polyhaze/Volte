@@ -37,7 +37,7 @@ namespace Gommon
             {
                 if (!(type.GetCustomAttributes().FirstOrDefault(a => a is VolteTypeParserAttribute) is VolteTypeParserAttribute attr)) continue;
 
-                var parser = type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                var parser = type.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
                 var method = addTypeParserMethod?.MakeGenericMethod(type.BaseType?.GenericTypeArguments[0]);
                 method?.Invoke(service, new [] { parser, attr.OverridePrimitive });
                 loadedTypes.Add(type);
@@ -53,7 +53,7 @@ namespace Gommon
         public static int GetTotalTypeParsers(this CommandService _)
         {
             var customParsers = typeof(VolteBot).Assembly.GetTypes().Count(x => x.HasAttribute<VolteTypeParserAttribute>());
-            return customParsers + 12; //add the number of primitive typeparsers, minus bool since we override that one.
+            return customParsers + 12; //add the number of primitive typeparsers (that come with Qmmands), minus bool since we override that one.
         }
     }
 }

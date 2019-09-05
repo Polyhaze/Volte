@@ -37,12 +37,8 @@ namespace Volte.Commands.TypeParsers
 
                     c = new Color(r, g, b);
                 }
-                catch (IndexOutOfRangeException)
-                {
-                    c = null;
-                }
-                catch (FormatException)
-                {
+                catch (Exception)
+                { 
                     c = null;
                 }
             }
