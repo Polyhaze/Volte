@@ -57,7 +57,7 @@ namespace Volte.Commands.Modules
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.UpdateData(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{user}**" +
+                      $"**{user}**, with " +
                       $"{"use".ToQuantity(tag.Uses)}.");
         }
     }
