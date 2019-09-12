@@ -37,7 +37,7 @@ namespace Volte.Core
             };
             try
             {
-                File.WriteAllText(ConfigFile,
+                File.WriteAllText(ConfigFile, 
                     JsonConvert.SerializeObject(_configuration, Formatting.Indented));
             }
             catch (Exception e)

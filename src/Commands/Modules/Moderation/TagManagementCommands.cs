@@ -32,7 +32,7 @@ namespace Volte.Commands.Modules
                 Response = response,
                 CreatorId = Context.User.Id,
                 GuildId = Context.Guild.Id,
-                Uses = 0
+                Uses = default
             };
 
             Context.GuildData.Extras.Tags.Add(newTag);
@@ -52,13 +52,11 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
         {
-            var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
-
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.UpdateData(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{user}**, with " +
-                      $"{"use".ToQuantity(tag.Uses)}.");
+                      $"**{await Context.Client.Shards.First().Rest.GetUserAsync(tag.CreatorId)}**, with " +
+                      $"**{"use".ToQuantity(tag.Uses)}**.");
         }
     }
 }
