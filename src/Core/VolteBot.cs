@@ -32,6 +32,7 @@ namespace Volte.Core
 
         private async Task LoginAsync()
         {
+            
             Console.Title = "Volte";
             Console.CursorVisible = false;
 
@@ -52,12 +53,13 @@ namespace Volte.Core
             Config.Load();
 
             if (!Config.IsValidToken()) return;
-
-            using var rest = new DiscordRestClient();
-
-            await rest.LoginAsync(TokenType.Bot, Config.Token);
-            var shardCount = await rest.GetRecommendedShardCountAsync();
-            await rest.LogoutAsync();
+            int shardCount;
+            using (var rest = new DiscordRestClient())
+            {
+                await rest.LoginAsync(TokenType.Bot, Config.Token);
+                shardCount = await rest.GetRecommendedShardCountAsync();
+                await rest.LogoutAsync();
+            }
 
             BuildServiceProvider(shardCount, out _provider);
 

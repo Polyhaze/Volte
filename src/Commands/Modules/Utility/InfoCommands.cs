@@ -7,11 +7,14 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
+using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule : VolteModule
     {
+        public CommandsService CommandsService { get; set; }
+
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("Usage: |prefix|info")]
@@ -26,6 +29,8 @@ namespace Volte.Commands.Modules
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
                 .AddField("Uptime", Process.GetCurrentProcess().GetUptime(), true)
+                .AddField("Successful Commands", CommandsService.SuccessfulCommandCalls, true)
+                .AddField("Failed Commands", CommandsService.FailedCommandCalls, true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
 
         [Command("UserInfo", "Ui")]

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -14,10 +13,17 @@ namespace Volte.Services
 {
     public sealed class CommandsService : VolteService
     {
+        public ulong SuccessfulCommandCalls { get; private set; }
+        public ulong FailedCommandCalls { get; private set; }
+
         private readonly LoggingService _logger;
 
-        public CommandsService(LoggingService loggingService) 
-            => _logger = loggingService;
+        public CommandsService(LoggingService loggingService)
+        {
+            _logger = loggingService;
+            SuccessfulCommandCalls = 0;
+            FailedCommandCalls = 0;
+        }
 
         public async Task OnCommandAsync(CommandCalledEventArgs args)
         {
@@ -34,11 +40,10 @@ namespace Volte.Services
                     _logger.Debug(LogSource.Volte,
                         $"Executed {args.Context.Command.Name}'s resulting ActionResult.");
 
-                    switch (args.Result)
+                    if (actionRes is BadRequestResult badreq)
                     {
-                        case BadRequestResult badreq:
-                            await OnBadRequestResultAsync(new CommandBadRequestEventArgs(badreq, args.Context, commandArgs, args.Stopwatch));
-                            return;
+                        await OnBadRequestResultAsync(new CommandBadRequestEventArgs(badreq, args.Context, commandArgs, args.Stopwatch));
+                        return;
                     }
 
                     break;
@@ -53,7 +58,8 @@ namespace Volte.Services
             if (!Config.LogAllCommands) return;
 
             Executor.Execute(() =>
-            { 
+            {
+                SuccessfulCommandCalls += 1;
                 var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
@@ -72,6 +78,7 @@ namespace Volte.Services
 
         private async Task OnCommandFailureAsync(CommandFailedEventArgs args)
         {
+            FailedCommandCalls += 1;
             var reason = args.FailedResult switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
@@ -116,6 +123,7 @@ namespace Volte.Services
 
         public Task OnBadRequestResultAsync(CommandBadRequestEventArgs args)
         {
+            FailedCommandCalls += 1;
             Executor.Execute(() =>
             {
                 _logger.Error(LogSource.Volte, new StringBuilder()
