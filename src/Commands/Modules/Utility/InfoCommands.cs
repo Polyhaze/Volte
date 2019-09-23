@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -21,7 +20,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> InfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
-                .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)} and contributors on [GitHub](https://github.com/Ultz/Volte)", true)
+                .AddField("Author", $"{await Context.Client.Shards.First().Rest.GetUserAsync(168548441939509248)}, contributors on [GitHub](https://github.com/Ultz/Volte), and members of the Ultz organization.", true)
                 .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Guilds", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
@@ -69,6 +68,7 @@ namespace Volte.Commands.Modules
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", Context.Guild.Users.Count, true)
                 .AddField("Roles", Context.Guild.Roles.Count, true)
+                .AddField("Category Channels", Context.Guild.CategoryChannels.Count, true)
                 .AddField("Voice Channels", Context.Guild.VoiceChannels.Count, true)
                 .AddField("Text Channels", Context.Guild.TextChannels.Count, true));
         }

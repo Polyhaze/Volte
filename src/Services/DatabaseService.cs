@@ -51,29 +51,29 @@ namespace Volte.Services
                 OwnerId = guild.OwnerId,
                 Configuration = new GuildConfiguration
                 {
-                    Autorole = ulong.MinValue,
+                    Autorole = default,
                     CommandPrefix = Config.CommandPrefix,
-                    DeleteMessageOnCommand = false,
+                    DeleteMessageOnCommand = default,
                     Moderation = new ModerationOptions
                     {
-                        AdminRole = ulong.MinValue,
-                        Antilink = false,
+                        AdminRole = default,
+                        Antilink = default,
                         Blacklist = new List<string>(),
-                        MassPingChecks = false,
-                        ModActionLogChannel = ulong.MinValue,
-                        ModRole = ulong.MinValue
+                        MassPingChecks = default,
+                        ModActionLogChannel = default,
+                        ModRole = default
                     },
                     Welcome = new WelcomeOptions
                     {
                         LeavingMessage = string.Empty,
-                        WelcomeChannel = ulong.MinValue,
+                        WelcomeChannel = default,
                         WelcomeColor = new Color(112, 0, 251).RawValue,
                         WelcomeMessage = string.Empty
                     }
                 },
                 Extras = new GuildExtras
                 {
-                    ModActionCaseNumber = ulong.MinValue,
+                    ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
