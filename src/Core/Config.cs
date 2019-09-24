@@ -11,7 +11,8 @@ namespace Volte.Core
 {
     public static class Config
     {
-        public const string ConfigFile = "data/volte.json";
+        public const string DataDirectory = "data";
+        public const string ConfigFile = DataDirectory + "/volte.json";
         private static BotConfig _configuration;
 
         private static readonly bool IsValidConfig =

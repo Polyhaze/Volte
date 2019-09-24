@@ -36,10 +36,10 @@ namespace Volte.Core
             Console.Title = "Volte";
             Console.CursorVisible = false;
 
-            if (!Directory.Exists("data"))
+            if (!Directory.Exists(Config.DataDirectory))
             {
-                Console.WriteLine("The \"data\" directory didn't exist, so I created it for you.");
-                Directory.CreateDirectory("data");
+                Console.WriteLine($"The \"{Config.DataDirectory}\" directory didn't exist, so I created it for you.");
+                Directory.CreateDirectory(Config.DataDirectory);
                 //99.9999999999% of the time the config also won't exist if this block is reached
                 //if the config does exist when this block is reached, feel free to become the lead developer of this project
             }

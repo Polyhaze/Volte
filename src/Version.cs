@@ -1,6 +1,6 @@
 ﻿namespace Volte
 {
-    public struct Version
+    public static class Version
     {
         public static System.Version AsDotNetVersion => new System.Version(Major, Minor, Patch, Hotfix);
         private static int Major => 3;

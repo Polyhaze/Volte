@@ -67,7 +67,7 @@ namespace Volte.Services
                     {
                         LeavingMessage = string.Empty,
                         WelcomeChannel = default,
-                        WelcomeColor = new Color(112, 0, 251).RawValue,
+                        WelcomeColor = new Color(0x7000FB).RawValue,
                         WelcomeMessage = string.Empty
                     }
                 },
