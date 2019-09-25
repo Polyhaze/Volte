@@ -22,10 +22,10 @@ namespace Volte.Services
         {
             var data = _db.GetData(args.Guild);
 
-            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty() || data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
+            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
                 return; //we don't want to send an empty join message
-
-            _ = await args.User.TrySendMessageAsync(data.Configuration.Welcome.FormatDmMessage(args.User));
+            if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
+                _ = await args.User.TrySendMessageAsync(data.Configuration.Welcome.FormatDmMessage(args.User));
 
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
