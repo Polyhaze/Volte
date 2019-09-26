@@ -22,12 +22,7 @@ namespace Volte.Commands.Modules
             {
                 if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                 {
-                    try
-                    {
-                        await Context.Message.DeleteAsync();
-                    }
-                    catch
-                    { }
+                    await Context.Message.TryDeleteAsync();
                 }
             }, false);
         }

@@ -24,7 +24,7 @@ namespace Volte.Services
             foreach (var word in args.Data.Configuration.Moderation.Blacklist)
                 if (args.Message.Content.ContainsIgnoreCase(word))
                 {
-                    await args.Message.DeleteAsync();
+                    await args.Message.TryDeleteAsync();
                     _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
                     return;
                 }

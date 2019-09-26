@@ -101,7 +101,7 @@ namespace Volte.Core
         public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
 
         [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
-        private struct BotConfig
+        private class BotConfig
         {
             [JsonProperty("discord_token")]
             public string Token { get; internal set; }

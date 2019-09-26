@@ -17,43 +17,41 @@ namespace Gommon
         public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
 
-        public static string GetUsage(this Command c, VolteContext ctx)
-        {
-            var aliases = $"({c.FullAliases.Join('|')})";
-            return (c.Remarks ?? "No usage provided")
-                .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? aliases : c.Name).ToLower())
+        public static string GetUsage(this Command c, VolteContext ctx) 
+            => (c.Remarks ?? "No usage provided")
+                .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name).ToLower())
                 .Replace("|prefix|", ctx.GuildData.Configuration.CommandPrefix)
                 .Replace("Usage: ", string.Empty);
-        }
 
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
             var addTypeParserMethod = typeof(CommandService).GetMethod("AddTypeParser");
+            var parsers = currentAssembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>());
 
             var loadedTypes = new List<Type>();
 
-            foreach (var type in currentAssembly.ExportedTypes)
+            foreach (var parserType in parsers)
             {
-                if (!(type.GetCustomAttributes().FirstOrDefault(a => a is VolteTypeParserAttribute) is VolteTypeParserAttribute attr)) continue;
-
-                var parser = type.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
-                var method = addTypeParserMethod?.MakeGenericMethod(type.BaseType?.GenericTypeArguments[0]);
-                method?.Invoke(service, new [] { parser, attr.OverridePrimitive });
-                loadedTypes.Add(type);
+                var attr = parserType.GetCustomAttribute<VolteTypeParserAttribute>();
+                var parser = parserType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
+                var method = addTypeParserMethod?.MakeGenericMethod(parserType.BaseType?.GenericTypeArguments[0]);
+                method?.Invoke(service, new[] {parser, attr.OverridePrimitive});
+                loadedTypes.Add(parserType);
             }
 
 
             return Task.FromResult(loadedTypes);
         }
 
-        public static Command GetCommand(this CommandService service, string name) 
+        public static Command GetCommand(this CommandService service, string name)
             => service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
 
         public static int GetTotalTypeParsers(this CommandService _)
         {
-            var customParsers = typeof(VolteBot).Assembly.GetTypes().Count(x => x.HasAttribute<VolteTypeParserAttribute>());
-            return customParsers + 12; //add the number of primitive typeparsers (that come with Qmmands), minus bool since we override that one.
+            var customParsers = typeof(VolteBot).Assembly.GetTypes()
+                .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
+            return customParsers + 12; //add the number of primitive TypeParsers (that come with Qmmands), minus bool since we override that one.
         }
     }
 }

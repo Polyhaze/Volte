@@ -66,6 +66,19 @@ namespace Gommon
             }
         }
 
+        public static async Task<bool> TryDeleteAsync(this SocketMessage message, RequestOptions options = null)
+        {
+            try
+            {
+                await message.DeleteAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
