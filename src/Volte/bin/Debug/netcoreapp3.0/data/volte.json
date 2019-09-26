@@ -1,0 +1,26 @@
+{
+  "discord_token": "NDEwNTQ3OTI1NTk3NDIxNTcx.XTk-nQ.IOo0SAzzAqFHuy2-_p39xQFjVNY",
+  "command_prefix": "dev$",
+  "bot_owner": 168548441939509248,
+  "status_game": "in debug code!",
+  "status_twitch_streamer": "GreemDev",
+  "enable_debug_logging": true,
+  "color_success": 7340283,
+  "color_error": 16711680,
+  "log_all_commands": true,
+  "guild_logging": {
+    "enabled": true,
+    "guild_id": 405806471578648588,
+    "channel_id": 544048742114918410
+  },
+  "blacklisted_guild_owners": [],
+  "enabled_features": {
+    "log_to_file": true,
+    "antilink": true,
+    "blacklist": true,
+    "mod_log": true,
+    "welcome": true,
+    "autorole": true,
+    "ping_checks": true
+  }
+}

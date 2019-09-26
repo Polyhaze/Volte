@@ -1,0 +1,133 @@
+{
+  "format": 1,
+  "restore": {
+    "Z:\\Coding Projects\\C#\\Volte\\src\\Volte\\Volte.csproj": {}
+  },
+  "projects": {
+    "Z:\\Coding Projects\\C#\\Volte\\src\\Volte\\Volte.csproj": {
+      "version": "3.0.1",
+      "restore": {
+        "projectUniqueName": "Z:\\Coding Projects\\C#\\Volte\\src\\Volte\\Volte.csproj",
+        "projectName": "Volte",
+        "projectPath": "Z:\\Coding Projects\\C#\\Volte\\src\\Volte\\Volte.csproj",
+        "packagesPath": "C:\\Users\\Evan\\.nuget\\packages\\",
+        "outputPath": "Z:\\Coding Projects\\C#\\Volte\\src\\Volte\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "Z:\\Coding Projects\\C#\\Volte\\NuGet.Config",
+          "C:\\Users\\Evan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.emzi0767.com/api/v3/index.json": {},
+          "https://nuget.pkg.github.com/GreemDev/index.json": {},
+          "https://www.myget.org/F/discord-net/api/v3/index.json": {},
+          "https://www.myget.org/F/quahu/api/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "dependencies": {
+            "Colorful.Console": {
+              "target": "Package",
+              "version": "[1.2.9, )"
+            },
+            "Discord.Net.WebSocket": {
+              "target": "Package",
+              "version": "[2.2.0-dev-20190922.3, )"
+            },
+            "Gommon": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
+            "Humanizer.Core": {
+              "target": "Package",
+              "version": "[2.6.2, )"
+            },
+            "LiteDB": {
+              "target": "Package",
+              "version": "[4.1.4, )"
+            },
+            "Microsoft.CodeAnalysis.CSharp.Scripting": {
+              "target": "Package",
+              "version": "[3.3.0-beta2-final, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[3.0.0-preview8.19405.4, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3-beta1, )"
+            },
+            "Qmmands": {
+              "target": "Package",
+              "version": "[3.0.0-nightly-00205, )"
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[106.6.10, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[1.0.0-beta0006, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[3.0.0, 3.0.0]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[3.0.0, 3.0.0]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[3.0.0, 3.0.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
