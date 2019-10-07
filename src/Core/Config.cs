@@ -12,11 +12,11 @@ namespace Volte.Core
     public static class Config
     {
         public const string DataDirectory = "data";
-        public const string ConfigFile = DataDirectory + "/volte.json";
+        public const string ConfigFilePath = DataDirectory + "/volte.json";
         private static BotConfig _configuration;
 
         private static readonly bool IsValidConfig =
-            File.Exists(ConfigFile) && !File.ReadAllText(ConfigFile).IsNullOrEmpty();
+            File.Exists(ConfigFilePath) && !File.ReadAllText(ConfigFilePath).IsNullOrEmpty();
 
         public static bool CreateIfNotExists()
         {
@@ -38,7 +38,7 @@ namespace Volte.Core
             };
             try
             {
-                File.WriteAllText(ConfigFile, 
+                File.WriteAllText(ConfigFilePath, 
                     JsonConvert.SerializeObject(_configuration, Formatting.Indented));
             }
             catch (Exception e)
@@ -53,7 +53,7 @@ namespace Volte.Core
         {
             CreateIfNotExists();
             if (IsValidConfig)
-                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
+                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFilePath));
         }
 
         public static bool Reload(IServiceProvider provider)
@@ -61,7 +61,7 @@ namespace Volte.Core
             provider.Get<LoggingService>(out var logger);
             try
             {
-                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFile));
+                _configuration = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(ConfigFilePath));
                 return true;
             }
             catch (JsonException e)

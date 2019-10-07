@@ -46,7 +46,7 @@ namespace Volte.Core
 
             if (!Config.CreateIfNotExists())
             {
-                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFile}\"; restart me when you've done so.");
+                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.");
                 return;
             }
 
