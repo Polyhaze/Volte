@@ -7,7 +7,7 @@
         private static int Minor => 1;
         private static int Patch => 0;
         private static int Hotfix => 0;
-        public static ReleaseType ReleaseType => ReleaseType.Development;
+        public static ReleaseType ReleaseType => ReleaseType.Release;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;
     }
