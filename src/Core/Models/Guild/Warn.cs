@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Volte.Core.Models.Guild
 {
@@ -11,6 +11,6 @@ namespace Volte.Core.Models.Guild
         public DateTimeOffset Date { get; set; }
 
         public override string ToString()
-            => JsonConvert.SerializeObject(this, Formatting.Indented);
+            => JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
     }
 }

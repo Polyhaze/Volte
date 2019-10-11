@@ -120,7 +120,7 @@ namespace Volte.Services
             "System", "System.Collections.Generic", "System.Linq", "System.Text",
             "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
             "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
-            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Newtonsoft.Json"
+            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
         }));
     }
 }

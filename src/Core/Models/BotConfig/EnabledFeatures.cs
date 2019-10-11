@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.BotConfig
 {
@@ -10,19 +9,19 @@ namespace Volte.Core.Models.BotConfig
     {
         internal EnabledFeatures() { } //restrict non-Volte assembly instantiation
 
-        [JsonProperty("log_to_file")]
+        [JsonPropertyName("log_to_file")]
         public bool LogToFile { get; } = true;
-        [JsonProperty("antilink")]
+        [JsonPropertyName("antilink")]
         public bool Antilink { get; } = true;
-        [JsonProperty("blacklist")]
+        [JsonPropertyName("blacklist")]
         public bool Blacklist { get; } = true;
-        [JsonProperty("mod_log")]
+        [JsonPropertyName("mod_log")]
         public bool ModLog { get; } = true;
-        [JsonProperty("welcome")]
+        [JsonPropertyName("welcome")]
         public bool Welcome { get; } = true;
-        [JsonProperty("autorole")]
+        [JsonPropertyName("autorole")]
         public bool Autorole { get; } = true;
-        [JsonProperty("ping_checks")]
+        [JsonPropertyName("ping_checks")]
         public bool PingChecks { get; } = true;
     }
 }

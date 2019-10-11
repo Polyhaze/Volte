@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Discord.WebSocket;
-using Newtonsoft.Json;
 
 namespace Volte.Core.Models.Guild
 {
@@ -9,41 +9,41 @@ namespace Volte.Core.Models.Guild
         internal ModerationOptions()
             => Blacklist = new List<string>();
 
-        [JsonProperty("mass_ping_checks")]
+        [JsonPropertyName("mass_ping_checks")]
         public bool MassPingChecks { get; set; }
 
-        [JsonProperty("antilink")]
+        [JsonPropertyName("antilink")]
         public bool Antilink { get; set; }
 
-        [JsonProperty("mod_log_channel")]
+        [JsonPropertyName("mod_log_channel")]
         public ulong ModActionLogChannel { get; set; }
 
-        [JsonProperty("mod_role")]
+        [JsonPropertyName("mod_role")]
         public ulong ModRole { get; set; }
 
-        [JsonProperty("admin_role")]
+        [JsonPropertyName("admin_role")]
         public ulong AdminRole { get; set; }
 
-        [JsonProperty("blacklist")]
+        [JsonPropertyName("blacklist")]
         public List<string> Blacklist { get; set; }
     }
 
     public sealed class WelcomeOptions
     {
 
-        [JsonProperty("welcome_channel")]
+        [JsonPropertyName("welcome_channel")]
         public ulong WelcomeChannel { get; set; }
 
-        [JsonProperty("welcome_message")]
+        [JsonPropertyName("welcome_message")]
         public string WelcomeMessage { get; set; }
 
-        [JsonProperty("leaving_message")]
+        [JsonPropertyName("leaving_message")]
         public string LeavingMessage { get; set; }
 
-        [JsonProperty("welcome_color")]
+        [JsonPropertyName("welcome_color")]
         public uint WelcomeColor { get; set; }
 
-        [JsonProperty("welcome_dm_message")]
+        [JsonPropertyName("welcome_dm_message")]
         public string WelcomeDmMessage { get; set; }
 
         public string FormatWelcomeMessage(SocketGuildUser user) 

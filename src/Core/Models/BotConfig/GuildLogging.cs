@@ -1,5 +1,5 @@
 using Discord.WebSocket;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.BotConfig
 {
@@ -11,11 +11,11 @@ namespace Volte.Core.Models.BotConfig
             GuildId = ulong.MinValue;
             ChannelId = ulong.MinValue;
         }
-        [JsonProperty("enabled")]
+        [JsonPropertyName("enabled")]
         public bool Enabled { get; set; }
-        [JsonProperty("guild_id")]
+        [JsonPropertyName("guild_id")]
         public ulong GuildId { get; set; }
-        [JsonProperty("channel_id")]
+        [JsonPropertyName("channel_id")]
         public ulong ChannelId { get; set; }
 
 

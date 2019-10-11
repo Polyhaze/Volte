@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.Guild
 {
@@ -10,19 +11,19 @@ namespace Volte.Core.Models.Guild
             Extras = new GuildExtras();
         }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public ulong Id { get; set; }
 
-        [JsonProperty("owner")]
+        [JsonPropertyName("owner")]
         public ulong OwnerId { get; set; }
 
-        [JsonProperty("configuration")]
+        [JsonPropertyName("configuration")]
         public GuildConfiguration Configuration { get; set; }
 
-        [JsonProperty("extras")]
+        [JsonPropertyName("extras")]
         public GuildExtras Extras { get; set; }
 
         public override string ToString()
-            => JsonConvert.SerializeObject(this, Formatting.Indented);
+            => JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
     }
 }

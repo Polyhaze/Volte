@@ -2,14 +2,13 @@
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using Volte.Core;
 using Volte.Core.Models;
@@ -191,9 +190,9 @@ namespace Volte.Services
 
             _ = Task.Run(async () =>
             {
-                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
-                var respObj = JObject.Parse(await response.Content.ReadAsStringAsync());
-                var url = $"https://paste.greemdev.net/{respObj.GetValue("key")}.cs";
+                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));                
+                var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());                
+                var url = $"https://paste.greemdev.net/{jDocument.RootElement.GetProperty("key").GetString()}.cs";
                 await new EmbedBuilder()
                     .WithErrorColor()
                     .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")

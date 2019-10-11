@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.Guild
 {
@@ -10,22 +10,22 @@ namespace Volte.Core.Models.Guild
             Welcome = new WelcomeOptions();
         }
 
-        [JsonProperty("autorole")]
+        [JsonPropertyName("autorole")]
         public ulong Autorole { get; set; }
 
-        [JsonProperty("command_prefix")]
+        [JsonPropertyName("command_prefix")]
         public string CommandPrefix { get; set; }
 
-        [JsonProperty("welcome_options")]
+        [JsonPropertyName("welcome_options")]
         public WelcomeOptions Welcome { get; set; }
 
-        [JsonProperty("moderation_options")]
+        [JsonPropertyName("moderation_options")]
         public ModerationOptions Moderation { get; set; }
 
-        [JsonProperty("delete_message_on_command")]
+        [JsonPropertyName("delete_message_on_command")]
         public bool DeleteMessageOnCommand { get; set; }
 
-        [JsonProperty("delete_message_on_tag_command_invocation")]
+        [JsonPropertyName("delete_message_on_tag_command_invocation")]
         public bool DeleteMessageOnTagCommandInvocation { get; set; }
     }
 }
