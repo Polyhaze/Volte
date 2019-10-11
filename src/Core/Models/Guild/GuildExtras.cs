@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.Guild
 {
@@ -12,16 +12,16 @@ namespace Volte.Core.Models.Guild
             Warns = new List<Warn>();
         }
 
-        [JsonProperty("self_roles")]
+        [JsonPropertyName("self_roles")]
         public List<string> SelfRoles { get; set; }
 
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<Tag> Tags { get; set; }
 
-        [JsonProperty("warns")]
+        [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }
 
-        [JsonProperty("mod_log_case_number")]
+        [JsonPropertyName("mod_log_case_number")]
         public ulong ModActionCaseNumber { get; set; }
     }
 }
