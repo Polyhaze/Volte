@@ -40,13 +40,7 @@ namespace Volte.Core.Models.BotConfig
                 return false;
             }
 
-            if (channel is null)
-            {
-                return false;
-            }
-
-            return true;
-
+            return !(channel is null);
         }
 
     }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -14,11 +13,10 @@ namespace Volte.Commands.Modules
         [Remarks("Usage: |prefix|poll question;option1;option2;...")]
         public Task<ActionResult> PollAsync([Remainder] string pollText)
         {
-            var question = pollText.Split(';')[0];
             var choices = pollText.Split(';');
 
             return Ok(Context.CreateEmbedBuilder()
-                    .WithTitle(question)
+                    .WithTitle(choices[0])
                     .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png")
                     .WithDescription(PollHelpers.GetPollBody(choices, EmojiService)),
                 async msg =>

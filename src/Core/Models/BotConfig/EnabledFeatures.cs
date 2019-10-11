@@ -7,21 +7,20 @@ namespace Volte.Core.Models.BotConfig
     /// </summary>
     public sealed class EnabledFeatures
     {
-        internal EnabledFeatures() { } //restrict non-Volte assembly instantiation
 
         [JsonPropertyName("log_to_file")]
-        public bool LogToFile { get; } = true;
+        public bool LogToFile { get; set; } = true;
         [JsonPropertyName("antilink")]
-        public bool Antilink { get; } = true;
+        public bool Antilink { get; set; } = true;
         [JsonPropertyName("blacklist")]
-        public bool Blacklist { get; } = true;
+        public bool Blacklist { get; set; } = true;
         [JsonPropertyName("mod_log")]
-        public bool ModLog { get; } = true;
+        public bool ModLog { get; set; } = true;
         [JsonPropertyName("welcome")]
-        public bool Welcome { get; } = true;
+        public bool Welcome { get; set; } = true;
         [JsonPropertyName("autorole")]
-        public bool Autorole { get; } = true;
+        public bool Autorole { get; set; } = true;
         [JsonPropertyName("ping_checks")]
-        public bool PingChecks { get; } = true;
+        public bool PingChecks { get; set; } = true;
     }
 }

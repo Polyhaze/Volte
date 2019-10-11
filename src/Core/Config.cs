@@ -40,7 +40,7 @@ namespace Volte.Core
             try
             {
                 File.WriteAllText(ConfigFilePath,
-                    JsonSerializer.Serialize(_configuration, new JsonSerializerOptions() { WriteIndented = true }));
+                    JsonSerializer.Serialize(_configuration, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch (Exception e)
             {
@@ -54,7 +54,10 @@ namespace Volte.Core
         {
             CreateIfNotExists();
             if (IsValidConfig)
-                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath));                    
+                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), new JsonSerializerOptions
+                {
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                });                    
         }
 
         public static bool Reload(IServiceProvider provider)
@@ -105,40 +108,40 @@ namespace Volte.Core
         private class BotConfig
         {
             [JsonPropertyName("discord_token")]
-            public string Token { get; internal set; }
+            public string Token { get; set; }
 
             [JsonPropertyName("command_prefix")]
-            public string CommandPrefix { get; internal set; }
+            public string CommandPrefix { get; set; }
 
             [JsonPropertyName("bot_owner")]
-            public ulong Owner { get; internal set; }
+            public ulong Owner { get; set; }
 
             [JsonPropertyName("status_game")]
-            public string Game { get; internal set; }
+            public string Game { get; set; }
 
             [JsonPropertyName("status_twitch_streamer")]
-            public string Streamer { get; internal set; }
+            public string Streamer { get; set; }
 
             [JsonPropertyName("enable_debug_logging")]
-            public bool EnableDebugLogging { get; internal set; }
+            public bool EnableDebugLogging { get; set; }
 
             [JsonPropertyName("color_success")]
-            public uint SuccessEmbedColor { get; internal set; }
+            public uint SuccessEmbedColor { get; set; }
 
             [JsonPropertyName("color_error")]
-            public uint ErrorEmbedColor { get; internal set; }
+            public uint ErrorEmbedColor { get; set; }
 
             [JsonPropertyName("log_all_commands")]
-            public bool LogAllCommands { get; internal set; }
+            public bool LogAllCommands { get; set; }
 
             [JsonPropertyName("guild_logging")]
-            public GuildLogging GuildLogging { get; internal set; }
+            public GuildLogging GuildLogging { get; set; }
 
             [JsonPropertyName("blacklisted_guild_owners")]
-            public ulong[] BlacklistedGuildOwners { get; internal set; }
+            public ulong[] BlacklistedGuildOwners { get; set; }
 
             [JsonPropertyName("enabled_features")]
-            public EnabledFeatures EnabledFeatures { get; internal set; }
+            public EnabledFeatures EnabledFeatures { get; set; }
         }
     }
 }
