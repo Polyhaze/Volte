@@ -70,7 +70,7 @@ namespace Volte.Core
             }
             catch (JsonException e)
             {
-                logger.LogException(e);
+                logger.Exception(e);
                 return false;
             }
         }

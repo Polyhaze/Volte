@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Colorful;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
@@ -40,7 +41,16 @@ namespace Volte.Services
             Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
 
-        internal void PrintVersion() => Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
+        internal void PrintVersion()
+        {
+            Info(LogSource.Volte, "--------------------------------------------");
+            foreach (var asciiLine in new Figlet().ToAscii("VOLTE").ConcreteValue.Split("\n")) //i had to look at colorful.console's source for this snippet lol
+            {
+                Info(LogSource.Volte, asciiLine);
+            }
+            Info(LogSource.Volte, "--------------------------------------------");
+            Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
+        }
 
         private void Log(LogSeverity s, LogSource from, string message, Exception e = null)
         {
@@ -108,19 +118,19 @@ namespace Volte.Services
         ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
         /// </summary>
         /// <param name="e">Exception to print.</param>
-        public void LogException(Exception e)
+        public void Exception(Exception e)
             => Execute(LogSeverity.Error, LogSource.Volte, string.Empty, e);
 
         private void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
             var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
-            Append($"{value} -> ", color);
+            Append($"{value}:".PadRight(10), color);
             var dto = DateTimeOffset.UtcNow;
             content.Append($"[{dto.FormatDate()} | {dto.FormatFullTime()}] {value} -> ");
 
             (color, value) = VerifySource(src);
-            Append($"{value} -> ", color);
+            Append($"[{value}]".PadRight(10), color);
             content.Append($"{value} -> ");
 
             if (!message.IsNullOrWhitespace())
@@ -154,28 +164,30 @@ namespace Volte.Services
         private (Color Color, string Source) VerifySource(LogSource source) =>
             source switch
                 {
-                LogSource.Discord => (Color.RoyalBlue, "DSCD"),
-                LogSource.Gateway => (Color.RoyalBlue, "DSCD"),
-                LogSource.Volte => (Color.Crimson, "CORE"),
-                LogSource.Service => (Color.Gold, "SERV"),
-                LogSource.Module => (Color.LimeGreen, "MDLE"),
-                LogSource.Rest => (Color.Tomato, "REST"),
-                LogSource.Unknown => (Color.Teal, "UNKN"),
-                _ => throw new ArgumentNullException(nameof(source), "source cannot be null")
+                LogSource.Discord => (Color.RoyalBlue, "DISCORD"),
+                LogSource.Gateway => (Color.RoyalBlue, "DISCORD"),
+                LogSource.Volte => (Color.LawnGreen, "CORE"),
+                LogSource.Service => (Color.Gold, "SERVICE"),
+                LogSource.Module => (Color.LimeGreen, "MODULE"),
+                LogSource.Rest => (Color.Red, "REST"),
+                LogSource.Unknown => (Color.Fuchsia, "UNKNOWN"),
+                _ => throw new InvalidOperationException($"The specified LogSource {source} is invalid.")
                 };
 
 
         private (Color Color, string Level) VerifySeverity(LogSeverity severity) =>
+
+
             severity switch
-                {
-                LogSeverity.Critical => (Color.Maroon, "CRIT"),
-                LogSeverity.Error => (Color.DarkRed, "EROR"),
+            {
+                LogSeverity.Critical => (Color.Maroon, "CRITICAL"),
+                LogSeverity.Error => (Color.DarkRed, "ERROR"),
                 LogSeverity.Warning => (Color.Yellow, "WARN"),
                 LogSeverity.Info => (Color.SpringGreen, "INFO"),
-                LogSeverity.Verbose => (Color.Pink, "VRBS"),
-                LogSeverity.Debug => (Color.SandyBrown, "DEBG"),
-                _ => throw new ArgumentNullException(nameof(severity), "severity cannot be null")
-                };
+                LogSeverity.Verbose => (Color.Pink, "VERBOSE"),
+                LogSeverity.Debug => (Color.SandyBrown, "DEBUG"),
+                _ => throw new InvalidOperationException($"The specified LogSeverity ({severity}) is invalid.")
+    };
 
         private void LogExceptionInDiscord(Exception e)
         {

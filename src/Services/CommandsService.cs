@@ -62,16 +62,16 @@ namespace Volte.Services
                 SuccessfulCommandCalls += 1;
                 var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
-                    .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
-                    .AppendLine($"                |        -Args Passed: {commandArgs}")
-                    .AppendLine($"                |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
-                    .AppendLine($"                |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
-                    .AppendLine($"                |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                    .AppendLine($"                |           -Executed: {args.Result.IsSuccessful}")
-                    .AppendLine($"                |              -After: {args.Stopwatch.Elapsed.Humanize()}");
-                if (data != null)
-                    sb.AppendLine($"                |              -Result Message: {data.Message?.Id}");
-                sb.Append("                -------------------------------------------------");
+                    .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
+                    .AppendLine($"                    |        -Args Passed: {commandArgs}".PadLeft(20))
+                    .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
+                    .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
+                    .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
+                    .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful}")
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
+                if (data != null) 
+                    sb.AppendLine($"                    |     -Result Message: {data.Message?.Id}");
+                sb.Append("                    -------------------------------------------------");
                 _logger.Info(LogSource.Volte, sb.ToString());
             });
         }
@@ -92,7 +92,7 @@ namespace Volte.Services
             };
 
             if (args.FailedResult is ExecutionFailedResult e)
-                _logger.LogException(e.Exception);
+                _logger.Exception(e.Exception);
 
             if (!(args.FailedResult is ChecksFailedResult) && !reason.IsNullOrEmpty())
             {
@@ -109,14 +109,14 @@ namespace Volte.Services
                 {
                     _logger.Error(LogSource.Volte, new StringBuilder()
                         .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
-                        .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
-                        .AppendLine($"                |        -Args Passed: {args.Arguments.Trim()}")
-                        .AppendLine($"                |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
-                        .AppendLine($"                |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
-                        .AppendLine($"                |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                        .AppendLine($"                |           -Executed: {args.FailedResult.IsSuccessful} | Reason: {reason}")
-                        .AppendLine($"                |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                        .Append("                -------------------------------------------------").ToString());
+                        .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
+                        .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
+                        .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
+                        .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
+                        .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
+                        .AppendLine($"                    |           -Executed: {args.FailedResult.IsSuccessful} | Reason: {reason}")
+                        .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
+                        .Append("                    -------------------------------------------------").ToString());
                 });
             }
         }
@@ -128,14 +128,14 @@ namespace Volte.Services
             {
                 _logger.Error(LogSource.Volte, new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
-                    .AppendLine($"                |     -Command Issued: {args.Context.Command.Name}")
-                    .AppendLine($"                |        -Args Passed: {args.Arguments.Trim()}")
-                    .AppendLine($"                |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
-                    .AppendLine($"                |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
-                    .AppendLine($"                |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                    .AppendLine($"                |           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}")
-                    .AppendLine($"                |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                    .Append("                -------------------------------------------------").ToString());
+                    .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
+                    .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
+                    .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
+                    .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
+                    .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
+                    .AppendLine($"                    |           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}")
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
+                    .Append("                    -------------------------------------------------").ToString());
             });
             return Task.CompletedTask;
         }
