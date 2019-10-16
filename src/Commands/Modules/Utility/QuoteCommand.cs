@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]
-        [Remarks("Usage: |prefix|quote {messageId}")]
+        [Remarks("quote {messageId}")]
         public async Task<ActionResult> QuoteAsync(ulong messageId)
         {
             var m = await Context.Channel.GetMessageAsync(messageId);
@@ -38,7 +38,7 @@ namespace Volte.Commands.Modules
 
         [Command("Quote"), Priority(1)]
         [Description("Quotes a user in a different chanel from a given message's ID.")]
-        [Remarks("Usage: |prefix|quote {messageId}")]
+        [Remarks("quote {messageId}")]
         public async Task<ActionResult> QuoteAsync(SocketTextChannel channel, ulong messageId)
         {
             var m = await channel.GetMessageAsync(messageId);

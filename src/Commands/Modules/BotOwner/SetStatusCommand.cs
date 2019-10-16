@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
-        [Remarks("Usage: |prefix|setstatus {dnd|idle|invisible|online}")]
+        [Remarks("setstatus {dnd|idle|invisible|online}")]
         [RequireBotOwner]
         public Task<ActionResult> SetStatusAsync([Remainder] string status) => status.ToLower() switch
             {

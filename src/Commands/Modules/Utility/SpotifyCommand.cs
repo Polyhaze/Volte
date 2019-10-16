@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
-        [Remarks("Usage: |prefix|spotify [user]")]
+        [Remarks("spotify [user]")]
         public Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
         {
             var user = target ?? Context.User;

@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Kick")]
         [Description("Kicks the given user.")]
-        [Remarks("Usage: |prefix|kick {@user} [reason]")]
+        [Remarks("kick {@user} [reason]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> KickAsync([CheckHierarchy] SocketGuildUser user,

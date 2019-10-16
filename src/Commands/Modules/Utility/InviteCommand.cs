@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Invite")]
         [Description("Get an invite to use Volte in your own guild.")]
-        [Remarks("Usage: |prefix|invite")]
+        [Remarks("invite")]
         public Task<ActionResult> InviteAsync()
             => Ok(new StringBuilder()
                 .AppendLine(

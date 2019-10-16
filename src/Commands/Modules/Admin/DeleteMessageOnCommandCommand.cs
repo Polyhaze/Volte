@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("DeleteMessageOnCommand", "Dmoc")]
         [Description("Enable/Disable deleting the command message upon execution of a command for this guild.")]
-        [Remarks("Usage: |prefix|deletemessageoncommand {true|false}")]
+        [Remarks("deletemessageoncommand {true|false}")]
         [RequireGuildAdmin]
         public Task<ActionResult> DeleteMessageOnCommandAsync(bool enabled)
         {
@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
         [Command("DeleteMessageOnTagCommand", "Dmotc")]
         [Description(
             "Enable/Disable deleting the command message upon usage of the tag retrieval command for this guild.")]
-        [Remarks("Usage: |prefix|deletemessageontagcommand {true|false}")]
+        [Remarks("deletemessageontagcommand {true|false}")]
         public Task<ActionResult> DeleteMessageOnTagCommand(bool enabled)
         {
             Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation = enabled;

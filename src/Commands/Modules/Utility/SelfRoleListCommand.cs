@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SelfRoleList", "Srl")]
         [Description("Gets a list of self roles available for this guild.")]
-        [Remarks("Usage: |prefix|selfrolelist")]
+        [Remarks("selfrolelist")]
         public Task<ActionResult> SelfRoleListAsync()
         {
             if (Context.GuildData.Extras.SelfRoles.Count <= 0)

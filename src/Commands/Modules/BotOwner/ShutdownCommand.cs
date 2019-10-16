@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
 
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
-        [Remarks("Usage: |prefix|shutdown")]
+        [Remarks("shutdown")]
         [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
             => Ok($"Goodbye! {EmojiService.Wave}", _ =>

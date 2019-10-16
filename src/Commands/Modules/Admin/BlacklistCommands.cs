@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("BlacklistAdd", "BlAdd")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
-        [Remarks("Usage: |prefix|blacklistadd {phrase}")]
+        [Remarks("blacklistadd {phrase}")]
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
@@ -21,7 +21,7 @@ namespace Volte.Commands.Modules
 
         [Command("BlacklistRemove", "BlRem")]
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
-        [Remarks("Usage: |prefix|blacklistremove {phrase}")]
+        [Remarks("blacklistremove {phrase}")]
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {
@@ -37,7 +37,7 @@ namespace Volte.Commands.Modules
 
         [Command("BlacklistClear", "BlCl")]
         [Description("Clears the blacklist for this guild.")]
-        [Remarks("Usage: |prefix|blacklistclear")]
+        [Remarks("blacklistclear")]
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistClearAsync()
         {

@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Bans")]
         [Description("Shows all bans in this guild.")]
-        [Remarks("Usage: |prefix|bans")]
+        [Remarks("bans")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> BansAsync()

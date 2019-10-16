@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Antilink", "Al")]
         [Description("Enable/Disable Antilink for the current guild.")]
-        [Remarks("Usage: |prefix|antilink {true|false}")]
+        [Remarks("antilink {true|false}")]
         [RequireGuildAdmin]
         public Task<ActionResult> AntilinkAsync(bool enabled)
         {

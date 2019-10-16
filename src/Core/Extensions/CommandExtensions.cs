@@ -7,7 +7,6 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Commands.TypeParsers;
 using Volte.Core;
-using Volte.Services;
 using Module = Qmmands.Module;
 
 namespace Gommon
@@ -17,11 +16,10 @@ namespace Gommon
         public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
 
-        public static string GetUsage(this Command c, VolteContext ctx) 
+        public static string GetUsage(this Command c, VolteContext ctx)
             => (c.Remarks ?? "No usage provided")
                 .Replace(c.Name.ToLower(), (c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name).ToLower())
-                .Replace("|prefix|", ctx.GuildData.Configuration.CommandPrefix)
-                .Replace("Usage: ", string.Empty);
+                .Insert(0, ctx.GuildData.Configuration.CommandPrefix);
 
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
@@ -51,7 +49,7 @@ namespace Gommon
         {
             var customParsers = typeof(VolteBot).Assembly.GetTypes()
                 .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
-            return customParsers + 12; //add the number of primitive TypeParsers (that come with Qmmands), minus bool since we override that one.
+            return customParsers + (13 - 1); //add the number of primitive TypeParsers (that come with Qmmands), minus bool since we override that one.
         }
     }
 }

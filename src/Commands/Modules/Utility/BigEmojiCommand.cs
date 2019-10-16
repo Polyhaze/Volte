@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("BigEmoji", "HugeEmoji")]
         [Description("Shows the image URL for a given emoji.")]
-        [Remarks("Usage: |prefix|bigemoji {emoji}")]
+        [Remarks("bigemoji {emoji}")]
         public Task<ActionResult> BigEmojiAsync(IEmote emoteIn)
         {
             string url = null;

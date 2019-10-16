@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
-        [Remarks("Usage: |prefix|forceleave {guild}")]
+        [Remarks("forceleave {guild}")]
         [RequireBotOwner]
         public async Task<ActionResult> ForceLeaveAsync([Remainder]SocketGuild guild)
         {

@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Delete")]
         [Description("Deletes a message by its ID. Creates an audit log entry for abuse prevention.")]
-        [Remarks("Usage: |prefix|delete {messageId}")]
+        [Remarks("delete {messageId}")]
         [RequireGuildModerator]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         public async Task<ActionResult> DeleteAsync(ulong messageId)

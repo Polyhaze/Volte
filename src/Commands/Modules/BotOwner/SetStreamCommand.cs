@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetStream")]
         [Description("Sets the bot's stream.")]
-        [Remarks("Usage: |prefix|setstream {streamer} {streamName}")]
+        [Remarks("setstream {streamer} {streamName}")]
         [RequireBotOwner]
         public Task<ActionResult> SetStreamAsync(string streamer, [Remainder] string streamName)
             => Ok(

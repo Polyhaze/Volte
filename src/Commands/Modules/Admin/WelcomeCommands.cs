@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
-        [Remarks("Usage: |prefix|welcomechannel {#channel}")]
+        [Remarks("welcomechannel {#channel}")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules
         [Command("WelcomeMessage", "Wmsg")]
         [Description(
             "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
-        [Remarks("Usage: |prefix|welcomemessage [message]")]
+        [Remarks("welcomemessage [message]")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
@@ -59,7 +59,7 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeColor", "WelcomeColour", "Wcl")]
         [Description("Sets the color used for welcome embeds for this guild.")]
-        [Remarks("Usage: |prefix|welcomecolor {color}")]
+        [Remarks("welcomecolor {color}")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
         {
@@ -70,7 +70,7 @@ namespace Volte.Commands.Modules
 
         [Command("LeavingMessage", "Lmsg")]
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
-        [Remarks("Usage: |prefix|leavingmessage [message]")]
+        [Remarks("leavingmessage [message]")]
         [RequireGuildAdmin]
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {
@@ -102,7 +102,7 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeDmMessage", "Wdmm")]
         [Description("Sets the message to be (attempted to) sent to members upon joining.")]
-        [Remarks("Usage: |prefix|welcomedmmessage")]
+        [Remarks("welcomedmmessage")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
         {

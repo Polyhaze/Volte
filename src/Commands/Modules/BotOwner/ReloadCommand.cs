@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("Reload", "Rl")]
         [Description(
             "Reloads the bot's configuration file if you've changed it. NOTE: This will throw an exception if the config file is invalid JSON!")]
-        [Remarks("Usage: |prefix|reload")]
+        [Remarks("reload")]
         [RequireBotOwner]
         public Task ReloadAsync()
             => Config.Reload(Context.ServiceProvider)

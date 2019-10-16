@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ServerName", "Sn")]
         [Description("Sets the name of the current server.")]
-        [Remarks("Usage: |prefix|servername {name}")]
+        [Remarks("servername {name}")]
         [RequireBotGuildPermission(GuildPermission.ManageGuild)]
         [RequireGuildAdmin]
         public async Task<ActionResult> ServerNameAsync([Remainder] string name)

@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
-        [Remarks("Usage: |prefix|setgame {game}")]
+        [Remarks("setgame {game}")]
         [RequireBotOwner]
         public Task<ActionResult> SetGameAsync([Remainder] string game) 
             => Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game));

@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
-        [Remarks("Usage: |prefix|modrole {role}")]
+        [Remarks("modrole {role}")]
         [RequireGuildAdmin]
         public Task<ActionResult> ModRoleAsync([Remainder] SocketRole role)
         {

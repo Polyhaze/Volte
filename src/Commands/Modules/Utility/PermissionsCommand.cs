@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]
-        [Remarks("Usage: |prefix|permissions [user]")]
+        [Remarks("permissions [user]")]
         public Task<ActionResult> PermissionsAsync(SocketGuildUser user = null)
         {
             user ??= Context.User; // Get the user (or the invoker, if none specified)

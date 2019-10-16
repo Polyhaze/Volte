@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Command("Tag")]
         [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
-        [Remarks("Usage: |prefix|tag {name}")]
+        [Remarks("tag {name}")]
         public Task<ActionResult> TagAsync([Remainder] Tag tag)
         {
             tag.Uses += 1;
@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
         [Command("TagStats")]
         [Priority(1)]
         [Description("Shows stats for a tag.")]
-        [Remarks("Usage: |prefix|tagstats {name}")]
+        [Remarks("tagstats {name}")]
         public async Task<ActionResult> TagStatsAsync([Remainder] Tag tag)
         {
             var u = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
@@ -44,7 +44,7 @@ namespace Volte.Commands.Modules
 
         [Command("Tags")]
         [Description("Lists all available tags in the current guild.")]
-        [Remarks("Usage: |prefix|tags")]
+        [Remarks("tags")]
         public Task<ActionResult> TagsAsync()
             => Ok(Context.CreateEmbedBuilder(
                 Context.GuildData.Extras.Tags.Count == 0

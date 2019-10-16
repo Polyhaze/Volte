@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Poll")]
         [Description("Create a poll.")]
-        [Remarks("Usage: |prefix|poll question;option1;option2;...")]
+        [Remarks("poll question;option1;option2;...")]
         public Task<ActionResult> PollAsync([Remainder] string pollText)
         {
             var choices = pollText.Split(';');

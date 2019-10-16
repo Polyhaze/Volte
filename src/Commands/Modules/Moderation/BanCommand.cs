@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("Usage: |prefix|ban {@user} {daysToDelete} [reason]")]
+        [Remarks("ban {@user} {daysToDelete} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete,
@@ -39,7 +39,7 @@ namespace Volte.Commands.Modules
 
         [Command("Ban")]
         [Description("Bans the mentioned user, deleting the past 7 days of messages")]
-        [Remarks("Usage: |prefix|ban {@user} [reason]")]
+        [Remarks("ban {@user} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user,

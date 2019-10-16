@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
-        [Remarks("Usage: |prefix|createconfig [serverId]")]
+        [Remarks("createconfig [serverId]")]
         [RequireBotOwner]
         public Task<ActionResult> CreateConfigAsync(ulong serverId = 0)
             => Ok($"Created a config for **{Context.Client.GetGuild(serverId).Name}** if it didn't exist.", m =>

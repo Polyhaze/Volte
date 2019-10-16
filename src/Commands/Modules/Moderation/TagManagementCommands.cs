@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Command("TagCreate", "TagAdd", "TagNew")]
         [Priority(1)]
         [Description("Creates a tag with the specified name and response.")]
-        [Remarks("Usage: |prefix|tagcreate {name} {response}")]
+        [Remarks("tagcreate {name} {response}")]
         [RequireGuildModerator]
         public Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
@@ -48,7 +48,7 @@ namespace Volte.Commands.Modules
         [Command("TagDelete", "TagDel", "TagRem")]
         [Priority(1)]
         [Description("Deletes a tag if it exists.")]
-        [Remarks("Usage: |prefix|tagdelete {name}")]
+        [Remarks("tagdelete {name}")]
         [RequireGuildModerator]
         public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
         {

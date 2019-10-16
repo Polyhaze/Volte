@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
 
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
-        [Remarks("Usage: |prefix|info")]
+        [Remarks("info")]
         public async Task<ActionResult> InfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
 
         [Command("UserInfo", "Ui")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
-        [Remarks("Usage: |prefix|userinfo [user]")]
+        [Remarks("userinfo [user]")]
         public Task<ActionResult> UserInfoAsync(SocketGuildUser user = null)
         {
             user ??= Context.User;
@@ -55,7 +55,7 @@ namespace Volte.Commands.Modules
 
         [Command("ServerInfo", "Si", "GuildInfo", "Gi")]
         [Description("Shows some info about the current guild.")]
-        [Remarks("Usage: |prefix|serverinfo")]
+        [Remarks("serverinfo")]
         public Task<ActionResult> ServerInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;

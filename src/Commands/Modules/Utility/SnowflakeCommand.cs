@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Snowflake")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
-        [Remarks("Usage: |prefix|snowflake {id}")]
+        [Remarks("snowflake {id}")]
         public Task<ActionResult> SnowflakeAsync(ulong id)
         {
             var date = SnowflakeUtils.FromSnowflake(id);

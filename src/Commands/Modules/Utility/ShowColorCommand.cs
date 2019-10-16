@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ShowColor", "Sc")]
         [Description("Shows an image purely made up of the specified color.")]
-        [Remarks("Usage: |prefix|showcolor")]
+        [Remarks("showcolor")]
         public async Task<ActionResult> ShowColorAsync([Remainder]Color color)
         {
             await using var stream = ImageHelper.CreateColorImage(new Rgba32(color.R, color.G, color.B));

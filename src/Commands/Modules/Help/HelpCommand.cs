@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
-        [Remarks("Usage: |prefix|help")]
+        [Remarks("help")]
         public Task<ActionResult> HelpAsync(string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)

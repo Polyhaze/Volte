@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Uptime")]
         [Description("Shows the bot's uptime in a human-friendly fashion.")]
-        [Remarks("Usage: |prefix|uptime")]
+        [Remarks("uptime")]
         public Task<ActionResult> UptimeAsync() 
             => Ok($"I've been online for **{Process.GetCurrentProcess().GetUptime()}**!");
     }
