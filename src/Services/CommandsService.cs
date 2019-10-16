@@ -42,7 +42,7 @@ namespace Volte.Services
 
                     if (actionRes is BadRequestResult badreq)
                     {
-                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, args.Context, commandArgs, args.Stopwatch));
+                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, data, args.Context, commandArgs, args.Stopwatch));
                         return;
                     }
 
@@ -68,10 +68,9 @@ namespace Volte.Services
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                     .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful}")
-                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
-                if (data != null) 
-                    sb.AppendLine($"                    |     -Result Message: {data.Message?.Id}");
-                sb.Append("                    -------------------------------------------------");
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
+                    .AppendLineIf($"                    |     -Result Message: {data.Message?.Id}", data != null)
+                    .Append("                    -------------------------------------------------");
                 _logger.Info(LogSource.Volte, sb.ToString());
             });
         }
@@ -135,6 +134,7 @@ namespace Volte.Services
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                     .AppendLine($"                    |           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}")
                     .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
+                    .AppendLineIf($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}", args.ResultCompletionData != null)
                     .Append("                    -------------------------------------------------").ToString());
             });
             return Task.CompletedTask;
