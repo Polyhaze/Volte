@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!");
             }
 
-            await user.BanAsync(daysToDelete, reason);
+            await user.BanAsync(daysToDelete == 0 ? 7 : daysToDelete, reason);
             await Context.Guild.RemoveBanAsync(user);
 
             return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
