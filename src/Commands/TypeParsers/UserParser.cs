@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
@@ -9,7 +10,7 @@ using Qmmands;
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class UserParser : TypeParser<SocketGuildUser>
+    public sealed class GuildUserParser : TypeParser<SocketGuildUser>
     {
         public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(
             Parameter param,
@@ -42,6 +43,30 @@ namespace Volte.Commands.TypeParsers
             return user is null
                 ? TypeParserResult<SocketGuildUser>.Unsuccessful("User not found.")
                 : TypeParserResult<SocketGuildUser>.Successful(user);
+        }
+    }
+
+    [VolteTypeParser]
+    public sealed class UserParser : TypeParser<RestUser>
+    {
+        public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(
+            Parameter param,
+            string value,
+            CommandContext context,
+            IServiceProvider provider)
+        {
+            var ctx = context.Cast<VolteContext>();
+
+            RestUser user = default;
+
+            if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
+                user = await ctx.Client.Shards.First().Rest.GetUserAsync(id);
+
+            
+
+            return user is null
+                ? TypeParserResult<RestUser>.Unsuccessful("User not found.")
+                : TypeParserResult<RestUser>.Successful(user);
         }
     }
 }

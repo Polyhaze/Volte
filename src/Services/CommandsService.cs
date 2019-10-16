@@ -42,7 +42,7 @@ namespace Volte.Services
 
                     if (actionRes is BadRequestResult badreq)
                     {
-                        await OnBadRequestResultAsync(new CommandBadRequestEventArgs(badreq, args.Context, commandArgs, args.Stopwatch));
+                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, args.Context, commandArgs, args.Stopwatch));
                         return;
                     }
 
@@ -121,7 +121,7 @@ namespace Volte.Services
             }
         }
 
-        public Task OnBadRequestResultAsync(CommandBadRequestEventArgs args)
+        public Task OnBadRequestAsync(CommandBadRequestEventArgs args)
         {
             FailedCommandCalls += 1;
             Executor.Execute(() =>
