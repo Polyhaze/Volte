@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -10,20 +12,31 @@ namespace Volte.Commands.Modules
     {
         [Command("Poll")]
         [Description("Create a poll.")]
-        [Remarks("poll question;option1;option2;...")]
+        [Remarks("poll question;option1[;option2;option3;option4;option5]")]
         public Task<ActionResult> PollAsync([Remainder] string pollText)
         {
-            var choices = pollText.Split(';');
+            var choices = pollText.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            var pollInfo = PollHelpers.GetPollBody(choices, EmojiService);
+            if (!pollInfo.IsValid)
+                return BadRequest(choices.Length - 1 > 5
+                    ? "More than 5 options were specified."
+                    : "No options specified.");
 
-            return Ok(Context.CreateEmbedBuilder()
-                    .WithTitle(choices[0])
-                    .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png")
-                    .WithDescription(PollHelpers.GetPollBody(choices, EmojiService)),
-                async msg =>
-                {
-                    _ = await Context.Message.TryDeleteAsync();
-                    await PollHelpers.AddPollReactionsAsync(choices, msg, EmojiService);
-                });
+            var embed = Context.CreateEmbedBuilder()
+                .WithDescription(Format.Bold(choices[0]))
+                .WithTitle($"Poll by {Context.User}")
+                .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png");
+
+            foreach (var (name, value) in pollInfo.Fields)
+            {
+                embed.AddField(name, value, true);
+            }
+
+            return Ok(embed, async msg =>
+            {
+                _ = await Context.Message.TryDeleteAsync();
+                await PollHelpers.AddPollReactionsAsync(choices, msg, EmojiService);
+            });
         }
     }
 }

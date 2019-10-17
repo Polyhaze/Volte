@@ -1,8 +1,10 @@
-﻿namespace Volte
+﻿using SysVer = System.Version;
+
+namespace Volte
 {
     public static class Version
     {
-        public static System.Version AsDotNetVersion() => new System.Version(Major, Minor, Patch, Hotfix);
+        public static SysVer AsDotNetVersion() => new SysVer(Major, Minor, Patch, Hotfix);
         private static int Major => 3;
         private static int Minor => 1;
         private static int Patch => 0;
