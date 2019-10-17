@@ -10,13 +10,13 @@ using Volte.Services;
 
 namespace Volte.Core
 {
-    internal sealed class VolteHandler
+    internal sealed class HandlerService
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _service;
         private readonly LoggingService _logger;
 
-        public VolteHandler(DiscordShardedClient client,
+        public HandlerService(DiscordShardedClient client,
             CommandService commandService,
             LoggingService loggingService)
         {

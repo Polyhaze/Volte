@@ -65,7 +65,7 @@ namespace Volte.Core
 
             _provider.Get(out _client);
             _provider.Get(out _cts);
-            _provider.Get<VolteHandler>(out var handler);
+            _provider.Get<HandlerService>(out var handler);
             _provider.Get<LoggingService>(out var logger);
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);

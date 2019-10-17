@@ -71,7 +71,7 @@ namespace Volte.Services
                     .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
                     .AppendLineIf($"                    |     -Result Message: {data.Message?.Id}", data != null)
                     .Append("                    -------------------------------------------------");
-                _logger.Info(LogSource.Volte, sb.ToString());
+                _logger.Info(LogSource.Module, sb.ToString());
             });
         }
 
@@ -106,7 +106,7 @@ namespace Volte.Services
 
                 Executor.Execute(() =>
                 {
-                    _logger.Error(LogSource.Volte, new StringBuilder()
+                    _logger.Error(LogSource.Module, new StringBuilder()
                         .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                         .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
                         .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
@@ -125,7 +125,7 @@ namespace Volte.Services
             FailedCommandCalls += 1;
             Executor.Execute(() =>
             {
-                _logger.Error(LogSource.Volte, new StringBuilder()
+                _logger.Error(LogSource.Module, new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
                     .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
