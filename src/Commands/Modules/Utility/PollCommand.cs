@@ -32,7 +32,7 @@ namespace Volte.Commands.Modules
                 embed.AddField(name, value, true);
             }
 
-            return Ok(embed, async msg =>
+            return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
             {
                 _ = await Context.Message.TryDeleteAsync();
                 await PollHelpers.AddPollReactionsAsync(choices, msg, EmojiService);
