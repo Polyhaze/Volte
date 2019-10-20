@@ -36,8 +36,8 @@ namespace Volte.Core.Models
         public SocketTextChannel TextChannel(ulong id)
             => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
 
-        public SocketUserMessage Message(ulong id) 
-            => Context.Channel.GetCachedMessage(id) as SocketUserMessage;
+        public SocketUserMessage Message(ulong id)
+            => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
 
         public SocketGuild Guild(ulong id)
             => Context.Client.GetGuild(id);

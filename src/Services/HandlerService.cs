@@ -6,9 +6,8 @@ using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Models;
 using Gommon;
-using Volte.Services;
 
-namespace Volte.Core
+namespace Volte.Services
 {
     internal sealed class HandlerService
     {
@@ -30,7 +29,7 @@ namespace Volte.Core
             var sw = Stopwatch.StartNew();
             var l = await _service.AddTypeParsersAsync();
             sw.Stop();
-            _logger.Info(LogSource.Volte, $"Loaded TypeParsers: \"{l.Select(x => x.SanitizeParserName()).Join(", ")}\" in {sw.ElapsedMilliseconds}ms.");
+            _logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
 
             var loaded = _service.AddModules(GetType().Assembly);
