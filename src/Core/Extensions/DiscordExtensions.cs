@@ -145,5 +145,7 @@ namespace Gommon
         public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
         public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
+
+        public static Emoji ToEmoji(this string str) => new Emoji(str);
     }
 }

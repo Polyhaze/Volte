@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Volte.Core.Models.Misc;
 using Volte.Services;
 
@@ -10,25 +11,25 @@ namespace Volte.Helpers
         public static PollInfo GetPollBody(string[] choices, EmojiService emojiService)
             => (choices.Length - 1) switch
             {
-                1 => PollInfo.FromFields(($"{new Emoji(emojiService.One)}", choices[1])),
+                1 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1])),
 
-                2 => PollInfo.FromFields(($"{new Emoji(emojiService.One)}", choices[1]),
-                        ($"{new Emoji(emojiService.Two)}", choices[2])),
+                2 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
+                        ($"{emojiService.Two.ToEmoji()}", choices[2])),
 
-                3 => PollInfo.FromFields(($"{new Emoji(emojiService.One)}", choices[1]),
-                        ($"{new Emoji(emojiService.Two)}", choices[2]),
-                        ($"{new Emoji(emojiService.Three)}", choices[3])),
+                3 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
+                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
+                        ($"{emojiService.Three.ToEmoji()}", choices[3])),
 
-                4 => PollInfo.FromFields(($"{new Emoji(emojiService.One)}", choices[1]),
-                        ($"{new Emoji(emojiService.Two)}", choices[2]),
-                        ($"{new Emoji(emojiService.Three)}", choices[3]),
-                        ($"{new Emoji(emojiService.Four)}", choices[4])),
+                4 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
+                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
+                        ($"{emojiService.Three.ToEmoji()}", choices[3]),
+                        ($"{emojiService.Four.ToEmoji()}", choices[4])),
 
-                5 => PollInfo.FromFields(($"{new Emoji(emojiService.One)}", choices[1]),
-                        ($"{new Emoji(emojiService.Two)}", choices[2]),
-                        ($"{new Emoji(emojiService.Three)}", choices[3]),
-                        ($"{new Emoji(emojiService.Four)}", choices[4]),
-                        ($"{new Emoji(emojiService.Five)}", choices[5])),
+                5 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
+                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
+                        ($"{emojiService.Three.ToEmoji()}", choices[3]),
+                        ($"{emojiService.Four.ToEmoji()}", choices[4]),
+                        ($"{emojiService.Five.ToEmoji()}", choices[5])),
 
                 _ => PollInfo.FromValid(false)
             };
@@ -38,33 +39,33 @@ namespace Volte.Helpers
             switch (choices.Length - 1)
             {
                 case 1:
-                    await msg.AddReactionAsync(new Emoji(emojiService.One));
+                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
                     break;
 
                 case 2:
-                    await msg.AddReactionAsync(new Emoji(emojiService.One));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Two));
+                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
                     break;
 
                 case 3:
-                    await msg.AddReactionAsync(new Emoji(emojiService.One));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Two));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Three));
+                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
                     break;
 
                 case 4:
-                    await msg.AddReactionAsync(new Emoji(emojiService.One));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Two));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Three));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Four));
+                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Four.ToEmoji());
                     break;
 
                 case 5:
-                    await msg.AddReactionAsync(new Emoji(emojiService.One));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Two));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Three));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Four));
-                    await msg.AddReactionAsync(new Emoji(emojiService.Five));
+                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Four.ToEmoji());
+                    await msg.AddReactionAsync(emojiService.Five.ToEmoji());
                     break;
             }
         }

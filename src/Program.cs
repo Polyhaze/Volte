@@ -2,6 +2,6 @@
 {
     internal static class Program
     {
-        private static System.Threading.Tasks.Task Main() => Core.VolteBot.StartAsync();
+        internal static System.Threading.Tasks.Task Main() => Core.VolteBot.StartAsync();
     }
 }
