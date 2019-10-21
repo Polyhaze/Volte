@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Discord.WebSocket;
+using Gommon;
 
 namespace Volte.Core.Models.Guild
 {
@@ -47,33 +48,33 @@ namespace Volte.Core.Models.Guild
         public string WelcomeDmMessage { get; set; }
 
         public string FormatWelcomeMessage(SocketGuildUser user) 
-            => WelcomeMessage.Replace("{ServerName}", user.Guild.Name)
-                .Replace("{GuildName}", user.Guild.Name)
-                .Replace("{UserName}", user.Username)
-                .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
-                .Replace("{UserTag}", user.Discriminator)
-                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
-                .Replace("{UserString}", user.ToString());
+            => WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{UserName}", user.Username)
+                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
+                .ReplaceIgnoreCase("{UserString}", user);
 
         public string FormatLeavingMessage(SocketGuildUser user) 
-            => LeavingMessage.Replace("{ServerName}", user.Guild.Name)
-                .Replace("{GuildName}", user.Guild.Name)
-                .Replace("{UserName}", user.Username)
-                .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
-                .Replace("{UserTag}", user.Discriminator)
-                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
-                .Replace("{UserString}", user.ToString());
+            => LeavingMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{UserName}", user.Username)
+                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
+                .ReplaceIgnoreCase("{UserString}", user);
 
         public string FormatDmMessage(SocketGuildUser user)
-            => WelcomeDmMessage.Replace("{ServerName}", user.Guild.Name)
-                .Replace("{GuildName}", user.Guild.Name)
-                .Replace("{UserName}", user.Username)
-                .Replace("{UserMention}", user.Mention)
-                .Replace("{OwnerMention}", user.Guild.Owner.Mention)
-                .Replace("{UserTag}", user.Discriminator)
-                .Replace("{MemberCount}", user.Guild.MemberCount.ToString())
-                .Replace("{UserString}", user.ToString());
+            => WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
+                .ReplaceIgnoreCase("{UserName}", user.Username)
+                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
+                .ReplaceIgnoreCase("{UserString}", user);
     }
 }
