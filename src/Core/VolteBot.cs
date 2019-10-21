@@ -10,6 +10,8 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Models;
 using Volte.Services;
+using Color = System.Drawing.Color;
+using Console = Colorful.Console;
 
 namespace Volte.Core
 {
@@ -38,7 +40,7 @@ namespace Volte.Core
 
             if (!Directory.Exists(Config.DataDirectory))
             {
-                Console.WriteLine($"The \"{Config.DataDirectory}\" directory didn't exist, so I created it for you.");
+                Console.WriteLine($"The \"{Config.DataDirectory}\" directory didn't exist, so I created it for you.", Color.Red);
                 Directory.CreateDirectory(Config.DataDirectory);
                 //99.9999999999% of the time the config also won't exist if this block is reached
                 //if the config does exist when this block is reached, feel free to become the lead developer of this project
@@ -46,7 +48,7 @@ namespace Volte.Core
 
             if (!Config.CreateIfNotExists())
             {
-                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.");
+                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
                 return;
             }
 

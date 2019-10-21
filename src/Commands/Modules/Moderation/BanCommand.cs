@@ -14,31 +14,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("ban {@user} {daysToDelete} [reason]")]
-        [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete,
-            [Remainder] string reason = "Banned by a Moderator.")
-        {
-            if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")))
-            {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!");
-            }
-
-            await user.BanAsync(daysToDelete, reason);
-            return Ok($"Successfully banned **{user}** from this guild.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithActionType(ModActionType.Ban)
-                    .WithTarget(user)
-                    .WithReason(reason))
-                );
-        }
-
-        [Command("Ban")]
-        [Description("Bans the mentioned user, deleting the past 7 days of messages")]
         [Remarks("ban {@user} [reason]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
@@ -59,7 +34,7 @@ namespace Volte.Commands.Modules
                     .WithActionType(ModActionType.Ban)
                     .WithTarget(user)
                     .WithReason(reason))
-            );
+                );
         }
     }
 }

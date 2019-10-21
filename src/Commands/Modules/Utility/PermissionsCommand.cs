@@ -17,7 +17,7 @@ namespace Volte.Commands.Modules
         [Remarks("permissions [user]")]
         public Task<ActionResult> PermissionsAsync(SocketGuildUser user = null)
         {
-            user ??= Context.User; // Get the user (or the invoker, if none specified)
+            user ??= Context.User; // get the user (or the invoker, if none specified)
 
 
             if (user.Id == Context.Guild.OwnerId)

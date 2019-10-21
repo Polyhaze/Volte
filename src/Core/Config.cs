@@ -52,7 +52,7 @@ namespace Volte.Core
 
         public static void Load()
         {
-            CreateIfNotExists();
+            _ = CreateIfNotExists();
             if (IsValidConfig)
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), new JsonSerializerOptions
                 {
