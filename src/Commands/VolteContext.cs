@@ -31,14 +31,14 @@ namespace Volte.Commands
             Now = DateTimeOffset.UtcNow;
         }
 
-        public DiscordShardedClient Client;
-        public IServiceProvider ServiceProvider;
-        public SocketGuild Guild;
-        public SocketTextChannel Channel;
-        public SocketGuildUser User;
-        public SocketUserMessage Message;
-        public GuildData GuildData;
-        public DateTimeOffset Now;
+        public readonly DiscordShardedClient Client;
+        public readonly IServiceProvider ServiceProvider;
+        public readonly SocketGuild Guild;
+        public readonly SocketTextChannel Channel;
+        public readonly SocketGuildUser User;
+        public readonly SocketUserMessage Message;
+        public readonly GuildData GuildData;
+        public readonly DateTimeOffset Now;
 
         public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
 

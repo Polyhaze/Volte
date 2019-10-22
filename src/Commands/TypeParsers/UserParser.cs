@@ -10,7 +10,7 @@ using Qmmands;
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class GuildUserParser : TypeParser<SocketGuildUser>
+    public sealed class SocketGuildUserParser : TypeParser<SocketGuildUser>
     {
         public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(
             Parameter param,
@@ -47,10 +47,10 @@ namespace Volte.Commands.TypeParsers
     }
 
     [VolteTypeParser]
-    public sealed class UserParser : TypeParser<RestUser>
+    public sealed class RestUserParser : TypeParser<RestUser>
     {
         public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(
-            Parameter param,
+            Parameter parameter,
             string value,
             CommandContext context,
             IServiceProvider provider)

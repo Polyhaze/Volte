@@ -13,10 +13,10 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         [Command("Delete")]
-        [Description("Deletes a message by its ID. Creates an audit log entry for abuse prevention.")]
+        [Description("Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
         [Remarks("delete {messageId}")]
-        [RequireGuildModerator]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
+        [RequireGuildModerator]
         public async Task<ActionResult> DeleteAsync(ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);

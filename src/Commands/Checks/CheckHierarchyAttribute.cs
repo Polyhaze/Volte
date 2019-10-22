@@ -12,7 +12,7 @@ namespace Volte.Commands.Checks
         public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context,
             IServiceProvider provider)
         {
-            var u = argument.Cast<SocketGuildUser>() ?? throw new Exception($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
+            var u = argument.Cast<SocketGuildUser>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
             var ctx = context.Cast<VolteContext>();
 
             return ctx.User.Hierarchy >= u.Hierarchy
