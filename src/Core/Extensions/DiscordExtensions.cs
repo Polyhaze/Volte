@@ -102,18 +102,20 @@ namespace Gommon
                 client.Log += m => logger.DoAsync(new LogEventArgs(m));
                 client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
                 client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
-                client.UserJoined += user =>
+                
+                client.UserJoined += async user =>
                 {
                     if (Config.EnabledFeatures.Welcome)
-                        return welcome.JoinAsync(new UserJoinedEventArgs(user));
+                        await welcome.JoinAsync(new UserJoinedEventArgs(user));
                     if (Config.EnabledFeatures.Autorole)
-                        return autorole.DoAsync(new UserJoinedEventArgs(user));
-                    return Task.CompletedTask;
+                        await autorole.DoAsync(new UserJoinedEventArgs(user));
                 };
-                client.UserLeft += user =>
-                    Config.EnabledFeatures.Welcome
-                        ? welcome.LeaveAsync(new UserLeftEventArgs(user))
-                        : Task.CompletedTask;
+                client.UserLeft += async user =>
+                {
+                    if (Config.EnabledFeatures.Welcome)
+                        await welcome.LeaveAsync(new UserLeftEventArgs(user));
+                };
+                
                 client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c, client));
                 client.MessageReceived += async s =>
                 {

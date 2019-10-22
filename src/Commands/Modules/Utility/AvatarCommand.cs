@@ -13,10 +13,10 @@ namespace Volte.Commands.Modules
         [Remarks("avatar [@user]")]
         public Task<ActionResult> AvatarAsync(SocketGuildUser user = null)
         {
-            var u = user ?? Context.User;
+            user ??= Context.User;
             return Ok(Context.CreateEmbedBuilder()
-                .WithAuthor(u)
-                .WithImageUrl(u.GetAvatarUrl(ImageFormat.Auto, 1024)));
+                .WithAuthor(user)
+                .WithImageUrl(user.GetAvatarUrl(ImageFormat.Auto, 1024)));
         }
     }
 }
