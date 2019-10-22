@@ -109,17 +109,20 @@ namespace Volte.Services
                     $"Set the bot's activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
             }
 
-            foreach (var guild in args.Client.Guilds)
+            _ = Task.Run(async () =>
             {
-                if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+                foreach (var guild in args.Client.Guilds)
                 {
-                    _logger.Warn(LogSource.Volte,
-                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
-                    await guild.LeaveAsync();
-                }
+                    if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+                    {
+                        _logger.Warn(LogSource.Volte,
+                            $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                        await guild.LeaveAsync();
+                    }
 
-                _ = _db.GetData(guild); //ensuring all guilds have data available, to prevent exceptions later on 
-            }
+                    _ = _db.GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
+                }
+            });
 
             if (Config.GuildLogging.EnsureValidConfiguration(args.ShardedClient, out var channel))
             {
