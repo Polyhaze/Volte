@@ -19,7 +19,7 @@ namespace Volte.Core
         private static readonly bool IsValidConfig =
             File.Exists(ConfigFilePath) && !File.ReadAllText(ConfigFilePath).IsNullOrEmpty();
 
-        public static bool CreateIfNotExists()
+        public static bool CreateIfNonexistent()
         {
             if (IsValidConfig) return true;
             _configuration = new BotConfig
@@ -27,7 +27,7 @@ namespace Volte.Core
                 Token = "token here",
                 CommandPrefix = "$",
                 Owner = 0,
-                Game = "in Volte V3 Code!",
+                Game = "game here",
                 Streamer = "streamer here",
                 EnableDebugLogging = false,
                 SuccessEmbedColor = 0x7000FB,
@@ -40,7 +40,7 @@ namespace Volte.Core
             try
             {
                 File.WriteAllText(ConfigFilePath,
-                    JsonSerializer.Serialize(_configuration, new JsonSerializerOptions { WriteIndented = true }));
+                    JsonSerializer.Serialize(_configuration, new JsonSerializerOptions {WriteIndented = true}));
             }
             catch (Exception e)
             {
@@ -52,7 +52,7 @@ namespace Volte.Core
 
         public static void Load()
         {
-            _ = CreateIfNotExists();
+            _ = CreateIfNonexistent();
             if (IsValidConfig)
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), new JsonSerializerOptions
                 {
@@ -103,8 +103,8 @@ namespace Volte.Core
         public static IEnumerable<ulong> BlacklistedOwners => _configuration.BlacklistedGuildOwners;
 
         public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
-
-        [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
+        
+        // ReSharper disable MemberHidesStaticFromOuterClass
         private class BotConfig
         {
             [JsonPropertyName("discord_token")]

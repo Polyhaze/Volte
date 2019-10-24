@@ -9,6 +9,6 @@ namespace Volte.Core.Models.EventArgs
         public SocketGuild Guild { get; }
 
         public LeftGuildEventArgs(SocketGuild guild) 
-            => Guild = guild.Cast<SocketGuild>();
+            => Guild = guild;
     }
 }

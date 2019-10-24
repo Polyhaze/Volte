@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gommon;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Volte.Core.Models.Misc
 {

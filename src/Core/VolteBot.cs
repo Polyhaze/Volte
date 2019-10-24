@@ -46,7 +46,7 @@ namespace Volte.Core
                 //if the config does exist when this block is reached, feel free to become the lead developer of this project
             }
 
-            if (!Config.CreateIfNotExists())
+            if (!Config.CreateIfNonexistent())
             {
                 Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
                 return;

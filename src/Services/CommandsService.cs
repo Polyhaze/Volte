@@ -78,7 +78,7 @@ namespace Volte.Services
         private async Task OnCommandFailureAsync(CommandFailedEventArgs args)
         {
             FailedCommandCalls += 1;
-            var reason = args.FailedResult switch
+            var reason = args.Result switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
                 ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType()}",
@@ -90,10 +90,10 @@ namespace Volte.Services
                 _ => "Unknown error."
             };
 
-            if (args.FailedResult is ExecutionFailedResult e)
+            if (args.Result is ExecutionFailedResult e)
                 _logger.Exception(e.Exception);
 
-            if (!(args.FailedResult is ChecksFailedResult) && !reason.IsNullOrEmpty())
+            if (!(args.Result is ChecksFailedResult) && !reason.IsNullOrEmpty())
             {
                 await args.Context.CreateEmbedBuilder()
                     .AddField("Error in Command", args.Context.Command.Name)
@@ -113,7 +113,7 @@ namespace Volte.Services
                         .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
                         .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                         .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                        .AppendLine($"                    |           -Executed: {args.FailedResult.IsSuccessful} | Reason: {reason}")
+                        .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {reason}")
                         .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
                         .Append("                    -------------------------------------------------").ToString());
                 });
@@ -132,7 +132,7 @@ namespace Volte.Services
                     .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                    .AppendLine($"                    |           -Executed: {args.BadRequestResult.IsSuccessful} | Reason: {args.BadRequestResult.Reason}")
+                    .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {args.Result.Reason}")
                     .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
                     .AppendLineIf($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}", args.ResultCompletionData != null)
                     .Append("                    -------------------------------------------------").ToString());

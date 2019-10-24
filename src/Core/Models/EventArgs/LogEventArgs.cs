@@ -7,7 +7,7 @@ namespace Volte.Core.Models.EventArgs
         public string Message { get; }
         public string Source { get; }
         public LogSeverity Severity { get; }
-        public (LogMessage Internal, global::Discord.LogMessage Discord) LogMessage { get; }
+        public (LogMessage Internal, Discord.LogMessage Discord) LogMessage { get; }
 
         public LogEventArgs(global::Discord.LogMessage message)
         {

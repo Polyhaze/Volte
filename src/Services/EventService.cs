@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using Discord.Net;
 using Gommon;
 using Humanizer;
 using Qmmands;
+using Qommon.Collections;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -53,11 +55,11 @@ namespace Volte.Services
             if (Config.EnabledFeatures.PingChecks)
                 await _pingchecks.DoAsync(args);
 
-            var prefixes = new[]
+            var prefixes = new List<string>
             {
                 args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
                 $"<@!{args.Context.Client.CurrentUser.Id}> "
-            }.ToList();
+            };
 
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
@@ -71,27 +73,21 @@ namespace Volte.Services
                 await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
 
                 if (args.Data.Configuration.DeleteMessageOnCommand)
-                    try
-                    {
-                        await args.Context.Message.DeleteAsync();
-                    }
-                    catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
-                    {
-                        _logger.Warn(LogSource.Service, $"Could not act upon the DeleteMessageOnCommand setting for {args.Context.Guild.Name} as the bot is missing the required permission.");
-                    }
+                    if (!await args.Message.TryDeleteAsync())
+                        _logger.Warn(LogSource.Service, $"Could not act upon the DeleteMessageOnCommand setting for {args.Context.Guild.Name} as the bot is missing the required permission, or another error occured.");
             }
         }
 
-        public async Task OnReady(ReadyEventArgs args)
+        public async Task OnShardReady(ShardReadyEventArgs args)
         {
-            var guilds = args.Client.Guilds.Count;
-            var users = args.Client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
-            var channels = args.Client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
+            var guilds = args.Shard.Guilds.Count;
+            var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
+            var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
             _logger.PrintVersion();
             _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
-            _logger.Info(LogSource.Volte, $"{args.Client.GetInviteUrl()}");
-            _logger.Info(LogSource.Volte, $"Logged in as {args.Client.CurrentUser}");
+            _logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
+            _logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");
             _logger.Info(LogSource.Volte, "Connected to:");
             _logger.Info(LogSource.Volte, $"    {"guild".ToQuantity(guilds)}");
             _logger.Info(LogSource.Volte, $"    {"user".ToQuantity(users)}");
@@ -99,19 +95,19 @@ namespace Volte.Services
 
             if (!_shouldStream)
             {
-                await args.Client.SetGameAsync(Config.Game);
-                _logger.Info(LogSource.Volte, $"Set {args.Client.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                await args.Shard.SetGameAsync(Config.Game);
+                _logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
             }
             else
             {
-                await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
+                await args.Shard.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
                 _logger.Info(LogSource.Volte,
-                    $"Set {args.Client.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
+                    $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
 
             _ = Task.Run(async () =>
             {
-                foreach (var guild in args.Client.Guilds)
+                foreach (var guild in args.Shard.Guilds)
                 {
                     if (Config.BlacklistedOwners.Contains(guild.OwnerId))
                     {
@@ -124,11 +120,11 @@ namespace Volte.Services
                 }
             });
 
-            if (Config.GuildLogging.EnsureValidConfiguration(args.ShardedClient, out var channel))
+            if (Config.GuildLogging.EnsureValidConfiguration(args.Client, out var channel))
             {
                 await new EmbedBuilder()
                     .WithSuccessColor()
-                    .WithAuthor(args.ShardedClient.GetOwner())
+                    .WithAuthor(args.Client.GetOwner())
                     .WithDescription(
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
                     .SendToAsync(channel);

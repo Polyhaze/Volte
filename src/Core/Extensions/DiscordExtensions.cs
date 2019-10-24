@@ -116,7 +116,7 @@ namespace Gommon
                         await welcome.LeaveAsync(new UserLeftEventArgs(user));
                 };
                 
-                client.ShardReady += c => evt.OnReady(new ReadyEventArgs(c, client));
+                client.ShardReady += c => evt.OnShardReady(new ShardReadyEventArgs(c, client));
                 client.MessageReceived += async s =>
                 {
                     if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
@@ -149,5 +149,18 @@ namespace Gommon
         public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
+
+        public static bool TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
+        {
+            try
+            {
+                deletable.DeleteAsync(options);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

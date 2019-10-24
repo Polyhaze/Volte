@@ -51,7 +51,7 @@ namespace Volte.Core.Models
             {
                 return Message(ulongId);
             }
-            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong)}.");
+            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
         }
 
         public string Inheritance<T>() 

@@ -17,12 +17,12 @@ namespace Volte.Core.Models
                 Severity = message.Severity,
                 Exception = message.Exception,
                 Source = message.Source switch
-                    {
+                {
                     "Rest" => LogSource.Rest,
                     "Discord" => LogSource.Discord,
                     "Gateway" => LogSource.Gateway,
                     _ => LogSource.Unknown
-                    }
+                }
             };
     }
 }
