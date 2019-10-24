@@ -97,16 +97,16 @@ namespace Volte.Services
             _logger.Info(LogSource.Volte, $"    {"user".ToQuantity(users)}");
             _logger.Info(LogSource.Volte, $"    {"channel".ToQuantity(channels)}");
 
-            if (_shouldStream)
+            if (!_shouldStream)
             {
                 await args.Client.SetGameAsync(Config.Game);
-                _logger.Info(LogSource.Volte, $"Set the bot's game to {Config.Game}.");
+                _logger.Info(LogSource.Volte, $"Set {args.Client.CurrentUser.Username}'s game to {Config.Game}.");
             }
             else
             {
                 await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
                 _logger.Info(LogSource.Volte,
-                    $"Set the bot's activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
+                    $"Set {args.Client.CurrentUser.Username}'s activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
             }
 
             _ = Task.Run(async () =>
