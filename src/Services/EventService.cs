@@ -100,13 +100,13 @@ namespace Volte.Services
             if (!_shouldStream)
             {
                 await args.Client.SetGameAsync(Config.Game);
-                _logger.Info(LogSource.Volte, $"Set {args.Client.CurrentUser.Username}'s game to {Config.Game}.");
+                _logger.Info(LogSource.Volte, $"Set {args.Client.CurrentUser.Username}'s game to \"{Config.Game}\".");
             }
             else
             {
                 await args.Client.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
                 _logger.Info(LogSource.Volte,
-                    $"Set {args.Client.CurrentUser.Username}'s activity to \"{ActivityType.Streaming} {Config.Game}, at {Config.FormattedStreamUrl}\".");
+                    $"Set {args.Client.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
 
             _ = Task.Run(async () =>
