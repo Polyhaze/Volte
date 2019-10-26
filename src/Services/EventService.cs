@@ -25,6 +25,7 @@ namespace Volte.Services
         private readonly PingChecksService _pingchecks;
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
+        private readonly QuoteService _quoteService;
 
         private readonly bool _shouldStream =
             !Config.Streamer.ContainsIgnoreCase(" ") || !Config.Streamer.IsNullOrEmpty();
@@ -35,7 +36,8 @@ namespace Volte.Services
             BlacklistService blacklistService,
             PingChecksService pingChecksService,
             CommandService commandService,
-            CommandsService commandsService)
+            CommandsService commandsService,
+            QuoteService quoteService)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -44,6 +46,7 @@ namespace Volte.Services
             _pingchecks = pingChecksService;
             _commandService = commandService;
             _commandsService = commandsService;
+            _quoteService = quoteService;
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
@@ -75,7 +78,10 @@ namespace Volte.Services
                 if (args.Data.Configuration.DeleteMessageOnCommand)
                     if (!await args.Message.TryDeleteAsync())
                         _logger.Warn(LogSource.Service, $"Could not act upon the DeleteMessageOnCommand setting for {args.Context.Guild.Name} as the bot is missing the required permission, or another error occured.");
+                return;
             }
+            
+            await _quoteService.DoAsync(args);
         }
 
         public async Task OnShardReady(ShardReadyEventArgs args)

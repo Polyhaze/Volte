@@ -23,5 +23,8 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("mod_log_case_number")]
         public ulong ModActionCaseNumber { get; set; }
+        
+        [JsonPropertyName("auto_parse_quote_urls")]
+        public bool AutoParseQuoteUrls { get; set; }
     }
 }
