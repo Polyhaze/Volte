@@ -9,7 +9,7 @@ using Gommon;
 
 namespace Volte.Services
 {
-    internal sealed class HandlerService
+    internal sealed class HandlerService //no attr since it's manually added
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _service;

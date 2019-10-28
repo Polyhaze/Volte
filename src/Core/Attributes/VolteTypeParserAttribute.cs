@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Volte.Commands.TypeParsers
+namespace Volte.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class VolteTypeParserAttribute : Attribute

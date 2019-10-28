@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
+using Volte.Commands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class CheckHierarchyAttribute : ParameterCheckAttribute

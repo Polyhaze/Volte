@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands;
-using Volte.Commands.TypeParsers;
 using Volte.Core;
+using Volte.Core.Attributes;
 using Module = Qmmands.Module;
 
 namespace Gommon

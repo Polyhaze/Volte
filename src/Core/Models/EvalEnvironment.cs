@@ -192,6 +192,13 @@ namespace Volte.Core.Models
                 return $"[[{e.GetType().FullName} thrown]]";
             }
         }
+        
+#if DEBUG
+        public void Throw()
+        {
+            throw new Exception("Test exception.");
+        }
+#endif
 
     }
 }

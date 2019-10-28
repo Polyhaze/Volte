@@ -2,8 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
+using Volte.Commands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Attributes
 {
     public sealed class RequireBotOwnerAttribute : CheckAttribute
     {

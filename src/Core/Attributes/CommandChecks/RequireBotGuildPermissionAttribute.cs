@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
+using Volte.Commands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Attributes
 {
     public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
     {

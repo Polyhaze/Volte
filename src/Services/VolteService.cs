@@ -1,7 +1,8 @@
 ﻿namespace Volte.Services
 {
-    public abstract class VolteService
-    {
-        //used for things that aren't single-eventargs-based, like WelcomeService
-    }
+    /// <summary>
+    ///     Used for things that aren't based on receiving events, like the AutoroleService.
+    ///     Used for things like the WelcomeService.
+    /// </summary>
+    public abstract class VolteService { }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Checks;
+using Volte.Core.Attributes;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;

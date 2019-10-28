@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands.Checks;
+using Volte.Core.Attributes;
 using Volte.Core.Models.Guild;
 using Volte.Commands.Results;
 
@@ -26,7 +26,7 @@ namespace Volte.Commands.Modules
                     $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
             }
 
-            var newTag = new Tag
+            tag = new Tag
             {
                 Name = name,
                 Response = response,
@@ -35,13 +35,13 @@ namespace Volte.Commands.Modules
                 Uses = default
             };
 
-            Context.GuildData.Extras.Tags.Add(newTag);
+            Context.GuildData.Extras.Tags.Add(tag);
             Db.UpdateData(Context.GuildData);
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
-                .AddField("Name", newTag.Name)
-                .AddField("Response", newTag.Response)
+                .AddField("Name", tag.Name)
+                .AddField("Response", tag.Response)
                 .AddField("Creator", Context.User.Mention));
         }
 

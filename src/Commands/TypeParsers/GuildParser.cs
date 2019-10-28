@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
+using Volte.Core.Attributes;
 
 namespace Volte.Commands.TypeParsers
 {
@@ -30,7 +31,7 @@ namespace Volte.Commands.TypeParsers
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
                     return TypeParserResult<SocketGuild>.Unsuccessful(
-                        "Multiple guilds found, try using its ID.");
+                        "Multiple guilds found with that name, try using its ID.");
 
                 guild = match.FirstOrDefault();
             }

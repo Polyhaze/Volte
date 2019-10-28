@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
+using Volte.Core.Attributes;
 
 namespace Volte.Commands.TypeParsers
 {

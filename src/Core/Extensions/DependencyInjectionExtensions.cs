@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
 using RestSharp;
 using Volte;
-using Volte.Core;
 using Volte.Services;
+using Volte.Core.Attributes;
 using Version = Volte.Version;
 
 namespace Gommon

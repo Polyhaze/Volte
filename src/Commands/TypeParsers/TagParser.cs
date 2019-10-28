@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
+using Volte.Core.Attributes;
 using Volte.Core.Models.Guild;
 
 namespace Volte.Commands.TypeParsers

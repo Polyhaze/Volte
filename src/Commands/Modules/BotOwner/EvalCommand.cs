@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Commands.Checks;
+using Volte.Core.Attributes;
 using Volte.Commands.Results;
 using Volte.Services;
 

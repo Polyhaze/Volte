@@ -40,9 +40,9 @@ namespace Volte.Commands
         public readonly GuildData GuildData;
         public readonly DateTimeOffset Now;
 
-        public Task ReactFailureAsync() => Message.AddReactionAsync(new Emoji(_emojiService.X));
+        public Task ReactFailureAsync() => Message.AddReactionAsync(_emojiService.X.ToEmoji());
 
-        public Task ReactSuccessAsync() => Message.AddReactionAsync(new Emoji(_emojiService.BallotBoxWithCheck));
+        public Task ReactSuccessAsync() => Message.AddReactionAsync(_emojiService.X.ToEmoji());
 
         public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
             .WithDescription(content).Build();

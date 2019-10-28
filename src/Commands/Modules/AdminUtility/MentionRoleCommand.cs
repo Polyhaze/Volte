@@ -2,7 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Commands.Checks;
+using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         {
             if (role.IsMentionable)
             {
-                return Ok(role.Mention, null, false);
+                return Ok(role.Mention, shouldEmbed: false);
             }
 
             return Ok(async () =>

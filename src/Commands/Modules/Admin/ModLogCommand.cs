@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Commands.Checks;
+using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
