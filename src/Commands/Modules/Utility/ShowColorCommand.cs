@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
             await using var stream = ImageHelper.CreateColorImage(new Rgba32(color.R, color.G, color.B));
             await Context.Channel.SendFileAsync(stream, "role.png", null, embed: new EmbedBuilder()
                 .WithColor(color)
-                .WithTitle($"Color {color.ToString().ToUpper()}")
+                .WithTitle($"Color {color}")
                 .WithDescription(new StringBuilder()
                     .AppendLine($"**Hex:** {color.ToString().ToUpper()}")
                     .AppendLine($"**RGB:** {color.R}, {color.G}, {color.B}")

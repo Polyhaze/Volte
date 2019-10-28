@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(target)
                     .WithDescription(new StringBuilder()
-                        .AppendLine($"**Track:** [{ spotify.TrackTitle}]({ spotify.TrackUrl})")
+                        .AppendLine($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})")
                         .AppendLine($"**Album:** {spotify.AlbumTitle}")
                         .AppendLine(
                             $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
