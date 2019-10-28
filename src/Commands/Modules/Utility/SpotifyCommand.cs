@@ -16,18 +16,18 @@ namespace Volte.Commands.Modules
         [Remarks("spotify [user]")]
         public Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
         {
-            var user = target ?? Context.User;
-            if (user.Activity is SpotifyGame spotify)
+            target ??= Context.User;
+            if (target.Activity is SpotifyGame spotify)
             {
 
                 return Ok(Context.CreateEmbedBuilder()
-                    .WithAuthor(user)
+                    .WithAuthor(target)
                     .WithDescription(new StringBuilder()
-                        .AppendLine("$ **Track:** [{ spotify.TrackTitle}]({ spotify.TrackUrl})")
+                        .AppendLine($"**Track:** [{ spotify.TrackTitle}]({ spotify.TrackUrl})")
                         .AppendLine($"**Album:** {spotify.AlbumTitle}")
                         .AppendLine(
                             $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
-                        .AppendLine($"**Artists:** {spotify.Artists.Join(", ")}")
+                        .AppendLine($"**Artist(s):** {spotify.Artists.Join(", ")}")
                         .ToString())
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
