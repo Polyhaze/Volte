@@ -1,4 +1,4 @@
-<img src="https://cdn.discordapp.com/avatars/320942091049893888/638519700ddfefc30186fc171370f6ad.png" width="150" height="150" />
+<img src="https://repository-images.githubusercontent.com/140997460/ed9bde00-ff5c-11e9-96b2-54dd31d73659https://repository-images.githubusercontent.com/140997460/ed9bde00-ff5c-11e9-96b2-54dd31d73659" width="150" height="150" />
 
 [![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://greemdev.net/Discord)
 [![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
