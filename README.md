@@ -35,12 +35,12 @@ Don't want to do any of these? Using the bot and liking it is enough for me :)
 <table>
     <tr>
         <td align="center" width="50%">
-            <a href="https://www.jetbrains.com/resharper/"><img src="https://pbs.twimg.com/profile_images/674917637646716928/lni0by_I.png" alt="Jetbrains ReSharper" width="150px"></img></a>
+            <a href="https://www.jetbrains.com/resharper/"><img src="https://d3nmt5vlzunoa1.cloudfront.net/dotnet/files/2017/06/logo.png" alt="Jetbrains ReSharper" width="150px"></img></a>
             <p><strong>For providing me with an open-source license for developement of Volte.</strong></p>            
         </td>
         <td align="center" width="50%">
             <a href="https://github.com/abyssal"><img src="https://img.greemdev.net/cpaXCdXden/74743c3b2052a828788a5bd4aeb0fa1e.png" alt="JProfiler" width="150px"></img></a>
-            <p><strong>For letting me <strike>steal your code</strike> use <a href="https://github.com/abyssal/Abyss">Abyss</a> as a reference.</strong></p>
+            <p><strong>For letting me <strike>steal your code</strike> use <a href="https://github.com/abyssal/Zelda">Zelda</a> as a reference.</strong></p>
         </td>
     </tr>
 </table>
