@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Discord;
-using Gommon;
+﻿using System.Threading.Tasks;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class AutoroleService : VolteEventService
+    public sealed class AutoroleService : VolteEventService<UserJoinedEventArgs>
     {
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
@@ -19,8 +16,8 @@ namespace Volte.Services
             _db = databaseService;
         }
 
-        public override Task DoAsync(EventArgs args)
-            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>());
+        public override Task DoAsync(UserJoinedEventArgs args)
+            => ApplyRoleAsync(args);
 
         private async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {

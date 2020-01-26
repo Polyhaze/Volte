@@ -9,7 +9,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class AntilinkService : VolteEventService
+    public sealed class AntilinkService : VolteEventService<MessageReceivedEventArgs>
     {
         private readonly Regex _invitePattern =
             new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
@@ -19,8 +19,8 @@ namespace Volte.Services
         public AntilinkService(LoggingService loggingService)
             => _logger = loggingService;
 
-        public override Task DoAsync(EventArgs args) 
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+        public override Task DoAsync(MessageReceivedEventArgs args) 
+            => CheckMessageAsync(args);
 
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)

@@ -20,7 +20,7 @@ namespace Volte.Services
     {
         private readonly DiscordShardedClient _client;
         private readonly HttpClient _http;
-        private readonly object _lock;
+        private readonly object _lock = new object();
         private const string LogFile = "data/Volte.log";
 
         public LoggingService(DiscordShardedClient discordShardedClient,
@@ -28,7 +28,6 @@ namespace Volte.Services
         {
             _client = discordShardedClient;
             _http = httpClient;
-            _lock = new object();
         }
 
         public override Task DoAsync(EventArgs args)
@@ -44,7 +43,7 @@ namespace Volte.Services
         internal void PrintVersion()
         {
             Info(LogSource.Volte, "--------------------------------------------");
-            foreach (var asciiLine in new Figlet().ToAscii("VOLTE").ConcreteValue.Split("\n")) //i had to look at colorful.console's source for this snippet lol
+            foreach (var asciiLine in new Figlet().ToAscii("Volte").ConcreteValue.Split("\n")) //i had to look at colorful.console's source for this snippet lol
             {
                 Info(LogSource.Volte, asciiLine);
             }

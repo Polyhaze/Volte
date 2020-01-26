@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Volte.Core.Models;
@@ -7,15 +6,15 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class BlacklistService : VolteEventService
+    public sealed class BlacklistService : VolteEventService<MessageReceivedEventArgs>
     {
         private readonly LoggingService _logger;
 
         public BlacklistService(LoggingService loggingService) 
             => _logger = loggingService;
 
-        public override Task DoAsync(EventArgs args) 
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+        public override Task DoAsync(MessageReceivedEventArgs args) 
+            => CheckMessageAsync(args);
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
