@@ -9,7 +9,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class ModLogService : VolteEventService<ModActionEventArgs>
+    public sealed class ModLogService : VolteEventService
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
@@ -21,8 +21,8 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        public override Task DoAsync(ModActionEventArgs args) 
-            => OnModActionCompleteAsync(args);
+        public override Task DoAsync(EventArgs args) 
+            => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>());
 
         private async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Volte.Services
 {
-    public abstract class VolteEventService<T> where T : EventArgs
+    public abstract class VolteEventService
     {
-        public abstract Task DoAsync(T args);
+        public abstract Task DoAsync(EventArgs args);
     }
 }

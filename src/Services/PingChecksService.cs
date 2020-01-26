@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Gommon;
 using Volte.Core.Models;
@@ -5,15 +6,15 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class PingChecksService : VolteEventService<MessageReceivedEventArgs>
+    public sealed class PingChecksService : VolteEventService
     {
         private readonly LoggingService _logger;
 
         public PingChecksService(LoggingService loggingService) 
             => _logger = loggingService;
 
-        public override Task DoAsync(MessageReceivedEventArgs args)
-            => CheckMessageAsync(args);
+        public override Task DoAsync(EventArgs args)
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
