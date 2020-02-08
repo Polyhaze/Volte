@@ -17,6 +17,9 @@
         <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
+      <None Include="..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="Colorful.Console" Version="1.2.10" />
         <PackageReference Include="Discord.Net.WebSocket" Version="2.2.0-dev-20191226.1" />
         <PackageReference Include="Gommon" Version="1.2.0" />

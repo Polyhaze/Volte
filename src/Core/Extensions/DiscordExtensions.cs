@@ -66,19 +66,6 @@ namespace Gommon
             }
         }
 
-        public static async Task<bool> TryDeleteAsync(this SocketMessage message, RequestOptions options = null)
-        {
-            try
-            {
-                await message.DeleteAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
@@ -150,11 +137,11 @@ namespace Gommon
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
 
-        public static bool TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
+        public static async Task<bool> TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
         {
             try
             {
-                deletable.DeleteAsync(options);
+                await deletable.DeleteAsync(options);
                 return true;
             }
             catch

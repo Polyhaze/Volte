@@ -30,26 +30,24 @@ namespace Volte.Services
             if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return;
             foreach (Match match in JumpUrlPattern.Matches(args.Message.Content))
             {
-                if (ulong.TryParse(match.Groups["GuildId"].Value, out _)
-                    && ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId)
-                    && ulong.TryParse(match.Groups["MessageId"].Value, out var messageId))
-                {
-                    var c = _client.GetChannel(channelId);
-                    if (c is ITextChannel channel)
-                    {
-                        var m = await channel.GetMessageAsync(messageId);
-                        if (m is null) return;
-                        await args.Context.CreateEmbedBuilder()
-                            .WithAuthor(m.Author)
-                            .WithDescription(Format.Code(m.Content))
-                            .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
-                            .SendToAsync(args.Context.Channel);
+                if (!ulong.TryParse(match.Groups["GuildId"].Value, out _) ||
+                    !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
+                    !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) continue;
 
-                        if (match.Groups["Prelink"].Value.IsNullOrEmpty() &&
-                            match.Groups["Postlink"].Value.IsNullOrEmpty())
-                            _ = await args.Context.Message.TryDeleteAsync();
-                    }
-                }
+                var c = _client.GetChannel(channelId);
+                if (!(c is ITextChannel channel)) continue;
+
+                var m = await channel.GetMessageAsync(messageId);
+                if (m is null) return;
+                await args.Context.CreateEmbedBuilder()
+                    .WithAuthor(m.Author)
+                    .WithDescription(Format.Code(m.Content))
+                    .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
+                    .SendToAsync(args.Context.Channel);
+
+                if (match.Groups["Prelink"].Value.IsNullOrEmpty() &&
+                    match.Groups["Postlink"].Value.IsNullOrEmpty())
+                    _ = await args.Context.Message.TryDeleteAsync();
             }
         }
     }
