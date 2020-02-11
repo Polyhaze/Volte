@@ -13,6 +13,7 @@ using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Core.Models.Guild;
 using Volte.Commands.Results;
+using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
@@ -24,21 +25,7 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
         {
-            Context.GuildData.Extras.Warns.Add(new Warn
-            {
-                User = user.Id,
-                Reason = reason,
-                Issuer = Context.User.Id,
-                Date = Context.Now
-            });
-            Db.UpdateData(Context.GuildData);
-
-            if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been warned in **{Context.Guild.Name}** for **{reason}**.")))
-            {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!");
-            }
+            await WarnAsync(Context.User, Context.GuildData, user, Db, Logger, reason);
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
                 _ => ModLogService.DoAsync(ModActionEventArgs.New
@@ -91,6 +78,27 @@ namespace Volte.Commands.Modules
                     .WithActionType(ModActionType.ClearWarns)
                     .WithTarget(user))
             );
+        }
+
+        public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member, DatabaseService db, LoggingService logger, string reason)
+        {
+            data.Extras.Warns.Add(new Warn
+            {
+                User = member.Id,
+                Reason = reason,
+                Issuer = issuer.Id,
+                Date = DateTimeOffset.Now
+            });
+            db.UpdateData(data);
+            var embed = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
+                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for **{reason}**.").Build();
+
+            if (!await member.TrySendMessageAsync(
+                embed: embed))
+            {
+                logger.Warn(LogSource.Volte,
+                    $"encountered a 403 when trying to message {member}!");
+            }
         }
     }
 }

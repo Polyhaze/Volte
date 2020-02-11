@@ -3,6 +3,7 @@ using Gommon;
 using Qmmands;
 using Volte.Core.Attributes;
 using Volte.Commands.Results;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Commands.Modules
 {
@@ -46,6 +47,16 @@ namespace Volte.Commands.Modules
             Db.UpdateData(Context.GuildData);
             return Ok(
                 $"Cleared the this guild's blacklist, containing **{count}** words.");
+        }
+
+        [Command("BlacklistAction", "BlA")]
+        [Description("Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
+        [Remarks("blacklistaction {nothing/warn/kick/ban}")]
+        public Task<ActionResult> BlacklistActionAsync(string input)
+        {
+            Context.GuildData.Configuration.Moderation.BlacklistAction = BlacklistActions.DetermineAction(input);
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Set {input} as the action performed when a member uses a blacklisted word/phrase.");
         }
     }
 }

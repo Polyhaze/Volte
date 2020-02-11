@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Discord.WebSocket;
 using Gommon;
@@ -27,11 +28,13 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("blacklist")]
         public List<string> Blacklist { get; set; }
+
+        [JsonPropertyName("blacklist_action")]
+        public BlacklistAction BlacklistAction { get; set; }
     }
 
     public sealed class WelcomeOptions
     {
-
         [JsonPropertyName("welcome_channel")]
         public ulong WelcomeChannel { get; set; }
 
@@ -47,7 +50,7 @@ namespace Volte.Core.Models.Guild
         [JsonPropertyName("welcome_dm_message")]
         public string WelcomeDmMessage { get; set; }
 
-        public string FormatWelcomeMessage(SocketGuildUser user) 
+        public string FormatWelcomeMessage(SocketGuildUser user)
             => WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{UserName}", user.Username)
@@ -57,7 +60,7 @@ namespace Volte.Core.Models.Guild
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
 
-        public string FormatLeavingMessage(SocketGuildUser user) 
+        public string FormatLeavingMessage(SocketGuildUser user)
             => LeavingMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{UserName}", user.Username)
@@ -76,5 +79,26 @@ namespace Volte.Core.Models.Guild
                 .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
+    }
+
+    public static class BlacklistActions
+    {
+        public static BlacklistAction DetermineAction(string input)
+            => input.ToLower() switch
+            {
+                "nothing" => BlacklistAction.Nothing,
+                "warn" => BlacklistAction.Warn,
+                "kick" => BlacklistAction.Kick,
+                "ban" => BlacklistAction.Ban,
+                _ => throw new NotSupportedException($"BlacklistAction {input.ToLower()} is not supported."),
+            };
+    }
+
+    public enum BlacklistAction
+    {
+        Nothing,
+        Warn,
+        Kick,
+        Ban
     }
 }
