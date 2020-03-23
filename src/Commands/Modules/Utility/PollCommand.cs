@@ -23,9 +23,7 @@ namespace Volte.Commands.Modules
                     : "No options specified.");
 
             var embed = Context.CreateEmbedBuilder()
-                .WithDescription(Format.Bold(choices[0]))
-                .WithTitle($"Poll by {Context.User}")
-                .WithThumbnailUrl("http://survation.com/wp-content/uploads/2016/09/polleverywherelogo.png");
+                .WithTitle(Format.Bold(choices[0]));
 
             foreach (var (name, value) in pollInfo.Fields)
             {
