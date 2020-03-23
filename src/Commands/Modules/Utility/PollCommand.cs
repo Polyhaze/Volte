@@ -13,9 +13,9 @@ namespace Volte.Commands.Modules
         [Command("Poll")]
         [Description("Create a poll.")]
         [Remarks("poll question;option1[;option2;option3;option4;option5]")]
-        public Task<ActionResult> PollAsync([Remainder] string pollText)
+        public Task<ActionResult> PollAsync([Remainder] string content)
         {
-            var choices = pollText.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            var choices = content.Split(';', StringSplitOptions.RemoveEmptyEntries);
             var pollInfo = PollHelpers.GetPollBody(choices, EmojiService);
             if (!pollInfo.IsValid)
                 return BadRequest(choices.Length - 1 > 5

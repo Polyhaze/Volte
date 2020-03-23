@@ -16,16 +16,16 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.0.100-preview3-010431'
+        dotnet-version: '3.1.200'
     - name: build the damn thing
       run: bash build.sh
     - name: upload linux binary
       uses: actions/upload-artifact@master
       with:
         name: Volte-Linux
-        path: src/bin/Release/netcoreapp3.0/linux-x64/publish
+        path: src/bin/Release/netcoreapp3.1/linux-x64/publish
     - name: upload windows binary
       uses: actions/upload-artifact@master
       with:
         name: Volte-Windows
-        path: src/bin/Release/netcoreapp3.0/win10-x64/publish
+        path: src/bin/Release/netcoreapp3.1/win10-x64/publish
