@@ -16,12 +16,12 @@ namespace Volte.Commands.Modules
         [Description("Creates a tag with the specified name and response.")]
         [Remarks("tagcreate {name} {response}")]
         [RequireGuildModerator]
-        public Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
+        public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
             {
-                var user = Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
+                var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(
                     $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
             }

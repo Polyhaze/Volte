@@ -5,6 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
+    //ignore this class file's godawful name, i need consistency in my life
     public sealed partial class AdminModule : VolteModule
     {
         [Command("DeleteMessageOnCommand", "Dmoc")]
