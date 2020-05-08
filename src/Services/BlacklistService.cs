@@ -41,21 +41,14 @@ namespace Volte.Services
                 return;
             }
 
-            foreach (var word in args.Data.Configuration.Moderation.Blacklist)
-                if (args.Message.Content.ContainsIgnoreCase(word))
-                {
-                    
-                    await args.Message.TryDeleteAsync();
-                    _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
-
-                    
-
-                    var action = args.Data.Configuration.Moderation.BlacklistAction;
-                    if (action is BlacklistAction.Nothing) return;
-
-                    await PerformBlacklistAction(args.Context, args.Message.Author.Cast<SocketGuildUser>(), action,
-                        word);
-                }
+            foreach (var word in args.Data.Configuration.Moderation.Blacklist.Where(word => args.Message.Content.ContainsIgnoreCase(word)))
+            {
+                await args.Message.TryDeleteAsync();
+                _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
+                var action = args.Data.Configuration.Moderation.BlacklistAction;
+                if (action is BlacklistAction.Nothing) return;
+                await PerformBlacklistAction(args.Context, args.Message.Author.Cast<SocketGuildUser>(), action, word);
+            }
         }
 
         private async Task PerformBlacklistAction(VolteContext ctx, SocketGuildUser member, BlacklistAction action,
@@ -72,6 +65,10 @@ namespace Volte.Services
                 case BlacklistAction.Ban:
                     await member.BanAsync(7, $"Used blacklisted word \"{word}\".");
                     break;
+                case BlacklistAction.Nothing:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
             }
         }
 

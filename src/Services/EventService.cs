@@ -94,10 +94,11 @@ namespace Volte.Services
             _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
             _logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
             _logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");
+            _logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
             _logger.Info(LogSource.Volte, "Connected to:");
-            _logger.Info(LogSource.Volte, $"    {"guild".ToQuantity(guilds)}");
-            _logger.Info(LogSource.Volte, $"    {"user".ToQuantity(users)}");
-            _logger.Info(LogSource.Volte, $"    {"channel".ToQuantity(channels)}");
+            _logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
+            _logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
+            _logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
 
             if (!_shouldStream)
             {

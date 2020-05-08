@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -18,13 +19,25 @@ namespace Volte.Commands.Modules
             tag.Uses += 1;
             Db.UpdateData(Context.GuildData);
 
-            return Ok(tag.FormatContent(Context), async _ =>
+            if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
+            {
+                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null).WithFooter($"Requested by {Context.User}."), async message =>
+                {
+                    if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
+                    {
+                        await Context.Message.TryDeleteAsync();
+                    }
+                });
+            }
+
+            return Ok(tag.FormatContent(Context), async message =>
             {
                 if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                 {
                     await Context.Message.TryDeleteAsync();
                 }
             }, false);
+
         }
 
         [Command("TagStats")]
