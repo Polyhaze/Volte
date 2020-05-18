@@ -1,6 +1,6 @@
-<img src="https://repository-images.githubusercontent.com/140997460/ed9bde00-ff5c-11e9-96b2-54dd31d73659" width="150" height="150" />
+<img src="https://i.greemdev.net/volte_default.png"/>
 
-[![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://greemdev.net/Discord)
+[![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://discord.gg/H8bcFr2)
 [![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
 
 # Volte
