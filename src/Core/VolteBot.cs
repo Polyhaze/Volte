@@ -83,12 +83,12 @@ namespace Volte.Core
             {
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested; shutting down and cleaning up.");
-                await ShutdownAsync(_client, _cts);
+                await ShutdownAsync(_client);
             }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        private async Task ShutdownAsync(DiscordShardedClient client, CancellationTokenSource cts)
+        public static async Task ShutdownAsync(DiscordShardedClient client)
         {
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
@@ -103,16 +103,7 @@ namespace Volte.Core
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();
-            Dispose(cts, client, DatabaseService.Database);
             Environment.Exit(0);
-        }
-
-        private void Dispose(params IDisposable[] disposables)
-        {
-            foreach (var disposable in disposables)
-                disposable.Dispose();
-
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
         }
     }
 }
