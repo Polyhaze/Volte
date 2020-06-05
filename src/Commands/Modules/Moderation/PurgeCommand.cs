@@ -25,10 +25,19 @@ namespace Volte.Commands.Modules
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
             //lets you theoretically use 0 to delete only the invocation message, for testing or something.
             var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync()).ToList();
-            if (!(targetAuthor is null))
-                await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id));
-            else
-                await Context.Channel.DeleteMessagesAsync(messages);
+            try
+            {
+                if (!(targetAuthor is null))
+                    await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id));
+                else
+                    await Context.Channel.DeleteMessagesAsync(messages);
+
+            }
+            catch (ArgumentOutOfRangeException _)
+            {
+                return BadRequest(
+                    $"Messages bulk deleted must be younger than 14 days. (**This is a Discord restriction, not a Volte one.**)");
+            }
 
             //-1 to show that the correct amount of messages were deleted.
             return Ok($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**", m =>
