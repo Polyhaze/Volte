@@ -19,7 +19,6 @@ namespace Gommon
             if (condition)
             {
                 sb.AppendLine(line);
-                return sb;
             }
             return sb;
         }
@@ -35,7 +34,6 @@ namespace Gommon
             if (condition)
             {
                 sb.Append(text);
-                return sb;
             }
             return sb;
         }

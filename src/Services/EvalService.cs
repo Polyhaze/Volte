@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -18,6 +19,8 @@ namespace Volte.Services
 {
     public sealed class EvalService : VolteService
     {
+        private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
         private readonly CommandService _commands;
@@ -38,10 +41,9 @@ namespace Volte.Services
         {
             try
             {
-                if (code.StartsWithIgnoreCase("```cs") && code.EndsWith("```"))
+                if (Pattern.IsMatch(code))
                 {
-                    code = code.Substring(5);
-                    code = code.Remove(code.LastIndexOf("```", StringComparison.OrdinalIgnoreCase), 3);
+                    code = Pattern.Match(code).Groups[1].Value;
                 }
 
                 await ExecuteScriptAsync(code, ctx);
