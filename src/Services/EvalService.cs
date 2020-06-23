@@ -41,9 +41,10 @@ namespace Volte.Services
         {
             try
             {
-                if (Pattern.IsMatch(code))
+                var match = Pattern.Match(code);
+                if (match.Success)
                 {
-                    code = Pattern.Match(code).Groups[1].Value;
+                    code = match.Groups[1].Value;
                 }
 
                 await ExecuteScriptAsync(code, ctx);
