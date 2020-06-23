@@ -17,6 +17,7 @@ namespace Volte.Commands.Modules
         [Remarks("wiki [page]")]
         public Task<ActionResult> WikiAsync([Remainder] string page = null)
         {
+            var embed = Context.CreateEmbedBuilder(string.Empty).WithThumbnailUrl("https://i.greemdev.net/volte_whitepinkyellow.png");
             var pages = new Dictionary<string, string>
             { 
                 { "Home", _baseWikiUrl },
@@ -30,12 +31,12 @@ namespace Volte.Commands.Modules
 
             if (page is null)
             {
-                return Ok(FormatPages());
+                return Ok(embed.WithDescription(FormatPages()));
             }
 
-            return Ok(pages.ContainsKey(page) 
-                ? $"[{pages.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(page))}]({pages.FirstOrDefault(x => x.Key.EqualsIgnoreCase(page)).Value})" 
-                : $"{page} wasn't found. Here's a list of valid wiki pages: {FormatPages()}");
+            return Ok(embed.WithDescription(pages.ContainsKey(page)
+                ? $"[{pages.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(page))}]({pages.FirstOrDefault(x => x.Key.EqualsIgnoreCase(page)).Value})"
+                : $"{page} wasn't found. Here's a list of valid wiki pages: {FormatPages()}"));
 
 
             string FormatPages()
