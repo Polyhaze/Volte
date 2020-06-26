@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Diagnostics;
+using System.Text;
+using Humanizer;
 
 namespace Gommon
 {
@@ -37,5 +40,14 @@ namespace Gommon
             }
             return sb;
         }
+        
+        public static string ReplaceIgnoreCase(this string str, string toReplace, object replacement)
+            => str.Replace(toReplace, replacement.ToString(), StringComparison.OrdinalIgnoreCase);
+        
+        public static string GetUptime(this Process process)
+            => (DateTime.Now - process.StartTime).Humanize(3);
+        
+        public static string SanitizeParserName(this Type type)
+            => type.Name.Replace("Parser", string.Empty);
     }
 }

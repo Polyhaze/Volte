@@ -33,8 +33,10 @@ namespace Gommon
             {
                 var attr = parserType.GetCustomAttribute<VolteTypeParserAttribute>();
                 var parser = parserType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
-                var method = addTypeParserMethod?.MakeGenericMethod(parserType.BaseType?.GenericTypeArguments[0]);
-                method?.Invoke(service, new[] {parser, attr.OverridePrimitive});
+                var method = addTypeParserMethod?.MakeGenericMethod(
+                    parserType.BaseType?.GenericTypeArguments[0] 
+                    ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
+                method?.Invoke(service, new[] {parser, attr?.OverridePrimitive});
                 loadedTypes.Add(parserType);
             }
 
