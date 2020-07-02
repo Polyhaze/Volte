@@ -4,7 +4,7 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {

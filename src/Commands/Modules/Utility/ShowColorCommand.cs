@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 using System.Text;
 
 namespace Volte.Commands.Modules

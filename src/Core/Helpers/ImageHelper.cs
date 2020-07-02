@@ -3,7 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace Volte.Helpers
+namespace Volte.Core.Helpers
 {
     public static class ImageHelper
     {

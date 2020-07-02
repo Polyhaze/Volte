@@ -86,9 +86,9 @@ namespace Gommon
             provider.Get<LoggingService>(out var logger);
             return Executor.ExecuteAsync(() =>
             {
-                client.Log += m => logger.DoAsync(new LogEventArgs(m));
-                client.JoinedGuild += g => guild.OnJoinAsync(new JoinedGuildEventArgs(g));
-                client.LeftGuild += g => guild.OnLeaveAsync(new LeftGuildEventArgs(g));
+                client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
+                client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
+                client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
                 
                 client.UserJoined += async user =>
                 {
@@ -103,7 +103,7 @@ namespace Gommon
                         await welcome.LeaveAsync(new UserLeftEventArgs(user));
                 };
                 
-                client.ShardReady += c => evt.OnShardReady(new ShardReadyEventArgs(c, client));
+                client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
                 client.MessageReceived += async s =>
                 {
                     if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;

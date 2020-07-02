@@ -84,7 +84,7 @@ namespace Volte.Services
             await _quoteService.DoAsync(args);
         }
 
-        public async Task OnShardReady(ShardReadyEventArgs args)
+        public async Task OnShardReadyAsync(ShardReadyEventArgs args)
         {
             var guilds = args.Shard.Guilds.Count;
             var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();

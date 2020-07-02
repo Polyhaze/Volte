@@ -5,7 +5,7 @@ using Volte.Core;
 using Volte.Core.Models.Misc;
 using Volte.Services;
 
-namespace Volte.Helpers
+namespace Volte.Core.Helpers
 {
     public static class PollHelpers
     {

@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
-using Volte.Helpers;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
