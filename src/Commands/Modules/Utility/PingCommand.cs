@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
                 await msg.ModifyAsync(x =>
                 {
                     e.WithDescription(new StringBuilder()
-                        .AppendLine($"{EmojiService.Clap} **Gateway**: {Context.Client.Latency}ms")
+                        .AppendLine($"{EmojiService.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
                         .AppendLine($"{EmojiService.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
                         .ToString());
                     x.Embed = e.Build();

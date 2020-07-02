@@ -84,25 +84,27 @@ namespace Volte.Services
             try
             {
                 var sw = Stopwatch.StartNew();
-                var result = await CSharpScript.EvaluateAsync(code, sopts, CreateEvalEnvironment(ctx));
+                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
                 sw.Stop();
-                if (result is null)
+                if (state.ReturnValue is null)
                 {
                     await msg.DeleteAsync();
                     await ctx.ReactSuccessAsync();
                 }
                 else
                 {
-                    var res = result switch
-                        {
+                    var res = state.ReturnValue switch
+                    {
                         string str => str,
                         IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
-                        _ => result.ToString()
+                        IUser user => $"{user} ({user.Id})",
+                        ITextChannel channel => $"#{channel.Name} ({channel.Id})",
+                        _ => state.ReturnValue.ToString()
                         };
                     await msg.ModifyAsync(m =>
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                            .AddField("Return Type", result.GetType(), true)
+                            .AddField("Return Type", state.ReturnValue.GetType(), true)
                             .WithDescription(Format.Code(res, "ini")).Build());
                 }
             }

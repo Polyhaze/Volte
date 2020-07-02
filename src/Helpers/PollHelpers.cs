@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Volte.Core;
 using Volte.Core.Models.Misc;
 using Volte.Services;
 
@@ -8,31 +9,9 @@ namespace Volte.Helpers
 {
     public static class PollHelpers
     {
-        public static PollInfo GetPollBody(string[] choices, EmojiService emojiService)
-            => (choices.Length - 1) switch
-            {
-                1 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1])),
 
-                2 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
-                        ($"{emojiService.Two.ToEmoji()}", choices[2])),
-
-                3 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
-                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
-                        ($"{emojiService.Three.ToEmoji()}", choices[3])),
-
-                4 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
-                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
-                        ($"{emojiService.Three.ToEmoji()}", choices[3]),
-                        ($"{emojiService.Four.ToEmoji()}", choices[4])),
-
-                5 => PollInfo.FromFields(($"{emojiService.One.ToEmoji()}", choices[1]),
-                        ($"{emojiService.Two.ToEmoji()}", choices[2]),
-                        ($"{emojiService.Three.ToEmoji()}", choices[3]),
-                        ($"{emojiService.Four.ToEmoji()}", choices[4]),
-                        ($"{emojiService.Five.ToEmoji()}", choices[5])),
-
-                _ => PollInfo.FromValid(false)
-            };
+        public static PollInfo GetPollBody(string[] choices, EmojiService e)
+            => PollInfo.FromDefaultFields(choices.Length - 1, e, choices);
 
         public static async Task AddPollReactionsAsync(string[] choices, IUserMessage msg, EmojiService emojiService)
         {

@@ -23,9 +23,9 @@ namespace Gommon
 
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
-            var currentAssembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             var addTypeParserMethod = typeof(CommandService).GetMethod("AddTypeParser");
-            var parsers = currentAssembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>());
+            var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>());
 
             var loadedTypes = new List<Type>();
 
@@ -51,7 +51,7 @@ namespace Gommon
         {
             var customParsers = typeof(VolteBot).Assembly.GetTypes()
                 .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
-            return customParsers + (13 - 1); //add the number of primitive TypeParsers (that come with Qmmands), minus bool since we override that one.
+            return customParsers + (12); //add the number of primitive TypeParsers (that come with Qmmands), which is 13, minus bool since we override that one, therefore 12.
         }
     }
 }

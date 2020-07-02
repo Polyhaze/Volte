@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
@@ -149,5 +150,8 @@ namespace Gommon
                 return false;
             }
         }
+
+        public static string GetEffectiveUsername(this SocketGuildUser user) =>
+            user.Nickname ?? user.Username;
     }
 }

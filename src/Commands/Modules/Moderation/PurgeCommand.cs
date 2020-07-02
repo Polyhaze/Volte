@@ -36,7 +36,7 @@ namespace Volte.Commands.Modules
             catch (ArgumentOutOfRangeException _)
             {
                 return BadRequest(
-                    $"Messages bulk deleted must be younger than 14 days. (**This is a Discord restriction, not a Volte one.**)");
+                    "Messages bulk deleted must be younger than 14 days. (**This is a Discord restriction, not a Volte one.**)");
             }
 
             //-1 to show that the correct amount of messages were deleted.
