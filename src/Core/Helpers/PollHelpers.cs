@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Volte.Core;
@@ -10,12 +12,15 @@ namespace Volte.Core.Helpers
     public static class PollHelpers
     {
 
-        public static PollInfo GetPollBody(string[] choices, EmojiService e)
-            => PollInfo.FromDefaultFields(choices.Length - 1, e, choices);
-
-        public static async Task AddPollReactionsAsync(string[] choices, IUserMessage msg, EmojiService emojiService)
+        public static PollInfo GetPollBody(IEnumerable<string> choices, EmojiService e)
         {
-            switch (choices.Length - 1)
+            var c = choices as string[] ?? choices.ToArray();
+            return PollInfo.FromDefaultFields(c.Length - 1, e, c);
+        }
+
+        public static async Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService emojiService)
+        {
+            switch (amount)
             {
                 case 1:
                     await msg.AddReactionAsync(emojiService.One.ToEmoji());

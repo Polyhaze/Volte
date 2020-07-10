@@ -13,17 +13,17 @@ namespace Volte.Commands.Modules
         [Command("Poll")]
         [Description("Create a poll.")]
         [Remarks("poll question;option1[;option2;option3;option4;option5]")]
-        public Task<ActionResult> PollAsync([Remainder] string content)
+        public Task<ActionResult> PollAsync([Remainder] string all)
         {
-            var choices = content.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            var pollInfo = PollHelpers.GetPollBody(choices, EmojiService);
+            var content = all.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            var pollInfo = PollHelpers.GetPollBody(content, EmojiService);
             if (!pollInfo.IsValid)
-                return BadRequest(choices.Length - 1 > 5
+                return BadRequest((content.Length - 1) > 5
                     ? "More than 5 options were specified."
                     : "No options specified.");
 
             var embed = Context.CreateEmbedBuilder()
-                .WithTitle(Format.Bold(choices[0]));
+                .WithTitle(Format.Bold(content[0]));
 
             foreach (var (name, value) in pollInfo.Fields)
             {
@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
             return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
             {
                 _ = await Context.Message.TryDeleteAsync();
-                await PollHelpers.AddPollReactionsAsync(choices, msg, EmojiService);
+                await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg, EmojiService);
             });
         }
     }

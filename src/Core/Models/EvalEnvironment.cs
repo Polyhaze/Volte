@@ -176,7 +176,7 @@ namespace Volte.Core.Models
 
                     FieldInfo finfo => finfo.GetValue(obj),
 
-                    _ => throw new ArgumentException($"{nameof(prop)} must be PropertyInfo or FieldInfo", nameof(prop)),
+                    _ => throw new ArgumentException($"{nameof(prop)} must be PropertyInfo or FieldInfo. Any other type cannot be read.", nameof(prop)),
                     };
 
                 if (value is null) return "Null";
@@ -191,7 +191,7 @@ namespace Volte.Core.Models
             }
             catch (Exception e)
             {
-                return $"[[{e.GetType().FullName} thrown]]";
+                return $"[[{e.GetType().Name} thrown, message: \"{e.Message}\"]]";
             }
         }
         
