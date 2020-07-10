@@ -8,13 +8,12 @@ namespace Volte.Core.Attributes
 {
     public sealed class RequireGuildModeratorAttribute : CheckAttribute
     {
-        public override async ValueTask<CheckResult> CheckAsync(CommandContext context, IServiceProvider provider)
+        public override ValueTask<CheckResult> CheckAsync(CommandContext context, IServiceProvider provider)
         {
             var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsModerator(provider)) return CheckResult.Successful;
-
-            await ctx.ReactFailureAsync();
-            return CheckResult.Unsuccessful(string.Empty);
+            
+            return CheckResult.Unsuccessful("Insufficient permission.");
         }
     }
 }

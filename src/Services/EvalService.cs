@@ -41,8 +41,7 @@ namespace Volte.Services
         {
             try
             {
-                var match = Pattern.Match(code);
-                if (match.Success)
+                if (Pattern.IsMatch(code, out var match))
                 {
                     code = match.Groups[1].Value;
                 }
@@ -62,62 +61,71 @@ namespace Volte.Services
         }
 
         private EvalEnvironment CreateEvalEnvironment(VolteContext ctx)
-            => new EvalEnvironment
+        {
+            var e = new EvalEnvironment
             {
                 Context = ctx,
                 Client = ctx.Client.GetShardFor(ctx.Guild),
                 Data = _db.GetData(ctx.Guild),
                 Logger = _logger,
-                CommandService = _commands,
-                DatabaseService = _db,
-                EmojiService = _emoji
+                Commands = _commands,
+                Database = _db,
+                Emoji = _emoji
             };
+            e.Environment = e;
+            return e;
+        }
 
         private async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
+            ctx.ServiceProvider.Get<EmojiService>(out var e);
             var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = ctx.CreateEmbedBuilder();
             var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs")).SendToAsync(ctx.Channel);
-            try
+            _ = Executor.ExecuteAsync(async () =>
             {
-                var sw = Stopwatch.StartNew();
-                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
-                sw.Stop();
-                if (state.ReturnValue is null)
+                try
                 {
-                    await msg.DeleteAsync();
-                    await ctx.ReactSuccessAsync();
-                }
-                else
-                {
-                    var res = state.ReturnValue switch
+                    var sw = Stopwatch.StartNew();
+                    var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
+                    sw.Stop();
+                    if (state.ReturnValue is null)
                     {
-                        string str => str,
-                        IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
-                        IUser user => $"{user} ({user.Id})",
-                        ITextChannel channel => $"#{channel.Name} ({channel.Id})",
-                        _ => state.ReturnValue.ToString()
+                        await msg.DeleteAsync();
+                        await ctx.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
+                    }
+                    else
+                    {
+                        var res = state.ReturnValue switch
+                        {
+                            string str => str,
+                            IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
+                            IUser user => $"{user} ({user.Id})",
+                            ITextChannel channel => $"#{channel.Name} ({channel.Id})",
+                            _ => state.ReturnValue.ToString()
                         };
-                    await msg.ModifyAsync(m =>
-                        m.Embed = embed.WithTitle("Eval")
-                            .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                            .AddField("Return Type", state.ReturnValue.GetType(), true)
-                            .WithDescription(Format.Code(res, "ini")).Build());
+                        await msg.ModifyAsync(m =>
+                            m.Embed = embed.WithTitle("Eval")
+                                .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                                .AddField("Return Type", state.ReturnValue.GetType(), true)
+                                .WithDescription(Format.Code(res, "ini")).Build());
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                await msg.ModifyAsync(m =>
-                    m.Embed = embed
-                        .AddField("Exception Type", e.GetType(), true)
-                        .AddField("Message", e.Message, true)
-                        .WithTitle("Error")
-                        .Build()
-                );
-            }
+                catch (Exception ex)
+                {
+                    await msg.ModifyAsync(m =>
+                        m.Embed = embed
+                            .AddField("Exception Type", e.GetType(), true)
+                            .AddField("Message", ex.Message, true)
+                            .WithTitle("Error")
+                            .Build()
+                    );
+                }
+            });
+            
         }
 
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(new List<string>

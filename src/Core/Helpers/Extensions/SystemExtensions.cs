@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using Humanizer;
 
 namespace Gommon
@@ -49,5 +50,12 @@ namespace Gommon
         
         public static string SanitizeParserName(this Type type)
             => type.Name.Replace("Parser", string.Empty);
+
+        public static bool IsMatch(this Regex regex, string str, out Match match)
+        {
+            var intMatch = regex.Match(str);
+            match = intMatch;
+            return intMatch.Success;
+        }
     }
 }

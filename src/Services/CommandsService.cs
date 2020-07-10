@@ -93,7 +93,7 @@ namespace Volte.Services
             if (args.Result is ExecutionFailedResult e)
                 _logger.Exception(e.Exception);
 
-            if (!(args.Result is ChecksFailedResult) && !reason.IsNullOrEmpty())
+            if (!reason.IsNullOrEmpty())
             {
                 await args.Context.CreateEmbedBuilder()
                     .AddField("Error in Command", args.Context.Command.Name)

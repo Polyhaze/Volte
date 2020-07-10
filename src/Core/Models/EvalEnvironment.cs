@@ -11,6 +11,7 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Core.Models.Guild;
 using Volte.Services;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Volte.Core.Models
 {
@@ -23,9 +24,10 @@ namespace Volte.Core.Models
         public DiscordSocketClient Client { get; set; }
         public GuildData Data { get; set; }
         public LoggingService Logger { get; set; }
-        public CommandService CommandService { get; set; }
-        public DatabaseService DatabaseService { get; set; }
-        public EmojiService EmojiService { get; set; }
+        public CommandService Commands { get; set; }
+        public DatabaseService Database { get; set; }
+        public EmojiService Emoji { get; set; }
+        public EvalEnvironment Environment { get; set; }
 
         public SocketGuildUser User(ulong id) 
             => Context.Guild.GetUser(id);
@@ -35,7 +37,7 @@ namespace Volte.Core.Models
 
         public SocketTextChannel TextChannel(ulong id)
             => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
-
+        
         public SocketUserMessage Message(ulong id)
             => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
 
@@ -193,12 +195,10 @@ namespace Volte.Core.Models
             }
         }
         
-#if DEBUG
         public void Throw()
         {
             throw new Exception("Test exception.");
         }
-#endif
 
     }
 }
