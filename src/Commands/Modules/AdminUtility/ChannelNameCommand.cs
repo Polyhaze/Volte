@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ChannelName", "Cn")]
         [Description("Sets the name of the current channel.")]
-        [Remarks("channelname {name}")]
+        [Remarks("channelname {String}")]
         [RequireBotChannelPermission(ChannelPermission.ManageChannels)]
         [RequireGuildAdmin]
         public async Task<ActionResult> ChannelNameAsync([Remainder] string name)

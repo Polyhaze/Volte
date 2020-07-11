@@ -14,8 +14,8 @@ namespace Volte.Commands.Modules
         public HttpClient Http { get; set; }
 
         [Command("SetAvatar")]
-        [Description("Sets the bot's avatar.")]
-        [Remarks("setavatar {url}")]
+        [Description("Sets the bot's avatar via the given url")]
+        [Remarks("setavatar {String}")]
         [RequireBotOwner]
         public async Task<ActionResult> SetAvatarAsync(string url)
         {

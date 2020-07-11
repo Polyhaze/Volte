@@ -47,12 +47,12 @@ namespace Volte.Commands.Modules
 
             if (module is null && command != null)
             {
-                return Ok(new StringBuilder()
+                return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
                     .AppendLine($"**Command**: {command.Name}")
                     .AppendLine($"**Module**: {command.Module.SanitizeName()}")
                     .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
-                    .AppendLine($"**Usage**: {command.GetUsage(Context)}")
-                    .ToString());
+                    .AppendLine($"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet): {command.GetUsage(Context)}")
+                    .ToString()));
             }
 
             if (module != null && command != null)

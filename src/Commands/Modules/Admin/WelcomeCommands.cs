@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeChannel", "Wc")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
-        [Remarks("welcomechannel {#channel}")]
+        [Remarks("welcomechannel {Channel}")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules
         [Command("WelcomeMessage", "Wmsg")]
         [Description(
             "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
-        [Remarks("welcomemessage [message]")]
+        [Remarks("welcomemessage [String]")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
@@ -59,7 +59,7 @@ namespace Volte.Commands.Modules
 
         [Command("WelcomeColor", "WelcomeColour", "Wcl")]
         [Description("Sets the color used for welcome embeds for this guild.")]
-        [Remarks("welcomecolor {color}")]
+        [Remarks("welcomecolor {Color}")]
         [RequireGuildAdmin]
         public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
         {
@@ -70,7 +70,7 @@ namespace Volte.Commands.Modules
 
         [Command("LeavingMessage", "Lmsg")]
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
-        [Remarks("leavingmessage [message]")]
+        [Remarks("leavingmessage [String]")]
         [RequireGuildAdmin]
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {

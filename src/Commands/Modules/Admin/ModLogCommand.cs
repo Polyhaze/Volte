@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ModLog")]
         [Description("Sets the channel to be used for mod log.")]
-        [Remarks("modlog {channel}")]
+        [Remarks("modlog {Channel}")]
         [RequireGuildAdmin]
         public Task<ActionResult> ModLogAsync(SocketTextChannel c)
         {

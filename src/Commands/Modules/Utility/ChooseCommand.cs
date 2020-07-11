@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Choose")]
         [Description("Choose an item from a list separated by |.")]
-        [Remarks("choose {option1|option2|option3|...}")]
+        [Remarks("choose {String}")]
         public Task<ActionResult> ChooseAsync([Remainder]string options) 
             => Ok($"I choose `{options.Split('|', StringSplitOptions.RemoveEmptyEntries).Random()}`.");
     }

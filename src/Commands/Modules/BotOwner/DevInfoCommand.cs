@@ -31,10 +31,10 @@ namespace Volte.Commands.Modules
                     .AppendLine($"Processor Count: {Environment.ProcessorCount}")
                     .AppendLine($"Is 64-bit OS: {Environment.Is64BitOperatingSystem}")
                     .AppendLine($"Is 64-bit Process: {Environment.Is64BitProcess}")
-                    .AppendLine($"Current Thread ID: {Environment.CurrentManagedThreadId}")
-                    .AppendLine($"System Name: {Environment.MachineName}")
+                    .AppendLine($"Current Managed Thread ID: {Environment.CurrentManagedThreadId}")
+                    .AppendLine($"Machine Name: {Environment.MachineName}")
                     .AppendLine($".NET Core Version: {Environment.Version}")
-                    .AppendLine($"Culture: {CultureInfo.InstalledUICulture.EnglishName}")
+                    .AppendLine($"UICulture: {CultureInfo.InstalledUICulture.EnglishName}")
                     .AppendLine($"System Directory: {Environment.SystemDirectory}")
                     .ToString(), "json"));
 

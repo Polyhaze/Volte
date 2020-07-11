@@ -21,7 +21,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Warn", "W")]
         [Description("Warns the target user for the given reason.")]
-        [Remarks("warn {user} {reason}")]
+        [Remarks("warn {User} {String}")]
         [RequireGuildModerator]
         public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
         {
@@ -38,7 +38,7 @@ namespace Volte.Commands.Modules
 
         [Command("Warns", "Ws")]
         [Description("Shows all the warns for the given user.")]
-        [Remarks("warns {user}")]
+        [Remarks("warns {User}")]
         [RequireGuildModerator]
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
@@ -53,7 +53,7 @@ namespace Volte.Commands.Modules
 
         [Command("ClearWarns", "Cw")]
         [Description("Clears the warnings for the given user.")]
-        [Remarks("clearwarns {user}")]
+        [Remarks("clearwarns {User}")]
         [RequireGuildModerator]
         public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {

@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("PingChecks")]
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
-        [Remarks("pingchecks {true|false}")]
+        [Remarks("pingchecks {Boolean}")]
         [RequireGuildAdmin]
         public Task<ActionResult> PingChecksAsync(bool enabled)
         {

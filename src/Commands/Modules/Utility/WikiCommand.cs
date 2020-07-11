@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
 
         [Command("Wiki", "VolteWiki")]
         [Description("List all wiki pages or get a specific one in this one command.")]
-        [Remarks("wiki [page]")]
+        [Remarks("wiki [String]")]
         public Task<ActionResult> WikiAsync([Remainder] string page = null)
         {
             var embed = Context.CreateEmbedBuilder(string.Empty).WithThumbnailUrl("https://i.greemdev.net/volte_whitepinkyellow.png");
@@ -24,6 +24,7 @@ namespace Volte.Commands.Modules
                 { "Features", $"{_baseWikiUrl}/Features"},
                 { "Contributing", $"{_baseWikiUrl}/Contributing"},
                 { "Setting Volte Up", $"{_baseWikiUrl}/Setting-Volte-Up"},
+                {"Argument Cheatsheet", $"{_baseWikiUrl}/Argument-Cheatsheet"},
                 { "Developers:Selfhost:Windows", $"{_baseWikiUrl}/Windows"},
                 { "Developers:Selfhost:Linux", $"{_baseWikiUrl}/Linux"},
                 { "Developers:Dependency Injection", $"{_baseWikiUrl}/Dependency-Injection"}

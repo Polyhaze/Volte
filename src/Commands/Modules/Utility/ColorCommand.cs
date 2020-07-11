@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current guild.")]
-        [Remarks("color {role}")]
+        [Remarks("color {Role}")]
         public async Task<ActionResult> RoleColorAsync([Remainder] SocketRole role)
         {
             if (role.Color.RawValue is 0) return BadRequest("Role does not have a color.");

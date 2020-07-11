@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("Tag")]
         [Priority(0)]
         [Description("Gets a tag's contents if it exists.")]
-        [Remarks("tag {name}")]
+        [Remarks("tag {Tag}")]
         public Task<ActionResult> TagAsync([Remainder] Tag tag)
         {
             tag.Uses += 1;
@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
         [Command("TagStats")]
         [Priority(1)]
         [Description("Shows stats for a tag.")]
-        [Remarks("tagstats {name}")]
+        [Remarks("tagstats {Tag}")]
         public async Task<ActionResult> TagStatsAsync([Remainder] Tag tag)
         {
             var u = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);

@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("BlacklistAdd", "BlAdd")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
-        [Remarks("blacklistadd {phrase}")]
+        [Remarks("blacklistadd {String}")]
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
 
         [Command("BlacklistRemove", "BlRem")]
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
-        [Remarks("blacklistremove {phrase}")]
+        [Remarks("blacklistremove {String}")]
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {

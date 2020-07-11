@@ -9,8 +9,8 @@ namespace Volte.Commands.Modules
     public sealed partial class BotOwnerModule : VolteModule
     {
         [Command("SetStream")]
-        [Description("Sets the bot's stream.")]
-        [Remarks("setstream {streamer} {streamName}")]
+        [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]
+        [Remarks("setstream {String} {String}")]
         [RequireBotOwner]
         public Task<ActionResult> SetStreamAsync(string streamer, [Remainder] string streamName)
             => Ok(

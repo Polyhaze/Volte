@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]
-        [Remarks("remrole {@user} {roleName}")]
+        [Remarks("remrole {User} {Role}")]
         [RequireGuildAdmin]
         public async Task<ActionResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {

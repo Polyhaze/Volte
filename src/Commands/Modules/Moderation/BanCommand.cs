@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("ban {@user} [reason]")]
+        [Remarks("ban {User} [String]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user,

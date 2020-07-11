@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("AdminRole")]
         [Description("Sets the role able to use Admin commands for the current guild.")]
-        [Remarks("adminrole {role}")]
+        [Remarks("adminrole {Role}")]
         [RequireGuildAdmin]
         public Task<ActionResult> AdminRoleAsync([Remainder] SocketRole role)
         {

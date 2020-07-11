@@ -16,7 +16,7 @@ namespace Volte.Core
         public const string ConfigFilePath = DataDirectory + "/volte.json";
         private static BotConfig _configuration;
 
-        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = true
@@ -46,7 +46,7 @@ namespace Volte.Core
             try
             {
                 File.WriteAllText(ConfigFilePath,
-                    JsonSerializer.Serialize(_configuration, _jsonOptions));
+                    JsonSerializer.Serialize(_configuration, JsonOptions));
             }
             catch (Exception e)
             {
@@ -60,7 +60,7 @@ namespace Volte.Core
         {
             _ = CreateIfNonexistent();
             if (IsValidConfig)
-                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), _jsonOptions);                    
+                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }
 
         public static bool Reload(IServiceProvider provider)

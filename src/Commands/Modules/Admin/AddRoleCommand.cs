@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("AddRole", "Ar")]
         [Description("Grants a role to the mentioned user.")]
-        [Remarks("addrole {@user} {roleName}")]
+        [Remarks("addrole {User} {Role}")]
         [RequireGuildAdmin, RequireBotGuildPermission(GuildPermission.ManageRoles)]
         public async Task<ActionResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {

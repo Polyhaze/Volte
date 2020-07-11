@@ -53,10 +53,10 @@ namespace Volte.Commands.Modules
                     $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
         }
 
-        [Command("ServerInfo", "Si", "GuildInfo", "Gi")]
+        [Command("GuildInfo", "Gi")]
         [Description("Shows some info about the current guild.")]
-        [Remarks("serverinfo")]
-        public Task<ActionResult> ServerInfoAsync()
+        [Remarks("guildinfo")]
+        public Task<ActionResult> GuildInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;
 

@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ShowColor", "Sc")]
         [Description("Shows an image purely made up of the specified color.")]
-        [Remarks("showcolor")]
+        [Remarks("showcolor {Color}")]
         public Task<ActionResult> ShowColorAsync([Remainder]Color color)
             => Ok(async () =>
             {

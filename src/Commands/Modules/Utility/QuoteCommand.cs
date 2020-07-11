@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]
-        [Remarks("quote {messageId}")]
+        [Remarks("quote {Ulong}")]
         public async Task<ActionResult> QuoteAsync(ulong messageId)
         {
             var m = await Context.Channel.GetMessageAsync(messageId);

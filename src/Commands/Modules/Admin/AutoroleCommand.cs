@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Autorole")]
         [Description("Sets the role to be used for Autorole.")]
-        [Remarks("autorole {roleName}")]
+        [Remarks("autorole {Role}")]
         [RequireGuildAdmin]
         public Task<ActionResult> AutoroleAsync([Remainder] SocketRole role)
         {

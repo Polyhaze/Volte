@@ -10,13 +10,13 @@ namespace Volte.Commands.Modules
     {
         [Command("Say")]
         [Description("Bot repeats what you tell it to.")]
-        [Remarks("say {msg}")]
+        [Remarks("say {String}")]
         public Task<ActionResult> SayAsync([Remainder] string msg) 
             => Ok(msg, _ => Context.Message.DeleteAsync());
 
         [Command("SilentSay", "Ssay")]
         [Description("Runs the say command normally, but doesn't show the author in the message.")]
-        [Remarks("silentsay {msg}")]
+        [Remarks("silentsay {String}")]
         public Task<ActionResult> SilentSayAsync([Remainder] string msg) 
             => Ok(new EmbedBuilder()
                 .WithColor(Config.SuccessColor)

@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("IdBan")]
         [Description("Bans a user based on their ID.")]
-        [Remarks("idban {id} [reason]")]
+        [Remarks("idban {Ulong} [String]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         [RequireGuildModerator]
         public async Task<ActionResult> IdBanAsync(ulong user,

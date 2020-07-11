@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SelfRoleAdd", "SrA", "SrAdd")]
         [Description("Adds a role to the list of self roles for this guild.")]
-        [Remarks("selfroleadd {role}")]
+        [Remarks("selfroleadd {Role}")]
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleAddAsync([Remainder] SocketRole role)
         {
@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
 
         [Command("SelfRoleRemove", "SrR", "SrRem")]
         [Description("Removes a role from the list of self roles for this guild.")]
-        [Remarks("selfrole remove {role}")]
+        [Remarks("selfroleremove {Role}")]
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
