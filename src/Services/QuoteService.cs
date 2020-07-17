@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -39,11 +40,32 @@ namespace Volte.Services
 
                 var m = await channel.GetMessageAsync(messageId);
                 if (m is null) return;
-                await args.Context.CreateEmbedBuilder()
-                    .WithAuthor(m.Author)
-                    .WithDescription(Format.Code(m.Content))
-                    .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
-                    .SendToAsync(args.Context.Channel);
+                if (m.Content == string.Empty && m.Attachments.Count != 0)
+                {
+                    await args.Context.CreateEmbedBuilder()
+                        .WithAuthor(m.Author)
+                        .WithImageUrl(m.Attachments.First().Url)
+                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
+                        .SendToAsync(args.Context.Channel);
+                }
+                else if (m.Content != string.Empty && m.Attachments.Count == 0)
+                {
+                    await args.Context.CreateEmbedBuilder()
+                        .WithAuthor(m.Author)
+                        .WithDescription(Format.Code(m.Content))
+                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
+                        .SendToAsync(args.Context.Channel);
+                }
+                else if (m.Content != string.Empty && m.Attachments.Count != 0)
+                {
+                    await args.Context.CreateEmbedBuilder()
+                        .WithAuthor(m.Author)
+                        .WithImageUrl(m.Attachments.First().Url)
+                        .WithDescription(Format.Code(m.Content))
+                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
+                        .SendToAsync(args.Context.Channel);
+                }
+                
 
                 if (match.Groups["Prelink"].Value.IsNullOrEmpty() &&
                     match.Groups["Postlink"].Value.IsNullOrEmpty())

@@ -18,7 +18,11 @@ namespace Volte.Core
     public class VolteBot
     {
         public static Task StartAsync()
-            => new VolteBot().LoginAsync();
+        {
+            Console.Title = "Volte";
+            Console.CursorVisible = false;
+            return new VolteBot().LoginAsync();
+        }
 
         private IServiceProvider _provider;
         private DiscordShardedClient _client;
@@ -34,23 +38,7 @@ namespace Volte.Core
 
         private async Task LoginAsync()
         {
-            
-            Console.Title = "Volte";
-            Console.CursorVisible = false;
-
-            if (!Directory.Exists(Config.DataDirectory))
-            {
-                Console.WriteLine($"The \"{Config.DataDirectory}\" directory didn't exist, so I created it for you.", Color.Red);
-                Directory.CreateDirectory(Config.DataDirectory);
-                //99.9999999999% of the time the config also won't exist if this block is reached
-                //if the config does exist when this block is reached, feel free to become the lead developer of this project
-            }
-
-            if (!Config.CreateIfNonexistent())
-            {
-                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
-                return;
-            }
+            if (!Config.StartupChecks()) return; 
 
             Config.Load();
 

@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule : VolteModule
     {
-        [Command("BigEmoji", "HugeEmoji")]
+        [Command("BigEmoji", "HugeEmoji", "BigEmote", "HugeEmote")]
         [Description("Shows the image URL for a given emoji.")]
         [Remarks("bigemoji {Emote}")]
         public Task<ActionResult> BigEmojiAsync(IEmote emoteIn)

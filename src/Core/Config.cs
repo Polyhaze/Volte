@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,7 +25,26 @@ namespace Volte.Core
         private static readonly bool IsValidConfig =
             File.Exists(ConfigFilePath) && !File.ReadAllText(ConfigFilePath).IsNullOrEmpty();
 
-        public static bool CreateIfNonexistent()
+        public static bool StartupChecks()
+        {
+            if (!Directory.Exists(DataDirectory))
+            {
+                Console.WriteLine($"The \"{DataDirectory}\" directory didn't exist, so I created it for you. Please fill in the configuration!", Color.Red);
+                Directory.CreateDirectory(DataDirectory);
+                //99.9999999999% of the time the config also won't exist if this block is reached
+                //if the config does exist when this block is reached, feel free to become the lead developer of this project
+            }
+            
+            if (!CreateIfAbsent())
+            {
+                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
+                return false;
+            }
+
+            return true;
+        }
+        
+        public static bool CreateIfAbsent()
         {
             if (IsValidConfig) return true;
             _configuration = new BotConfig
@@ -58,7 +77,7 @@ namespace Volte.Core
 
         public static void Load()
         {
-            _ = CreateIfNonexistent();
+            _ = CreateIfAbsent();
             if (IsValidConfig)
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }

@@ -18,7 +18,10 @@ namespace Volte.Core.Models
     public sealed class EvalEnvironment
     {
 
-        internal EvalEnvironment() { }
+        internal EvalEnvironment()
+        {
+            Environment = this;
+        }
 
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }

@@ -21,6 +21,7 @@ namespace Volte.Services
     {
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
         private readonly CommandService _commands;
@@ -37,7 +38,7 @@ namespace Volte.Services
             _emoji = emojiService;
         }
 
-        public async Task EvaluateAsync(VolteContext ctx, string code)
+        public Task EvaluateAsync(VolteContext ctx, string code)
         {
             try
             {
@@ -46,8 +47,7 @@ namespace Volte.Services
                     code = match.Groups[1].Value;
                 }
 
-                await ExecuteScriptAsync(code, ctx);
-
+                return ExecuteScriptAsync(code, ctx);
             }
             catch (Exception e)
             {
@@ -58,11 +58,12 @@ namespace Volte.Services
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
                 GC.WaitForPendingFinalizers();
             }
+
+            return null;
         }
 
-        private EvalEnvironment CreateEvalEnvironment(VolteContext ctx)
-        {
-            var e = new EvalEnvironment
+        private EvalEnvironment CreateEvalEnvironment(VolteContext ctx) =>
+            new EvalEnvironment
             {
                 Context = ctx,
                 Client = ctx.Client.GetShardFor(ctx.Guild),
@@ -72,9 +73,6 @@ namespace Volte.Services
                 Database = _db,
                 Emoji = _emoji
             };
-            e.Environment = e;
-            return e;
-        }
 
         private async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
@@ -84,56 +82,54 @@ namespace Volte.Services
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = ctx.CreateEmbedBuilder();
-            var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs")).SendToAsync(ctx.Channel);
-            _ = Executor.ExecuteAsync(async () =>
+            var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
+                .SendToAsync(ctx.Channel);
+            try
             {
-                try
+                var sw = Stopwatch.StartNew();
+                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
+                sw.Stop();
+                if (state.ReturnValue is null)
                 {
-                    var sw = Stopwatch.StartNew();
-                    var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
-                    sw.Stop();
-                    if (state.ReturnValue is null)
-                    {
-                        await msg.DeleteAsync();
-                        await ctx.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
-                    }
-                    else
-                    {
-                        var res = state.ReturnValue switch
-                        {
-                            string str => str,
-                            IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
-                            IUser user => $"{user} ({user.Id})",
-                            ITextChannel channel => $"#{channel.Name} ({channel.Id})",
-                            _ => state.ReturnValue.ToString()
-                        };
-                        await msg.ModifyAsync(m =>
-                            m.Embed = embed.WithTitle("Eval")
-                                .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                                .AddField("Return Type", state.ReturnValue.GetType(), true)
-                                .WithDescription(Format.Code(res, "ini")).Build());
-                    }
+                    await msg.DeleteAsync();
+                    await ctx.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
                 }
-                catch (Exception ex)
+                else
                 {
+                    var res = state.ReturnValue switch
+                    {
+                        string str => str,
+                        IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
+                        IUser user => $"{user} ({user.Id})",
+                        ITextChannel channel => $"#{channel.Name} ({channel.Id})",
+                        _ => state.ReturnValue.ToString()
+                    };
                     await msg.ModifyAsync(m =>
-                        m.Embed = embed
-                            .AddField("Exception Type", e.GetType(), true)
-                            .AddField("Message", ex.Message, true)
-                            .WithTitle("Error")
-                            .Build()
-                    );
+                        m.Embed = embed.WithTitle("Eval")
+                            .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                            .AddField("Return Type", state.ReturnValue.GetType(), true)
+                            .WithDescription(Format.Code(res, "ini")).Build());
                 }
-            });
-            
+            }
+            catch (Exception ex)
+            {
+                await msg.ModifyAsync(m =>
+                    m.Embed = embed
+                        .AddField("Exception Type", e.GetType(), true)
+                        .AddField("Message", ex.Message, true)
+                        .WithTitle("Error")
+                        .Build()
+                );
+            }
         }
 
-        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(new List<string>
-        {
-            "System", "System.Collections.Generic", "System.Linq", "System.Text",
-            "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
-            "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
-            "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-        }));
+        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(
+            new List<string>
+            {
+                "System", "System.Collections.Generic", "System.Linq", "System.Text",
+                "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
+                "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
+                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
+            }));
     }
 }
