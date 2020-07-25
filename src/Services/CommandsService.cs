@@ -41,6 +41,7 @@ namespace Volte.Services
 
                     if (actionRes is BadRequestResult badreq)
                     {
+                        FailedCommandCalls += 1;
                         await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, data, args.Context, args.Arguments, args.Stopwatch));
                         return;
                     }
@@ -50,6 +51,7 @@ namespace Volte.Services
 
                 case FailedResult failedRes:
                 {
+                    FailedCommandCalls += 1;
                     await OnCommandFailureAsync(new CommandFailedEventArgs(failedRes, args.Context, args.Arguments, args.Stopwatch));
                     return;
                 }
@@ -65,7 +67,7 @@ namespace Volte.Services
                     
             }
 
-
+            SuccessfulCommandCalls += 1;
             if (!Config.LogAllCommands) return;
 
             // ReSharper disable once PossibleNullReferenceException
@@ -73,7 +75,6 @@ namespace Volte.Services
             // This is just to make Rider shut the hell up.
             Executor.Execute(() =>
             {
-                SuccessfulCommandCalls += 1;
                 var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
@@ -82,16 +83,18 @@ namespace Volte.Services
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                     .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful}")
-                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                    .AppendLineIf($"                    |     -Result Message: {data.Message?.Id}", data != null)
-                    .Append("                    -------------------------------------------------");
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
+                if (data != null)
+                {
+                    sb.AppendLine($"                    |     -Result Message: {data.Message?.Id}");
+                }
+                sb.Append("                    -------------------------------------------------");
                 _logger.Info(LogSource.Volte, sb.ToString());
             });
         }
 
         private async Task OnCommandFailureAsync(CommandFailedEventArgs args)
         {
-            FailedCommandCalls += 1;
             var reason = args.Result switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
@@ -143,10 +146,9 @@ namespace Volte.Services
 
         private Task OnBadRequestAsync(CommandBadRequestEventArgs args)
         {
-            FailedCommandCalls += 1;
             Executor.Execute(() =>
             {
-                _logger.Error(LogSource.Module, new StringBuilder()
+                var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
                     .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
@@ -154,9 +156,13 @@ namespace Volte.Services
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
                     .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {args.Result.Reason}")
-                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                    .AppendLineIf($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}", args.ResultCompletionData != null)
-                    .Append("                    -------------------------------------------------").ToString());
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
+                if (args.ResultCompletionData != null)
+                {
+                    sb.AppendLine($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}");
+                }
+                sb.Append("                    -------------------------------------------------");
+                _logger.Error(LogSource.Module, sb.ToString());
             });
             return Task.CompletedTask;
         }
