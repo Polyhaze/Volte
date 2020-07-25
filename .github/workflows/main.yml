@@ -13,19 +13,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.200'
-    - name: build the damn thing
+    - name: Compile
       run: bash build.sh
-    - name: upload linux binary
-      uses: actions/upload-artifact@master
+    - name: Upload Linux binary
+      uses: actions/upload-artifact@main
       with:
         name: Volte-Linux
         path: src/bin/Release/netcoreapp3.1/linux-x64/publish
-    - name: upload windows binary
-      uses: actions/upload-artifact@master
+    - name: Upload Windows binary
+      uses: actions/upload-artifact@main
       with:
         name: Volte-Windows
         path: src/bin/Release/netcoreapp3.1/win10-x64/publish

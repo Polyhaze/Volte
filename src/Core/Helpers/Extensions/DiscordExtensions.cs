@@ -150,10 +150,15 @@ namespace Gommon
             }
         }
 
+        public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
+        {
+            return deletable.TryDeleteAsync(new RequestOptions {AuditLogReason = reason});
+        }
+
         public static string GetEffectiveUsername(this SocketGuildUser user) =>
             user.Nickname ?? user.Username;
 
         public static bool HasAttachments(this IMessage message)
-            => message.Attachments.Count != 0;
+            => !message.Attachments.IsEmpty();
     }
 }

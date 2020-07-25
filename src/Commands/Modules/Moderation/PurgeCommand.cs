@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
                     await Context.Channel.DeleteMessagesAsync(messages);
 
             }
-            catch (ArgumentOutOfRangeException _)
+            catch (ArgumentOutOfRangeException)
             {
                 return BadRequest(
                     "Messages bulk deleted must be younger than 14 days. (**This is a Discord restriction, not a Volte one.**)");

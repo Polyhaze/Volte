@@ -11,15 +11,12 @@ namespace Volte.Commands
 {
     public sealed class VolteContext : CommandContext
     {
-        private readonly EmojiService _emojiService;
-
         public static VolteContext Create(SocketMessage msg, IServiceProvider provider) 
             => new VolteContext(msg, provider);
 
         // ReSharper disable once SuggestBaseTypeForParameter
         private VolteContext(SocketMessage msg, IServiceProvider provider)
         {
-            provider.Get(out _emojiService);
             provider.Get<DatabaseService>(out var db);
             provider.Get(out Client);
             ServiceProvider = provider;

@@ -39,12 +39,11 @@ namespace Volte.Services
                 return;
             }
 
-            await args.Message.DeleteAsync(new RequestOptions
-                {AuditLogReason = "Deleted as it contained an invite link."});
-            var m = await args.Context.CreateEmbed("Don't send invites here.").SendToAsync(args.Context.Channel);
+            _ = await args.Message.TryDeleteAsync("Deleted as it contained an invite link.");
+            var m = await args.Context.CreateEmbed($"{args.Message.Author.Mention}, Don't send invites here.").SendToAsync(args.Context.Channel);
             _logger.Debug(LogSource.Volte,
                 $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
-            _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), () => m.DeleteAsync());
+            _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), () => m.TryDeleteAsync());
         }
     }
 }

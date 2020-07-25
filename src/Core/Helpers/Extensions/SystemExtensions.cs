@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Humanizer;
@@ -58,5 +59,7 @@ namespace Gommon
             match = intMatch;
             return intMatch.Success;
         }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => enumerable.Count() is 0;
     }
 }

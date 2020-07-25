@@ -37,7 +37,7 @@ namespace Volte.Core
             
             if (!CreateIfAbsent())
             {
-                Console.WriteLine($"Please fill in the configuration located at \"{Config.ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
+                Console.WriteLine($"Please fill in the configuration located at \"{ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
                 return false;
             }
 

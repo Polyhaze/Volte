@@ -31,7 +31,6 @@ namespace Volte.Services
             sw.Stop();
             _logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
-
             var loaded = _service.AddModules(GetType().Assembly);
             sw.Stop();
             _logger.Info(LogSource.Volte,

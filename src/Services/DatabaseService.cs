@@ -27,7 +27,6 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            _logger.Debug(LogSource.Volte, $"Getting data for guild {id}.");
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
@@ -38,7 +37,6 @@ namespace Volte.Services
 
         public void UpdateData(GuildData newConfig)
         {
-            _logger.Debug(LogSource.Volte, $"Updating data for guild {newConfig.Id}");
             var collection = Database.GetCollection<GuildData>("guilds");
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);

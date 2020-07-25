@@ -25,9 +25,10 @@ namespace Volte.Commands.TypeParsers
             {
                 try
                 {
-                    var r = int.Parse(value.Split(" ")[0]);
-                    var g = int.Parse(value.Split(" ")[1]);
-                    var b = int.Parse(value.Split(" ")[2]);
+                    var val = value.Split(" ");
+                    var r = int.Parse(val[0]);
+                    var g = int.Parse(val[1]);
+                    var b = int.Parse(val[2]);
 
                     if (r > 255 || g > 255 || b > 255)
                     {

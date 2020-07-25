@@ -13,17 +13,16 @@ namespace Volte.Commands.Modules
         [Remarks("selfrolelist")]
         public Task<ActionResult> SelfRoleListAsync()
         {
-            if (Context.GuildData.Extras.SelfRoles.Count <= 0)
+            if (Context.GuildData.Extras.SelfRoles.IsEmpty())
                 return BadRequest("No roles available to self-assign in this guild.");
 
-            var roleList = Context.GuildData.Extras.SelfRoles.Select(x =>
+            var roles = Context.GuildData.Extras.SelfRoles.Select(x =>
                 {
                     var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
                     return currentRole is null ? "" : $"**{currentRole.Name}**";
-                })
-                .Where(x => !x.IsNullOrEmpty()).Join("\n");
+                }).Where(x => !x.IsNullOrEmpty()).Join("\n");
 
-            return Ok(Context.CreateEmbedBuilder(roleList).WithTitle("Roles available to self-assign in this server:"));
+            return Ok(Context.CreateEmbedBuilder(roles).WithTitle("Roles available to self-assign in this guild:"));
         }
     }
 }

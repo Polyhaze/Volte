@@ -38,7 +38,7 @@ namespace Volte.Commands.TypeParsers
 
             return bool.TryParse(value, out var result)
                 ? TypeParserResult<bool>.Successful(result)
-                : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value.");
+                : TypeParserResult<bool>.Unsuccessful($"Failed to parse a {typeof(bool)} (true/false) value. Try using true or false.");
         }
     }
 }

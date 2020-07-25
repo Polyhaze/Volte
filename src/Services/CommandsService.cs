@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
 using Qmmands;
+using SixLabors.ImageSharp;
 using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Models;
@@ -47,8 +50,7 @@ namespace Volte.Services
 
                 case FailedResult failedRes:
                 {
-                    await OnCommandFailureAsync(new CommandFailedEventArgs(failedRes, args.Context, args.Arguments,
-                        args.Stopwatch));
+                    await OnCommandFailureAsync(new CommandFailedEventArgs(failedRes, args.Context, args.Arguments, args.Stopwatch));
                     return;
                 }
 
@@ -56,7 +58,8 @@ namespace Volte.Services
                 {
                     _logger.Error(LogSource.Service, 
                         $"The command {args.Context.Command.Name} didn't return some form of ActionResult. " +
-                        $"Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
+                        "This is developer error. " +
+                        "Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
                     break;
                 }
                     
@@ -65,6 +68,9 @@ namespace Volte.Services
 
             if (!Config.LogAllCommands) return;
 
+            // ReSharper disable once PossibleNullReferenceException
+            // this possible error occurs in line 85 but it cannot happen because it's in the AppendLineIf method.
+            // This is just to make Rider shut the hell up.
             Executor.Execute(() =>
             {
                 SuccessfulCommandCalls += 1;
@@ -95,8 +101,15 @@ namespace Volte.Services
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
-                _ => "Unknown error."
+                _ => Unknown(args.Result)
             };
+
+            string Unknown(FailedResult result)
+            {
+                _logger.Verbose(LogSource.Service, $"A command returned an unknown error. Please screenshot this message and show it to my developers: {result.GetType().Name}");
+                return "Unknown error.";
+            }
+            
 
             if (args.Result is ExecutionFailedResult e)
                 _logger.Exception(e.Exception);
@@ -128,7 +141,7 @@ namespace Volte.Services
             }
         }
 
-        public Task OnBadRequestAsync(CommandBadRequestEventArgs args)
+        private Task OnBadRequestAsync(CommandBadRequestEventArgs args)
         {
             FailedCommandCalls += 1;
             Executor.Execute(() =>

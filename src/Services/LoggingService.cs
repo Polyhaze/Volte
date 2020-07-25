@@ -57,7 +57,7 @@ namespace Volte.Services
             {
                 if (s is LogSeverity.Debug)
                 {
-                    if (Config.EnableDebugLogging) return;
+                    if (!Config.EnableDebugLogging) return;
                 }
 
                 Execute(s, from, message, e);
