@@ -27,10 +27,6 @@ namespace Volte.Services
 
         public async Task OnCommandAsync(CommandCalledEventArgs args)
         {
-            var commandName = args.Context.Message.Content.Split(" ")[0];
-            var commandArgs = args.Context.Message.Content.Replace($"{commandName}", "").Trim();
-            if (string.IsNullOrEmpty(commandArgs)) commandArgs = "None";
-
             ResultCompletionData data = null;
             switch (args.Result)
             {
@@ -42,7 +38,7 @@ namespace Volte.Services
 
                     if (actionRes is BadRequestResult badreq)
                     {
-                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, data, args.Context, commandArgs, args.Stopwatch));
+                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, data, args.Context, args.Arguments, args.Stopwatch));
                         return;
                     }
 
@@ -50,8 +46,20 @@ namespace Volte.Services
                 }
 
                 case FailedResult failedRes:
-                    await OnCommandFailureAsync(new CommandFailedEventArgs(failedRes, args.Context, commandArgs, args.Stopwatch));
+                {
+                    await OnCommandFailureAsync(new CommandFailedEventArgs(failedRes, args.Context, args.Arguments,
+                        args.Stopwatch));
                     return;
+                }
+
+                default:
+                {
+                    _logger.Error(LogSource.Service, 
+                        $"The command {args.Context.Command.Name} didn't return some form of ActionResult. " +
+                        $"Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
+                    break;
+                }
+                    
             }
 
 
@@ -63,7 +71,7 @@ namespace Volte.Services
                 var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
-                    .AppendLine($"                    |        -Args Passed: {commandArgs}".PadLeft(20))
+                    .AppendLine($"                    |        -Args Passed: {args.Arguments}".PadLeft(20))
                     .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
@@ -71,7 +79,7 @@ namespace Volte.Services
                     .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
                     .AppendLineIf($"                    |     -Result Message: {data.Message?.Id}", data != null)
                     .Append("                    -------------------------------------------------");
-                _logger.Info(LogSource.Module, sb.ToString());
+                _logger.Info(LogSource.Volte, sb.ToString());
             });
         }
 

@@ -53,6 +53,7 @@ namespace Volte.Services
             var e = ctx.CreateEmbedBuilder()
                 .WithAuthor(message.Author)
                 .AddField("Quoted By", $"**{ctx.User}** in {ctx.Channel.Mention}");
+            
             if (!message.Content.IsNullOrEmpty())
             {
                 e.WithDescription(message.Content);
