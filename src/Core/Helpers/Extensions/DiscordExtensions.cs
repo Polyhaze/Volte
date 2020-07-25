@@ -152,5 +152,8 @@ namespace Gommon
 
         public static string GetEffectiveUsername(this SocketGuildUser user) =>
             user.Nickname ?? user.Username;
+
+        public static bool HasAttachments(this IMessage message)
+            => message.Attachments.Count != 0;
     }
 }

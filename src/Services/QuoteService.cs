@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
 using Gommon;
+using Volte.Commands;
 using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
@@ -40,37 +41,45 @@ namespace Volte.Services
 
                 var m = await channel.GetMessageAsync(messageId);
                 if (m is null) return;
-                if (m.Content == string.Empty && m.Attachments.Count != 0)
-                {
-                    await args.Context.CreateEmbedBuilder()
-                        .WithAuthor(m.Author)
-                        .WithImageUrl(m.Attachments.First().Url)
-                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
-                        .SendToAsync(args.Context.Channel);
-                }
-                else if (m.Content != string.Empty && m.Attachments.Count == 0)
-                {
-                    await args.Context.CreateEmbedBuilder()
-                        .WithAuthor(m.Author)
-                        .WithDescription(Format.Code(m.Content))
-                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
-                        .SendToAsync(args.Context.Channel);
-                }
-                else if (m.Content != string.Empty && m.Attachments.Count != 0)
-                {
-                    await args.Context.CreateEmbedBuilder()
-                        .WithAuthor(m.Author)
-                        .WithImageUrl(m.Attachments.First().Url)
-                        .WithDescription(Format.Code(m.Content))
-                        .AddField("Quoted By", $"**{args.Context.User}** in {args.Context.Channel.Mention}")
-                        .SendToAsync(args.Context.Channel);
-                }
-                
 
-                if (match.Groups["Prelink"].Value.IsNullOrEmpty() &&
-                    match.Groups["Postlink"].Value.IsNullOrEmpty())
-                    _ = await args.Context.Message.TryDeleteAsync();
+                await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel);
+
+                _ = await args.Message.TryDeleteAsync();
             }
         }
+
+        private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx, Match match)
+        {
+            var e = ctx.CreateEmbedBuilder()
+                .WithAuthor(message.Author)
+                .AddField("Quoted By", $"**{ctx.User}** in {ctx.Channel.Mention}");
+            if (!message.Content.IsNullOrEmpty())
+            {
+                e.WithDescription(message.Content);
+            }
+
+            if (message.Content.IsNullOrEmpty() && message.HasAttachments())
+            {
+                e.WithImageUrl(message.Attachments.First().Url);
+            }
+
+            if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
+            {
+                e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
+            }
+
+            if (!match.Groups["Prelink"].Value.IsNullOrEmpty())
+            {
+                e.AddField("Comment", match.Groups["Prelink"].Value);
+            }
+
+            if (!match.Groups["Postlink"].Value.IsNullOrEmpty())
+            {
+                e.AddField("Comment", match.Groups["Postlink"].Value);
+            }
+
+            return e.Build();
+        }
+        
     }
 }
