@@ -1,9 +1,9 @@
 <table>
     <tr>
-        <td align="center" width="15%">
+        <td align="center" width="25%">
             <img src="https://i.greemdev.net/volte_default.png"></img>
         </td>
-        <td align="center" width="50%">
+        <td align="center" width="75%">
             
 # Volte
 
