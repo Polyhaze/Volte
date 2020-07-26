@@ -16,8 +16,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(
             Parameter param,
             string value,
-            CommandContext context,
-            IServiceProvider provider)
+            CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
             var users = ctx.Guild.Users.ToList();
@@ -53,8 +52,7 @@ namespace Volte.Commands.TypeParsers
         public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(
             Parameter parameter,
             string value,
-            CommandContext context,
-            IServiceProvider provider)
+            CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
 

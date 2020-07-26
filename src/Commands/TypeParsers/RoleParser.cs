@@ -15,8 +15,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(
             Parameter param,
             string value,
-            CommandContext context,
-            IServiceProvider provider)
+            CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
             SocketRole role = default;

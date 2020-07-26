@@ -10,8 +10,7 @@ namespace Volte.Core.Attributes
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class CheckHierarchyAttribute : ParameterCheckAttribute
     {
-        public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context,
-            IServiceProvider provider)
+        public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
         {
             var u = argument.Cast<SocketGuildUser>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
             var ctx = context.Cast<VolteContext>();

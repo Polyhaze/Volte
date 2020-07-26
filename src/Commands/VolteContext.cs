@@ -15,7 +15,7 @@ namespace Volte.Commands
             => new VolteContext(msg, provider);
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        private VolteContext(SocketMessage msg, IServiceProvider provider)
+        private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
         {
             provider.Get<DatabaseService>(out var db);
             provider.Get(out Client);
@@ -27,6 +27,8 @@ namespace Volte.Commands
             GuildData = db.GetData(Guild);
             Now = DateTimeOffset.UtcNow;
         }
+        
+        
 
         public readonly DiscordShardedClient Client;
         public readonly IServiceProvider ServiceProvider;

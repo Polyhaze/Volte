@@ -14,8 +14,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<SocketGuild>> ParseAsync(
             Parameter parameter,
             string value,
-            CommandContext context,
-            IServiceProvider provider)
+            CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
             SocketGuild guild = default;

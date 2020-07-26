@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -14,8 +13,7 @@ namespace Volte.Core.Attributes
 
         public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
 
-        public override async ValueTask<CheckResult> CheckAsync(
-            CommandContext context, IServiceProvider provider)
+        public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
             foreach (var perm in ctx.Guild.CurrentUser.GuildPermissions.ToList())

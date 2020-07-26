@@ -14,8 +14,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<Tag>> ParseAsync(
             Parameter parameter,
             string value,
-            CommandContext context,
-            IServiceProvider provider)
+            CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
             var tag = ctx.GuildData.Extras.Tags.FirstOrDefault(x => x.Name.EqualsIgnoreCase(value));

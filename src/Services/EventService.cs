@@ -68,7 +68,7 @@ namespace Volte.Services
                 out var cmd))
             {
                 var sw = Stopwatch.StartNew();
-                var result = await _commandService.ExecuteAsync(cmd, args.Context, args.Context.ServiceProvider);
+                var result = await _commandService.ExecuteAsync(cmd, args.Context);
 
                 if (result is CommandNotFoundResult) return;
 

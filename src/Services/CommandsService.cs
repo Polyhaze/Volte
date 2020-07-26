@@ -42,7 +42,7 @@ namespace Volte.Services
                     if (actionRes is BadRequestResult badreq)
                     {
                         FailedCommandCalls += 1;
-                        await OnBadRequestAsync(new CommandBadRequestEventArgs(badreq, data, args.Context, args.Arguments, args.Stopwatch));
+                        OnBadRequest(new CommandBadRequestEventArgs(badreq, data, args.Context, args.Arguments, args.Stopwatch));
                         return;
                     }
 
@@ -78,7 +78,7 @@ namespace Volte.Services
                 var sb = new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
-                    .AppendLine($"                    |        -Args Passed: {args.Arguments}".PadLeft(20))
+                    .AppendLine($"                    |        -Args Passed: {args.Arguments}")
                     .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
@@ -98,12 +98,12 @@ namespace Volte.Services
             var reason = args.Result switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
-                ExecutionFailedResult efr => $"Execution of this command failed. Exception: {efr.Exception.GetType()}",
                 ChecksFailedResult cfr => cfr.Reason,
                 ParameterChecksFailedResult pcfr => $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.Reason).Join('\n')}```",
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
+                ExecutionFailedResult efr => ExecutionFailed(efr),
                 _ => Unknown(args.Result)
             };
 
@@ -112,10 +112,12 @@ namespace Volte.Services
                 _logger.Verbose(LogSource.Service, $"A command returned an unknown error. Please screenshot this message and show it to my developers: {result.GetType().Name}");
                 return "Unknown error.";
             }
-            
 
-            if (args.Result is ExecutionFailedResult e)
-                _logger.Exception(e.Exception);
+            string ExecutionFailed(ExecutionFailedResult result)
+            {
+                _logger.Exception(result.Exception);
+                return $"Execution of this command failed. Exception: {result.Exception.GetType()}";
+            }
 
             if (!reason.IsNullOrEmpty())
             {
@@ -127,44 +129,38 @@ namespace Volte.Services
                     .SendToAsync(args.Context.Channel);
 
                 if (!Config.LogAllCommands) return;
-
-                Executor.Execute(() =>
-                {
-                    _logger.Error(LogSource.Module, new StringBuilder()
-                        .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
-                        .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
-                        .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
-                        .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
-                        .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
-                        .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                        .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {reason}")
-                        .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
-                        .Append("                    -------------------------------------------------").ToString());
-                });
-            }
-        }
-
-        private Task OnBadRequestAsync(CommandBadRequestEventArgs args)
-        {
-            Executor.Execute(() =>
-            {
-                var sb = new StringBuilder()
+                
+                _logger.Error(LogSource.Module, new StringBuilder()
                     .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
                     .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
                     .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
                     .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
                     .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
                     .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
-                    .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {args.Result.Reason}")
-                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
-                if (args.ResultCompletionData != null)
-                {
-                    sb.AppendLine($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}");
-                }
-                sb.Append("                    -------------------------------------------------");
-                _logger.Error(LogSource.Module, sb.ToString());
-            });
-            return Task.CompletedTask;
+                    .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {reason}")
+                    .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}")
+                    .Append("                    -------------------------------------------------").ToString());
+            }
+        }
+
+        private void OnBadRequest(CommandBadRequestEventArgs args)
+        {
+            var sb = new StringBuilder()
+                .AppendLine($"|  -Command from user: {args.Context.User} ({args.Context.User.Id})") //yes, the spaces in front of each string are indeed intentional on all lines after this
+                .AppendLine($"                    |     -Command Issued: {args.Context.Command.Name}")
+                .AppendLine($"                    |        -Args Passed: {args.Arguments.Trim()}")
+                .AppendLine($"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})")
+                .AppendLine($"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})")
+                .AppendLine($"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}")
+                .AppendLine($"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {args.Result.Reason}")
+                .AppendLine($"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}");
+            
+            if (args.ResultCompletionData != null)
+            {
+                sb.AppendLine($"                    |     -Result Message: {args.ResultCompletionData.Message?.Id}");
+            }
+            sb.Append("                    -------------------------------------------------");
+            _logger.Error(LogSource.Module, sb.ToString());
         }
     }
 }

@@ -13,8 +13,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<Color>> ParseAsync(
             Parameter parameter, 
             string value, 
-            CommandContext context, 
-            IServiceProvider provider)
+            CommandContext context)
         {
             Color? c = null;
 

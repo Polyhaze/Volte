@@ -13,8 +13,7 @@ namespace Volte.Commands.TypeParsers
         public override ValueTask<TypeParserResult<IEmote>> ParseAsync(
             Parameter param,
             string value,
-            CommandContext context,
-            IServiceProvider provider) 
+            CommandContext context) 
             => Emote.TryParse(value, out var emote)
                 ? TypeParserResult<IEmote>.Successful(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
