@@ -111,8 +111,7 @@ namespace Volte.Core.Models
             var type = obj.GetType();
 
             var inspection = new StringBuilder();
-            inspection.Append("<< Inspecting type [").Append(type.Name).AppendLine("] >>");
-            inspection.Append("<< String Representation: [").Append(obj).AppendLine("] >>");
+            inspection.Append("<< Inspecting type [").Append(FormatType(type)).AppendLine("] >>");
             inspection.AppendLine();
 
             var props = type.GetProperties().Where(a => a.GetIndexParameters().Length == 0)
@@ -152,12 +151,14 @@ namespace Volte.Core.Models
                     inspection.Append(prop.Name).Append(":").Append(sep).Append(ReadValue(prop, obj)).AppendLine();
                 }
             }
-
+            
             if (obj is IEnumerable objEnumerable)
             {
+                var arr = objEnumerable as object[] ?? objEnumerable.Cast<object>().ToArray();
+                if (arr.IsEmpty()) return inspection.ToString();
                 inspection.AppendLine();
                 inspection.AppendLine("<< Items >>");
-                foreach (var prop in objEnumerable) inspection.Append(" - ").Append(prop).AppendLine();
+                foreach (var prop in arr) inspection.Append(" - ").Append(prop).AppendLine();
             }
 
             return inspection.ToString();
@@ -189,7 +190,7 @@ namespace Volte.Core.Models
                     var enu = e.Cast<object>().ToList();
                     return $"{enu.Count} [{enu.GetType().Name}]";
                 }
-                return value + $" [{value.GetType().Name}]";
+                return value + $" [{FormatType(value.GetType())}]";
 
             }
             catch (Exception e)
@@ -201,6 +202,16 @@ namespace Volte.Core.Models
         public void Throw()
         {
             throw new Exception("Test exception.");
+        }
+
+        public string FormatType(Type type)
+        {
+            var t = type.GenericTypeArguments;
+            var vs = type.Name.Replace($"`{t.Length}", ""); //thanks .NET for putting an annoying ass backtick and number at the end of type names.
+
+            if (!t.IsEmpty()) vs += $"<{t.Select(a => a.Name).Join(", ")}>";
+
+            return vs;
         }
 
     }
