@@ -1,11 +1,19 @@
-<img src="https://i.greemdev.net/volte_default.png"/>
-
-[![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://discord.gg/H8bcFr2)
-[![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
-
+<table>
+    <tr>
+        <td align="center" width="15%">
+            <img src="https://i.greemdev.net/volte_default.png"></img>
+        </td>
+        <td align="center" width="50%">
+            
 # Volte
 
 A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
+
+[![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://discord.gg/H8bcFr2)
+[![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
+        </td>
+    </tr>
+</table>
 
 |**Prefix**: $|**Lead:** [@GreemDev](https://github.com/GreemDev)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|[Discord Guild](https://discord.gg/H8bcFr2)|[Bot Invite Url](https://greemdev.net/invite)|**Runtime**: .NET Core 3
 |---|---|---|---|---|---|---|
