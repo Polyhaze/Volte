@@ -1,13 +1,14 @@
-﻿using System.IO;
+using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace Volte.Core.Helpers
+namespace Gommon
 {
-    public static class ImageHelper
+    public partial class Extensions
     {
-        public static MemoryStream CreateColorImage(Rgba32 color)
+        
+        public static MemoryStream CreateColorImage(this Rgba32 color)
         {
             var @out = new MemoryStream();
             using var image = new Image<Rgba32>(200, 200);
@@ -16,5 +17,6 @@ namespace Volte.Core.Helpers
             @out.Position = 0;
             return @out;
         }
+        
     }
 }

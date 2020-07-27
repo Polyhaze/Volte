@@ -46,13 +46,13 @@ namespace Volte.Core.Models.Misc
         public static PollInfo FromValid(bool isValid)
             => new PollInfo {IsValid = isValid};
 
-        public List<(string Name, string Value)> Fields { get; }
+        public Dictionary<string, string> Fields { get; }
         public bool IsValid { get; set; }
         public string Footer { get; } = "Click one of the numbers above to vote. Note: you can vote for more than one.";
 
         public PollInfo()
         {
-            Fields = new List<(string Name, string Value)>();
+            Fields = new Dictionary<string, string>();
             IsValid = true;
         }
 
@@ -61,7 +61,7 @@ namespace Volte.Core.Models.Misc
             foreach (var field in fields)
             {
                 if (field.Name.IsNullOrEmpty() || field.Value.IsNullOrEmpty()) continue;
-                Fields.Add(field);
+                Fields.Add(field.Name, field.Value);
             }
 
             return this;

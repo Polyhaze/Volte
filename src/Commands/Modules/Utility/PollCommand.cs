@@ -25,14 +25,14 @@ namespace Volte.Commands.Modules
             var embed = Context.CreateEmbedBuilder()
                 .WithTitle(Format.Bold(content[0]));
 
-            foreach (var (name, value) in pollInfo.Fields)
+            foreach (var (key, value) in pollInfo.Fields)
             {
-                embed.AddField(name, value, true);
+                embed.AddField(key, value, true);
             }
 
             return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
             {
-                _ = await Context.Message.TryDeleteAsync();
+                _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
                 await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg, EmojiService);
             });
         }

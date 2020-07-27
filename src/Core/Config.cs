@@ -19,11 +19,20 @@ namespace Volte.Core
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
-            WriteIndented = true
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            IgnoreNullValues = false
         };
 
-        private static readonly bool IsValidConfig =
-            File.Exists(ConfigFilePath) && !File.ReadAllText(ConfigFilePath).IsNullOrEmpty();
+        private static bool IsValidConfig()
+        {
+            if (File.Exists(ConfigFilePath))
+            {
+                if (File.ReadAllText(ConfigFilePath).IsNullOrEmpty()) return false;
+                return true;
+            }
+            return false;
+        }
 
         public static bool StartupChecks()
         {
@@ -46,7 +55,7 @@ namespace Volte.Core
         
         public static bool CreateIfAbsent()
         {
-            if (IsValidConfig) return true;
+            if (IsValidConfig()) return true;
             _configuration = new BotConfig
             {
                 Token = "token here",
@@ -78,7 +87,7 @@ namespace Volte.Core
         public static void Load()
         {
             _ = CreateIfAbsent();
-            if (IsValidConfig)
+            if (IsValidConfig())
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -10,7 +11,6 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Core.Models;
 using Volte.Services;
-using Color = System.Drawing.Color;
 using Console = Colorful.Console;
 
 namespace Volte.Core
@@ -86,6 +86,14 @@ namespace Volte.Core
                     .WithDescription(
                         $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().GetUptime()}**!")
                     .SendToAsync(channel);
+            }
+
+            var disposables = Assembly.GetCallingAssembly().GetTypes()
+                .Where(t => t.Inherits<IDisposable>())
+                .Select(x => x.Cast<IDisposable>());
+            foreach (var disposable in disposables)
+            {
+                disposable?.Dispose();
             }
             
             await client.SetStatusAsync(UserStatus.Invisible);

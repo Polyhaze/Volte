@@ -14,6 +14,11 @@ namespace Volte.Commands.Modules
         [Remarks("iam {String}")]
         public async Task<ActionResult> IamAsync([Remainder]SocketRole role)
         {
+            if (Context.GuildData.Extras.SelfRoles.IsEmpty())
+            {
+                return BadRequest("This guild does not have any roles you can give yourself.");
+            }
+            
             if (!Context.GuildData.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
             {
                 return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");

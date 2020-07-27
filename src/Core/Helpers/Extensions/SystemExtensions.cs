@@ -24,11 +24,10 @@ namespace Gommon
 
         public static bool IsMatch(this Regex regex, string str, out Match match)
         {
-            var intMatch = regex.Match(str);
-            match = intMatch;
-            return intMatch.Success;
+            match = regex.Match(str);
+            return match.Success;
         }
 
-        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => enumerable.Count() is 0;
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
     }
 }

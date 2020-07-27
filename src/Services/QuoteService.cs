@@ -10,7 +10,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    //thanks MODiX for the idea and some of the code (definitely the regex lol)
+    //thanks discord-csharp/MODiX for the idea and some of the code (definitely the regex lol)
     public class QuoteService : VolteEventService
     {
         private readonly DiscordShardedClient _client;

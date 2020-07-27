@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
@@ -17,9 +18,9 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> RoleColorAsync([Remainder] SocketRole role)
         {
             if (role.Color.RawValue is 0) return BadRequest("Role does not have a color.");
-
-            await using var outStream = ImageHelper.CreateColorImage(new Rgba32(role.Color.R, role.Color.G, role.Color.B));
-            await Context.Channel.SendFileAsync(outStream, "role.png", null, embed: new EmbedBuilder()
+            
+            await using var stream = new Rgba32(role.Color.R, role.Color.G, role.Color.B).CreateColorImage();
+            await Context.Channel.SendFileAsync(stream, "role.png", null, embed: new EmbedBuilder()
                 .WithColor(role.Color)
                 .WithTitle("Role Color")
                 .WithDescription(new StringBuilder()

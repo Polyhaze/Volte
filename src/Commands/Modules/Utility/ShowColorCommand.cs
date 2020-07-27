@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
 using Volte.Core.Helpers;
 using System.Text;
+using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -16,7 +17,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> ShowColorAsync([Remainder]Color color)
             => Ok(async () =>
             {
-                await using var stream = ImageHelper.CreateColorImage(new Rgba32(color.R, color.G, color.B));
+                await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
                 await Context.Channel.SendFileAsync(stream, "role.png", null, embed: new EmbedBuilder()
                     .WithColor(color)
                     .WithTitle($"Color {color}")

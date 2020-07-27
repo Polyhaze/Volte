@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using LiteDB;
 using Volte.Core;
-using Volte.Core.Models;
 using Volte.Core.Models.Guild;
 
 namespace Volte.Services
@@ -14,13 +13,10 @@ namespace Volte.Services
         public static readonly LiteDatabase Database = new LiteDatabase("filename=data/Volte.db;upgrade=true;connection=direct");
 
         private readonly DiscordShardedClient _client;
-        private readonly LoggingService _logger;
 
-        public DatabaseService(DiscordShardedClient discordShardedClient,
-            LoggingService loggingService)
+        public DatabaseService(DiscordShardedClient discordShardedClient)
         {
             _client = discordShardedClient;
-            _logger = loggingService;
         }
 
         public GuildData GetData(SocketGuild guild) => GetData(guild.Id);

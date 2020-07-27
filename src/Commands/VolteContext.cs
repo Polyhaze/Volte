@@ -19,7 +19,6 @@ namespace Volte.Commands
         {
             provider.Get<DatabaseService>(out var db);
             provider.Get(out Client);
-            ServiceProvider = provider;
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
@@ -31,7 +30,6 @@ namespace Volte.Commands
         
 
         public readonly DiscordShardedClient Client;
-        public readonly IServiceProvider ServiceProvider;
         public readonly SocketGuild Guild;
         public readonly SocketTextChannel Channel;
         public readonly SocketGuildUser User;

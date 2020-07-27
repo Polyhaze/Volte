@@ -14,16 +14,16 @@ namespace Volte.Commands.Results
             _shouldEmbed = shouldEmbed;
             _embed = embed;
             _callback = func;
-            _shouldAwaitCallbackOrLogic = awaitCallback;
+            _runFuncAsync = awaitCallback;
         }
 
         public OkResult(Func<Task> logic, bool awaitFunc = true)
         {
             _separateLogic = logic;
-            _shouldAwaitCallbackOrLogic = awaitFunc;
+            _runFuncAsync = awaitFunc;
         }
 
-        private readonly bool _shouldAwaitCallbackOrLogic;
+        private readonly bool _runFuncAsync;
 
         private readonly string _message;
         private readonly bool _shouldEmbed;
@@ -37,7 +37,7 @@ namespace Volte.Commands.Results
 
             if (_separateLogic != null)
             {
-                if (_shouldAwaitCallbackOrLogic)
+                if (_runFuncAsync)
                     await _separateLogic();
                 else
                     _ = _separateLogic();
@@ -59,7 +59,7 @@ namespace Volte.Commands.Results
 
             if (_callback != null)
             {
-                if (_shouldAwaitCallbackOrLogic)
+                if (_runFuncAsync)
                     await _callback(message);
                 else
                     _ = _callback(message);

@@ -125,6 +125,7 @@ namespace Gommon
         public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
             c.SendMessageAsync(string.Empty, false, e);
 
+        // ReSharper disable twice UnusedMethodReturnValue.Global
         public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
             await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e.Build());
 
@@ -141,6 +142,7 @@ namespace Gommon
         {
             try
             {
+                if (deletable is null) return false;
                 await deletable.DeleteAsync(options);
                 return true;
             }

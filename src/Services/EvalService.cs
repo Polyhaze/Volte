@@ -59,7 +59,7 @@ namespace Volte.Services
                 GC.WaitForPendingFinalizers();
             }
 
-            return null;
+            return Task.CompletedTask;
         }
 
         private EvalEnvironment CreateEvalEnvironment(VolteContext ctx) =>
