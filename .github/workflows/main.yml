@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@main
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.200'
+        dotnet-version: '3.1.302'
     - name: Compile
       run: bash build.sh
     - name: Upload Linux binary
