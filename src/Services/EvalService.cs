@@ -115,7 +115,7 @@ namespace Volte.Services
             {
                 await msg.ModifyAsync(m =>
                     m.Embed = embed
-                        .AddField("Exception Type", e.GetType(), true)
+                        .AddField("Exception Type", ex.GetType(), true)
                         .AddField("Message", ex.Message, true)
                         .WithTitle("Error")
                         .Build()

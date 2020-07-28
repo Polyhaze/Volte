@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +45,17 @@ namespace Volte.Core.Models
         
         public SocketUserMessage Message(ulong id)
             => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
-
+        
+        public async Task<IUserMessage> MessageAsync(ulong id)
+        {
+            var m = await Context.Channel.GetMessageAsync(id);
+            if (m is IUserMessage userMessage)
+            {
+                return userMessage;
+            }
+            throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
+        }
+        
         public SocketGuild Guild(ulong id)
             => Context.Client.GetGuild(id);
 
@@ -80,30 +92,19 @@ namespace Volte.Core.Models
 
             foreach (var baseType in baseTypes)
             {
-                sb.Append($"[{FormatTypeParameters(baseType)}]");
-                IList<Type> inheritors = baseType.GetInterfaces();
+                sb.Append($"[{FormatType(baseType)}]");
+                var inheritors = baseType.GetInterfaces().ToList();
                 if (baseType.BaseType != null)
                 {
                     inheritors = inheritors.ToList();
                     inheritors.Add(baseType.BaseType);
                 }
-                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(FormatTypeParameters))}");
+                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(FormatType))}");
 
                 sb.AppendLine();
             }
 
             return sb.ToString();
-        }
-
-        private string FormatTypeParameters(Type type)
-        {
-            var vs = $"{type.Namespace}.{type.Name}";
-
-            var t = type.GenericTypeArguments;
-
-            if (t.Length > 0) vs += $"<{string.Join(", ", t.Select(a => a.Name))}>";
-
-            return vs;
         }
 
         public string Inspect(object obj)
