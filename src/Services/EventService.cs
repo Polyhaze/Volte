@@ -28,7 +28,7 @@ namespace Volte.Services
         private readonly QuoteService _quoteService;
 
         private readonly bool _shouldStream =
-            !Config.Streamer.ContainsIgnoreCase(" ") || !Config.Streamer.IsNullOrEmpty();
+            !Config.Streamer.IsNullOrWhitespace();
 
         public EventService(LoggingService loggingService,
             DatabaseService databaseService,
