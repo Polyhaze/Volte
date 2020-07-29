@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
 using Gommon;
+using Qmmands;
 using Volte.Commands;
 using Volte.Core.Models.EventArgs;
 
@@ -22,6 +23,10 @@ namespace Volte.Services
 
         private static readonly Regex JumpUrlPattern = new Regex(
             @"(?<Prelink>\S+\s+\S*)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<Postlink>\S*\s+\S+)?",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        
+        private static readonly Regex JumpUrlRemover = new Regex(
+            @"https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(\d+)/(\d+)/(\d+)?",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public override Task DoAsync(EventArgs args)
@@ -52,8 +57,8 @@ namespace Volte.Services
         {
             var e = ctx.CreateEmbedBuilder()
                 .WithAuthor(message.Author)
-                .AddField("Quoted By", $"**{ctx.User}** in {ctx.Channel.Mention}");
-            
+                .WithFooter($"Quoted by {ctx.User}", ctx.User.GetAvatarUrl());
+
             if (!message.Content.IsNullOrEmpty())
             {
                 e.WithDescription(message.Content);
@@ -69,15 +74,14 @@ namespace Volte.Services
                 e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
             }
 
-            if (!match.Groups["Prelink"].Value.IsNullOrEmpty())
+            if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
-                e.AddField("Comment", match.Groups["Prelink"].Value);
+                var comment = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), "");
+                var strings = comment.Split("  ");
+                e.AddField("Comment", strings.IsEmpty() ? comment : strings.Join(" "), true);
             }
 
-            if (!match.Groups["Postlink"].Value.IsNullOrEmpty())
-            {
-                e.AddField("Comment", match.Groups["Postlink"].Value);
-            }
+            e.AddField("Original Message", $"[Click here]({message.GetJumpUrl()})");
 
             return e.Build();
         }
