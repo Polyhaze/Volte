@@ -35,22 +35,23 @@ namespace Volte.Services
         private async Task OnMessageReceivedAsync(MessageReceivedEventArgs args)
         {
             if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return;
-            foreach (Match match in JumpUrlPattern.Matches(args.Message.Content))
-            {
-                if (!ulong.TryParse(match.Groups["GuildId"].Value, out _) ||
-                    !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
-                    !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) continue;
+            var match = JumpUrlPattern.Match(args.Message.Content);
+            if (!match.Success) return;
+            
+            if (!ulong.TryParse(match.Groups["GuildId"].Value, out var guildId) ||
+                !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
+                !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
 
-                var c = _client.GetChannel(channelId);
-                if (!(c is ITextChannel channel)) continue;
+                var g = _client.GetGuild(guildId);
+                var c = g?.GetTextChannel(channelId);
+                if (c is null) return;
 
-                var m = await channel.GetMessageAsync(messageId);
+                var m = await c.GetMessageAsync(messageId);
                 if (m is null) return;
 
                 await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel);
 
                 _ = await args.Message.TryDeleteAsync();
-            }
         }
 
         private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx, Match match)
