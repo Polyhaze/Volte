@@ -1,17 +1,23 @@
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Gommon;
-using Qmmands;
-using Volte.Commands.Results;
 
-namespace Volte.Commands.Modules
+using Discord.Commands;
+
+using Humanizer;
+using Humanizer.Localisation;
+
+namespace BrackeysBot.Commands
 {
-    public sealed partial class UtilityModule : VolteModule
+    public partial class UtilityModule : BrackeysBotModule
     {
-        [Command("Uptime")]
-        [Description("Shows the bot's uptime in a human-friendly fashion.")]
-        [Remarks("uptime")]
-        public Task<ActionResult> UptimeAsync() 
-            => Ok($"I've been online for **{Process.GetCurrentProcess().GetUptime()}**!");
+        [Command("uptime")]
+        [Summary("Displays the time the bot has been running for.")]
+        public async Task DisplayUptimeAsync()
+        {
+            TimeSpan uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+
+            await ReplyAsync($"I've been up and running for {uptime.Humanize(precision: 3, minUnit: TimeUnit.Second)}.");
+        }
     }
 }

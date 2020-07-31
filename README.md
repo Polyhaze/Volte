@@ -1,55 +1,36 @@
-<table>
-    <tr>
-        <td align="center" width="25%">
-            <img src="https://i.greemdev.net/volte_default.png"></img>
-        </td>
-        <td align="center" width="75%">
-            
-# Volte
+# BrackeysBot `[ ]`
 
-A free, robust, open-source Discord bot written in C# with [Discord.Net](https://github.com/discord-net/Discord.Net).
+The official Brackeys Discord bot!  
+Contains tools to moderate the server and to create a better user experience overall!
 
-[![Discord](https://img.shields.io/discord/405806471578648588.svg?color=7000FB&label=discord&style=for-the-badge)](https://discord.gg/H8bcFr2)
-[![License](https://img.shields.io/github/license/GreemDev/Volte.svg?color=7000FB&style=for-the-badge)](https://github.com/GreemDev/Volte/blob/rewrite/LICENSE)
-        </td>
-    </tr>
-</table>
+## Important links
 
-|**Prefix**: $|**Lead:** [@GreemDev](https://github.com/GreemDev)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|[Discord Guild](https://discord.gg/H8bcFr2)|[Bot Invite Url](https://greemdev.net/invite)|**Runtime**: .NET Core 3
-|---|---|---|---|---|---|---|
+[![Discord](https://img.shields.io/discord/243005537342586880?color=7289DA&label=Discord%20Server&style=for-the-badge)](https://discord.gg/brackeys)
 
-## Quick Links 
- - [Feature List](https://github.com/Ultz/Volte/wiki/Features)
- - [Invite the bot](https://greemdev.net/Invite)
- - [Issue Tracker](https://github.com/Ultz/Volte/issues)
- - [Website](https://greemdev.net/Volte)
- - [Source Code](https://github.com/Ultz/Volte) (literally this site)
+[![Travis CI](https://img.shields.io/travis/com/yiliansource/brackeys-bot?color=7289DA&label=Travis%20CI%20Build&style=for-the-badge)](https://travis-ci.com/YilianSource/brackeys-bot)
 
-## Bots made by Cool People
+- [📝 MIT License](https://github.com/YilianSource/brackeys-bot/blob/master/LICENSE)
+- [🛡️ Code of Conduct](https://github.com/YilianSource/brackeys-bot/blob/master/.github/CODE_OF_CONDUCT.md)
+- [🖋️ Contributing](https://github.com/YilianSource/brackeys-bot/blob/master/.github/CONTRIBUTING.md)
 
- * [abyssal/Abyss](https://github.com/abyssal/Abyss) 
- * [QuantumToast/Administrator](https://gitlab.com/QuantumToast/Administrator)
+## Building & running
 
-## Like Volte? Here's a few things you can do if you want.
+The bot is written with **.NET Core 3.0**, meaning you can build it via `dotnet build`, which will create a binary executeable called `BrackeysBot.exe`. If you are missing packages make sure to run `dotnet restore` prior to building.
 
- * Star this repo.
- * Throw a few dollars at me on [PayPal](https://paypal.me/greemdev).
- * Join my Discord and be a functioning member of society.
+When run for the first time, the bot will create a `config.yaml` file next to your executeable. This is where all of the bot configuration will be placed. The only fields that are essential for running the bot are `token` and `prefix`.
 
-Don't want to do any of these? Using the bot and liking it is enough for me :)
- 
+```yaml
+token: 'Get this from the developer dashboard!'
+prefix: '[]'
+```
 
-## Thanks To
-<table>
-    <tr>
-        <td align="center" width="50%">
-            <a href="https://www.jetbrains.com/resharper/"><img src="https://d3nmt5vlzunoa1.cloudfront.net/dotnet/files/2017/06/logo.png" alt="Jetbrains ReSharper" width="150px"></img></a>
-            <p><strong>For providing me with an open-source license for developement of Volte.</strong></p>            
-        </td>
-        <td align="center" width="50%">
-            <a href="https://github.com/abyssal"><img src="https://img.greemdev.net/cpaXCdXden/74743c3b2052a828788a5bd4aeb0fa1e.png" alt="JProfiler" width="150px"></img></a>
-            <p><strong>For letting me <strike>steal your code</strike> use <a href="https://github.com/abyssal/abyss">whatever the hell your bot's name is now</a> as a reference.</strong></p>
-        </td>
-    </tr>
-</table>
+## Versioning
 
+Automatic versioning is planned for the future, but at the moment the version number needs to be manually updated in the file `Version.cs`. The system to update the version numbers goes as follows:
+
+|Number|Description|
+|--:|:--|
+|Major|Only updated by the repository administrators once a completely new version is deployed.|
+|Minor|Updated once a batch of features (or a [project](https://github.com/YilianSource/brackeys-bot/projects)) is fully implemented.|
+|Patch|Updated once a new feature is added.|
+|Hotfix|Updated if a feature requires a fix.|

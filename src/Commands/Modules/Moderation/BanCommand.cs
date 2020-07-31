@@ -1,40 +1,115 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using Qmmands;
-using Volte.Core.Attributes;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Commands.Results;
-using Gommon;
 
-namespace Volte.Commands.Modules
+using BrackeysBot.Core.Models;
+
+using Humanizer;
+
+namespace BrackeysBot.Commands
 {
-    public sealed partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule : BrackeysBotModule
     {
-        [Command("Ban")]
-        [Description("Bans the mentioned user.")]
-        [Remarks("ban {User} [String]")]
-        [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user,
-            [Remainder] string reason = "Banned by a Moderator.")
-        {
-            if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been banned from **{Context.Guild.Name}** for **{reason}**.")))
-            {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!");
-            }
+        private const int _pruneDays = 7;
 
-            await user.BanAsync(7, reason);
-            return Ok($"Successfully banned **{user}** from this guild.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithActionType(ModActionType.Ban)
-                    .WithTarget(user)
-                    .WithReason(reason))
-                );
+        [Command("ban")]
+        [Summary("Bans a member from the server, with an optional reason and duration.")]
+        [Remarks("ban <user> [duration] [reason]")]
+        [Priority(2)]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task BanAsync(
+            [Summary("The user to ban.")] SocketGuildUser user,
+            [Summary("The duration for the ban."), OverrideTypeReader(typeof(AbbreviatedTimeSpanTypeReader))] TimeSpan duration,
+            [Summary("The reason why to ban the user."), Remainder] string reason = DefaultReason)
+            => await TempbanAsync(user, duration, reason);
+
+        [Command("ban")]
+        [Priority(1)]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task BanAsync(
+            [Summary("The user to ban")] GuildUserProxy user,
+            [Summary("The duration for the ban."), OverrideTypeReader(typeof(AbbreviatedTimeSpanTypeReader))] TimeSpan duration,
+            [Summary("The reason why to ban the user."), Remainder] string reason = DefaultReason)
+        {
+            // Since the user cannot be found (we are using the GuildUserProxy) we don't need to attempt to message him
+            await Context.Guild.AddBanAsync(user.ID, _pruneDays, reason);
+
+            Moderation.AddTemporaryInfraction(TemporaryInfractionType.TempBan, user.ID, Context.User, duration, reason);
+
+            await ModerationLog.CreateEntry(ModerationLogEntry.New
+                .WithDefaultsFromContext(Context)
+                .WithActionType(ModerationActionType.TempBan)
+                .WithTarget(user.ID)
+                .WithDuration(duration)
+                .WithReason(reason), Context.Channel);
+        }
+
+        [Command("ban")]
+        [Summary("Bans a member from the server, with an optional reason.")]
+        [Remarks("ban <user> [reason]")]
+        [HideFromHelp]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task BanAsync(
+            [Summary("The user to ban.")] GuildUserProxy user,
+            [Summary("The reason why to ban the user."), Remainder] string reason = DefaultReason)
+        {
+            if (user.HasValue)
+                await user.GuildUser.TrySendMessageAsync($"You were banned from **{Context.Guild.Name}** because of {reason}.");
+            await Context.Guild.AddBanAsync(user.ID, _pruneDays, reason);
+
+            await ModerationLog.CreateEntry(ModerationLogEntry.New
+                .WithDefaultsFromContext(Context)
+                .WithActionType(ModerationActionType.Ban)
+                .WithTarget(user.ID)
+                .WithReason(reason), Context.Channel);
+        }
+
+        [Command("tempban")]
+        [Summary("Temporarily bans a member from the server, with an optional reason.")]
+        [Remarks("tempban <user> <duration> [reason]")]
+        [HideFromHelp]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task TempbanAsync(
+            [Summary("The user to temporarily ban.")] SocketGuildUser user, 
+            [Summary("The duration for the ban."), OverrideTypeReader(typeof(AbbreviatedTimeSpanTypeReader))] TimeSpan duration, 
+            [Summary("The reason why to ban the user."), Remainder] string reason = DefaultReason)
+        {
+            await user.TrySendMessageAsync($"You were banned from **{Context.Guild.Name}** for {duration.Humanize(7)} because of **{reason}**.");
+            await user.BanAsync(_pruneDays, reason);
+
+            Moderation.AddTemporaryInfraction(TemporaryInfractionType.TempBan, user, Context.User, duration, reason);
+
+            await ModerationLog.CreateEntry(ModerationLogEntry.New
+                .WithDefaultsFromContext(Context)
+                .WithActionType(ModerationActionType.TempBan)
+                .WithTarget(user)
+                .WithDuration(duration)
+                .WithReason(reason), Context.Channel);
+        }
+
+        [Command("unban")]
+        [Summary("Removes the ban on a member, if possible.")]
+        [Remarks("unban <userId>")]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task UnbanAsync(
+            [Summary("The user ID to unban.")] GuildUserProxy user)
+        {
+            await Context.Guild.RemoveBanAsync(user.ID);
+
+            Moderation.ClearTemporaryInfraction(TemporaryInfractionType.TempBan, user.ID);
+
+            await ModerationLog.CreateEntry(ModerationLogEntry.New
+                .WithDefaultsFromContext(Context)
+                .WithActionType(ModerationActionType.Unban)
+                .WithTarget(user.ID), Context.Channel);
         }
     }
 }

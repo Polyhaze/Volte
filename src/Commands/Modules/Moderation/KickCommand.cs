@@ -1,41 +1,34 @@
 ﻿using System.Threading.Tasks;
+
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using Qmmands;
-using Volte.Core.Attributes;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Commands.Results;
-using Gommon;
 
-namespace Volte.Commands.Modules
+namespace BrackeysBot.Commands
 {
-    public sealed partial class ModerationModule : VolteModule
+    public partial class ModerationModule : BrackeysBotModule
     {
-        [Command("Kick")]
-        [Description("Kicks the given user.")]
-        [Remarks("kick {User} [String]")]
-        [RequireBotGuildPermission(GuildPermission.KickMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> KickAsync([CheckHierarchy] SocketGuildUser user,
-            [Remainder] string reason = "Kicked by a Moderator.")
+        [Command("kick")]
+        [Summary("Kicks a user from the server.")]
+        [Remarks("kick <user> <reason>")]
+        [RequireModerator]
+        [RequireBotPermission(GuildPermission.KickMembers)]
+        public async Task KickUser(
+            [Summary("The user to kick.")] SocketGuildUser user,
+            [Summary("The reason to kick the user for."), Remainder] string reason = DefaultReason)
         {
-            if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.")))
-            {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {user}!");
-            }
-
             await user.KickAsync(reason);
 
-            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithActionType(ModActionType.Kick)
-                    .WithTarget(user)
-                    .WithReason(reason))
-                );
+            Moderation.AddInfraction(user, Infraction.Create(Moderation.RequestInfractionID())
+                .WithType(InfractionType.Kick)
+                .WithModerator(Context.User)
+                .WithDescription(reason));
+
+            await ModerationLog.CreateEntry(ModerationLogEntry.New
+                .WithDefaultsFromContext(Context)
+                .WithActionType(ModerationActionType.Kick)
+                .WithReason(reason)
+                .WithTarget(user), Context.Channel);
         }
     }
 }

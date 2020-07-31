@@ -1,34 +1,23 @@
-﻿using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
-using Qmmands;
-using Volte.Commands.Results;
-using Gommon;
-using Humanizer;
+﻿using System.Threading.Tasks;
 
-namespace Volte.Commands.Modules
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+
+namespace BrackeysBot.Commands
 {
-    public sealed partial class UtilityModule : VolteModule
+    public partial class UtilityModule : BrackeysBotModule
     {
-        [Command("Ping")]
-        [Description("Show the Gateway latency to Discord.")]
-        [Remarks("ping")]
-        public Task<ActionResult> PingAsync()
-            => None(async () =>
-            {
-                var e = Context.CreateEmbedBuilder("Pinging...");
-                var sw = new Stopwatch();
-                sw.Start();
-                var msg = await e.SendToAsync(Context.Channel);
-                sw.Stop();
-                await msg.ModifyAsync(x =>
-                {
-                    e.WithDescription(new StringBuilder()
-                        .AppendLine($"{EmojiService.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
-                        .AppendLine($"{EmojiService.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
-                        .ToString());
-                    x.Embed = e.Build();
-                });
-            }, false);
+        [Command("ping"), Alias("latency")]
+        [Summary("Displays the current latency of the bot.")]
+        public async Task GetLatencyAsync()
+        {
+            int latency = (Context.Client as DiscordSocketClient).Latency;
+
+            await GetDefaultBuilder()
+                .WithDescription($"Current latency is about {latency}ms.")
+                .Build()
+                .SendToChannel(Context.Channel);
+        }
     }
 }

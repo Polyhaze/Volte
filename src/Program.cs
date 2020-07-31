@@ -1,10 +1,8 @@
-﻿using Volte.Core;
-using System.Threading.Tasks;
-
-namespace Volte
+﻿namespace BrackeysBot
 {
-    internal static class Program
+    public class Program
     {
-        internal static async Task Main() => await VolteBot.StartAsync();
+        public static void Main(string[] args)
+            => new BrackeysBot().RunAsync().GetAwaiter().GetResult();
     }
 }

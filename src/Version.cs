@@ -1,22 +1,17 @@
 ﻿using SysVer = System.Version;
 
-namespace Volte
+namespace BrackeysBot
 {
     public static class Version
     {
-        public static SysVer AsDotNetVersion() => new SysVer(Major, Minor, Patch, Hotfix);
-        private static int Major => 3;
-        private static int Minor => 2;
-        private static int Patch => 1;
-        private static int Hotfix => 1;
-        public static ReleaseType ReleaseType => ReleaseType.Release;
-        public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        public static string DiscordNetVersion => Discord.DiscordConfig.Version;
-    }
+        public const int MAJOR = 3;
+        public const int MINOR = 0;
+        public const int PATCH = 12;
+        public const int HOTFIX = 0;
 
-    public enum ReleaseType
-    {
-        Development,
-        Release
+        public static string ShortVersion = $"{MAJOR}.{MINOR}";
+        public static string FullVersion => $"{MAJOR}.{MINOR}.{PATCH}.{HOTFIX}";
+        public static string DiscordVersion => Discord.DiscordConfig.Version;
+        public static SysVer AsSystemVersion() => new SysVer(MAJOR, MINOR, PATCH, HOTFIX);
     }
 }
