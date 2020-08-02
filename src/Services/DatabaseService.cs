@@ -26,7 +26,7 @@ namespace Volte.Services
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
             if (!(conf is null)) return conf;
-            var newConf = new GuildData(_client.GetGuild(id));
+            var newConf = Create(_client.GetGuild(id));
             coll.Insert(newConf);
             return newConf;
         }
@@ -37,6 +37,42 @@ namespace Volte.Services
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);
         }
+
+        private static GuildData Create(SocketGuild guild)
+            => new GuildData
+            {
+                Id = guild.Id,
+                OwnerId = guild.OwnerId,
+                Configuration = new GuildConfiguration
+                {
+                    Autorole = default,
+                    CommandPrefix = Config.CommandPrefix,
+                    DeleteMessageOnCommand = default,
+                    Moderation = new ModerationOptions
+                    {
+                        AdminRole = default,
+                        Antilink = default,
+                        Blacklist = new List<string>(),
+                        MassPingChecks = default,
+                        ModActionLogChannel = default,
+                        ModRole = default
+                    },
+                    Welcome = new WelcomeOptions
+                    {
+                        LeavingMessage = string.Empty,
+                        WelcomeChannel = default,
+                        WelcomeColor = new Color(0x7000FB).RawValue,
+                        WelcomeMessage = string.Empty
+                    }
+                },
+                Extras = new GuildExtras
+                {
+                    ModActionCaseNumber = default,
+                    SelfRoles = new List<string>(),
+                    Tags = new List<Tag>(),
+                    Warns = new List<Warn>()
+                }
+            };
 
         public void Dispose() 
             => Database.Dispose();
