@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading;
 using Discord;
 using Discord.WebSocket;
@@ -11,7 +10,6 @@ using Qmmands;
 using RestSharp;
 using Volte;
 using Volte.Services;
-using Volte.Core.Attributes;
 using Version = Volte.Version;
 
 namespace Gommon
@@ -36,7 +34,7 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
-                    LogLevel = Version.ReleaseType is ReleaseType.Development
+                    LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
                         ? LogSeverity.Debug
                         : LogSeverity.Verbose,
                     AlwaysDownloadUsers = true,
@@ -48,7 +46,7 @@ namespace Gommon
         public static IServiceCollection AddVolteServices(this IServiceCollection coll)
         {
             //get all the classes that are Volte[Event]Services, aren't abstract, and don't have the System.ObsoleteAttribute attribute.
-            foreach (var service in Assembly.GetExecutingAssembly().GetTypes()
+            foreach (var service in typeof(Program).Assembly.GetTypes()
                 .Where(t => !t.HasAttribute<ObsoleteAttribute>() && (
                             t.Inherits<VolteEventService>() 
                             || t.Inherits<VolteService>()) && !t.IsAbstract))

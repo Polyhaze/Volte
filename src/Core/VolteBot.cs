@@ -71,12 +71,12 @@ namespace Volte.Core
             {
                 logger.Critical(LogSource.Volte,
                     "Bot shutdown requested; shutting down and cleaning up.");
-                await ShutdownAsync(_client);
+                await ShutdownAsync(_client, _provider);
             }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        public static async Task ShutdownAsync(DiscordShardedClient client)
+        public static async Task ShutdownAsync(DiscordShardedClient client, IServiceProvider provider)
         {
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
@@ -87,11 +87,8 @@ namespace Volte.Core
                         $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().GetUptime()}**!")
                     .SendToAsync(channel);
             }
-
-            var disposables = Assembly.GetCallingAssembly().GetTypes()
-                .Where(t => t.Inherits<IDisposable>())
-                .Select(x => x.Cast<IDisposable>());
-            foreach (var disposable in disposables)
+            
+            foreach (var disposable in provider.GetServices<IDisposable>())
             {
                 disposable?.Dispose();
             }

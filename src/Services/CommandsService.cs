@@ -30,7 +30,7 @@ namespace Volte.Services
 
         public async Task OnCommandAsync(CommandCalledEventArgs args)
         {
-            ResultCompletionData data = null;
+            ResultCompletionData data;
             switch (args.Result)
             {
                 case ActionResult actionRes:
@@ -62,6 +62,7 @@ namespace Volte.Services
                         $"The command {args.Context.Command.Name} didn't return some form of ActionResult. " +
                         "This is developer error. " +
                         "Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
+                    data = null;
                     break;
                 }
                     

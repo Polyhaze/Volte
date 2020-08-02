@@ -1,3 +1,6 @@
+using Discord;
+using Gommon;
+
 namespace Volte.Services
 {
     public sealed class EmojiService : VolteService
@@ -12,5 +15,11 @@ namespace Volte.Services
         public string Three { get; } = "\u0033\u20E3";
         public string Four { get; } = "\u0034\u20E3";
         public string Five { get; } = "\u0035\u20E3";
+
+        public (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollEmojis()
+            => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
+
+        public (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis() 
+            => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
     }
 }

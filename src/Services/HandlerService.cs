@@ -35,7 +35,7 @@ namespace Volte.Services
             sw.Stop();
             _logger.Info(LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands loaded in {sw.ElapsedMilliseconds}ms.");
-            await _client.RegisterVolteEventHandlersAsync(provider);
+            _client.RegisterVolteEventHandlers(provider);
         }
     }
 }

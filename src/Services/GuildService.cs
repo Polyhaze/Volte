@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -12,7 +13,7 @@ using Gommon;
 
 namespace Volte.Services
 {
-    public sealed class GuildService : VolteService
+    public sealed class GuildService : VolteEventService
     {
         private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;
@@ -24,7 +25,17 @@ namespace Volte.Services
             _client = discordShardedClient;
         }
 
-        public async Task OnJoinAsync(JoinedGuildEventArgs args)
+        public override Task DoAsync(EventArgs args)
+        {
+            if (args is JoinedGuildEventArgs joinedArgs)
+                return OnJoinAsync(joinedArgs);
+            if (args is LeftGuildEventArgs leftArgs)
+                return OnLeaveAsync(leftArgs);
+            return Task.CompletedTask;
+        }
+        
+
+        private async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Joined a guild.");
             if (Config.BlacklistedOwners.Contains(args.Guild.Owner.Id))
@@ -92,7 +103,7 @@ namespace Volte.Services
                 await e.WithSuccessColor().SendToAsync(channel);
         }
 
-        public async Task OnLeaveAsync(LeftGuildEventArgs args)
+        private async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))

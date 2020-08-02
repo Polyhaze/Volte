@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
@@ -21,13 +22,16 @@ namespace Volte.Services
             _client = client;
         }
 
+        private static readonly RegexOptions Options =
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
+
         private static readonly Regex JumpUrlPattern = new Regex(
             @"(?<Prelink>\S+\s+\S*)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<Postlink>\S*\s+\S+)?",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            Options);
         
         private static readonly Regex JumpUrlRemover = new Regex(
             @"https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(\d+)/(\d+)/(\d+)?",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            Options);
 
         public override Task DoAsync(EventArgs args)
             => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>());
@@ -42,8 +46,8 @@ namespace Volte.Services
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
 
-                var g = _client.GetGuild(guildId);
-                var c = g?.GetTextChannel(channelId);
+            var g = _client.GetGuild(guildId);
+            var c = g?.GetTextChannel(channelId);
                 if (c is null) return;
 
                 var m = await c.GetMessageAsync(messageId);

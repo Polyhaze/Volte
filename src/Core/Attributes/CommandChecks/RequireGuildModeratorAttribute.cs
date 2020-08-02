@@ -10,7 +10,7 @@ namespace Volte.Core.Attributes
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
-            if (ctx.User.IsModerator(ctx.ServiceProvider)) return CheckResult.Successful;
+            if (ctx.User.IsModerator(ctx)) return CheckResult.Successful;
             
             return CheckResult.Unsuccessful("Insufficient permission.");
         }

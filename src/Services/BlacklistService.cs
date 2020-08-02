@@ -35,7 +35,7 @@ namespace Volte.Services
         {
             if (!args.Data.Configuration.Moderation.Blacklist.Any()) return;
             _logger.Debug(LogSource.Volte, "Checking a message for blacklisted words.");
-            if (args.Context.User.IsAdmin(_provider))
+            if (args.Context.User.IsAdmin(args.Context))
             {
                 _logger.Debug(LogSource.Volte, "Aborting check because the user is a guild admin.");
                 return;
@@ -47,34 +47,8 @@ namespace Volte.Services
                 _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
                 var action = args.Data.Configuration.Moderation.BlacklistAction;
                 if (action is BlacklistAction.Nothing) return;
-                await PerformBlacklistAction(args.Context, args.Message.Author.Cast<SocketGuildUser>(), action, word);
+                await action.PerformAsync(args.Context, args.Message.Author.Cast<SocketGuildUser>(), word);
             }
-        }
-
-        private async Task PerformBlacklistAction(VolteContext ctx, SocketGuildUser member, BlacklistAction action,
-            string word)
-        {
-            switch (action)
-            {
-                case BlacklistAction.Warn:
-                    await WarnAsync(ctx, member, $"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Kick:
-                    await member.KickAsync($"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Ban:
-                    await member.BanAsync(7, $"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Nothing:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
-            }
-        }
-
-        private async Task WarnAsync(VolteContext ctx, SocketGuildUser member, string reason)
-        {
-            await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, _db, _logger, reason);
         }
     }
 }

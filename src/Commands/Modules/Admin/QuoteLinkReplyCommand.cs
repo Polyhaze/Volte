@@ -6,7 +6,7 @@ namespace Volte.Commands.Modules
 {
     public partial class AdminModule : VolteModule
     {
-        [Command("QuoteLinkReply", "QuoteLink", "QuoteReply", "JumpUrlReply", "Qrl")]
+        [Command("QuoteLinkReply", "QuoteLink", "QuoteReply", "JumpUrlReply", "Qrl", "Qlr")]
         [Description("Enables or disables the Quote link parsing and sending into a channel that a 'Quote URL' is posted to for this guild.")]
         [Remarks("quotelinkreply {Boolean}")]
         public Task<ActionResult> QuoteLinkReplyCommandAsync(bool enabled)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
@@ -19,22 +20,21 @@ namespace Gommon
         private static bool IsGuildOwner(this SocketGuildUser user)
             => user.Guild.OwnerId == user.Id || IsBotOwner(user);
 
-        public static bool IsModerator(this SocketGuildUser user, IServiceProvider provider)
+        public static bool IsModerator(this SocketGuildUser user, VolteContext ctx)
         {
-            provider.Get<DatabaseService>(out var db);
-            return HasRole(user, db.GetData(user.Guild).Configuration.Moderation.ModRole) ||
-                   IsAdmin(user, provider) ||
+            ctx.ServiceProvider.Get<DatabaseService>(out var db);
+            return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
+                   IsAdmin(user, ctx) ||
                    IsGuildOwner(user);
         }
 
         private static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this SocketGuildUser user, IServiceProvider provider)
+        public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
         {
-            provider.Get<DatabaseService>(out var db);
-            return HasRole(user,
-                       db.GetData(user.Guild).Configuration.Moderation.AdminRole) ||
+            ctx.ServiceProvider.Get<DatabaseService>(out var db);
+            return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
         }
 
@@ -77,46 +77,42 @@ namespace Gommon
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
             => client.GetGuild(405806471578648588);
 
-        public static Task RegisterVolteEventHandlersAsync(this DiscordShardedClient client, IServiceProvider provider)
+        public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
             provider.Get<WelcomeService>(out var welcome);
             provider.Get<GuildService>(out var guild);
             provider.Get<EventService>(out var evt);
             provider.Get<AutoroleService>(out var autorole);
             provider.Get<LoggingService>(out var logger);
-            return Executor.ExecuteAsync(() =>
-            {
-                client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
-                client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
-                client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
-                
-                client.UserJoined += async user =>
-                {
-                    if (Config.EnabledFeatures.Welcome)
-                        await welcome.JoinAsync(new UserJoinedEventArgs(user));
-                    if (Config.EnabledFeatures.Autorole)
-                        await autorole.DoAsync(new UserJoinedEventArgs(user));
-                };
-                client.UserLeft += async user =>
-                {
-                    if (Config.EnabledFeatures.Welcome)
-                        await welcome.LeaveAsync(new UserLeftEventArgs(user));
-                };
-                
-                client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
-                client.MessageReceived += async s =>
-                {
-                    if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
-                    if (msg.Channel is IDMChannel dmc)
-                    {
-                        await dmc.SendMessageAsync("Currently, I do not support commands via DM.");
-                        return;
-                    }
+            client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
+            client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
+            client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
 
-                    await evt.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
-                };
-                return Task.CompletedTask;
-            });
+            client.UserJoined += async user =>
+            {
+                if (Config.EnabledFeatures.Welcome)
+                    await welcome.JoinAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Autorole)
+                    await autorole.DoAsync(new UserJoinedEventArgs(user));
+            };
+            client.UserLeft += async user =>
+            {
+                if (Config.EnabledFeatures.Welcome)
+                    await welcome.LeaveAsync(new UserLeftEventArgs(user));
+            };
+
+            client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
+            client.MessageReceived += async s =>
+            {
+                if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
+                if (msg.Channel is IDMChannel dmc)
+                {
+                    await dmc.SendMessageAsync("Currently, I do not support commands via DM.");
+                    return;
+                }
+
+                await evt.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
+            };
         }
 
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>

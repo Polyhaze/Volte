@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Volte.Core;
 using Volte.Core.Models.Misc;
 using Volte.Services;
@@ -11,6 +12,7 @@ namespace Volte.Core.Helpers
 {
     public static class PollHelpers
     {
+        
 
         public static PollInfo GetPollBody(IEnumerable<string> choices, EmojiService e)
         {
@@ -18,40 +20,68 @@ namespace Volte.Core.Helpers
             return PollInfo.FromDefaultFields(c.Length - 1, e, c);
         }
 
-        public static async Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService emojiService)
+        public static async Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService e)
         {
+            var (one, two, three, four, five) = e.GetPollEmojis();
+
             switch (amount)
             {
                 case 1:
-                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
+                    await One();
                     break;
 
                 case 2:
-                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
+                    await Two();
                     break;
 
                 case 3:
-                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
+                    await Three();
                     break;
 
                 case 4:
-                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Four.ToEmoji());
+                    await Four();
                     break;
 
                 case 5:
-                    await msg.AddReactionAsync(emojiService.One.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Two.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Three.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Four.ToEmoji());
-                    await msg.AddReactionAsync(emojiService.Five.ToEmoji());
+                    await Five();
                     break;
             }
+
+            async Task One()
+            {
+                await msg.AddReactionAsync(one);
+            }
+
+            async Task Two()
+            {
+                await msg.AddReactionAsync(one);
+                await msg.AddReactionAsync(two);
+            }
+            
+            async Task Three()
+            {
+                await msg.AddReactionAsync(one);
+                await msg.AddReactionAsync(two);
+                await msg.AddReactionAsync(three);
+            }
+            
+            async Task Four()
+            {
+                await msg.AddReactionAsync(one);
+                await msg.AddReactionAsync(two);
+                await msg.AddReactionAsync(three);
+                await msg.AddReactionAsync(four);
+            }
+            
+            async Task Five()
+            {
+                await msg.AddReactionAsync(one);
+                await msg.AddReactionAsync(two);
+                await msg.AddReactionAsync(three);
+                await msg.AddReactionAsync(four);
+                await msg.AddReactionAsync(five);
+            }
+            
         }
     }
 }

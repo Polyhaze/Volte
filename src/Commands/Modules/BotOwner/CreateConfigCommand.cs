@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
             guild ??= Context.Guild;
             return Ok($"Created a config for {Format.Bold(guild.Name)} if it didn't exist.", m =>
             {
-                _ = Db.GetData(guild?.Id ?? Context.Guild.Id);
+                _ = Db.GetData(guild.Id);
                 return Task.CompletedTask;
             });
         }

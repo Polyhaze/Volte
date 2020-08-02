@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -43,10 +44,10 @@ namespace Volte.Services
         internal void PrintVersion()
         {
             Info(LogSource.Volte, "--------------------------------------------");
-            foreach (var asciiLine in new Figlet().ToAscii("Volte").ConcreteValue.Split("\n")) //i had to look at colorful.console's source for this snippet lol
+            new Figlet().ToAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(asciiLine =>
             {
                 Info(LogSource.Volte, asciiLine);
-            }
+            });
             Info(LogSource.Volte, "--------------------------------------------");
             Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
         }

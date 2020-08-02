@@ -5,7 +5,7 @@ namespace Volte.Core.Models.BotConfig
 {
     public sealed class GuildLogging
     {
-        internal GuildLogging()
+        public GuildLogging()
         {
             Enabled = false;
             GuildId = ulong.MinValue;

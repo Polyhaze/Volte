@@ -9,14 +9,13 @@ namespace Volte
         private static int Minor => 2;
         private static int Patch => 1;
         private static int Hotfix => 1;
-        public static ReleaseType ReleaseType => ReleaseType.Release;
+        public static DevelopmentStage ReleaseType => DevelopmentStage.Release;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;
-    }
-
-    public enum ReleaseType
-    {
-        Development,
-        Release
+        public enum DevelopmentStage
+        {
+            Development,
+            Release
+        }
     }
 }

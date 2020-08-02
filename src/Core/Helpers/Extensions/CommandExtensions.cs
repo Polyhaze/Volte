@@ -15,6 +15,9 @@ namespace Gommon
     {
         public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
+        
+        public static string SanitizeParserName(this Type type)
+            => type.Name.Replace("Parser", string.Empty);
 
         public static string GetUsage(this Command c, VolteContext ctx)
             => (c.Remarks ?? "No usage provided")
@@ -26,8 +29,8 @@ namespace Gommon
 
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var addMethod = typeof(CommandService).GetMethod("AddTypeParser");
+            var assembly = typeof(VolteBot).Assembly;
+            var meth = typeof(CommandService).GetMethod("AddTypeParser");
             var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>()).ToList();
 
             var loadedTypes = new List<Type>();
@@ -35,8 +38,8 @@ namespace Gommon
             {
                 var attr = parserType.GetCustomAttribute<VolteTypeParserAttribute>();
                 var parser = parserType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
-                var method = addMethod?.MakeGenericMethod(
-                    parserType.BaseType?.GenericTypeArguments[0] 
+                var method = meth?.MakeGenericMethod(
+                    parserType.BaseType?.GenericTypeArguments[0]
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
                 method?.Invoke(service, new[] {parser, attr?.OverridePrimitive});
                 loadedTypes.Add(parserType);

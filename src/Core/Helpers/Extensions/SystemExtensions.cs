@@ -18,9 +18,6 @@ namespace Gommon
         
         public static string GetUptime(this Process process)
             => (DateTime.Now - process.StartTime).Humanize(3);
-        
-        public static string SanitizeParserName(this Type type)
-            => type.Name.Replace("Parser", string.Empty);
 
         public static bool IsMatch(this Regex regex, string str, out Match match)
         {
