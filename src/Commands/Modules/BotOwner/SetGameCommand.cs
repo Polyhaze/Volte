@@ -15,8 +15,8 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> SetGameAsync([Remainder] string game)
         {
             var activity = Context.Client.Activity;
-            return Context.Client.Activity.Type == ActivityType.Streaming
-                ? Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game, (activity as StreamingGame).Url, activity.Type))
+            return Context.Client.Activity.Type is ActivityType.Streaming
+                ? Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game, activity.Cast<StreamingGame>().Url, activity.Type))
                 : Ok($"Set the bot's game to **{game}**.", _ => Context.Client.SetGameAsync(game));
         }
     }
