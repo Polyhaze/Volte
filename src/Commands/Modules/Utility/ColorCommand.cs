@@ -10,7 +10,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current guild.")]

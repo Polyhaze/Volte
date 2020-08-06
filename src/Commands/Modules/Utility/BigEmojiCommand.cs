@@ -8,7 +8,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("BigEmoji", "HugeEmoji", "BigEmote", "HugeEmote")]
         [Description("Shows the image URL for a given emoji.")]

@@ -1,5 +1,4 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -9,10 +8,8 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule
     {
-        public HttpClient Http { get; set; }
-
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar via the given url")]
         [Remarks("setavatar {String}")]

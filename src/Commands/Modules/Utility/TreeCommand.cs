@@ -9,7 +9,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class UtilityModule
+    public sealed partial class UtilityModule
     {
         [Command("Tree")]
         [Description("Shows all categories in this guild and their children channels.")]

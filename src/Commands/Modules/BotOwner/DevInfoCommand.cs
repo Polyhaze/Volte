@@ -11,7 +11,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule
     {
         [Command("DevInfo", "Di")]
         [Description("Shows information about the bot and about the system it's hosted on.")]

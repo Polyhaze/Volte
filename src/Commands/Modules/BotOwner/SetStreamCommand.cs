@@ -7,7 +7,7 @@ using Volte.Core.Attributes;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule
     {
         [Command("SetStream")]
         [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]

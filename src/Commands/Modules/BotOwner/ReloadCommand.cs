@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule
     {
         [Command("Reload", "Rl")]
         [Description(

@@ -4,7 +4,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule : VolteModule    
+    public partial class AdminModule
     {
         [Command("TagShow", "TagSh")]
         [Description("Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]

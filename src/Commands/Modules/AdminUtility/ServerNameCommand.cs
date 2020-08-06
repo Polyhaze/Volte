@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminUtilityModule : VolteModule
+    public sealed partial class AdminUtilityModule
     {
         [Command("GuildName", "Gn")]
         [Description("Sets the name of the current guild.")]

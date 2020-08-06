@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class BotOwnerModule : VolteModule
+    public sealed partial class BotOwnerModule
     {
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]

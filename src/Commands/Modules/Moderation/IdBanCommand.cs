@@ -8,7 +8,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule
     {
         [Command("IdBan")]
         [Description("Bans a user based on their ID.")]

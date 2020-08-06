@@ -5,7 +5,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule : VolteModule
+    public sealed partial class AdminModule
     {
         [Command("Antilink", "Al")]
         [Description("Enable/Disable Antilink for the current guild.")]

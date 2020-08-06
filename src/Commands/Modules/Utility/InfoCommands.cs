@@ -10,10 +10,8 @@ using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
-        public CommandsService CommandsService { get; set; }
-
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
         [Remarks("info")]

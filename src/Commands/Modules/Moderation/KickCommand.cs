@@ -10,7 +10,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule
     {
         [Command("Kick")]
         [Description("Kicks the given user.")]

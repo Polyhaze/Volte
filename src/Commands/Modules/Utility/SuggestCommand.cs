@@ -4,7 +4,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("Suggest")]
         [Description("Suggest features for Volte.")]

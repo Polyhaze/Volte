@@ -8,7 +8,7 @@ using Humanizer;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("Ping")]
         [Description("Show the Gateway latency to Discord.")]

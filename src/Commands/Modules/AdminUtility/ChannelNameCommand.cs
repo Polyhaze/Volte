@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminUtilityModule : VolteModule
+    public sealed partial class AdminUtilityModule
     {
         [Command("ChannelName", "Cn")]
         [Description("Sets the name of the current channel.")]

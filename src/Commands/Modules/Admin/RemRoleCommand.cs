@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule : VolteModule
+    public sealed partial class AdminModule
     {
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]

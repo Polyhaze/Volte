@@ -6,7 +6,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule : VolteModule
+    public sealed partial class AdminModule
     {
         [Command("AdminRole")]
         [Description("Sets the role able to use Admin commands for the current guild.")]

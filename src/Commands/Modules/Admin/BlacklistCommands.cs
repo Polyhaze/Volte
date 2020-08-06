@@ -7,7 +7,7 @@ using Volte.Core.Models.Guild;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule : VolteModule
+    public sealed partial class AdminModule
     {
         [Command("BlacklistAdd", "BlAdd")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]

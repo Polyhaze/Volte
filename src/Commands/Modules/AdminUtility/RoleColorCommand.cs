@@ -7,7 +7,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminUtilityModule : VolteModule
+    public sealed partial class AdminUtilityModule
     {
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role. Accepts a Hex or RGB value.")]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -10,7 +11,7 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule
     {
         [Command("Delete")]
         [Description("Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
@@ -23,16 +24,13 @@ namespace Volte.Commands.Modules
             if (target is null)
                 return BadRequest("That message doesn't exist in this channel.");
 
-            await target.DeleteAsync(new RequestOptions
-            {
-                AuditLogReason = $"Message deleted by Moderator {Context.User}."
-            });
+            await target.TryDeleteAsync($"Message deleted by Moderator {Context.User}.");
 
             return Ok($"{EmojiService.BallotBoxWithCheck} Deleted that message.", async m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
                 {
-                    await Context.Message.DeleteAsync();
+                    await Context.Message.TryDeleteAsync();
                     await m.DeleteAsync();
                 });
 

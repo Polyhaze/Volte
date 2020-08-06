@@ -8,7 +8,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("Poll")]
         [Description("Create a poll.")]

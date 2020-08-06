@@ -8,7 +8,7 @@ using Gommon;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class ModerationModule : VolteModule
+    public sealed partial class ModerationModule
     {
         [Command("Bans")]
         [Description("Shows all bans in this guild.")]

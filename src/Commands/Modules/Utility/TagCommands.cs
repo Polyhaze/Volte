@@ -8,7 +8,7 @@ using Volte.Core.Models.Guild;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class UtilityModule : VolteModule
+    public sealed partial class UtilityModule
     {
         [Command("Tag")]
         [Priority(0)]
