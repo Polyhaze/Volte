@@ -11,6 +11,6 @@ namespace Volte.Core.Models.Guild
         public DateTimeOffset Date { get; set; }
 
         public override string ToString()
-            => JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 }

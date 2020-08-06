@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
@@ -14,6 +15,11 @@ namespace Gommon
 {
     public static partial class Extensions
     {
+        /// <summary>
+        ///     Checks if the current user is the user identified in the bot's config.
+        /// </summary>
+        /// <param name="user">The current user</param>
+        /// <returns>True, if the current user is the bot's owner; false otherwise.</returns>
         public static bool IsBotOwner(this SocketGuildUser user)
             => Config.Owner == user.Id;
 
@@ -33,7 +39,7 @@ namespace Gommon
 
         public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
         {
-            ctx.ServiceProvider.Get<DatabaseService>(out var db);
+            var db = ctx.ServiceProvider.GetRequiredService<DatabaseService>();
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
         }
@@ -79,39 +85,36 @@ namespace Gommon
 
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
-            provider.Get<WelcomeService>(out var welcome);
-            provider.Get<GuildService>(out var guild);
-            provider.Get<EventService>(out var evt);
-            provider.Get<AutoroleService>(out var autorole);
-            provider.Get<LoggingService>(out var logger);
+            var welcome = provider.Get<WelcomeService>();
+            var guild = provider.Get<GuildService>();
+            var evt = provider.Get<EventService>();
+            var autorole = provider.Get<AutoroleService>();
+            var logger = provider.Get<LoggingService>();
             client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
             client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
             client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
 
             client.UserJoined += async user =>
             {
-                if (Config.EnabledFeatures.Welcome)
-                    await welcome.JoinAsync(new UserJoinedEventArgs(user));
-                if (Config.EnabledFeatures.Autorole)
-                    await autorole.DoAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(new UserJoinedEventArgs(user));
             };
             client.UserLeft += async user =>
             {
-                if (Config.EnabledFeatures.Welcome)
-                    await welcome.LeaveAsync(new UserLeftEventArgs(user));
+                if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(new UserLeftEventArgs(user));
             };
 
             client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
-            client.MessageReceived += async s =>
+            client.MessageReceived += async socketMessage =>
             {
-                if (!(s is SocketUserMessage msg) || msg.Author.IsBot) return;
-                if (msg.Channel is IDMChannel dmc)
+                if (socketMessage.ShouldHandle(out var msg))
                 {
-                    await dmc.SendMessageAsync("Currently, I do not support commands via DM.");
-                    return;
-                }
+                    if (msg.Channel is IDMChannel)
+                        await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    else
+                        await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
 
-                await evt.HandleMessageAsync(new MessageReceivedEventArgs(s, provider));
+                };
             };
         }
 
@@ -133,6 +136,17 @@ namespace Gommon
         public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
+
+        public static bool ShouldHandle(this SocketMessage message, out SocketUserMessage userMessage)
+        {
+            if (message is SocketUserMessage msg && !msg.Author.IsBot)
+            {
+                userMessage = msg;
+                return true;
+            }
+            userMessage = null;
+                return false;
+        }
 
         public static async Task<bool> TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
         {
@@ -158,5 +172,8 @@ namespace Gommon
 
         public static bool HasAttachments(this IMessage message)
             => !message.Attachments.IsEmpty();
+
+        public static bool HasColor(this IRole role)
+            => !(role.Color.RawValue is 0);
     }
 }

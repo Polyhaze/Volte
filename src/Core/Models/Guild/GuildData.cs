@@ -25,6 +25,6 @@ namespace Volte.Core.Models.Guild
         public GuildExtras Extras { get; set; }
 
         public override string ToString()
-            => JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 }

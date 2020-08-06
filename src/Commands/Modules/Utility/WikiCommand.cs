@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
                 { "Features", $"{_baseWikiUrl}/Features"},
                 { "Contributing", $"{_baseWikiUrl}/Contributing"},
                 { "Setting Volte Up", $"{_baseWikiUrl}/Setting-Volte-Up"},
-                {"Argument Cheatsheet", $"{_baseWikiUrl}/Argument-Cheatsheet"},
+                { "Argument Cheatsheet", $"{_baseWikiUrl}/Argument-Cheatsheet"},
                 { "Developers:Selfhost:Windows", $"{_baseWikiUrl}/Windows"},
                 { "Developers:Selfhost:Linux", $"{_baseWikiUrl}/Linux"},
                 { "Developers:Dependency Injection", $"{_baseWikiUrl}/Dependency-Injection"}

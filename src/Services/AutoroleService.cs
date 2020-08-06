@@ -19,7 +19,7 @@ namespace Volte.Services
         }
 
         public override Task DoAsync(EventArgs args)
-            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>());
+            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>() ?? throw new InvalidOperationException($"AutoRole was triggered with a null event. Expected: {nameof(UserJoinedEventArgs)}, Received: {args.GetType().Name}"));
 
         private async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {

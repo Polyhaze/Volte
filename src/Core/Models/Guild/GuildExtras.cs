@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Volte.Core.Models.Guild
@@ -26,5 +27,8 @@ namespace Volte.Core.Models.Guild
         
         [JsonPropertyName("auto_parse_quote_urls")]
         public bool AutoParseQuoteUrls { get; set; }
+        
+        public override string ToString()
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 }

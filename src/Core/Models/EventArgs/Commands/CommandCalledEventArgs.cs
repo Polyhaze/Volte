@@ -9,9 +9,9 @@ namespace Volte.Core.Models.EventArgs
     {
         public IResult Result { get; }
         public override VolteContext Context { get; }
-        public Stopwatch Stopwatch { get; }
-        public string Command { get; }
-        public string Arguments { get; }
+        public override Stopwatch Stopwatch { get; }
+        public override string Command { get; }
+        public override string Arguments { get; }
 
         public CommandCalledEventArgs(IResult res, CommandContext context, Stopwatch sw)
         {
@@ -22,5 +22,8 @@ namespace Volte.Core.Models.EventArgs
             Arguments = Context.Message.Content.Replace($"{Command}", "").Trim();
             if (string.IsNullOrEmpty(Arguments)) Arguments = "None";
         }
-    }
+
+        public string ExecutedLogMessage()
+            => $"                    |           -Executed: {Result.IsSuccessful}";
+        }
 }

@@ -16,7 +16,7 @@ namespace Volte.Core
         public const string ConfigFilePath = DataDirectory + "/volte.json";
         private static BotConfig _configuration;
 
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        public static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = true,

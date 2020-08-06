@@ -33,7 +33,7 @@ namespace Volte.Services
 
         public override Task DoAsync(EventArgs args)
         {
-            Log(args.Cast<LogEventArgs>());
+            Log(args.Cast<LogEventArgs>() ?? throw new InvalidOperationException($"Logger was triggered with a null event. Expected: {nameof(LogEventArgs)}, Received: {args.GetType().Name}"));
             return Task.CompletedTask;
         }
 

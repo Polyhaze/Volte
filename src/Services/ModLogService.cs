@@ -23,7 +23,7 @@ namespace Volte.Services
         }
 
         public override Task DoAsync(EventArgs args)
-            => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>());
+            => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>() ?? throw new InvalidOperationException($"ModLog was triggered with a null event. Expected: {nameof(ModActionEventArgs)}, Received: {args.GetType().Name}"));
 
         private async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
@@ -183,10 +183,7 @@ namespace Volte.Services
         private string Action(ModActionEventArgs args) => $"**Action:** {args.ActionType}";
         private string Moderator(ModActionEventArgs args) => $"**Moderator:** {args.Moderator} ({args.Moderator.Id})";
         private string Channel(ModActionEventArgs args) => $"**Channel:** {args.Context.Channel.Mention}";
-
-        private string Case(ModActionEventArgs args) =>
-            $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
-
+        private string Case(ModActionEventArgs args) => $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
         private string Count(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
 
         private string TargetUser(ModActionEventArgs args, bool isOnMessageDelete, bool isOnIdBan) => isOnMessageDelete

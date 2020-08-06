@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).Where(x => !(x is SocketCategoryChannel)).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
-                .AddField("Uptime", Process.GetCurrentProcess().GetUptime(), true)
+                .AddField("Uptime", Process.GetCurrentProcess().CalculateUptime(), true)
                 .AddField("Successful Commands", CommandsService.SuccessfulCommandCalls, true)
                 .AddField("Failed Commands", CommandsService.FailedCommandCalls, true)
                 .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
@@ -50,7 +50,8 @@ namespace Volte.Commands.Modules
                     $"{user.CreatedAt.FormatDate()}, {user.CreatedAt.FormatFullTime()}")
                 .AddField("Joined This Guild",
                     $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatDate() : "\u200B")}, " +
-                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}"));
+                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}")
+                .WithThumbnailUrl(user.GetAvatarUrl(size: 512)));
         }
 
         [Command("GuildInfo", "Gi")]
@@ -70,7 +71,8 @@ namespace Volte.Commands.Modules
                 .AddField("Roles", Context.Guild.Roles.Count, true)
                 .AddField("Category Channels", Context.Guild.CategoryChannels.Count, true)
                 .AddField("Voice Channels", Context.Guild.VoiceChannels.Count, true)
-                .AddField("Text Channels", Context.Guild.TextChannels.Count, true));
+                .AddField("Text Channels", Context.Guild.TextChannels.Count, true)
+                .WithThumbnailUrl(Context.Guild.IconUrl));
         }
 
     }

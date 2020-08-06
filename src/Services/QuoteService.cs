@@ -34,7 +34,7 @@ namespace Volte.Services
             Options);
 
         public override Task DoAsync(EventArgs args)
-            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>());
+            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"Quote was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args?.GetType().Name}"));
 
         private async Task OnMessageReceivedAsync(MessageReceivedEventArgs args)
         {
@@ -81,7 +81,7 @@ namespace Volte.Services
 
             if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
-                var comment = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), "");
+                var comment = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ");
                 var strings = comment.Split("  ");
                 e.AddField("Comment", strings.IsEmpty() ? comment : strings.Join(" "), true);
             }

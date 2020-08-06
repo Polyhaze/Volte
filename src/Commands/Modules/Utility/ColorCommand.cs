@@ -17,10 +17,10 @@ namespace Volte.Commands.Modules
         [Remarks("color {Role}")]
         public async Task<ActionResult> RoleColorAsync([Remainder] SocketRole role)
         {
-            if (role.Color.RawValue is 0) return BadRequest("Role does not have a color.");
+            if (!role.HasColor()) return BadRequest("Role does not have a color.");
             
             await using var stream = new Rgba32(role.Color.R, role.Color.G, role.Color.B).CreateColorImage();
-            await Context.Channel.SendFileAsync(stream, "role.png", null, embed: new EmbedBuilder()
+            await stream.SendFileToAsync(Context.Channel, "role.png", false, new EmbedBuilder()
                 .WithColor(role.Color)
                 .WithTitle("Role Color")
                 .WithDescription(new StringBuilder()

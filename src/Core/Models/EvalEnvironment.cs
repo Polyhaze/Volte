@@ -34,17 +34,10 @@ namespace Volte.Core.Models
         public EmojiService Emoji { get; set; }
         public EvalEnvironment Environment { get; set; }
 
-        public SocketGuildUser User(ulong id) 
-            => Context.Guild.GetUser(id);
-
-        public SocketGuildUser User(string username) 
-            => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
-
-        public SocketTextChannel TextChannel(ulong id)
-            => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
-        
-        public SocketUserMessage Message(ulong id)
-            => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
+        public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
+        public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
+        public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
+        public SocketUserMessage Message(ulong id) => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
         
         public async Task<IUserMessage> MessageAsync(ulong id)
         {
@@ -56,11 +49,8 @@ namespace Volte.Core.Models
             throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
         }
         
-        public SocketGuild Guild(ulong id)
-            => Context.Client.GetGuild(id);
-
-        public T GetFromProvider<T>()
-            => Context.ServiceProvider.GetRequiredService<T>();
+        public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
+        public T GetFromProvider<T>() => Context.ServiceProvider.GetRequiredService<T>();
 
         public SocketUserMessage Message(string id)
         {
@@ -71,12 +61,8 @@ namespace Volte.Core.Models
             throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
         }
 
-        public string Inheritance<T>() 
-            => Inheritance(typeof(T));
-
-        public string Inheritance(object obj)
-            => Inheritance(obj.GetType());
-
+        public string Inheritance<T>() => Inheritance(typeof(T));
+        public string Inheritance(object obj) => Inheritance(obj.GetType());
         public string Inheritance(Type type)
         {
             var baseTypes = new List<Type> {type};
@@ -165,11 +151,9 @@ namespace Volte.Core.Models
             return inspection.ToString();
         }
 
-        public object ReadValue(FieldInfo prop, object obj) 
-            => ReadValue((object)prop, obj);
+        public object ReadValue(FieldInfo prop, object obj) => ReadValue((object)prop, obj);
 
-        public object ReadValue(PropertyInfo prop, object obj) 
-            => ReadValue((object)prop, obj);
+        public object ReadValue(PropertyInfo prop, object obj) => ReadValue((object)prop, obj);
 
         private string ReadValue(object prop, object obj)
         {

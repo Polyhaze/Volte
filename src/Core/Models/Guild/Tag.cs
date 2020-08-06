@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Volte.Commands;
 
 namespace Volte.Core.Models.Guild
@@ -23,5 +24,8 @@ namespace Volte.Core.Models.Guild
                 .Replace("{UserMention}", ctx.User.Mention)
                 .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
                 .Replace("{UserTag}", ctx.User.Discriminator);
+        
+        public override string ToString()
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 }

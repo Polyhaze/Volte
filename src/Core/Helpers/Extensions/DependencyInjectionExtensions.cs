@@ -19,7 +19,6 @@ namespace Gommon
         public static IServiceCollection AddAllServices(this IServiceCollection coll, int shardCount) =>
             //add all other services; formerly in the VolteBot class
             coll.AddVolteServices()
-                .AddSingleton<HandlerService>()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton<HttpClient>()
                 .AddSingleton<CancellationTokenSource>()
@@ -56,6 +55,9 @@ namespace Gommon
 
             return coll;
         }
+
+        public static T Get<T>(this IServiceProvider provider)
+            => provider.GetRequiredService<T>();
 
         public static void Get<T>(this IServiceProvider provider, out T service)
             => service = provider.GetRequiredService<T>();

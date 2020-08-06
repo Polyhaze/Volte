@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Discord.WebSocket;
 using Gommon;
@@ -31,6 +32,9 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("blacklist_action")]
         public BlacklistAction BlacklistAction { get; set; }
+        
+        public override string ToString()
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 
     public sealed class WelcomeOptions
@@ -79,6 +83,9 @@ namespace Volte.Core.Models.Guild
                 .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
+        
+        public override string ToString()
+            => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 
     public static class BlacklistActions
@@ -100,5 +107,6 @@ namespace Volte.Core.Models.Guild
         Warn,
         Kick,
         Ban
+
     }
 }

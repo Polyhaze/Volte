@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
@@ -28,7 +29,7 @@ namespace Volte.Commands.Modules
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (m.Attachments.Count > 0)
+            if (!m.Attachments.IsEmpty())
             {
                 e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
             }
@@ -53,7 +54,7 @@ namespace Volte.Commands.Modules
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
-            if (m.Attachments.Count > 0)
+            if (!m.Attachments.IsEmpty())
             {
                 e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
             }

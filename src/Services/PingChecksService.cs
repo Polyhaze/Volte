@@ -14,7 +14,7 @@ namespace Volte.Services
             => _logger = loggingService;
 
         public override Task DoAsync(EventArgs args)
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"PingChecks was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args.GetType().Name}"));
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

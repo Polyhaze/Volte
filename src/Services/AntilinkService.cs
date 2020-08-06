@@ -20,9 +20,8 @@ namespace Volte.Services
             => _logger = loggingService;
 
         public override Task DoAsync(EventArgs args) 
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>());
-
-
+            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"AntiLink was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args.GetType().Name}"));
+        
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Antilink ||
@@ -32,7 +31,7 @@ namespace Volte.Services
                 $"Checking a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for Discord invite URLs.");
 
             var matches = _invitePattern.Matches(args.Message.Content);
-            if (!matches.Any())
+            if (matches.IsEmpty())
             {
                 _logger.Debug(LogSource.Volte,
                     $"Message checked in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) did not contain any detectable invites; aborted.");

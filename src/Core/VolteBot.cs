@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -9,6 +8,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
+using Qmmands;
 using Volte.Core.Models;
 using Volte.Services;
 using Console = Colorful.Console;
@@ -55,13 +55,12 @@ namespace Volte.Core
 
             _provider.Get(out _client);
             _provider.Get(out _cts);
-            _provider.Get<HandlerService>(out var handler);
             _provider.Get<LoggingService>(out var logger);
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));
 
-            await handler.InitializeAsync(_provider);
+            await InitializeAsync(_provider);
 
             try
             {
@@ -84,7 +83,7 @@ namespace Volte.Core
                     .WithErrorColor()
                     .WithAuthor(client.GetOwner())
                     .WithDescription(
-                        $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().GetUptime()}**!")
+                        $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);
             }
             
@@ -97,6 +96,23 @@ namespace Volte.Core
             await client.LogoutAsync();
             await client.StopAsync();
             Environment.Exit(0);
+        }
+        
+        public async Task InitializeAsync(IServiceProvider provider)
+        {
+            var commandService = provider.Get<CommandService>();
+            var logger = provider.Get<LoggingService>();
+            
+            var sw = Stopwatch.StartNew();
+            var l = await commandService.AddTypeParsersAsync();
+            sw.Stop();
+            logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
+            sw = Stopwatch.StartNew();
+            var loaded = commandService.AddModules(GetType().Assembly);
+            sw.Stop();
+            logger.Info(LogSource.Volte,
+                $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
+            _client.RegisterVolteEventHandlers(provider);
         }
     }
 }
