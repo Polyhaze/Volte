@@ -28,7 +28,10 @@ namespace Volte.Services
         private readonly QuoteService _quoteService;
 
         private readonly bool _shouldStream =
-            !Config.Streamer.ContainsIgnoreCase(" ") || !Config.Streamer.IsNullOrEmpty();
+            !Config.Streamer.IsNullOrWhitespace();
+
+        private readonly bool _shouldSetGame =
+            !Config.Game.IsNullOrWhitespace();
 
         public EventService(LoggingService loggingService,
             DatabaseService databaseService,
@@ -103,8 +106,11 @@ namespace Volte.Services
 
             if (!_shouldStream)
             {
-                await args.Shard.SetGameAsync(Config.Game);
-                _logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                if (_shouldSetGame)
+                {
+                    await args.Shard.SetGameAsync(Config.Game);
+                    _logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                }
             }
             else
             {
