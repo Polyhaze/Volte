@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetStream")]
         [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]
-        [Remarks("setstream {String} {String}")]
+        [Remarks("setstream {String} [String]")]
         [RequireBotOwner]
         public Task<ActionResult> SetStreamAsync(string stream, [Remainder] string game = null)
         {
