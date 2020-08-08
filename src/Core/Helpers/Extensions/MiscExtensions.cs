@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -50,6 +52,22 @@ namespace Gommon
         public static async Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
         {
             await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, ctx.ServiceProvider.GetRequiredService<DatabaseService>(), ctx.ServiceProvider.GetRequiredService<LoggingService>(), reason);
+        }
+
+        public static GuildUserData GetUserData(this GuildData data, ulong id)
+        {
+            GuildUserData Create()
+            {
+                var d = new GuildUserData
+                {
+                    Id = id
+                };
+                data.UserData.Add(d);
+                return d;
+            }
+
+            return data.UserData.FirstOrDefault(x => x.Id == id) ?? Create();
+
         }
         
     }

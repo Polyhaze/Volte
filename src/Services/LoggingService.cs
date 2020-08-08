@@ -176,8 +176,6 @@ namespace Volte.Services
 
 
         private (Color Color, string Level) VerifySeverity(LogSeverity severity) =>
-
-
             severity switch
             {
                 LogSeverity.Critical => (Color.Maroon, "CRITICAL"),
@@ -187,13 +185,13 @@ namespace Volte.Services
                 LogSeverity.Verbose => (Color.Pink, "VERBOSE"),
                 LogSeverity.Debug => (Color.SandyBrown, "DEBUG"),
                 _ => throw new InvalidOperationException($"The specified LogSeverity ({severity}) is invalid.")
-    };
+            };
 
         private void LogExceptionInDiscord(Exception e)
         {
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
-                Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                Error(LogSource.Volte, "Invalid guild_logging.guild_id and/or guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 

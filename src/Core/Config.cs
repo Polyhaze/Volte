@@ -93,7 +93,7 @@ namespace Volte.Core
 
         public static bool Reload(IServiceProvider provider)
         {
-            provider.Get<LoggingService>(out var logger);
+            var logger = provider.Get<LoggingService>();
             try
             {
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath));

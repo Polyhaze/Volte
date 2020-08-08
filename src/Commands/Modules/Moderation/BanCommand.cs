@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
                     .WithActionType(ModActionType.Ban)
                     .WithTarget(user)
                     .WithReason(reason))
-                );
+            );
         }
     }
 }

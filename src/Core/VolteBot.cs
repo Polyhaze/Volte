@@ -28,8 +28,8 @@ namespace Volte.Core
         private DiscordShardedClient _client;
         private CancellationTokenSource _cts;
 
-        private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
-            => provider = new ServiceCollection() 
+        private static IServiceProvider BuildServiceProvider(int shardCount)
+            => new ServiceCollection() 
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
@@ -50,12 +50,12 @@ namespace Volte.Core
                 shardCount = await rest.GetRecommendedShardCountAsync();
                 await rest.LogoutAsync();
             }
-
-            BuildServiceProvider(shardCount, out _provider);
-
-            _provider.Get(out _client);
-            _provider.Get(out _cts);
-            _provider.Get<LoggingService>(out var logger);
+            
+            _provider = BuildServiceProvider(shardCount);
+            
+            _client = _provider.Get<DiscordShardedClient>();
+            _cts = _provider.Get<CancellationTokenSource>();
+            var logger = _provider.Get<LoggingService>();
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));

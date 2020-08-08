@@ -29,7 +29,7 @@ namespace Volte.Commands.Modules
 
             await user.KickAsync(reason);
 
-            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", _ =>
+            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", m =>
                 ModLogService.DoAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Kick)

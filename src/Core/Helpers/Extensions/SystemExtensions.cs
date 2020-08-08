@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Humanizer;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Gommon
 {

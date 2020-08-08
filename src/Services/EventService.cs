@@ -13,6 +13,7 @@ using Qommon.Collections;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
@@ -118,21 +119,30 @@ namespace Volte.Services
                 _logger.Info(LogSource.Volte,
                     $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
-
-            _ = Task.Run(async () =>
+            
+            foreach (var guild in args.Shard.Guilds)
             {
-                foreach (var guild in args.Shard.Guilds)
+                if (Config.BlacklistedOwners.Contains(guild.OwnerId))
                 {
-                    if (Config.BlacklistedOwners.Contains(guild.OwnerId))
-                    {
-                        _logger.Warn(LogSource.Volte,
-                            $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
-                        await guild.LeaveAsync();
-                    }
-
-                    _ = _db.GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
+                    _logger.Warn(LogSource.Volte,
+                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                    await guild.LeaveAsync();
                 }
-            });
+
+                var data = _db.GetData(guild);
+                foreach (var u in await guild.GetUsersAsync().FlattenAsync())
+                {
+                    var d = data.UserData.FirstOrDefault(x => x.Id == u.Id);
+                    if (d is null)
+                    {
+                        data.UserData.Add(new GuildUserData
+                        {
+                            Id = u.Id
+                        });
+                        _db.UpdateData(data);
+                    }
+                }
+            }
 
             if (Config.GuildLogging.EnsureValidConfiguration(args.Client, out var channel))
             {

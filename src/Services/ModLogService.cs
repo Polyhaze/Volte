@@ -7,6 +7,7 @@ using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
@@ -85,6 +86,13 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetId ?? 0, new ModAction
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = args.Reason,
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+                    }));
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Kick)}");
                     break;
                 }
@@ -101,6 +109,13 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetUser.Id, new ModAction
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = args.Reason,
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+                    }));
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                     break;
                 }
@@ -130,6 +145,13 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetUser.Id, new ModAction
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = args.Reason,
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+                    }));
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
                     break;
                 }
@@ -146,6 +168,13 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetUser.Id, new ModAction
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = args.Reason,
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+                    }));
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
                     break;
                 }
@@ -161,12 +190,19 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetId ?? 0, new ModAction
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = args.Reason,
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+                    }));
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                     break;
                 }
 
                 default:
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException($"Received type for {nameof(ModActionEventArgs)}#{nameof(args.ActionType)} that was invalid. Received " + args.ActionType);
             }
 
             _logger.Debug(LogSource.Volte,
@@ -192,7 +228,6 @@ namespace Volte.Services
                 ? $"**User:** {args.TargetId}"
                 : $"**User:** {args.TargetUser} ({args.TargetId})";
 
-        private string Time(ModActionEventArgs args) =>
-            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
+        private string Time(ModActionEventArgs args) => $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
     }
 }
