@@ -226,7 +226,7 @@ namespace Volte.Services
             ? $"**Message Deleted:** {args.TargetId}"
             : isOnIdBan
                 ? $"**User:** {args.TargetId}"
-                : $"**User:** {args.TargetUser} ({args.TargetId})";
+                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
         private string Time(ModActionEventArgs args) => $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
     }
