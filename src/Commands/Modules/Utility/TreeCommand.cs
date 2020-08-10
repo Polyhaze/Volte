@@ -25,7 +25,8 @@ namespace Volte.Commands.Modules
                 .Concat(Context.Guild.VoiceChannels
                     .Where(a => a.CategoryId == null)).OrderBy(c => c.Position))
             {
-                uncategorized.AppendLine($"- {(c is IVoiceChannel ? "" : "#")}{c.Name}");
+                if (CanSeeChannel(Context.User, c))
+                    uncategorized.AppendLine($"- {(c is IVoiceChannel ? "" : "#")}{c.Name}");
             }
 
             uncategorized.AppendLine();

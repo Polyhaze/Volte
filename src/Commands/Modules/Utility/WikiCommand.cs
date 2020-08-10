@@ -10,8 +10,6 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule
     {
-        private readonly string _baseWikiUrl = "https://github.com/Ultz/Volte/wiki";
-
         [Command("Wiki", "VolteWiki")]
         [Description("List all wiki pages or get a specific one in this one command.")]
         [Remarks("wiki [String]")]

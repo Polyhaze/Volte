@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Volte.Interactive;
 
 namespace Volte.Commands.Results
 {
@@ -23,6 +24,11 @@ namespace Volte.Commands.Results
             _runFuncAsync = awaitFunc;
         }
 
+        public OkResult(PaginatedMessage pager)
+        {
+            _pager = pager;
+        }
+
         private readonly bool _runFuncAsync;
 
         private readonly string _message;
@@ -30,10 +36,17 @@ namespace Volte.Commands.Results
         private readonly Func<IUserMessage, Task> _callback;
         private readonly Func<Task> _separateLogic;
         private readonly EmbedBuilder _embed;
+        private readonly PaginatedMessage _pager;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
+            
+            if (!(_pager is null))
+            {
+                var m = await ctx.ServiceProvider.Get<InteractiveService>().SendPaginatedMessageAsync(ctx, _pager);
+                return new ResultCompletionData(m);
+            }
 
             if (_separateLogic != null)
             {

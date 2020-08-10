@@ -1,5 +1,6 @@
 ﻿using System;
 using Discord;
+using Gommon;
 
 namespace Volte.Interactive
 {
@@ -7,15 +8,15 @@ namespace Volte.Interactive
     {
         public static PaginatedAppearanceOptions Default = new PaginatedAppearanceOptions();
 
-        public IEmote First = new Emoji("⏮");
-        public IEmote Back = new Emoji("◀");
-        public IEmote Next = new Emoji("▶");
-        public IEmote Last = new Emoji("⏭");
-        public IEmote Stop = new Emoji("⏹");
-        public IEmote Jump = new Emoji("🔢");
-        public IEmote Info = new Emoji("ℹ");
+        public IEmote First = "⏮".ToEmoji();
+        public IEmote Back = "◀".ToEmoji();
+        public IEmote Next = "▶".ToEmoji();
+        public IEmote Last = "⏭".ToEmoji();
+        public IEmote Stop = "⏹".ToEmoji();
+        public IEmote Jump = "🔢".ToEmoji();
+        public IEmote Info = "ℹ".ToEmoji();
 
-        public string FooterFormat = "Page {0}/{1}";
+        public string FooterFormat = "Page: {0} of {1}";
         public string InformationText = "This is a paginator. React with the respective icons to change page.";
 
         public JumpDisplayOptions JumpDisplayOptions = JumpDisplayOptions.WithManageMessages;

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Volte.Core.Attributes;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -39,13 +41,28 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
-            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10);
-            return Ok(new StringBuilder()
-                .AppendLine(
-                    "Showing the last 10 warnings, or less if the user doesn't have 10 yet, or none if the user's record is clean.")
-                .AppendLine()
-                .AppendLine($"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}")
-                .ToString());
+            var warns = Context.GuildData.Extras.Warns.Where(x => x.User == user.Id);
+            if (warns.IsEmpty()) return BadRequest("This user doesn't have any warnings.");
+            else
+            {
+                var list = warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").ToList();
+                var pages = new List<string>();
+
+                do
+                {
+                    pages.Add(list.Take(10).Join("\n"));
+                    list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
+                } while (!list.IsEmpty());
+                
+                return Ok(async () =>
+                {
+                    await PagedReplyAsync(new PaginatedMessage
+                    {
+                        Author = Context.User,
+                        Pages = pages
+                    });
+                }, false);
+            }
         }
 
         [Command("ClearWarns", "Cw")]

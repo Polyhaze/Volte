@@ -86,8 +86,7 @@ namespace Volte.Interactive
             timeout ??= _defaultTimeout;
             var message = await context.Channel.SendMessageAsync(content, isTts, embed, options);
             _ = Task.Delay(timeout.Value)
-                .ContinueWith(_ => message.DeleteAsync())
-                .ConfigureAwait(false);
+                .ContinueWith(_ => message.DeleteAsync());
             return message;
         }
 
@@ -96,7 +95,7 @@ namespace Volte.Interactive
             ICriterion<SocketReaction> criterion = null)
         {
             var callback = new PaginatedMessageCallback(this, context, pager, criterion);
-            await callback.DisplayAsync().ConfigureAwait(false);
+            await callback.DisplayAsync();
             return callback.Message;
         }
 

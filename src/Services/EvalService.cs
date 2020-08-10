@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
+using Volte.Commands.Modules;
 using Volte.Core.Models;
 
 namespace Volte.Services
@@ -38,7 +39,7 @@ namespace Volte.Services
             _emoji = emojiService;
         }
 
-        public Task EvaluateAsync(VolteContext ctx, string code)
+        public Task EvaluateAsync(VolteModule module, string code)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace Volte.Services
                     code = match.Groups[1].Value;
                 }
 
-                return ExecuteScriptAsync(code, ctx);
+                return ExecuteScriptAsync(module, code);
             }
             catch (Exception e)
             {
@@ -74,25 +75,25 @@ namespace Volte.Services
                 Emoji = _emoji
             };
 
-        private async Task ExecuteScriptAsync(string code, VolteContext ctx)
+        private async Task ExecuteScriptAsync(VolteModule module, string code)
         {
-            ctx.ServiceProvider.Get<EmojiService>(out var e);
+            var e = module.Context.ServiceProvider.Get<EmojiService>();
             var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
-            var embed = ctx.CreateEmbedBuilder();
+            var embed = module.Context.CreateEmbedBuilder();
             var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
-                .SendToAsync(ctx.Channel);
+                .SendToAsync(module.Context.Channel);
             try
             {
                 var sw = Stopwatch.StartNew();
-                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
+                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(module.Context));
                 sw.Stop();
                 if (state.ReturnValue is null)
                 {
                     await msg.DeleteAsync();
-                    await ctx.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
+                    await module.Context.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
                 }
                 else
                 {
@@ -104,23 +105,24 @@ namespace Volte.Services
                         ITextChannel channel => $"#{channel.Name} ({channel.Id})",
                         _ => state.ReturnValue.ToString()
                     };
-                    await msg.ModifyAsync(m =>
-                        m.Embed = embed.WithTitle("Eval")
-                            .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                            .AddField("Return Type", state.ReturnValue.GetType(), true)
-                            .WithDescription(Format.Code(res, "ini")).Build());
+                    await module.ReplyWithDeleteReactionAsync(embed: embed.WithTitle("Eval")
+                        .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                        .AddField("Return Type", res?.GetType().FullName, true)
+                        .WithFooter("Click the X below to delete this message.")
+                        .WithDescription(Format.Code(res, "ini")).Build());
                 }
             }
             catch (Exception ex)
             {
-                await msg.ModifyAsync(m =>
-                    m.Embed = embed
-                        .AddField("Exception Type", ex.GetType(), true)
-                        .AddField("Message", ex.Message, true)
-                        .WithTitle("Error")
-                        .Build()
-                );
+                await module.ReplyWithDeleteReactionAsync(embed: embed
+                    .AddField("Exception Type", ex.GetType(), true)
+                    .AddField("Message", ex.Message, true)
+                    .WithTitle("Error")
+                    .WithFooter("Click the X below to delete this message.")
+                    .Build());
             }
+
+            _ = await msg.TryDeleteAsync();
         }
 
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(

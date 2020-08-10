@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
@@ -9,6 +11,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule : VolteModule
     {
+        private readonly string _baseWikiUrl = "https://github.com/Ultz/Volte/wiki";
         public CommandsService CommandsService { get; set; }
         
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
@@ -23,5 +26,11 @@ namespace Volte.Commands.Modules
             return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1), propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
 
         }
+
+        private bool CanSeeChannel(IGuildUser member, IGuildChannel channel)
+        {
+            return member.GetPermissions(channel).Connect || member.GetPermissions(channel).ViewChannel;
+        }
+
     }
 }

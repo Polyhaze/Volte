@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
 using Volte.Interactive;
@@ -20,6 +21,7 @@ namespace Volte.Commands
         public EmojiService EmojiService { get; set; }
         public LoggingService Logger { get; set; }
         public InteractiveService Interactive { get; set; }
+        public new VolteContext Context => base.Context;
 
         public Task<SocketMessage> NextMessageAsync(ICriterion<SocketMessage> criterion, TimeSpan? timeout = null, CancellationToken token = default(CancellationToken))
             => Interactive.NextMessageAsync(Context, criterion, timeout, token);
@@ -28,6 +30,15 @@ namespace Volte.Commands
 
         public Task<IUserMessage> ReplyAndDeleteAsync(string content, bool isTts = false, Embed embed = null, TimeSpan? timeout = null, RequestOptions options = null)
             => Interactive.ReplyAndDeleteAsync(Context, content, isTts, embed, timeout, options);
+
+        public async Task<IUserMessage> ReplyWithDeleteReactionAsync(string content = null, bool isTts = false, Embed embed = null,
+            TimeSpan? timeout = null, RequestOptions options = null)
+        {
+            var m = await Context.Channel.SendMessageAsync(content ?? string.Empty, isTts, embed, options);
+            await m.AddReactionAsync(EmojiService.X.ToEmoji());
+            Interactive.AddReactionCallback(m, new DeleteMessageReactionCallback(Context));
+            return m;
+        }
 
         public Task<IUserMessage> PagedReplyAsync(IEnumerable<object> pages, bool fromSourceUser = true)
         {
@@ -70,6 +81,9 @@ namespace Volte.Commands
 
         protected ActionResult Ok(EmbedBuilder embed) 
             => new OkResult(null, true, embed);
+        
+        protected ActionResult Ok(PaginatedMessage message) 
+            => new OkResult(message);
 
         protected ActionResult BadRequest(string reason) 
             => new BadRequestResult(reason);

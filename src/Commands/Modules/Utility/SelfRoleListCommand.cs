@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -15,14 +17,23 @@ namespace Volte.Commands.Modules
         {
             if (Context.GuildData.Extras.SelfRoles.IsEmpty())
                 return BadRequest("No roles available to self-assign in this guild.");
+            else
+            {
+                var roles = Context.GuildData.Extras.SelfRoles;
+                var pages = new List<string>();
 
-            var roles = Context.GuildData.Extras.SelfRoles.Select(x =>
+                do
                 {
-                    var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
-                    return currentRole is null ? "" : $"**{currentRole.Name}**";
-                }).Where(x => !x.IsNullOrEmpty()).Join("\n");
+                    pages.Add(roles.Take(10).Select(x => $"**{x}**").Join(""));
+                    roles.RemoveRange(0, roles.Count < 10 ? roles.Count : 10);
+                } while (!roles.IsEmpty());
 
-            return Ok(Context.CreateEmbedBuilder(roles).WithTitle("Roles available to self-assign in this guild:"));
+                return Ok(new PaginatedMessage
+                {
+                    Author = Context.User,
+                    Pages = pages
+                });
+            }
         }
     }
 }
