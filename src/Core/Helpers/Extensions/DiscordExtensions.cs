@@ -93,7 +93,7 @@ namespace Gommon
             client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
             client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
             client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
-
+            client.UserBanned += async (user, sguild) => await evt.OnMemberBannedAsync(new MemberBannedEventArgs(user, sguild));
             client.UserJoined += async user =>
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));

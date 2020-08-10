@@ -17,12 +17,15 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;
+        private readonly DatabaseService _db;
 
         public GuildService(LoggingService loggingService,
-            DiscordShardedClient discordShardedClient)
+            DiscordShardedClient discordShardedClient,
+            DatabaseService databaseService)
         {
             _logger = loggingService;
             _client = discordShardedClient;
+            _db = databaseService;
         }
 
         public override Task DoAsync(EventArgs args)
@@ -47,10 +50,13 @@ namespace Volte.Services
                 return;
             }
 
+            _ = _db.GetData(args.Guild.Id); //create this guild's configuration if it doesn't already exist (i.e. kicking Volte and reinviting it)
+            
+
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
                 .WithAuthor(args.Guild.Owner)
-                .WithColor(Config.SuccessColor)
+                .WithSuccessColor()
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
                 .AddField("Set your admin role", "$adminrole {roleName}", true)
                 .AddField("Set your moderator role", "$modrole {roleName}", true)
@@ -58,7 +64,7 @@ namespace Volte.Services
                     .AppendLine("It is recommended to give me admin permission, to avoid any permission errors that may happen.")
                     .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
                     .ToString())
-                .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
+                .AddField("Support Discord", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
             _logger.Debug(LogSource.Volte,
                 "Attempting to send the guild owner the introduction message.");

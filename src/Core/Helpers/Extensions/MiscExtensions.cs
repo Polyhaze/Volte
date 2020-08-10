@@ -60,7 +60,8 @@ namespace Gommon
             {
                 var d = new GuildUserData
                 {
-                    Id = id
+                    Id = id,
+                    Note = string.Empty
                 };
                 data.UserData.Add(d);
                 return d;

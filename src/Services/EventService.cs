@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Rest;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -24,6 +25,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
+        private readonly ModLogService _modLog;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -151,5 +153,29 @@ namespace Volte.Services
                     .SendToAsync(channel);
             }
         }
+
+        public async Task OnMemberBannedAsync(MemberBannedEventArgs args)
+        {
+            var entry = (await args.Guild.GetAuditLogsAsync(1).FlattenAsync()).First();
+            var data = _db.GetData(args.Guild.Id);
+            data.GetUserData(args.User.Id).Actions.Add(new ModAction
+            {
+                Moderator = entry.User.Id,
+                Reason = entry.Reason,
+                Time = DateTimeOffset.Now,
+                Type = ModActionType.Ban
+            });
+            _db.UpdateData(data);
+
+
+            await _modLog.DoAsync(ModActionEventArgs.New
+                .WithGuild(args.Guild)
+                .WithTarget(entry.Cast<BanAuditLogData>().Target.Id)
+                .WithTime(DateTimeOffset.Now)
+                .WithActionType(ModActionType.Ban)
+                .WithReason(entry.Reason)
+                .WithModerator(args.Guild.GetUser(entry.User.Id)));
+        }
+        
     }
 }

@@ -50,15 +50,12 @@ namespace Volte.Commands.Modules
                     commands.RemoveRange(0, commands.Count < 10 ? commands.Count : 10);
                 } while (!commands.IsEmpty());
 
-                return Ok(async () =>
+                return Ok(new PaginatedMessage
                 {
-                    await PagedReplyAsync(new PaginatedMessage
-                    {
-                        Title = $"Commands for {module.SanitizeName()}",
-                        Pages = pages,
-                        Author = Context.User
-                    });
-                }, false);
+                    Title = $"Commands for {module.SanitizeName()}",
+                    Pages = pages,
+                    Author = Context.User
+                });
             }
 
             if (module is null && command != null)

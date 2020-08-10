@@ -42,7 +42,9 @@ namespace Volte.Commands.Modules
 
             var res = uncategorized.AppendLine(categories.ToString()).ToString();
 
-            return res.Length >= 2048 ? BadRequest("This guild is too large; I cannot list all channels here.") : Ok(res);
+            return res.Length >= EmbedBuilder.MaxDescriptionLength 
+                ? BadRequest("This guild is too large; I cannot list all channels here.") 
+                : Ok(res);
         }
     }
 }
