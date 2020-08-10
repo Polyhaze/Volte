@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Volte.Core.Models;
@@ -6,7 +7,7 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class WelcomeService : VolteService
+    public sealed class WelcomeService : VolteEventService
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
@@ -16,6 +17,16 @@ namespace Volte.Services
         {
             _db = databaseService;
             _logger = loggingService;
+        }
+        
+        public override Task DoAsync(EventArgs args)
+        {
+            return args switch
+            {
+                UserJoinedEventArgs joined => JoinAsync(joined),
+                UserLeftEventArgs left => LeaveAsync(left),
+                _ => Task.CompletedTask
+            };
         }
 
         internal async Task JoinAsync(UserJoinedEventArgs args)

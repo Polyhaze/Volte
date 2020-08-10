@@ -27,11 +27,12 @@ namespace Volte.Services
 
         public override Task DoAsync(EventArgs args)
         {
-            if (args is JoinedGuildEventArgs joinedArgs)
-                return OnJoinAsync(joinedArgs);
-            if (args is LeftGuildEventArgs leftArgs)
-                return OnLeaveAsync(leftArgs);
-            return Task.CompletedTask;
+            return args switch
+            {
+                JoinedGuildEventArgs joinedArgs => OnJoinAsync(joinedArgs),
+                LeftGuildEventArgs leftArgs => OnLeaveAsync(leftArgs),
+                _ => Task.CompletedTask
+            };
         }
         
 

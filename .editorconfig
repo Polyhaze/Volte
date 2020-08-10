@@ -1,2 +1,2 @@
 ﻿#CA1031: Do not catch general exception types
-
+#CA1822: Mark members as static

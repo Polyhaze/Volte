@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -5,6 +6,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
 using Volte.Core.Models.Guild;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -59,10 +61,30 @@ namespace Volte.Commands.Modules
         [Description("Lists all available tags in the current guild.")]
         [Remarks("tags")]
         public Task<ActionResult> TagsAsync()
-            => Ok(Context.CreateEmbedBuilder(
-                Context.GuildData.Extras.Tags.Count == 0
-                    ? "None"
-                    : $"`{Context.GuildData.Extras.Tags.Select(x => x.Name).Join("`, `")}`"
-            ).WithTitle($"Available Tags for {Context.Guild.Name}"));
+        {
+            var tagsList = Context.GuildData.Extras.Tags;
+            if (tagsList.IsEmpty()) return BadRequest("This guild doesn't have any tags.");
+            else
+            {
+                var list = tagsList.Select(x => $"`{x.Name}`").ToList();
+                var pages = new List<string>();
+
+                do
+                {
+                    pages.Add(list.Take(10).Join("\n"));
+                    list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
+                } while (!list.IsEmpty());
+                
+                return Ok(async () =>
+                {
+                    await PagedReplyAsync(new PaginatedMessage
+                    {
+                        Author = Context.User,
+                        Pages = pages
+                    });
+                }, false);
+            }
+        }
+            
     }
 }

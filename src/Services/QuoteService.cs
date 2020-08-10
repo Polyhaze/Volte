@@ -11,7 +11,7 @@ using Volte.Core.Models.EventArgs;
 namespace Volte.Services
 {
     //thanks discord-csharp/MODiX for the idea and some of the code (definitely the regex lol)
-    public class QuoteService : VolteEventService
+    public sealed class QuoteService : VolteEventService
     {
         private readonly DiscordShardedClient _client;
 
@@ -20,7 +20,7 @@ namespace Volte.Services
             _client = client;
         }
 
-        private static readonly RegexOptions Options =
+        private const RegexOptions Options =
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
 
         private static readonly Regex JumpUrlPattern = new Regex(
@@ -44,7 +44,7 @@ namespace Volte.Services
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
 
-            var g = _client.GetGuild(guildId);
+            var g = _client.GetGuild(guildId) ?? args.Context.Guild;
             var c = g?.GetTextChannel(channelId);
                 if (c is null) return;
 

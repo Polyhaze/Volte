@@ -17,15 +17,10 @@ namespace Volte.Services
     public sealed class BlacklistService : VolteEventService
     {
         private readonly LoggingService _logger;
-        private readonly DatabaseService _db;
-        private readonly IServiceProvider _provider;
 
-        public BlacklistService(LoggingService loggingService, DatabaseService databaseService,
-            IServiceProvider provider)
+        public BlacklistService(LoggingService loggingService)
         {
             _logger = loggingService;
-            _db = databaseService;
-            _provider = provider;
         }
 
         public override Task DoAsync(EventArgs args)
