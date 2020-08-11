@@ -4,6 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Gommon;
+using Volte.Core;
 using Volte.Core.Models.Guild;
 using Volte.Services;
 
@@ -37,11 +38,11 @@ namespace Volte.Commands
         public readonly GuildData GuildData;
         public readonly DateTimeOffset Now;
 
-        public Embed CreateEmbed(string content) => new EmbedBuilder().WithSuccessColor().WithAuthor(User)
+        public Embed CreateEmbed(string content) => new EmbedBuilder().WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(User)
             .WithDescription(content).Build();
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
-            .WithSuccessColor().WithAuthor(User).WithDescription(content ?? string.Empty);
+            .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(User).WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
 

@@ -10,6 +10,7 @@ using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
+using Color = System.Drawing.Color;
 
 namespace Gommon
 {
@@ -28,7 +29,6 @@ namespace Gommon
 
         public static bool IsModerator(this SocketGuildUser user, VolteContext ctx)
         {
-            ctx.ServiceProvider.Get<DatabaseService>(out var db);
             return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
                    IsAdmin(user, ctx) ||
                    IsGuildOwner(user);
@@ -39,9 +39,21 @@ namespace Gommon
 
         public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
         {
-            var db = ctx.ServiceProvider.GetRequiredService<DatabaseService>();
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
+        }
+
+        public static SocketRole GetHighestRole(this SocketGuildUser member)
+        {
+            var roles = member.Roles.OrderByDescending(x => x.Position);
+            return roles.FirstOrDefault();
+        }
+        
+        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member)
+        {
+            var coloredRoles = member.Roles.Where(x => x.Color.RawValue != new Discord.Color(0, 0, 0).RawValue);
+            var roles = coloredRoles.OrderByDescending(x => x.Position);
+            return roles.FirstOrDefault();
         }
 
         public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,

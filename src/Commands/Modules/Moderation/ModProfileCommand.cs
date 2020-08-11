@@ -23,10 +23,9 @@ namespace Volte.Commands.Modules
             var ud = Context.GuildData.GetUserData(user.Id);
 
             var e = Context.CreateEmbedBuilder()
-                .WithColor(user.Roles.OrderByDescending(x => x.Position)
-                    .FirstOrDefault()?.Color ?? new Color(Config.SuccessColor))
+                .WithAuthor($"{user}'s Moderator Profile", user.GetAvatarUrl())
+                .WithColor(user.GetHighestRole()?.Color ?? new Color(Config.SuccessColor))
                 .WithThumbnailUrl(user.GetAvatarUrl(size: 512))
-                .WithTitle($"Moderator Profile for {user}")
                 .AddField("Username/Nickname", user.GetEffectiveUsername(), true)
                 .AddField("Discriminator", user.Discriminator, true)
                 .AddField("Can use Volte Mod Commands", user.IsModerator(Context), true)
