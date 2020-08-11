@@ -54,14 +54,11 @@ namespace Volte.Commands.Modules
                     list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
                 } while (!list.IsEmpty());
                 
-                return Ok(async () =>
-                {
-                    await PagedReplyAsync(new PaginatedMessage
-                    {
-                        Author = Context.User,
-                        Pages = pages
-                    });
-                }, false);
+                return Ok(PaginatedMessageBuilder.New
+                    .WithDefaults(Context)
+                    .WithPages(pages)
+                    .SplitPages(10)
+                    .Build());
             }
         }
 

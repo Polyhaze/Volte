@@ -26,11 +26,11 @@ namespace Volte.Commands.Modules
                 var pages = banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`").ToList();
 
                 
-                return Ok(new PaginatedMessage
-                {
-                    Author = Context.User,
-                    Pages = pages
-                }.SplitPages(10));
+                return Ok(PaginatedMessageBuilder.New
+                    .WithDefaults(Context)
+                    .WithPages(pages)
+                    .SplitPages(10)
+                    .Build());
             }
         }
     }

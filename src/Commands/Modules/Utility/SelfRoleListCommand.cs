@@ -21,11 +21,11 @@ namespace Volte.Commands.Modules
             {
                 var pages = Context.GuildData.Extras.SelfRoles;
 
-                return Ok(new PaginatedMessage
-                {
-                    Author = Context.User,
-                    Pages = pages
-                }.SplitPages(10));
+                return Ok(PaginatedMessageBuilder.New
+                    .WithDefaults(Context)
+                    .WithPages(pages)
+                    .SplitPages(10)
+                    .Build());
             }
         }
     }

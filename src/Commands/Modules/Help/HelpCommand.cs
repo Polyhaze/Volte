@@ -43,13 +43,13 @@ namespace Volte.Commands.Modules
             if (module != null && command is null)
             {
                 var pages = module.Commands.Select(x => x.FullAliases.First()).ToList();
-
-                return Ok(new PaginatedMessage
-                {
-                    Title = $"Commands for {module.SanitizeName()}",
-                    Pages = pages,
-                    Author = Context.User
-                }.SplitPages(15));
+                
+                return Ok(PaginatedMessageBuilder.New
+                    .WithTitle($"Commands for {module.SanitizeName()}")
+                    .WithDefaults(Context)
+                    .WithPages(pages)
+                    .SplitPages(15)
+                    .Build());
             }
 
             if (module is null && command != null)

@@ -38,8 +38,7 @@ namespace Volte.Commands
         public readonly GuildData GuildData;
         public readonly DateTimeOffset Now;
 
-        public Embed CreateEmbed(string content) => new EmbedBuilder().WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(User)
-            .WithDescription(content).Build();
+        public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
             .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(User).WithDescription(content ?? string.Empty);
