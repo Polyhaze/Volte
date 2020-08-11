@@ -42,20 +42,14 @@ namespace Volte.Commands.Modules
 
             if (module != null && command is null)
             {
-                var commands = module.Commands.Select(x => x.FullAliases.First()).ToList();
-                var pages = new List<string>();
-                do
-                {
-                    pages.Add(commands.Take(10).Join("\n"));
-                    commands.RemoveRange(0, commands.Count < 10 ? commands.Count : 10);
-                } while (!commands.IsEmpty());
+                var pages = module.Commands.Select(x => x.FullAliases.First()).ToList();
 
                 return Ok(new PaginatedMessage
                 {
                     Title = $"Commands for {module.SanitizeName()}",
                     Pages = pages,
                     Author = Context.User
-                });
+                }.SplitPages(15));
             }
 
             if (module is null && command != null)

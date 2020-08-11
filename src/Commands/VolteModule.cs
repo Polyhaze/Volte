@@ -40,7 +40,7 @@ namespace Volte.Commands
             return m;
         }
 
-        public Task<IUserMessage> PagedReplyAsync(IEnumerable<object> pages, bool fromSourceUser = true)
+        public Task<IUserMessage> PagedReplyAsync(List<object> pages, bool fromSourceUser = true)
         {
             var pager = new PaginatedMessage
             {

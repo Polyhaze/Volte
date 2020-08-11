@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Discord;
+using Gommon;
 
 namespace Volte.Interactive
 {
@@ -35,5 +37,21 @@ namespace Volte.Interactive
         public string AlternateDescription { get; set; } = "";
 
         public PaginatedAppearanceOptions Options { get; set; } = PaginatedAppearanceOptions.Default;
+
+        public PaginatedMessage SplitPages(int entriesPerPage)
+        {
+            var temp = Pages.ToList();
+            var newList = new List<object>();
+
+            do
+            {
+                newList.Add(temp.Take(entriesPerPage).Select(x => x.ToString()).Join("\n"));
+                temp.RemoveRange(0, temp.Count < entriesPerPage ? temp.Count : entriesPerPage);
+            } while (!temp.IsEmpty());
+
+            Pages = newList;
+
+            return this;
+        }
     }
 }

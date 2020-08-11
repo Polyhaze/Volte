@@ -19,20 +19,13 @@ namespace Volte.Commands.Modules
                 return BadRequest("No roles available to self-assign in this guild.");
             else
             {
-                var roles = Context.GuildData.Extras.SelfRoles;
-                var pages = new List<string>();
-
-                do
-                {
-                    pages.Add(roles.Take(10).Select(x => $"**{x}**").Join(""));
-                    roles.RemoveRange(0, roles.Count < 10 ? roles.Count : 10);
-                } while (!roles.IsEmpty());
+                var pages = Context.GuildData.Extras.SelfRoles;
 
                 return Ok(new PaginatedMessage
                 {
                     Author = Context.User,
                     Pages = pages
-                });
+                }.SplitPages(10));
             }
         }
     }

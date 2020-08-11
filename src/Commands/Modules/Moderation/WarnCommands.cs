@@ -46,7 +46,7 @@ namespace Volte.Commands.Modules
             else
             {
                 var list = warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").ToList();
-                var pages = new List<string>();
+                var pages = new List<object>();
 
                 do
                 {
@@ -71,6 +71,7 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {
+            var oldWarnList = Context.GuildData.Extras.Warns;
             var newWarnList = Context.GuildData.Extras.Warns.Where(x => x.User != user.Id).ToList();
             Context.GuildData.Extras.Warns = newWarnList;
             Db.UpdateData(Context.GuildData);
@@ -86,7 +87,7 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!", e);
             }
 
-            return Ok($"Cleared **{newWarnList.Count}** warnings for **{user}**.", _ =>
+            return Ok($"Cleared **{oldWarnList.Count - newWarnList.Count}** warnings for **{user}**.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.ClearWarns)

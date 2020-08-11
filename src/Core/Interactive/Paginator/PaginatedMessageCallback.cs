@@ -39,9 +39,10 @@ namespace Volte.Interactive
             Context = sourceContext;
             _criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
-            pages = _pager.Pages.Count();
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
                 pages = ((_pager.Pages.Count() - 1) / options.FieldsPerPage) + 1;
+            else
+                pages = _pager.Pages.Count();
         }
 
         public async Task DisplayAsync()
@@ -53,17 +54,19 @@ namespace Volte.Interactive
             // Reactions take a while to add, don't wait for them
             _ = Task.Run(async () =>
             {
-                await message.AddReactionAsync(options.First);
-                await message.AddReactionAsync(options.Back);
-                await message.AddReactionAsync(options.Next);
-                await message.AddReactionAsync(options.Last);
+                if (!(_pager.Pages.Count() is 1))
+                {
+                    await message.AddReactionAsync(options.First);
+                    await message.AddReactionAsync(options.Back);
+                    await message.AddReactionAsync(options.Next);
+                    await message.AddReactionAsync(options.Last);
+                    var manageMessages = (Context.Channel is IGuildChannel guildChannel) &&
+                                         (Context.User as IGuildUser).GetPermissions(guildChannel).ManageMessages;
 
-                var manageMessages = (Context.Channel is IGuildChannel guildChannel) &&
-                                     (Context.User as IGuildUser).GetPermissions(guildChannel).ManageMessages;
-
-                if (options.JumpDisplayOptions == JumpDisplayOptions.Always
-                    || (options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
-                    await message.AddReactionAsync(options.Jump);
+                    if (options.JumpDisplayOptions == JumpDisplayOptions.Always
+                        || (options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
+                        await message.AddReactionAsync(options.Jump);
+                }
 
                 await message.AddReactionAsync(options.Stop);
 
@@ -103,7 +106,7 @@ namespace Volte.Interactive
                 page = pages;
             else if (emote.Equals(options.Stop))
             {
-                await Message.DeleteAsync().ConfigureAwait(false);
+                await Message.TryDeleteAsync();
                 return true;
             }
             else if (emote.Equals(options.Jump))
@@ -114,20 +117,19 @@ namespace Volte.Interactive
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
                         .AddCriterion(new EnsureIsIntegerCriterion());
-                    getValue:
                     var response = await Interactive.NextMessageAsync(Context, criteria, TimeSpan.FromSeconds(15));
                     var req = int.Parse(response.Content);
 
                     if (req < 1 || req > pages)
                     {
-                        _ = response.DeleteAsync().ConfigureAwait(false);
+                        _ = response.TryDeleteAsync();
                         await Interactive.ReplyAndDeleteAsync(Context, options.Stop.Name);
                         return;
                     }
 
                     page = req;
-                    _ = response.DeleteAsync().ConfigureAwait(false);
-                    await RenderAsync().ConfigureAwait(false);
+                    _ = response.TryDeleteAsync();
+                    await RenderAsync();
                 });
             }
             else if (emote.Equals(options.Info))
@@ -137,7 +139,7 @@ namespace Volte.Interactive
             }
 
             _ = Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
-            await RenderAsync().ConfigureAwait(false);
+            await RenderAsync();
             return false;
         }
 

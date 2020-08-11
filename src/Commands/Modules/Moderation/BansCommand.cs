@@ -23,20 +23,14 @@ namespace Volte.Commands.Modules
             if (banList.IsEmpty()) return BadRequest("This guild doesn't have anyone banned.");
             else
             {
-                var list = banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`").ToList();
-                var pages = new List<string>();
+                var pages = banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`").ToList();
 
-                do
-                {
-                    pages.Add(list.Take(10).Join("\n"));
-                    list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
-                } while (!list.IsEmpty());
                 
                 return Ok(new PaginatedMessage
                 {
                     Author = Context.User,
                     Pages = pages
-                });
+                }.SplitPages(10));
             }
         }
     }

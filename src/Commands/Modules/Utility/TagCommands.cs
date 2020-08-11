@@ -66,20 +66,13 @@ namespace Volte.Commands.Modules
             if (tagsList.IsEmpty()) return BadRequest("This guild doesn't have any tags.");
             else
             {
-                var list = tagsList.Select(x => $"`{x.Name}`").ToList();
-                var pages = new List<string>();
+                var pages = tagsList.Select(x => $"`{x.Name}`").ToList();
 
-                do
-                {
-                    pages.Add(list.Take(10).Join("\n"));
-                    list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
-                } while (!list.IsEmpty());
-                
                 return Ok(new PaginatedMessage
                 {
                     Author = Context.User,
                     Pages = pages
-                });
+                }.SplitPages(10));
             }
         }
             
