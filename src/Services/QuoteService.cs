@@ -32,7 +32,8 @@ namespace Volte.Services
             Options);
 
         public override Task DoAsync(EventArgs args)
-            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"Quote was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args?.GetType().Name}"));
+            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>() 
+                                      ?? throw new InvalidOperationException($"Quote was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args?.GetType().Name}"));
 
         private async Task OnMessageReceivedAsync(MessageReceivedEventArgs args)
         {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <StartupObject>Volte.Program</StartupObject>
         <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
@@ -11,13 +11,18 @@
         <PackageProjectUrl>https://greemdev.net/Volte</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Ultz/Volte</RepositoryUrl>
         <Copyright>MIT</Copyright>
-        <Version>3.2.1.1</Version>
+        <Version>4.0.0.0</Version>
         <Platforms>AnyCPU;x64</Platforms>
         <ApplicationIcon>Volte.ico</ApplicationIcon>
         <PlatformTarget>x64</PlatformTarget>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
     <ItemGroup>
       <None Include="..\.editorconfig" Link=".editorconfig" />
+      <None Include="..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Colorful.Console" Version="1.2.10" />

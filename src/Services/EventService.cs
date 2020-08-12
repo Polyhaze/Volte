@@ -40,7 +40,8 @@ namespace Volte.Services
             PingChecksService pingChecksService,
             CommandService commandService,
             CommandsService commandsService,
-            QuoteService quoteService)
+            QuoteService quoteService,
+            ModLogService modLogService)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -50,6 +51,7 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
+            _modLog = modLogService;
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
@@ -153,29 +155,5 @@ namespace Volte.Services
                     .SendToAsync(channel);
             }
         }
-
-        public async Task OnMemberBannedAsync(MemberBannedEventArgs args)
-        {
-            var entry = (await args.Guild.GetAuditLogsAsync(1).FlattenAsync()).First();
-            var data = _db.GetData(args.Guild.Id);
-            data.GetUserData(args.User.Id).Actions.Add(new ModAction
-            {
-                Moderator = entry.User.Id,
-                Reason = entry.Reason,
-                Time = DateTimeOffset.Now,
-                Type = ModActionType.Ban
-            });
-            _db.UpdateData(data);
-
-
-            await _modLog.DoAsync(ModActionEventArgs.New
-                .WithGuild(args.Guild)
-                .WithTarget(entry.Cast<BanAuditLogData>().Target.Id)
-                .WithTime(DateTimeOffset.Now)
-                .WithActionType(ModActionType.Ban)
-                .WithReason(entry.Reason)
-                .WithModerator(args.Guild.GetUser(entry.User.Id)));
-        }
-        
     }
 }

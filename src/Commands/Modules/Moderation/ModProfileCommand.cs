@@ -21,7 +21,8 @@ namespace Volte.Commands.Modules
             user ??= Context.User;
             var ud = Context.GuildData.GetUserData(user.Id);
 
-            var e = Context.CreateEmbedBuilder()
+            var note = ud.Note.IsNullOrEmpty() ? "No note provided." : ud.Note;
+                var e = Context.CreateEmbedBuilder()
                 .WithAuthor($"{user}'s Moderator Profile", user.GetAvatarUrl())
                 .WithThumbnailUrl(user.GetAvatarUrl(size: 512))
                 .AddField("Username/Nickname", user.GetEffectiveUsername(), true)
@@ -31,7 +32,7 @@ namespace Volte.Commands.Modules
                     => x.Type is ModActionType.Ban || x.Type is ModActionType.Kick || 
                        x.Type is ModActionType.Softban || x.Type is ModActionType.IdBan), true)
                 .AddField("# of Warns", Context.GuildData.Extras.Warns.Count(x => x.User == user.Id), true)
-                .AddField("Note", $"`{ud.Note}`", true);
+                .AddField("Note", $"`{note}`", true);
 
             return Ok(e);
 

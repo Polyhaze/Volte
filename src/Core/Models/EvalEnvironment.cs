@@ -78,14 +78,14 @@ namespace Volte.Core.Models
 
             foreach (var baseType in baseTypes)
             {
-                sb.Append($"[{FormatType(baseType)}]");
+                sb.Append($"[{baseType.AsPrettyString()}]");
                 var inheritors = baseType.GetInterfaces().ToList();
                 if (baseType.BaseType != null)
                 {
                     inheritors = inheritors.ToList();
                     inheritors.Add(baseType.BaseType);
                 }
-                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(FormatType))}");
+                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(x => x.AsPrettyString()))}");
 
                 sb.AppendLine();
             }
@@ -98,7 +98,7 @@ namespace Volte.Core.Models
             var type = obj.GetType();
 
             var inspection = new StringBuilder();
-            inspection.Append("<< Inspecting type [").Append(FormatType(type)).AppendLine("] >>");
+            inspection.Append("<< Inspecting type [").Append(type.AsPrettyString()).AppendLine("] >>");
             inspection.AppendLine();
 
             var props = type.GetProperties().Where(a => a.GetIndexParameters().Length == 0)
@@ -175,7 +175,7 @@ namespace Volte.Core.Models
                     var enu = e.Cast<object>().ToList();
                     return $"{enu.Count} [{enu.GetType().Name}]";
                 }
-                return value + $" [{FormatType(value.GetType())}]";
+                return value + $" [{value.GetType().AsPrettyString()}]";
 
             }
             catch (Exception e)
@@ -187,16 +187,6 @@ namespace Volte.Core.Models
         public void Throw()
         {
             throw new Exception("Test exception.");
-        }
-
-        public string FormatType(Type type)
-        {
-            var t = type.GenericTypeArguments;
-            var vs = type.Name.Replace($"`{t.Length}", ""); //thanks .NET for putting an annoying ass backtick and number at the end of type names.
-
-            if (!t.IsEmpty()) vs += $"<{t.Select(a => a.Name).Join(", ")}>";
-
-            return vs;
         }
 
     }

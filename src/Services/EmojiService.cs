@@ -8,6 +8,7 @@ namespace Volte.Services
         public string Wave { get; } = "\uD83D\uDC4B";
         public string X { get; } = "\u274C";
         public string BallotBoxWithCheck { get; } = "\u2611";
+        public string Repeat { get; } = "\uD83D\uDD01";
         public string Clap { get; } = "\uD83D\uDC4F";
         public string OkHand { get; } = "\uD83D\uDC4C";
         public string One { get; } = "\u0031\u20E3";

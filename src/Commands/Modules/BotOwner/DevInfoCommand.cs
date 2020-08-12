@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,8 @@ namespace Volte.Commands.Modules
                     .AppendLine($"[{CommandService.GetTotalTypeParsers()}] TypeParsers")
                     .AppendLine("== Environment ==")
                     .AppendLine($"OS: [{Environment.OSVersion}]")
+                    .AppendLine($"Current Uptime: [{Process.GetCurrentProcess().CalculateUptime()}]")
+                    .AppendLine($"Used Memory: [{Process.GetCurrentProcess().GetMemoryUsage(MemoryType.Megabytes)}]")
                     .AppendLine($"Processor Count: [{Environment.ProcessorCount}]")
                     .AppendLine($"Is 64-bit OS: [{Environment.Is64BitOperatingSystem}]")
                     .AppendLine($"Is 64-bit Process: [{Environment.Is64BitProcess}]")

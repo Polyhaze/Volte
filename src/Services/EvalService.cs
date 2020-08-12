@@ -107,7 +107,7 @@ namespace Volte.Services
                     };
                     await module.ReplyWithDeleteReactionAsync(embed: embed.WithTitle("Eval")
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                        .AddField("Return Type", res?.GetType().FullName, true)
+                        .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                         .WithFooter("Click the X below to delete this message.")
                         .WithDescription(Format.Code(res, "ini")).Build());
                 }
@@ -115,7 +115,7 @@ namespace Volte.Services
             catch (Exception ex)
             {
                 await module.ReplyWithDeleteReactionAsync(embed: embed
-                    .AddField("Exception Type", ex.GetType(), true)
+                    .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
                     .AddField("Message", ex.Message, true)
                     .WithTitle("Error")
                     .WithFooter("Click the X below to delete this message.")
