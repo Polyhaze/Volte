@@ -24,5 +24,8 @@ namespace Volte.Core.Models
                     _ => LogSource.Unknown
                 }
             };
+
+        public static implicit operator LogMessage(Discord.LogMessage message) 
+            => FromDiscordLogMessage(message);
     }
 }

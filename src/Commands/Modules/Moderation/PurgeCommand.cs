@@ -19,7 +19,6 @@ namespace Volte.Commands.Modules
         [Description("Purges the last x messages, or the last x messages by a given user.")]
         [Remarks("purge {Int} [RestUser]")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        [RequireGuildModerator]
         public async Task<ActionResult> PurgeAsync(int count, RestUser targetAuthor = null)
         {
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.

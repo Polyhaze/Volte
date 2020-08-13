@@ -14,6 +14,7 @@ using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
 using Volte.Commands.Modules;
+using Volte.Core.Helpers;
 using Volte.Core.Models;
 
 namespace Volte.Services
@@ -26,17 +27,14 @@ namespace Volte.Services
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
         private readonly CommandService _commands;
-        private readonly EmojiService _emoji;
 
         public EvalService(DatabaseService databaseService,
             LoggingService loggingService,
-            CommandService commandService,
-            EmojiService emojiService)
+            CommandService commandService)
         {
             _db = databaseService;
             _logger = loggingService;
             _commands = commandService;
-            _emoji = emojiService;
         }
 
         public Task EvaluateAsync(VolteModule module, string code)
@@ -71,13 +69,11 @@ namespace Volte.Services
                 Data = _db.GetData(ctx.Guild),
                 Logger = _logger,
                 Commands = _commands,
-                Database = _db,
-                Emoji = _emoji
+                Database = _db
             };
 
         private async Task ExecuteScriptAsync(VolteModule module, string code)
         {
-            var e = module.Context.ServiceProvider.Get<EmojiService>();
             var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
@@ -93,7 +89,7 @@ namespace Volte.Services
                 if (state.ReturnValue is null)
                 {
                     await msg.DeleteAsync();
-                    await module.Context.Message.AddReactionAsync(new Emoji(e.BallotBoxWithCheck));
+                    await module.Context.Message.AddReactionAsync(EmojiHelper.BallotBoxWithCheck.ToEmoji());
                 }
                 else
                 {

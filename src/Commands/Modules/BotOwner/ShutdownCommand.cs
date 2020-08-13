@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -10,9 +10,8 @@ namespace Volte.Commands.Modules
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
         [Remarks("shutdown")]
-        [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
-            => Ok($"Goodbye! {EmojiService.Wave}", _ =>
+            => Ok($"Goodbye! {EmojiHelper.Wave}", _ =>
             {
                 Cts.Cancel();
                 return Task.CompletedTask;

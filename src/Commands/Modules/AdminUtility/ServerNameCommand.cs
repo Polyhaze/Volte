@@ -12,7 +12,6 @@ namespace Volte.Commands.Modules
         [Description("Sets the name of the current guild.")]
         [Remarks("guildname {String}")]
         [RequireBotGuildPermission(GuildPermission.ManageGuild)]
-        [RequireGuildAdmin]
         public async Task<ActionResult> GuildNameAsync([Remainder] string name)
         {
             await Context.Guild.ModifyAsync(g => g.Name = name);

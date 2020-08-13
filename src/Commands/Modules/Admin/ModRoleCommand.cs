@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -11,11 +10,13 @@ namespace Volte.Commands.Modules
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("modrole {Role}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> ModRoleAsync([Remainder] SocketRole role)
         {
-            Context.GuildData.Configuration.Moderation.ModRole = role.Id;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Configuration.Moderation.ModRole = role.Id;
+                return data;
+            });
             return Ok($"Set **{role.Name}** as the Moderator role for this guild.");
         }
     }

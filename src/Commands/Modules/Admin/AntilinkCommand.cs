@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -10,11 +9,13 @@ namespace Volte.Commands.Modules
         [Command("Antilink", "Al")]
         [Description("Enable/Disable Antilink for the current guild.")]
         [Remarks("antilink {Boolean}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> AntilinkAsync(bool enabled)
         {
-            Context.GuildData.Configuration.Moderation.Antilink = enabled;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Configuration.Moderation.Antilink = enabled;
+                return data;
+            });
             return Ok(enabled ? "Antilink has been enabled." : "Antilink has been disabled.");
         }
     }

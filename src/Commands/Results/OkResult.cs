@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -51,9 +52,9 @@ namespace Volte.Commands.Results
             if (_separateLogic != null)
             {
                 if (_runFuncAsync)
-                    await _separateLogic();
+                    await Executor.ExecuteAsync(_separateLogic);
                 else
-                    _ = _separateLogic();
+                    Executor.Execute(() => _separateLogic());
 
                 return new ResultCompletionData();
             }
@@ -73,9 +74,9 @@ namespace Volte.Commands.Results
             if (_callback != null)
             {
                 if (_runFuncAsync)
-                    await _callback(message);
+                    await Executor.ExecuteAsync(async () => await _callback(message));
                 else
-                    _ = _callback(message);
+                    Executor.Execute(() => _callback(message));
             }
 
 

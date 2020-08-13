@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -13,7 +12,6 @@ namespace Volte.Commands.Modules
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar via the given url")]
         [Remarks("setavatar {String}")]
-        [RequireBotOwner]
         public async Task<ActionResult> SetAvatarAsync(string url)
         {
             if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))

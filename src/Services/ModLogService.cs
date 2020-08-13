@@ -86,7 +86,7 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
-                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetId ?? 0, new ModAction
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetUser.Id, new ModAction
                     {
                         Moderator = args.Moderator.Id,
                         Reason = args.Reason,
@@ -129,9 +129,18 @@ namespace Volte.Services
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
-                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
+
+                    _db.UpdateData(args.Context.GuildData.AddActionForUser(args.TargetUser.Id, new ModAction 
+                    {
+                        Moderator = args.Moderator.Id,
+                        Reason = "",
+                        Time = args.Context.Now,
+                        Type = args.ActionType
+
+                    }));
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                     break;
-                }
+                    }
 
                 case ModActionType.Softban:
                 {

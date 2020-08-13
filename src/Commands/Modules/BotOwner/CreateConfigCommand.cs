@@ -2,7 +2,6 @@
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -12,7 +11,6 @@ namespace Volte.Commands.Modules
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
         [Remarks("createconfig [Guild]")]
-        [RequireBotOwner]
         public Task<ActionResult> CreateConfigAsync([Remainder] SocketGuild guild = null)
         {
             guild ??= Context.Guild;

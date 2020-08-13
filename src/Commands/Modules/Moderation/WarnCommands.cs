@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
@@ -20,8 +17,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Warn", "W")]
         [Description("Warns the target user for the given reason.")]
-        [Remarks("warn {User} {String}")]
-        [RequireGuildModerator]
+        [Remarks("warn {Member} {String}")]
         public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
         {
             await WarnAsync(Context.User, Context.GuildData, user, Db, Logger, reason);
@@ -37,41 +33,31 @@ namespace Volte.Commands.Modules
 
         [Command("Warns", "Ws")]
         [Description("Shows all the warns for the given user.")]
-        [Remarks("warns {User}")]
-        [RequireGuildModerator]
+        [Remarks("warns {Member}")]
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
             var warns = Context.GuildData.Extras.Warns.Where(x => x.User == user.Id);
             if (warns.IsEmpty()) return BadRequest("This user doesn't have any warnings.");
             else
             {
-                var list = warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").ToList();
-                var pages = new List<object>();
-
-                do
-                {
-                    pages.Add(list.Take(10).Join("\n"));
-                    list.RemoveRange(0, list.Count < 10 ? list.Count : 10);
-                } while (!list.IsEmpty());
-                
-                return Ok(PaginatedMessageBuilder.New
-                    .WithDefaults(Context)
-                    .WithPages(pages)
-                    .SplitPages(10)
-                    .Build());
+                return Ok(new PaginatedMessageBuilder(Context)
+                    .WithPages(warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**"))
+                    .SplitPages(10));
             }
         }
 
         [Command("ClearWarns", "Cw")]
         [Description("Clears the warnings for the given user.")]
-        [Remarks("clearwarns {User}")]
-        [RequireGuildModerator]
+        [Remarks("clearwarns {Member}")]
         public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
         {
             var oldWarnList = Context.GuildData.Extras.Warns;
             var newWarnList = Context.GuildData.Extras.Warns.Where(x => x.User != user.Id).ToList();
-            Context.GuildData.Extras.Warns = newWarnList;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Extras.Warns = newWarnList;
+                return data;
+            });
 
             try
             {

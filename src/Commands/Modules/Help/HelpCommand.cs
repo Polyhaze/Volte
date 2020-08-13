@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 using Volte.Interactive;
 
 namespace Volte.Commands.Modules
@@ -37,19 +38,15 @@ namespace Volte.Commands.Modules
 
             if (module is null && command is null)
             {
-                return BadRequest($"{EmojiService.X} No matching Module/Command was found.");
+                return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
             }
 
             if (module != null && command is null)
             {
-                var pages = module.Commands.Select(x => x.FullAliases.First()).ToList();
-                
-                return Ok(PaginatedMessageBuilder.New
+                return Ok(new PaginatedMessageBuilder(Context)
                     .WithTitle($"Commands for {module.SanitizeName()}")
-                    .WithDefaults(Context)
-                    .WithPages(pages)
-                    .SplitPages(15)
-                    .Build());
+                    .WithPages(module.Commands.Select(x => x.FullAliases.First()))
+                    .SplitPages(15));
             }
 
             if (module is null && command != null)
@@ -65,7 +62,7 @@ namespace Volte.Commands.Modules
             if (module != null && command != null)
             {
                 return BadRequest(new StringBuilder()
-                    .AppendLine($"{EmojiService.X} Found more than one Module or Command. Results:")
+                    .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")
                     .AppendLine($"**{module.SanitizeName()}**")
                     .AppendLine($"**{command.Name}**")
                     .ToString());

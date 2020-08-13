@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -13,14 +12,16 @@ namespace Volte.Commands.Modules
         [Command("SelfRoleAdd", "SrA", "SrAdd")]
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("selfroleadd {Role}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleAddAsync([Remainder] SocketRole role)
         {
             var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
             if (target is null)
             {
-                Context.GuildData.Extras.SelfRoles.Add(role.Name);
-                Db.UpdateData(Context.GuildData);
+                ModifyData(data =>
+                {
+                    data.Extras.SelfRoles.Add(role.Name);
+                    return data;
+                });
                 return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
             }
 
@@ -31,14 +32,16 @@ namespace Volte.Commands.Modules
         [Command("SelfRoleRemove", "SrR", "SrRem")]
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("selfroleremove {Role}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
 
             if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
             {
-                Context.GuildData.Extras.SelfRoles.Remove(role.Name);
-                Db.UpdateData(Context.GuildData);
+                ModifyData(data =>
+                {
+                    data.Extras.SelfRoles.RemoveAt(Context.GuildData.Extras.SelfRoles.IndexOf(role.Name));
+                    return data;
+                });
                 return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
             }
 
@@ -48,11 +51,13 @@ namespace Volte.Commands.Modules
         [Command("SelfRoleClear", "SrC", "SrClear", "SelfroleC")]
         [Description("Clears the self role list for this guild.")]
         [Remarks("selfroleclear")]
-        [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleClearAsync()
         {
-            Context.GuildData.Extras.SelfRoles.Clear();
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Extras.SelfRoles.Clear();
+                return data;
+            });
             return Ok("Successfully cleared all Self Roles for this guild.");
         }
     }

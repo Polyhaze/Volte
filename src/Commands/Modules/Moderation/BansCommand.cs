@@ -16,21 +16,15 @@ namespace Volte.Commands.Modules
         [Description("Shows all bans in this guild.")]
         [Remarks("bans")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
         public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();
             if (banList.IsEmpty()) return BadRequest("This guild doesn't have anyone banned.");
             else
             {
-                var pages = banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`").ToList();
-
-                
-                return Ok(PaginatedMessageBuilder.New
-                    .WithDefaults(Context)
-                    .WithPages(pages)
-                    .SplitPages(10)
-                    .Build());
+                return Ok(new PaginatedMessageBuilder(Context)
+                    .WithPages(banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`"))
+                    .SplitPages(10));
             }
         }
     }

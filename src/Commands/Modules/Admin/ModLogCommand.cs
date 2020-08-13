@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -11,11 +10,13 @@ namespace Volte.Commands.Modules
         [Command("ModLog")]
         [Description("Sets the channel to be used for mod log.")]
         [Remarks("modlog {Channel}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> ModLogAsync(SocketTextChannel c)
         {
-            Context.GuildData.Configuration.Moderation.ModActionLogChannel = c.Id;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Configuration.Moderation.ModActionLogChannel = c.Id;
+                return data;
+            });
             return Ok($"Set {c.Mention} as the channel to be used by mod log.");
         }
     }

@@ -31,7 +31,6 @@ namespace Volte.Core.Models
         public LoggingService Logger { get; set; }
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
-        public EmojiService Emoji { get; set; }
         public EvalEnvironment Environment { get; set; }
 
         public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);

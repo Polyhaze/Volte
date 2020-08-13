@@ -3,7 +3,6 @@ using Gommon;
 using Qmmands;
 using System.Threading.Tasks;
 using Volte.Commands.Results;
-using Volte.Core.Attributes;
 
 namespace Volte.Commands.Modules
 {
@@ -12,7 +11,6 @@ namespace Volte.Commands.Modules
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
         [Remarks("setgame {String}")]
-        [RequireBotOwner]
         public Task<ActionResult> SetGameAsync([Remainder] string game)
         {
             var activity = Context.Client.Activity;

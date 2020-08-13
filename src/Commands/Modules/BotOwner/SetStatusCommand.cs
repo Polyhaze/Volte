@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -12,7 +11,6 @@ namespace Volte.Commands.Modules
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
         [Remarks("setstatus {dnd|idle|invisible|online}")]
-        [RequireBotOwner]
         public Task<ActionResult> SetStatusAsync([Remainder] string status) 
             => status.ToLower() switch
             {

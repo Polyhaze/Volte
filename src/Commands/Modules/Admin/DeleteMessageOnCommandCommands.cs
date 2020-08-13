@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -11,11 +10,13 @@ namespace Volte.Commands.Modules
         [Command("DeleteMessageOnCommand", "Dmoc")]
         [Description("Enable/Disable deleting the command message upon execution of a command for this guild.")]
         [Remarks("deletemessageoncommand {Boolean}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> DeleteMessageOnCommandAsync(bool enabled)
         {
-            Context.GuildData.Configuration.DeleteMessageOnCommand = enabled;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Configuration.DeleteMessageOnCommand = enabled;
+                return data;
+            });
             return Ok(enabled
                 ? "Enabled DeleteMessageOnCommand in this guild."
                 : "Disabled DeleteMessageOnCommand in this guild.");
@@ -27,8 +28,11 @@ namespace Volte.Commands.Modules
         [Remarks("deletemessageontagcommand {Boolean}")]
         public Task<ActionResult> DeleteMessageOnTagCommand(bool enabled)
         {
-            Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation = enabled;
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Configuration.DeleteMessageOnTagCommandInvocation = enabled;
+                return data;
+            });
             return Ok(enabled
                 ? "Enabled DeleteMessageOnTagCommand in this guild."
                 : "Disabled DeleteMessageOnTagCommand in this guild.");

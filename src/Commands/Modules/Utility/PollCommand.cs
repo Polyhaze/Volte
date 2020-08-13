@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> PollAsync([Remainder] string all)
         {
             var content = all.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            var pollInfo = PollHelpers.GetPollBody(content, EmojiService);
+            var pollInfo = PollHelpers.GetPollBody(content);
             if (!pollInfo.IsValid)
                 return BadRequest((content.Length - 1) > 5
                     ? "More than 5 options were specified."
@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
             return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
             {
                 _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
-                await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg, EmojiService);
+                await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg);
             });
         }
     }

@@ -8,6 +8,7 @@ using Volte.Core.Attributes;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -17,7 +18,6 @@ namespace Volte.Commands.Modules
         [Description("Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
         [Remarks("delete {Ulong}")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        [RequireGuildModerator]
         public async Task<ActionResult> DeleteAsync(ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
@@ -26,7 +26,7 @@ namespace Volte.Commands.Modules
 
             await target.TryDeleteAsync($"Message deleted by Moderator {Context.User}.");
 
-            return Ok($"{EmojiService.BallotBoxWithCheck} Deleted that message.", async m =>
+            return Ok($"{EmojiHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
                 {

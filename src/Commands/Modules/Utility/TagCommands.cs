@@ -66,11 +66,8 @@ namespace Volte.Commands.Modules
             if (tagsList.IsEmpty()) return BadRequest("This guild doesn't have any tags.");
             else
             {
-                var pages = tagsList.Select(x => $"`{x.Name}`").ToList();
-
-                return Ok(PaginatedMessageBuilder.New
-                    .WithDefaults(Context)
-                    .WithPages(pages)
+                return Ok(new PaginatedMessageBuilder(Context)
+                    .WithPages(tagsList.Select(x => $"`{x.Name}`"))
                     .SplitPages(10)
                     .Build());
             }

@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -10,7 +9,6 @@ namespace Volte.Commands.Modules
         [Command("SetName")]
         [Description("Sets the bot's username.")]
         [Remarks("setname {String}")]
-        [RequireBotOwner]
         public Task<ActionResult> SetNameAsync([Remainder] string name) 
             => Ok($"Set my username to **{name}**.", _ => Context.Client.CurrentUser.ModifyAsync(u => u.Username = name));
     }

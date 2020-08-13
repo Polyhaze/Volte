@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -11,7 +10,6 @@ namespace Volte.Commands.Modules
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
         [Remarks("forceleave {Guild}")]
-        [RequireBotOwner]
         public async Task<ActionResult> ForceLeaveAsync([Remainder]SocketGuild guild)
         {
             await guild.LeaveAsync();

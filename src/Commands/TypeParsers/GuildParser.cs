@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
@@ -16,8 +15,8 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
-            SocketGuild guild = default;
+            var ctx = context.AsVolteContext();
+            SocketGuild guild = null;
 
             var guilds = ctx.Client.Guilds;
 
@@ -27,8 +26,8 @@ namespace Volte.Commands.TypeParsers
             if (guild is null)
             {
                 var match = guilds.Where(x =>
-                    x.Name.EqualsIgnoreCase(value)).ToList();
-                if (match.Count > 1)
+                    x.Name.EqualsIgnoreCase(value)).ToArray();
+                if (match.Length > 1)
                     return TypeParserResult<SocketGuild>.Unsuccessful(
                         "Multiple guilds found with that name, try using its ID.");
 

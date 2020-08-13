@@ -9,12 +9,12 @@ namespace Volte.Core.Models.EventArgs
         public LogSeverity Severity { get; }
         public (LogMessage Internal, Discord.LogMessage Discord) LogMessage { get; }
 
-        public LogEventArgs(global::Discord.LogMessage message)
+        public LogEventArgs(Discord.LogMessage message)
         {
             Message = message.Message;
             Source = message.Source;
             Severity = message.Severity;
-            LogMessage = (Models.LogMessage.FromDiscordLogMessage(message), message);
+            LogMessage = (message, message);
         }
     }
 }

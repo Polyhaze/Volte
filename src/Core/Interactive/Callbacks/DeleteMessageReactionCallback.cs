@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
-using Volte.Services;
+using Volte.Core.Helpers;
 
 namespace Volte.Interactive
 {
@@ -16,8 +16,7 @@ namespace Volte.Interactive
         public VolteContext Context { get; }
         public async Task<bool> HandleCallbackAsync(SocketReaction reaction)
         {
-            var e = Context.ServiceProvider.Get<EmojiService>();
-            if (reaction.Emote.Name.EqualsIgnoreCase(e.X))
+            if (reaction.Emote.Name.EqualsIgnoreCase(EmojiHelper.X))
             {
                 return await reaction.Message.Value.TryDeleteAsync();
             }

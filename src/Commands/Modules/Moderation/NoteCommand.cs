@@ -3,7 +3,6 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Core.Attributes;
 
 namespace Volte.Commands.Modules
 {
@@ -11,8 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Note")]
         [Description("Adds a note to a user to let other moderators know something relevant about them.")]
-        [Remarks("note {User} [String]")]
-        [RequireGuildModerator]
+        [Remarks("note {Member} [String]")]
         public Task<ActionResult> NoteAsync(SocketGuildUser user, [Remainder] string note = null)
         {
             var userNote = Context.GuildData.GetUserData(user.Id).Note;

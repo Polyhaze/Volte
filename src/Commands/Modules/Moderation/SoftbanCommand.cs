@@ -14,9 +14,8 @@ namespace Volte.Commands.Modules
     {
         [Command("Softban")]
         [Description("Softbans the mentioned user, kicking them and deleting the last x (where x is defined by the daysToDelete parameter) days of messages.")]
-        [Remarks("softban {User} [Int] [String]")]
+        [Remarks("softban {Member} [Int] [String]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
-        [RequireGuildModerator]
         public async Task<ActionResult> SoftBanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete = 0,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {

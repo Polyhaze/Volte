@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -17,8 +16,8 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
-            SocketTextChannel channel = default;
+            var ctx = context.AsVolteContext();
+            SocketTextChannel channel = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseChannel(value, out id))
                 channel = ctx.Client.GetChannel(id).Cast<SocketTextChannel>();

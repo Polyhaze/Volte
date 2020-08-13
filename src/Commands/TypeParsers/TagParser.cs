@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
@@ -16,7 +15,7 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
+            var ctx = context.AsVolteContext();
             var tag = ctx.GuildData.Extras.Tags.FirstOrDefault(x => x.Name.EqualsIgnoreCase(value));
 
             return tag is null 

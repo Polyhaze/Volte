@@ -19,11 +19,8 @@ namespace Volte.Commands.Modules
                 return BadRequest("No roles available to self-assign in this guild.");
             else
             {
-                var pages = Context.GuildData.Extras.SelfRoles;
-
-                return Ok(PaginatedMessageBuilder.New
-                    .WithDefaults(Context)
-                    .WithPages(pages)
+                return Ok(new PaginatedMessageBuilder(Context)
+                    .WithPages(Context.GuildData.Extras.SelfRoles)
                     .SplitPages(10)
                     .Build());
             }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -17,7 +16,6 @@ namespace Volte.Commands.Modules
         [Command("DevInfo", "Di")]
         [Description("Shows information about the bot and about the system it's hosted on.")]
         [Remarks("devinfo")]
-        [RequireBotOwner]
         public Task<ActionResult> DevInfoAsync() 
             => Ok(Format.Code(new StringBuilder()
                     .AppendLine("== Core ==")

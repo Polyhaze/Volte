@@ -36,7 +36,7 @@ namespace Volte.Services
             if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
                 return; //we don't want to send an empty join message
             if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
-                _ = await args.User.TrySendMessageAsync(data.Configuration.Welcome.FormatDmMessage(args.User));
+                await JoinDmAsync(args);
 
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
@@ -59,6 +59,9 @@ namespace Volte.Services
             _logger.Debug(LogSource.Volte,
                 "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
+
+        internal Task JoinDmAsync(UserJoinedEventArgs args)
+            => args.User.TrySendMessageAsync(_db.GetData(args.Guild).Configuration.Welcome.FormatDmMessage(args.User));
 
         internal async Task LeaveAsync(UserLeftEventArgs args)
         {

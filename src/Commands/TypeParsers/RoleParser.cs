@@ -17,8 +17,9 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
-            SocketRole role = default;
+            var ctx = context.AsVolteContext();
+            SocketRole role = null;
+
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
                 role = ctx.Guild.GetRole(id).Cast<SocketRole>();
 
@@ -27,7 +28,7 @@ namespace Volte.Commands.TypeParsers
                 var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
                     return TypeParserResult<SocketRole>.Unsuccessful(
-                        "Multiple roles found. Try mentioning the role or using its ID.");
+                        "Multiple roles found with that name. Try mentioning the specific role or using its ID.");
 
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }

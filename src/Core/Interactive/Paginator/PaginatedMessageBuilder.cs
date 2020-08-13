@@ -9,6 +9,15 @@ namespace Volte.Interactive
 {
     public class PaginatedMessageBuilder
     {
+        public PaginatedMessageBuilder()
+        { }
+
+        public PaginatedMessageBuilder(VolteContext ctx)
+        {
+            Author = ctx.User;
+            Color = ctx.User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor);
+        }
+
         public IEnumerable<object> Pages { get; private set; }
         public string Content { get; private set; } = "";
         public IGuildUser Author { get; private set; } = null;
@@ -16,8 +25,6 @@ namespace Volte.Interactive
         public string Title { get; private set; } = "";
         public string AlternateDescription { get; private set; } = "";
         public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.Default;
-        
-        public static PaginatedMessageBuilder New => new PaginatedMessageBuilder();
 
         public PaginatedMessageBuilder WithPages(IEnumerable<object> pages)
         {
@@ -96,6 +103,8 @@ namespace Volte.Interactive
                 Options = Options
             };
         }
-        
+
+        public static implicit operator PaginatedMessage(PaginatedMessageBuilder t) => t.Build();
+
     }
 }

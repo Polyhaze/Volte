@@ -19,6 +19,13 @@ namespace Volte.Services
             _client = discordShardedClient;
         }
 
+        public void ModifyAndSaveData(ulong id, Func<GuildData, GuildData> func)
+        {
+            var d = GetData(id);
+            d = func(d);
+            UpdateData(d);
+        }
+
         public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
 
         public GuildData GetData(ulong id)

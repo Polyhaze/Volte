@@ -18,7 +18,7 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
+            var ctx = context.AsVolteContext();
             var users = ctx.Guild.Users.ToList();
 
             SocketGuildUser user = default;
@@ -32,8 +32,8 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = users.Where(x =>
                     x.Username.EqualsIgnoreCase(value)
-                    || x.Nickname.EqualsIgnoreCase(value)).ToList();
-                if (match.Count > 1)
+                    || x.Nickname.EqualsIgnoreCase(value)).ToArray();
+                if (match.Length > 1)
                     return TypeParserResult<SocketGuildUser>.Unsuccessful(
                         "Multiple users found, try mentioning the user or using their ID.");
 
@@ -54,9 +54,9 @@ namespace Volte.Commands.TypeParsers
             string value,
             CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
+            var ctx = context.AsVolteContext();
 
-            RestUser user = default;
+            RestUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = await ctx.Client.Shards.First().Rest.GetUserAsync(id);

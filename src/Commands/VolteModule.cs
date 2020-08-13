@@ -7,6 +7,8 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
+using Volte.Core.Models.Guild;
 using Volte.Interactive;
 using Volte.Services;
 
@@ -18,9 +20,9 @@ namespace Volte.Commands
         public EventService EventService { get; set; }
         public ModLogService ModLogService { get; set; }
         public CommandService CommandService { get; set; }
-        public EmojiService EmojiService { get; set; }
         public LoggingService Logger { get; set; }
         public InteractiveService Interactive { get; set; }
+        public CancellationTokenSource Cts { get; set; }
         public new VolteContext Context => base.Context;
 
         public Task<SocketMessage> NextMessageAsync(ICriterion<SocketMessage> criterion, TimeSpan? timeout = null, CancellationToken token = default(CancellationToken))
@@ -35,9 +37,14 @@ namespace Volte.Commands
             TimeSpan? timeout = null, RequestOptions options = null)
         {
             var m = await Context.Channel.SendMessageAsync(content ?? string.Empty, isTts, embed, options);
-            await m.AddReactionAsync(EmojiService.X.ToEmoji());
+            await m.AddReactionAsync(EmojiHelper.X.ToEmoji());
             Interactive.AddReactionCallback(m, new DeleteMessageReactionCallback(Context));
             return m;
+        }
+
+        public void ModifyData(Func<GuildData, GuildData> func)
+        {
+            Db.ModifyAndSaveData(Context.Guild.Id, func);
         }
 
         public Task<IUserMessage> PagedReplyAsync(List<object> pages, bool fromSourceUser = true)

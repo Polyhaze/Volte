@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Attributes;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
@@ -10,8 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]
-        [Remarks("remrole {User} {Role}")]
-        [RequireGuildAdmin]
+        [Remarks("remrole {Member} {Role}")]
         public async Task<ActionResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
         {
             if (role.Position > Context.Guild.CurrentUser.Hierarchy)

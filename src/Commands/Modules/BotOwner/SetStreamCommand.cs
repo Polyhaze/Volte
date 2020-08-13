@@ -3,7 +3,6 @@ using Gommon;
 using Qmmands;
 using System.Threading.Tasks;
 using Volte.Commands.Results;
-using Volte.Core.Attributes;
 
 namespace Volte.Commands.Modules
 {
@@ -12,7 +11,6 @@ namespace Volte.Commands.Modules
         [Command("SetStream")]
         [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]
         [Remarks("setstream {String} [String]")]
-        [RequireBotOwner]
         public Task<ActionResult> SetStreamAsync(string stream, [Remainder] string game = null)
         {
             return !game.IsNullOrWhitespace()

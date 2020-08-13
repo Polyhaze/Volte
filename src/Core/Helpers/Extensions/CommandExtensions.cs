@@ -27,6 +27,9 @@ namespace Gommon
         private static string AsPrettyString(this Command c)
             => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
 
+        public static VolteContext AsVolteContext(this CommandContext ctx) =>
+            ctx.Cast<VolteContext>() ?? throw new ArgumentException($"Cast to {nameof(VolteContext)} from {ctx.GetType().AsPrettyString()} unsuccessful. Please make sure the {nameof(CommandContext)} you passed is actually a {nameof(VolteContext)}.");
+
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;

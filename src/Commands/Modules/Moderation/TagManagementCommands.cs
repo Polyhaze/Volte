@@ -15,7 +15,6 @@ namespace Volte.Commands.Modules
         [Priority(1)]
         [Description("Creates a tag with the specified name and response (in that order).")]
         [Remarks("tagcreate {String} {String}")]
-        [RequireGuildModerator]
         public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -35,8 +34,11 @@ namespace Volte.Commands.Modules
                 Uses = default
             };
 
-            Context.GuildData.Extras.Tags.Add(tag);
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Extras.Tags.Add(tag);
+                return data;
+            });
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
@@ -49,11 +51,13 @@ namespace Volte.Commands.Modules
         [Priority(1)]
         [Description("Deletes a tag if it exists.")]
         [Remarks("tagdelete {Tag}")]
-        [RequireGuildModerator]
         public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
         {
-            Context.GuildData.Extras.Tags.Remove(tag);
-            Db.UpdateData(Context.GuildData);
+            ModifyData(data =>
+            {
+                data.Extras.Tags.Remove(tag);
+                return data;
+            });
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
                       $"**{await Context.Client.Shards.First().Rest.GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");

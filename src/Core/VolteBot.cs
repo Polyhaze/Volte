@@ -108,7 +108,10 @@ namespace Volte.Core
             sw.Stop();
             logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
-            var loaded = commandService.AddModules(GetType().Assembly);
+            var loaded = commandService.AddModules(GetType().Assembly, null, module =>
+                {
+                    module.WithRunMode(RunMode.Sequential);
+                });
             sw.Stop();
             logger.Info(LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
