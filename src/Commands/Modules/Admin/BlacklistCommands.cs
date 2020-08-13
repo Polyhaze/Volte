@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Remarks("blacklistadd {String}")]
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
-            if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase("phrase"))
+            if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
             {
                 ModifyData(data =>
                 {
