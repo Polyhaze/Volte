@@ -64,13 +64,13 @@ namespace Volte.Commands
         }
         public Task<IUserMessage> PagedReplyAsync(PaginatedMessage pager, ICriterion<SocketReaction> criterion)
             => Interactive.SendPaginatedMessageAsync(Context, pager, criterion);
-
-
+        
+        
         protected ActionResult Ok(
             string text, 
-            Func<IUserMessage, Task> afterCompletion = null,
-            bool shouldEmbed = true) 
-            => new OkResult(text, shouldEmbed, null, afterCompletion);
+            Func<IUserMessage, Task> callback = null,
+            bool shouldEmbed = true, bool awaitCallback = true) 
+            => new OkResult(text, shouldEmbed, null, callback, awaitCallback);
 
         protected ActionResult Ok(
             Func<Task> logic, 
@@ -80,8 +80,8 @@ namespace Volte.Commands
 
         protected ActionResult Ok(
             EmbedBuilder embed, 
-            Func<IUserMessage, Task> afterCompletion = null) 
-            => new OkResult(null, true, embed, afterCompletion);
+            Func<IUserMessage, Task> callback = null, bool awaitCallback = true) 
+            => new OkResult(null, true, embed, callback);
 
         protected ActionResult Ok(string text) 
             => new OkResult(text);
