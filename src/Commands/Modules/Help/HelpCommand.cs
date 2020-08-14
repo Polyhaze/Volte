@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
+using Volte.Core.Attributes;
 using Volte.Core.Helpers;
 using Volte.Interactive;
 
@@ -15,7 +16,7 @@ namespace Volte.Commands.Modules
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
         [Remarks("help")]
-        public Task<ActionResult> HelpAsync(string moduleOrCommand = null)
+        public Task<ActionResult> HelpAsync([Remainder] string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
             {
@@ -36,6 +37,20 @@ namespace Volte.Commands.Modules
             var module = GetTargetModule(moduleOrCommand);
             var command = GetTargetCommand(moduleOrCommand);
 
+            var isAdmin = command.IsAdmin() || module.IsAdmin();
+            var isMod = command.IsMod() || module.IsMod();
+            var isBotOwner = command.IsBotOwner() || module.IsBotOwner();
+
+            var result = "**Permission Level**: ";
+            if (isMod)
+                result += "Moderator";
+            else if (isAdmin)
+                result += "Admin";
+            else if (isBotOwner)
+                result += "Bot Owner";
+            else
+                result += "Default";
+
             if (module is null && command is null)
             {
                 return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
@@ -45,6 +60,7 @@ namespace Volte.Commands.Modules
             {
                 return Ok(new PaginatedMessageBuilder(Context)
                     .WithTitle($"Commands for {module.SanitizeName()}")
+                    .WithContent(result)
                     .WithPages(module.Commands.Select(x => x.FullAliases.First()))
                     .SplitPages(15));
             }
@@ -54,6 +70,7 @@ namespace Volte.Commands.Modules
                 return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
                     .AppendLine($"**Command**: {command.Name}")
                     .AppendLine($"**Module**: {command.Module.SanitizeName()}")
+                    .AppendLine(result)
                     .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
                     .AppendLine($"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet): {command.GetUsage(Context)}")
                     .ToString()));
@@ -63,8 +80,8 @@ namespace Volte.Commands.Modules
             {
                 return BadRequest(new StringBuilder()
                     .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")
-                    .AppendLine($"**{module.SanitizeName()}**")
-                    .AppendLine($"**{command.Name}**")
+                    .AppendLine($"**{module.SanitizeName()}** Module")
+                    .AppendLine($"**{command.Name}** Command")
                     .ToString());
             }
 

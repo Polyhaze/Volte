@@ -30,6 +30,42 @@ namespace Gommon
         public static VolteContext AsVolteContext(this CommandContext ctx) =>
             ctx.Cast<VolteContext>() ?? throw new ArgumentException($"Cast to {nameof(VolteContext)} from {ctx.GetType().AsPrettyString()} unsuccessful. Please make sure the {nameof(CommandContext)} you passed is actually a {nameof(VolteContext)}.");
 
+        public static bool IsMod(this Command command)
+        {
+            if (command is null) return false;
+            return command.Attributes.Any(x => x is RequireGuildModeratorAttribute) || command.Module.IsMod();
+        }
+
+        public static bool IsMod(this Module module)
+        {
+            if (module is null) return false;
+            return module.Attributes.Any(x => x is RequireGuildModeratorAttribute);
+        }
+
+        public static bool IsAdmin(this Command command)
+        {
+            if (command is null) return false;
+            return command.Attributes.Any(x => x is RequireGuildAdminAttribute) || command.Module.IsAdmin();
+        }
+
+        public static bool IsAdmin(this Module module)
+        {
+            if (module is null) return false;
+            return module.Attributes.Any(x => x is RequireGuildAdminAttribute);
+        }
+
+        public static bool IsBotOwner(this Command command)
+        {
+            if (command is null) return false;
+            return command.Attributes.Any(x => x is RequireBotOwnerAttribute) || command.Module.IsBotOwner();
+        }
+
+        public static bool IsBotOwner(this Module module)
+        {
+            if (module is null) return false;
+            return module.Attributes.Any(x => x is RequireBotOwnerAttribute);
+        }
+
         internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;

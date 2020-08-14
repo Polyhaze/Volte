@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
-using Color = System.Drawing.Color;
 
 namespace Gommon
 {
@@ -51,7 +49,7 @@ namespace Gommon
         
         public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member)
         {
-            var coloredRoles = member.Roles.Where(x => x.Color.RawValue != new Discord.Color(0, 0, 0).RawValue);
+            var coloredRoles = member.Roles.Where(x => x.Color.RawValue != new Color(0, 0, 0).RawValue);
             var roles = coloredRoles.OrderByDescending(x => x.Position);
             return roles.FirstOrDefault();
         }
@@ -125,7 +123,7 @@ namespace Gommon
                     else
                         await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
 
-                };
+                }
             };
         }
 

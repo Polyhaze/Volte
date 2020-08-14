@@ -8,12 +8,11 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class WelcomeModule
     {
-
-        [Command("WelcomeChannel", "Wc")]
+        [Command("Channel", "C")]
         [Description("Sets the channel used for welcoming new users for this guild.")]
-        [Remarks("welcomechannel {Channel}")]
+        [Remarks("welcome channel {Channel}")]
         public Task<ActionResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
             ModifyData(data =>
@@ -24,9 +23,9 @@ namespace Volte.Commands.Modules
             return Ok($"Set this guild's welcome channel to {channel.Mention}.");
         }
 
-        [Command("WelcomeMessage", "Wmsg")]
+        [Command("Message", "Msg")]
         [Description(
-            "Sets or shows the welcome message used to welcome new users for this guild. Only in effect when the bot isn't using the welcome image generating API.")]
+            "Sets or shows the welcome message used to welcome new users for this guild.")]
         [Remarks("welcomemessage [String]")]
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
@@ -58,9 +57,9 @@ namespace Volte.Commands.Modules
                 _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
         }
 
-        [Command("WelcomeColor", "WelcomeColour", "Wcl")]
+        [Command("Color", "Colour", "Cl")]
         [Description("Sets the color used for welcome embeds for this guild.")]
-        [Remarks("welcomecolor {Color}")]
+        [Remarks("welcome color {Color}")]
         public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
         {
             ModifyData(data =>
@@ -73,7 +72,7 @@ namespace Volte.Commands.Modules
 
         [Command("LeavingMessage", "Lmsg")]
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
-        [Remarks("leavingmessage [String]")]
+        [Remarks("welcome leavingmessage [String]")]
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {
 
@@ -105,9 +104,9 @@ namespace Volte.Commands.Modules
                 _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
         }
 
-        [Command("WelcomeDmMessage", "Wdmm")]
+        [Command("DmMessage", "Dmm")]
         [Description("Sets the message to be (attempted to) sent to members upon joining.")]
-        [Remarks("welcomedmmessage")]
+        [Remarks("welcome dmmessage [String]")]
         public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
         {
             if (message is null)
