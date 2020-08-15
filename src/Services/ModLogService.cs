@@ -34,11 +34,7 @@ namespace Volte.Services
             _logger.Debug(LogSource.Volte, "Attempting to post a modlog message.");
 
             var c = args.Guild.GetTextChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
-            if (c is null)
-            {
-                _logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
-                return;
-            }
+            if (c is null) return;
 
             var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
             _logger.Debug(LogSource.Volte, "Received a signal to send a ModLog message.");

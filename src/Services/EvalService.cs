@@ -37,7 +37,7 @@ namespace Volte.Services
             _commands = commandService;
         }
 
-        public Task EvaluateAsync(VolteModule module, string code)
+        public async Task EvaluateAsync(BotOwnerModule module, string code)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Volte.Services
                     code = match.Groups[1].Value;
                 }
 
-                return ExecuteScriptAsync(module, code);
+                await ExecuteScriptAsync(module, code);
             }
             catch (Exception e)
             {
@@ -57,20 +57,7 @@ namespace Volte.Services
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
                 GC.WaitForPendingFinalizers();
             }
-
-            return Task.CompletedTask;
         }
-
-        private EvalEnvironment CreateEvalEnvironment(VolteContext ctx) =>
-            new EvalEnvironment
-            {
-                Context = ctx,
-                Client = ctx.Client.GetShardFor(ctx.Guild),
-                Data = _db.GetData(ctx.Guild),
-                Logger = _logger,
-                Commands = _commands,
-                Database = _db
-            };
 
         private async Task ExecuteScriptAsync(VolteModule module, string code)
         {
@@ -84,7 +71,7 @@ namespace Volte.Services
             try
             {
                 var sw = Stopwatch.StartNew();
-                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(module.Context));
+                var state = await CSharpScript.RunAsync(code, sopts, EvalEnvironment.From(module.Context));
                 sw.Stop();
                 if (state.ReturnValue is null)
                 {

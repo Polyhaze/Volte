@@ -32,7 +32,7 @@ namespace Volte.Services
         {
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
-            if (!(conf is null)) return conf;
+            if (conf is not null) return conf;
             var newConf = Create(_client.GetGuild(id));
             coll.Insert(newConf);
             return newConf;

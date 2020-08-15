@@ -8,8 +8,7 @@ namespace Volte.Interactive
     {
         public Task<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter)
         {
-            var ok = sourceContext.Channel.Id == parameter.Channel.Id;
-            return Task.FromResult(ok);
+            return Task.FromResult(sourceContext.Channel.Id == parameter.Channel.Id);
         }
     }
 }

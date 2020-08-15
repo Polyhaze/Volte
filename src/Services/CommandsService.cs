@@ -80,7 +80,7 @@ namespace Volte.Services
                 .AppendLine(TimeIssued(args))
                 .AppendLine(args.ExecutedLogMessage())
                 .AppendLine(After(args));
-            if (data != null)
+            if (data is not null)
             {
                 sb.AppendLine(ResultMessage(data));
             }
@@ -150,7 +150,7 @@ namespace Volte.Services
                 .AppendLine(args.ExecutedLogMessage())
                 .AppendLine(After(args));
             
-            if (args.ResultCompletionData != null)
+            if (args.ResultCompletionData is not null)
             {
                 sb.AppendLine(ResultMessage(args.ResultCompletionData));
             }

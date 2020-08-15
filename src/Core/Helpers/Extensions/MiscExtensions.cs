@@ -29,24 +29,15 @@ namespace Gommon
             return @out;
         }
 
-        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
+        public static Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
         {
-            switch (action)
+            return action switch
             {
-                case BlacklistAction.Warn:
-                    await member.WarnAsync(ctx, $"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Kick:
-                    await member.KickAsync($"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Ban:
-                    await member.BanAsync(7, $"Used blacklisted word \"{word}\".");
-                    break;
-                case BlacklistAction.Nothing:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
-            }
+                BlacklistAction.Warn => member.WarnAsync(ctx, $"Used blacklisted word \"{word}\"."),
+                BlacklistAction.Kick => member.KickAsync($"Used blacklisted word \"{word}\"."),
+                BlacklistAction.Ban => member.BanAsync(7, $"Used blacklisted word \"{word}\"."),
+                _ => Task.CompletedTask
+            };
         }
         
         public static async Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
@@ -68,8 +59,12 @@ namespace Gommon
             }
 
             return data.UserData.FirstOrDefault(x => x.Id == id) ?? Create();
-
         }
-        
+
+        public static bool IsValid(this BlacklistAction current, out BlacklistAction action)
+        {
+            action = current;
+            return current is not BlacklistAction.Nothing;
+        }
     }
 }

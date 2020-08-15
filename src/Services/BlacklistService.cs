@@ -28,21 +28,17 @@ namespace Volte.Services
 
         private async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            if (!args.Data.Configuration.Moderation.Blacklist.Any()) return;
+            if (args.Data.Configuration.Moderation.Blacklist.IsEmpty()) return;
             _logger.Debug(LogSource.Volte, "Checking a message for blacklisted words.");
-            if (args.Context.User.IsAdmin(args.Context))
+            if (!args.Context.User.IsAdmin(args.Context))
             {
-                _logger.Debug(LogSource.Volte, "Aborting check because the user is a guild admin.");
-                return;
-            }
-
-            foreach (var word in args.Data.Configuration.Moderation.Blacklist.Where(word => args.Message.Content.ContainsIgnoreCase(word)))
-            {
-                await args.Message.TryDeleteAsync();
-                _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
-                var action = args.Data.Configuration.Moderation.BlacklistAction;
-                if (action is BlacklistAction.Nothing) return;
-                await action.PerformAsync(args.Context, args.Message.Author.Cast<SocketGuildUser>(), word);
+                foreach (var word in args.Data.Configuration.Moderation.Blacklist.Where(word => args.Message.Content.ContainsIgnoreCase(word)))
+                {
+                    await args.Message.TryDeleteAsync();
+                    _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
+                    if (args.Data.Configuration.Moderation.BlacklistAction.IsValid(out var action))
+                        await action.PerformAsync(args.Context, args.Message.Author.Cast<SocketGuildUser>(), word);
+                }
             }
         }
     }

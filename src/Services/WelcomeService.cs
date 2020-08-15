@@ -33,17 +33,17 @@ namespace Volte.Services
         {
             var data = _db.GetData(args.Guild);
 
-            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
-                return; //we don't want to send an empty join message
             if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
                 await JoinDmAsync(args);
+            if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
+                return; //we don't want to send an empty join message
 
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
             var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
-            if (!(c is null))
+            if (c is not null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
@@ -71,7 +71,7 @@ namespace Volte.Services
                 "User left a guild, let's check to see if we should send a leaving embed.");
             var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
-            if (!(c is null))
+            if (c is not null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)

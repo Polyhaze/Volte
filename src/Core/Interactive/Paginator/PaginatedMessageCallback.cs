@@ -40,7 +40,7 @@ namespace Volte.Interactive
             _criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
-                pages = ((_pager.Pages.Count() - 1) / options.FieldsPerPage) + 1;
+                pages = (_pager.Pages.Count() - 1) / (options.FieldsPerPage + 1);
             else
                 pages = _pager.Pages.Count();
         }
@@ -64,7 +64,7 @@ namespace Volte.Interactive
                                          (Context.User as IGuildUser).GetPermissions(guildChannel).ManageMessages;
 
                     if (options.JumpDisplayOptions == JumpDisplayOptions.Always
-                        || (options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
+                        || options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages)
                         await message.AddReactionAsync(options.Jump);
                 }
 

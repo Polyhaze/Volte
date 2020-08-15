@@ -1,13 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
-using Volte.Core.Attributes;
 using Volte.Core.Helpers;
 using Volte.Interactive;
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+// ReSharper disable HeuristicUnreachableCode
 
 namespace Volte.Commands.Modules
 {
@@ -56,7 +56,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
             }
 
-            if (module != null && command is null)
+            if (module is not null && command is null)
             {
                 return Ok(new PaginatedMessageBuilder(Context)
                     .WithTitle($"Commands for {module.SanitizeName()}")
@@ -65,9 +65,9 @@ namespace Volte.Commands.Modules
                     .SplitPages(15));
             }
 
-            if (module is null && command != null)
+            if (module is null && command is not null)
             {
-                return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
+                return Ok(Context.CreateEmbedBuilder(new StringBuilder()
                     .AppendLine($"**Command**: {command.Name}")
                     .AppendLine($"**Module**: {command.Module.SanitizeName()}")
                     .AppendLine(result)
@@ -76,7 +76,7 @@ namespace Volte.Commands.Modules
                     .ToString()));
             }
 
-            if (module != null && command != null)
+            if (module is not null && command is not null)
             {
                 return BadRequest(new StringBuilder()
                     .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")

@@ -33,20 +33,17 @@ namespace Volte.Interactive
             bool fromSourceUser = true, 
             bool inSourceChannel = true, 
             TimeSpan? timeout = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
-            var criterion = new Criteria<SocketMessage>();
-            if (fromSourceUser)
-                criterion.AddCriterion(new EnsureSourceUserCriterion());
-            if (inSourceChannel)
-                criterion.AddCriterion(new EnsureSourceChannelCriterion());
-            return NextMessageAsync(context, criterion, timeout, token);
+            return NextMessageAsync(context, new Criteria<SocketMessage>()
+                .AddCriterionIf(fromSourceUser, new EnsureSourceUserCriterion())
+                .AddCriterionIf(inSourceChannel, new EnsureSourceChannelCriterion()), timeout, token);
         }
         
         public async Task<SocketMessage> NextMessageAsync(VolteContext context, 
             ICriterion<SocketMessage> criterion, 
             TimeSpan? timeout = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             timeout ??= _defaultTimeout;
 

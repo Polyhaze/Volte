@@ -25,6 +25,19 @@ namespace Volte.Core.Models
             Environment = this;
         }
 
+        public static EvalEnvironment From(VolteContext ctx)
+        {
+            return new EvalEnvironment
+            {
+                Context = ctx,
+                Client = ctx.Client.GetShardFor(ctx.Guild),
+                Data = ctx.ServiceProvider.Get<DatabaseService>().GetData(ctx.Guild),
+                Logger = ctx.ServiceProvider.Get<LoggingService>(),
+                Commands = ctx.ServiceProvider.Get<CommandService>(),
+                Database = ctx.ServiceProvider.Get<DatabaseService>()
+            };
+        }
+
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }
         public GuildData Data { get; set; }

@@ -62,5 +62,23 @@ namespace Volte.Commands.Modules
                       $"**{await Context.Client.Shards.First().Rest.GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");
         }
+
+        public Task<ActionResult> TagEditAsync(Tag tag, [Remainder] string content)
+        {
+            tag.Response = content;
+            ModifyData(data =>
+            {
+                data.Extras.Tags.Remove(tag);
+                data.Extras.Tags.Add(tag);
+                return data;
+            });
+            
+            return Ok(Context.CreateEmbedBuilder()
+                .WithTitle("Tag Updated")
+                .AddField("Name", tag.Name)
+                .AddField("Response", content)
+                .AddField("Creator", Context.User.Mention)
+                .AddField("Uses", tag.Uses));
+        }
     }
 }

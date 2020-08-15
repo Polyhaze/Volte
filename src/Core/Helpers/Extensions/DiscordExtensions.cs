@@ -122,7 +122,6 @@ namespace Gommon
                         await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
                     else
                         await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
-
                 }
             };
         }
