@@ -16,9 +16,10 @@ namespace Volte.Commands.Checks
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.AsVolteContext();
+            var guildPermissions = ctx.Guild.CurrentMember.GetGuildPermissions();
             foreach (var perm in ctx.Guild.CurrentMember.PermissionsIn(ctx.Channel).GetFlags())
             {
-                if (ctx.Guild.CurrentMember.GetGuildPermissions().HasPermission(Permissions.Administrator))
+                if (guildPermissions.HasPermission(Permissions.Administrator))
                     return CheckResult.Successful;
                 if (_permissions.Contains(perm))
                     return CheckResult.Successful;

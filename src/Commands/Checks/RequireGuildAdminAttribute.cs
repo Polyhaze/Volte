@@ -11,7 +11,7 @@ namespace Volte.Commands.Checks
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.AsVolteContext();
-            if (ctx.User.IsAdmin(ctx)) return CheckResult.Successful;
+            if (ctx.Member.IsAdmin(ctx)) return CheckResult.Successful;
             
             return CheckResult.Unsuccessful("Insufficient permission.");
         }

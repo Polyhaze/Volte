@@ -11,7 +11,7 @@ namespace Volte.Commands.Checks
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.AsVolteContext();
-            if (ctx.User.IsBotOwner()) return CheckResult.Successful;
+            if (ctx.Member.IsBotOwner()) return CheckResult.Successful;
             
             return CheckResult.Unsuccessful("Insufficient permission.");
         }
