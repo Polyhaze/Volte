@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("AdminRole")]
         [Description("Sets the role able to use Admin commands for the current guild.")]
         [Remarks("adminrole {Role}")]
-        public Task<ActionResult> AdminRoleAsync([Remainder] SocketRole role)
+        public Task<ActionResult> AdminRoleAsync([Remainder] DiscordRole role)
         {
             ModifyData(data =>
             {

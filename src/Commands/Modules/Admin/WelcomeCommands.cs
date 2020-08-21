@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Qmmands;
-using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
 using Volte.Services;
 
@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
             [Command("Channel", "C")]
             [Description("Sets the channel used for welcoming new users for this guild.")]
             [Remarks("welcome channel {Channel}")]
-            public Task<ActionResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
+            public Task<ActionResult> WelcomeChannelAsync([Remainder] DiscordChannel channel)
             {
                 ModifyData(data =>
                 {
@@ -50,7 +50,7 @@ namespace Volte.Commands.Modules
                     return data;
                 });
                 var welcomeChannel =
-                    Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
+                    Context.Guild.GetChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
                 var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel is 0 || welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
@@ -62,17 +62,17 @@ namespace Volte.Commands.Modules
                         .AppendLine($"Set this guild's welcome message to ```{message}```")
                         .AppendLine()
                         .AppendLine($"{sendingTest}").ToString(),
-                    _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
+                    _ => WelcomeService.JoinAsync(new GuildMemberAddEventArgs(Context.User))); // TODO
             }
 
             [Command("Color", "Colour", "Cl")]
             [Description("Sets the color used for welcome embeds for this guild.")]
             [Remarks("welcome color {Color}")]
-            public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
+            public Task<ActionResult> WelcomeColorAsync([Remainder] DiscordColor color)
             {
                 ModifyData(data =>
                 {
-                    data.Configuration.Welcome.WelcomeColor = color.RawValue;
+                    data.Configuration.Welcome.WelcomeColor = (uint)color.Value;
                     return data;
                 });
                 return Ok("Successfully set this guild's welcome message embed color!");
@@ -98,7 +98,7 @@ namespace Volte.Commands.Modules
                     return data;
                 });
                 var welcomeChannel =
-                    Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
+                    Context.Guild.GetChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
                 var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
@@ -110,7 +110,7 @@ namespace Volte.Commands.Modules
                         .AppendLine($"Set this server's leaving message to ```{message}```")
                         .AppendLine()
                         .AppendLine($"{sendingTest}").ToString(),
-                    _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
+                    _ => WelcomeService.LeaveAsync(new GuildMemberRemoveEventArgs(Context.User))); // TODO
             }
 
             [Command("DmMessage", "Dmm")]
@@ -121,7 +121,7 @@ namespace Volte.Commands.Modules
                 if (message is null)
                 {
                     return Ok(
-                        $"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
+                        $"Unset the WelcomeDmMessage that was previously set to: {Formatter.InlineCode(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
                 }
 
                 ModifyData(data =>
@@ -130,7 +130,7 @@ namespace Volte.Commands.Modules
                     return data;
                 });
                 return Ok($"Set the WelcomeDmMessage to: ```{message}```\n\nAttempting to send a test message.",
-                    _ => WelcomeService.JoinDmAsync(new UserJoinedEventArgs(Context.User)));
+                    _ => WelcomeService.JoinDmAsync(new GuildMemberAddEventArgs(Context.User))); // TODO
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -12,13 +12,13 @@ namespace Volte.Commands.Modules
         [Command("AddRole", "Ar")]
         [Description("Grants a role to the mentioned user.")]
         [Remarks("addrole {Member} {Role}")]
-        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public async Task<ActionResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        [RequireBotGuildPermission(Permissions.ManageRoles)]
+        public async Task<ActionResult> AddRoleAsync(DiscordMember user, [Remainder] DiscordRole role)
         {
-            if (role.Position > Context.Guild.CurrentUser.Hierarchy)
+            if (role.Position > Context.Guild.CurrentMember.Hierarchy)
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");
 
-            await user.AddRoleAsync(role);
+            await user.GrantRoleAsync(role);
             return Ok($"Added the role **{role}** to {user.Mention}!");
         }
     }

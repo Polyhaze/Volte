@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -10,14 +10,14 @@ namespace Volte.Commands.Modules
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]
         [Remarks("remrole {Member} {Role}")]
-        public async Task<ActionResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<ActionResult> RemRoleAsync(DiscordMember user, [Remainder] DiscordRole role)
         {
-            if (role.Position > Context.Guild.CurrentUser.Hierarchy)
+            if (role.Position > Context.Guild.CurrentMember.Hierarchy)
             {
                 return BadRequest("Role position is too high for me to be able to remove it from anyone.");
             }
 
-            await user.RemoveRoleAsync(role);
+            await user.RevokeRoleAsync(role);
             return Ok($"Removed the role **{role.Name}** from {user.Mention}!");
         }
     }

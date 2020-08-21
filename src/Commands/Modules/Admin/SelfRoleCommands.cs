@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("selfrole add {Role}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleAddAsync([Remainder] SocketRole role)
+        public Task<ActionResult> SelfRoleAddAsync([Remainder] DiscordRole role)
         {
             var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
             if (target is null)
@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("selfrole remove {Role}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
+        public Task<ActionResult> SelfRoleRemoveAsync([Remainder] DiscordRole role)
         {
             if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
             {

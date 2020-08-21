@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("ModLog")]
         [Description("Sets the channel to be used for mod log.")]
         [Remarks("modlog {Channel}")]
-        public Task<ActionResult> ModLogAsync(SocketTextChannel c)
+        public Task<ActionResult> ModLogAsync(DiscordChannel c)
         {
             ModifyData(data =>
             {
