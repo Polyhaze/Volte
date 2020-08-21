@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 
 namespace Volte.Core.Models.Guild
@@ -54,7 +54,7 @@ namespace Volte.Core.Models.Guild
         [JsonPropertyName("welcome_dm_message")]
         public string WelcomeDmMessage { get; set; }
 
-        public string FormatWelcomeMessage(SocketGuildUser user)
+        public string FormatWelcomeMessage(DiscordMember user)
             => WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{UserName}", user.Username)
@@ -64,7 +64,7 @@ namespace Volte.Core.Models.Guild
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
 
-        public string FormatLeavingMessage(SocketGuildUser user)
+        public string FormatLeavingMessage(DiscordMember user)
             => LeavingMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{UserName}", user.Username)
@@ -74,7 +74,7 @@ namespace Volte.Core.Models.Guild
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
 
-        public string FormatDmMessage(SocketGuildUser user)
+        public string FormatDmMessage(DiscordMember user)
             => WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{UserName}", user.Username)

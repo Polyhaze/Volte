@@ -1,20 +1,20 @@
 using System;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Volte.Commands;
 
 namespace Volte.Core.Models.EventArgs
 {
     public class ModActionEventArgs : System.EventArgs
     {
-        public SocketGuildUser Moderator { get; private set; }
+        public DiscordMember Moderator { get; private set; }
         public VolteContext Context { get; private set; }
         public ModActionType ActionType { get; private set; }
         public string Reason { get; private set; }
         public ulong? TargetId { get; private set; }
-        public SocketUser TargetUser { get; private set; }
+        public DiscordUser TargetUser { get; private set; }
         public int? Count { get; private set; }
         public DateTimeOffset Time { get; private set; }
-        public SocketGuild Guild { get; private set; }
+        public DiscordGuild Guild { get; private set; }
 
         public static ModActionEventArgs New => new ModActionEventArgs();
 
@@ -24,9 +24,9 @@ namespace Volte.Core.Models.EventArgs
             return this;
         }
 
-        public ModActionEventArgs WithModerator(SocketGuildUser user)
+        public ModActionEventArgs WithModerator(DiscordMember member)
         {
-            Moderator = user;
+            Moderator = member;
             return this;
         }
 
@@ -48,7 +48,7 @@ namespace Volte.Core.Models.EventArgs
             return this;
         }
 
-        public ModActionEventArgs WithTarget(SocketUser user)
+        public ModActionEventArgs WithTarget(DiscordUser user)
         {
             TargetUser = user;
             return this;
@@ -66,7 +66,7 @@ namespace Volte.Core.Models.EventArgs
             return this;
         }
 
-        public ModActionEventArgs WithGuild(SocketGuild guild)
+        public ModActionEventArgs WithGuild(DiscordGuild guild)
         {
             Guild = guild;
             return this;
@@ -77,7 +77,7 @@ namespace Volte.Core.Models.EventArgs
             WithContext(ctx)
                 .WithTime(ctx.Now)
                 .WithGuild(ctx.Guild)
-                .WithModerator(ctx.User);
+                .WithModerator(ctx.Member);
 
 
             return this;

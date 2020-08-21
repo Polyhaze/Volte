@@ -1,14 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Enums;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
+using Volte.Core.Helpers;
 using Volte.Core.Models;
 using Volte.Services;
 using Console = Colorful.Console;
@@ -34,7 +36,7 @@ namespace Volte.Core
                 .BuildServiceProvider();
 
         private VolteBot() 
-            => Console.CancelKeyPress += (s, _) => _cts.Cancel();
+            => Console.CancelKeyPress += (_, __) => _cts.Cancel();
 
         private async Task LoginAsync()
         {
@@ -55,6 +57,22 @@ namespace Volte.Core
 
             Initialize(_provider);
 
+            _ = await _client.UseInteractivityAsync(new InteractivityConfiguration
+            {
+                PollBehaviour = PollBehaviour.DeleteEmojis,
+                PaginationBehaviour = PaginationBehaviour.WrapAround,
+                PaginationDeletion = PaginationDeletion.KeepEmojis,
+                PaginationEmojis = new PaginationEmojis
+                {
+                    Left = EmojiHelper.Back.ToEmoji(),
+                    Right = EmojiHelper.Next.ToEmoji(),
+                    SkipLeft = EmojiHelper.First.ToEmoji(),
+                    SkipRight = EmojiHelper.Last.ToEmoji(),
+                    Stop = EmojiHelper.Stop.ToEmoji()
+                },
+                Timeout = TimeSpan.FromSeconds(15)
+            });
+
             try
             {
                 await Task.Delay(-1, _cts.Token);
@@ -74,7 +92,6 @@ namespace Volte.Core
             {
                 await new DiscordEmbedBuilder()
                     .WithErrorColor()
-                    .WithAuthor(client.CurrentApplication.Owners.FirstOrDefault()?.Username ?? "<N/A>")
                     .WithDescription(
                         $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);

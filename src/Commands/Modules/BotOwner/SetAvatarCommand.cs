@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     public sealed partial class BotOwnerModule
     {
         [Command("SetAvatar")]
-        [Description("Sets the bot's avatar via the given url")]
+        [Description("Sets the bot's avatar to the image at the given URL.")]
         [Remarks("setavatar {String}")]
         public async Task<ActionResult> SetAvatarAsync(string url)
         {

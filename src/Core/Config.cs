@@ -126,9 +126,9 @@ namespace Volte.Core
 
         public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
 
-        public static uint SuccessColor => _configuration.SuccessEmbedColor;
+        public static int SuccessColor => _configuration.SuccessEmbedColor.Cast<int>();
 
-        public static uint ErrorColor => _configuration.ErrorEmbedColor;
+        public static int ErrorColor => _configuration.ErrorEmbedColor.Cast<int>();
 
         public static bool LogAllCommands => _configuration.LogAllCommands;
 

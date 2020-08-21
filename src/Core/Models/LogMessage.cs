@@ -1,22 +1,23 @@
 using System;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
 
 namespace Volte.Core.Models
 {
     public sealed class LogMessage
     {
-        public LogSeverity Severity { get; private set; }
+        public LogLevel Severity { get; private set; }
         public LogSource Source { get; private set; }
         public string Message { get; private set; }
         public Exception Exception { get; private set; }
 
-        public static LogMessage FromDiscordLogMessage(Discord.LogMessage message)
+        public static LogMessage FromDiscordLogMessage(DebugLogMessageEventArgs message)
             => new LogMessage
             {
                 Message = message.Message,
-                Severity = message.Severity,
+                Severity = message.Level,
                 Exception = message.Exception,
-                Source = message.Source switch
+                Source = message.Application switch
                 {
                     "Rest" => LogSource.Rest,
                     "Discord" => LogSource.Discord,
@@ -25,7 +26,7 @@ namespace Volte.Core.Models
                 }
             };
 
-        public static implicit operator LogMessage(Discord.LogMessage message) 
+        public static implicit operator LogMessage(DebugLogMessageEventArgs message) 
             => FromDiscordLogMessage(message);
     }
 }

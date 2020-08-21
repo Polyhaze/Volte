@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Gommon;
 using Volte.Core;
 
@@ -20,7 +20,7 @@ namespace Volte.Commands.Results
             var message = await ctx.CreateEmbedBuilder()
                 .WithTitle("No can do, partner.")
                 .WithDescription(Reason)
-                .WithColor(new Color(Config.ErrorColor))
+                .WithColor(new DiscordColor(Config.ErrorColor))
                 .WithTimestamp(DateTimeOffset.Now)
                 .SendToAsync(ctx.Channel);
             return new ResultCompletionData(message);

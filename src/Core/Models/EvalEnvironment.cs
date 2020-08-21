@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -27,9 +27,10 @@ namespace Volte.Core.Models
 
         public static EvalEnvironment From(VolteContext ctx)
         {
+            var shardId = Extensions.GetShardId(ctx.Guild.Id, ctx.Client.ShardClients.Count);
             var e = new EvalEnvironment {
                 Context = ctx,
-                Client = ctx.Client.GetShardFor(ctx.Guild),
+                Client = ctx.Client.ShardClients[shardId],
                 Data = ctx.ServiceProvider.Get<DatabaseService>().GetData(ctx.Guild),
                 Logger = ctx.ServiceProvider.Get<LoggingService>(),
                 Commands = ctx.ServiceProvider.Get<CommandService>(),
@@ -41,38 +42,28 @@ namespace Volte.Core.Models
         }
 
         public VolteContext Context { get; set; }
-        public DiscordSocketClient Client { get; set; }
+        public DiscordClient Client { get; set; }
         public GuildData Data { get; set; }
         public LoggingService Logger { get; set; }
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
         public EvalEnvironment Environment { get; set; }
 
-        public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
-        public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
-        public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
-        public SocketUserMessage Message(ulong id) => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
-        
-        public async Task<IUserMessage> MessageAsync(ulong id)
-        {
-            var m = await Context.Channel.GetMessageAsync(id);
-            if (m is IUserMessage userMessage)
-            {
-                return userMessage;
-            }
-            throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
-        }
-        
-        public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
+        public DiscordMember User(ulong id) => Context.Guild.Members[id];
+        public DiscordMember User(string username) => Context.Guild.Members.Select(x => x.Value).FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
+        public DiscordChannel TextChannel(ulong id) => Context.Client.GetGuild(Context.Guild.Id).GetChannel(id);
+        public Task<DiscordMessage> MessageAsync(ulong id) => Context.Channel.GetMessageAsync(id);
+
+        public DiscordGuild Guild(ulong id) => Context.Client.GetGuild(id);
         public T GetFromProvider<T>() => Context.ServiceProvider.GetRequiredService<T>();
 
-        public SocketUserMessage Message(string id)
+        public Task<DiscordMessage> MessageAsync(string id)
         {
             if (ulong.TryParse(id, out var ulongId))
             {
-                return Message(ulongId);
+                return MessageAsync(ulongId);
             }
-            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
+            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).AsPrettyString()}.");
         }
 
         public string Inheritance<T>() => InheritanceInternal(typeof(T));

@@ -1,4 +1,4 @@
-using Discord;
+using DSharpPlus.Entities;
 using Gommon;
 
 namespace Volte.Core.Helpers
@@ -16,11 +16,18 @@ namespace Volte.Core.Helpers
         public static string Three { get; } = "\u0033\u20E3";
         public static string Four { get; } = "\u0034\u20E3";
         public static string Five { get; } = "\u0035\u20E3";
+        public static string First = "⏮";
+        public static string Back = "◀";
+        public static string Next = "▶";
+        public static string Last = "⏭";
+        public static string Stop = "⏹";
+        public static string Jump = "🔢";
+        public static string Info = "ℹ";
 
-        public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollEmojis()
+        public static (DiscordEmoji One, DiscordEmoji Two, DiscordEmoji Three, DiscordEmoji Four, DiscordEmoji Five) GetPollEmojis()
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
 
-        public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis() 
+        public static (DiscordEmoji X, DiscordEmoji BallotBoxWithCheck) GetCommandEmojis() 
             => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
     }
 }

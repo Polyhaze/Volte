@@ -2,15 +2,18 @@ using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
 using Gommon;
-using Volte.Interactive;
+using Extensions = Gommon.Extensions;
 
 namespace Volte.Commands.Results
 {
     public class OkResult : ActionResult
     {
-        public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
-            Func<IUserMessage, Task> func = null, bool awaitCallback = true)
+        public OkResult(string text, bool shouldEmbed = true, DiscordEmbedBuilder embed = null,
+            Func<DiscordMessage, Task> func = null, bool awaitCallback = true)
         {
             _message = text;
             _shouldEmbed = shouldEmbed;
@@ -25,7 +28,7 @@ namespace Volte.Commands.Results
             _runFuncAsync = awaitFunc;
         }
 
-        public OkResult(PaginatedMessage pager)
+        public OkResult( pager)
         {
             _pager = pager;
         }
@@ -34,18 +37,20 @@ namespace Volte.Commands.Results
 
         private readonly string _message;
         private readonly bool _shouldEmbed;
-        private readonly Func<IUserMessage, Task> _callback;
+        private readonly Func<DiscordMessage, Task> _callback;
         private readonly Func<Task> _separateLogic;
-        private readonly EmbedBuilder _embed;
+        private readonly DiscordEmbedBuilder _embed;
         private readonly PaginatedMessage _pager;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
-            if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
+            if (!ctx.Guild.CurrentMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.SendMessages)) return new ResultCompletionData();
             
             if (!(_pager is null))
             {
-                var m = await ctx.ServiceProvider.Get<InteractiveService>().SendPaginatedMessageAsync(ctx, _pager);
+                var shardId = Extensions.GetShardId(ctx.Guild.Id, ctx.Client.ShardClients.Count);
+                var i = ctx.Client.GetInteractivity()[]
+
                 return new ResultCompletionData(m);
             }
 
@@ -59,7 +64,7 @@ namespace Volte.Commands.Results
                 return new ResultCompletionData();
             }
 
-            IUserMessage message;
+            DiscordMessage message;
             if (_embed is null)
             {
                 if (_shouldEmbed)

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Gommon;
 using Volte.Commands;
 
 namespace Volte.Core.Models.Guild
@@ -18,12 +19,13 @@ namespace Volte.Core.Models.Guild
 
         public string FormatContent(VolteContext ctx) 
             => SanitizeContent()
-                .Replace("{ServerName}", ctx.Guild.Name)
-                .Replace("{GuildName}", ctx.Guild.Name)
-                .Replace("{UserName}", ctx.User.Username)
-                .Replace("{UserMention}", ctx.User.Mention)
-                .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
-                .Replace("{UserTag}", ctx.User.Discriminator);
+                .ReplaceIgnoreCase("{ServerName}", ctx.Guild.Name)
+                .ReplaceIgnoreCase("{GuildName}", ctx.Guild.Name)
+                .ReplaceIgnoreCase("{UserName}", ctx.Member.Username)
+                .ReplaceIgnoreCase("{UserMention}", ctx.Member.Mention)
+                .ReplaceIgnoreCase("{UserEffectiveName}", ctx.Member.GetEffectiveUsername())
+                .ReplaceIgnoreCase("{OwnerMention}", ctx.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{UserTag}", ctx.Member.Discriminator);
         
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

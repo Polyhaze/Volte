@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -25,23 +27,6 @@ namespace Volte.Commands
         public CancellationTokenSource Cts { get; set; }
         public new VolteContext Context => base.Context;
 
-        public Task<SocketMessage> NextMessageAsync(ICriterion<SocketMessage> criterion, TimeSpan? timeout = null, CancellationToken token = default(CancellationToken))
-            => Interactive.NextMessageAsync(Context, criterion, timeout, token);
-        public Task<SocketMessage> NextMessageAsync(bool fromSourceUser = true, bool inSourceChannel = true, TimeSpan? timeout = null, CancellationToken token = default(CancellationToken)) 
-            => Interactive.NextMessageAsync(Context, fromSourceUser, inSourceChannel, timeout, token);
-
-        public Task<IUserMessage> ReplyAndDeleteAsync(string content, bool isTts = false, Embed embed = null, TimeSpan? timeout = null, RequestOptions options = null)
-            => Interactive.ReplyAndDeleteAsync(Context, content, isTts, embed, timeout, options);
-
-        public async Task<IUserMessage> ReplyWithDeleteReactionAsync(string content = null, bool isTts = false, Embed embed = null,
-            TimeSpan? timeout = null, RequestOptions options = null)
-        {
-            var m = await Context.Channel.SendMessageAsync(content ?? string.Empty, isTts, embed, options);
-            await m.AddReactionAsync(EmojiHelper.X.ToEmoji());
-            Interactive.AddReactionCallback(m, new DeleteMessageReactionCallback(Context));
-            return m;
-        }
-
         public void ModifyData(Func<GuildData, GuildData> func)
         {
             Db.ModifyAndSaveData(Context.Guild.Id, func);
@@ -52,28 +37,10 @@ namespace Volte.Commands
             return Db.ModifyAndSaveDataAsync(Context.Guild.Id, func);
         }
 
-        public Task<IUserMessage> PagedReplyAsync(List<object> pages, bool fromSourceUser = true)
-        {
-            var pager = new PaginatedMessage
-            {
-                Pages = pages
-            };
-            return PagedReplyAsync(pager, fromSourceUser);
-        }
-        public Task<IUserMessage> PagedReplyAsync(PaginatedMessage pager, bool fromSourceUser = true)
-        {
-            var criterion = new Criteria<SocketReaction>();
-            if (fromSourceUser)
-                criterion.AddCriterion(new EnsureReactionFromSourceUserCriterion());
-            return PagedReplyAsync(pager, criterion);
-        }
-        public Task<IUserMessage> PagedReplyAsync(PaginatedMessage pager, ICriterion<SocketReaction> criterion)
-            => Interactive.SendPaginatedMessageAsync(Context, pager, criterion);
-        
-        
+
         protected ActionResult Ok(
             string text, 
-            Func<IUserMessage, Task> callback = null,
+            Func<DiscordMessage, Task> callback = null,
             bool shouldEmbed = true, bool awaitCallback = true) 
             => new OkResult(text, shouldEmbed, null, callback, awaitCallback);
 
@@ -84,14 +51,14 @@ namespace Volte.Commands
 
 
         protected ActionResult Ok(
-            EmbedBuilder embed, 
-            Func<IUserMessage, Task> callback = null, bool awaitCallback = true) 
+            DiscordEmbedBuilder embed, 
+            Func<DiscordMessage, Task> callback = null, bool awaitCallback = true) 
             => new OkResult(null, true, embed, callback);
 
         protected ActionResult Ok(string text) 
             => new OkResult(text);
 
-        protected ActionResult Ok(EmbedBuilder embed) 
+        protected ActionResult Ok(DiscordEmbedBuilder embed) 
             => new OkResult(null, true, embed);
         
         protected ActionResult Ok(PaginatedMessage message) 

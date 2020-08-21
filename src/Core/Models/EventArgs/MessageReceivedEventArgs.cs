@@ -1,5 +1,5 @@
 using System;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Volte.Commands;
 using Volte.Core.Models.Guild;
@@ -9,13 +9,13 @@ namespace Volte.Core.Models.EventArgs
 {
     public sealed class MessageReceivedEventArgs : System.EventArgs
     {
-        public SocketUserMessage Message { get; }
+        public DiscordMessage Message { get; }
         public VolteContext Context { get; }
         public GuildData Data { get; }
 
-        public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
+        public MessageReceivedEventArgs(DiscordMessage s, IServiceProvider provider)
         {
-            Message = s.Cast<SocketUserMessage>() ?? throw new ArgumentException($"{nameof(s)} is not a SocketUserMessage; aborting event handler call.");
+            Message = s;
             Context = VolteContext.Create(s, provider);
             Data = provider.Get<DatabaseService>().GetData(Context.Guild);
         }

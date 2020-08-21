@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
@@ -70,7 +70,7 @@ namespace Volte.Services
                 if (state.ReturnValue is null)
                 {
                     await msg.DeleteAsync();
-                    await module.Context.Message.AddReactionAsync(EmojiHelper.BallotBoxWithCheck.ToEmoji());
+                    await module.Context.Message.CreateReactionAsync(EmojiHelper.BallotBoxWithCheck.ToEmoji());
                 }
                 else
                 {
@@ -78,15 +78,15 @@ namespace Volte.Services
                     {
                         string str => str,
                         IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
-                        IUser user => $"{user} ({user.Id})",
-                        ITextChannel channel => $"#{channel.Name} ({channel.Id})",
+                        DiscordUser user => $"{user} ({user.Id})",
+                        DiscordChannel channel => $"#{channel.Name} ({channel.Id})",
                         _ => state.ReturnValue.ToString()
                     };
                     await module.ReplyWithDeleteReactionAsync(embed: embed.WithTitle("Eval")
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                         .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                         .WithFooter("Click the X below to delete this message.")
-                        .WithDescription(Format.Code(res, "ini")).Build());
+                        .WithDescription($"```ini\n{res}```").Build());
                 }
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace Volte.Services
                     .Build());
             }
 
-            _ = await msg.TryDeleteAsync();
+            await msg.DeleteAsync();
         }
 
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>

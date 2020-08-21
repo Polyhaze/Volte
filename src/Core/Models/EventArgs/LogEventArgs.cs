@@ -1,4 +1,5 @@
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
 
 namespace Volte.Core.Models.EventArgs
 {
@@ -6,14 +7,14 @@ namespace Volte.Core.Models.EventArgs
     {
         public string Message { get; }
         public string Source { get; }
-        public LogSeverity Severity { get; }
-        public (LogMessage Internal, Discord.LogMessage Discord) LogMessage { get; }
+        public LogLevel Severity { get; }
+        public (LogMessage Internal, DebugLogMessageEventArgs Discord) LogMessage { get; }
 
-        public LogEventArgs(Discord.LogMessage message)
+        public LogEventArgs(DebugLogMessageEventArgs message)
         {
             Message = message.Message;
-            Source = message.Source;
-            Severity = message.Severity;
+            Source = message.Application;
+            Severity = message.Level;
             LogMessage = (message, message);
         }
     }

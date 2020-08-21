@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 
 namespace Volte.Commands.Results
 {
     public class ResultCompletionData
     {
-        public IUserMessage Message { get; }
+        public DiscordMessage Message { get; }
 
-        public ResultCompletionData(IUserMessage message) 
+        public ResultCompletionData(DiscordMessage message) 
             => Message = message;
 
         public ResultCompletionData() 

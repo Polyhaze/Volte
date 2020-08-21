@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
+using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
@@ -71,30 +72,31 @@ namespace Gommon
             }
         }
 
-        public static async Task<bool> TrySendMessageAsync(this SocketTextChannel channel, string text = null,
-            bool isTts = false, Embed embed = null, RequestOptions options = null)
+        public static async Task<bool> TrySendMessageAsync(this DiscordChannel channel, string text = null,
+            bool isTts = false, DiscordEmbed embed = null)
         {
             try
             {
-                await channel.SendMessageAsync(text, isTts, embed, options);
+                await channel.SendMessageAsync(text, isTts, embed);
                 return true;
             }
-            catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden)
+            catch (UnauthorizedException)
             {
                 return false;
             }
         }
 
-        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
+        public static string GetInviteUrl(this DiscordShardedClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
 
-        public static SocketUser GetOwner(this BaseSocketClient client)
-            => client.GetUser(Config.Owner);
-
-        public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
+        public static DiscordGuild GetPrimaryGuild(this DiscordShardedClient client)
             => client.GetGuild(405806471578648588);
+
+        public static DiscordEmbedBuilder AddField(this DiscordEmbedBuilder builder, string name, object value,
+            bool inline = false)
+            => builder.AddField(name, value.ToString(), inline);
         
         // https://discord.com/developers/docs/topics/gateway#sharding-sharding-formula
         /// <summary>
@@ -116,92 +118,65 @@ namespace Gommon
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var logger = provider.Get<LoggingService>();
-            client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
-            client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
-            client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
-            client.UserJoined += async user =>
+            client.DebugLogger.LogMessageReceived += async (_, args) => await logger.DoAsync(new LogEventArgs(args));
+            client.GuildCreated += async args => await guild.DoAsync(args);
+            client.GuildDeleted += async args => await guild.DoAsync(args);
+            client.GuildMemberAdded += async args =>
             {
-                if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
-                if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(args);
+                if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(args);
             };
-            client.UserLeft += async user =>
+            client.GuildMemberRemoved += async args =>
             {
-                if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(new UserLeftEventArgs(user));
+                if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(args);
             };
 
-            client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
-            client.MessageReceived += async socketMessage =>
+            client.Ready += async args => await evt.OnShardReadyAsync(args);
+            client.MessageCreated += async args =>
             {
-                if (socketMessage.ShouldHandle(out var msg))
+                if (args.Message.ShouldHandle())
                 {
-                    if (msg.Channel is IDMChannel)
-                        await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    if (args.Channel is DiscordDmChannel)
+                        await args.Channel.SendMessageAsync("I do not support commands via DM.");
                     else
-                        await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
+                        await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider));
                 }
             };
         }
 
-        public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
+        public static Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder e, DiscordChannel c) =>
             c.SendMessageAsync(string.Empty, false, e.Build());
 
-        public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
+        public static Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordChannel c) =>
             c.SendMessageAsync(string.Empty, false, e);
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
-        public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e.Build());
+        public static async Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder e, DiscordMember u) =>
+            await u.SendMessageAsync(string.Empty, false, e.Build());
 
-        public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e);
+        public static async Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordMember u) =>
+            await u.SendMessageAsync(string.Empty, false, e);
 
-        public static Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder builder, DiscordChannel channel) => channel.SendMessageAsync(embed: builder.Build());
-        
         public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, uint color) => e.WithColor(new DiscordColor((int) color));
 
         public static DiscordEmbedBuilder WithSuccessColor(this DiscordEmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
         public static DiscordEmbedBuilder WithErrorColor(this DiscordEmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
-        public static Emoji ToEmoji(this string str) => new Emoji(str);
+        public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 
-        public static bool ShouldHandle(this SocketMessage message, out SocketUserMessage userMessage)
+        public static bool ShouldHandle(this DiscordMessage message)
         {
-            if (message is SocketUserMessage msg && !msg.Author.IsBot)
-            {
-                userMessage = msg;
-                return true;
-            }
-            userMessage = null;
-                return false;
+            return !message.Author.IsBot;
         }
 
-        public static async Task<bool> TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
-        {
-            try
-            {
-                if (deletable is null) return false;
-                await deletable.DeleteAsync(options);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
-        {
-            return deletable.TryDeleteAsync(new RequestOptions {AuditLogReason = reason});
-        }
-
-        public static string GetEffectiveUsername(this SocketGuildUser user) =>
+        public static string GetEffectiveUsername(this DiscordMember user) =>
             user.Nickname ?? user.Username;
 
-        public static bool HasAttachments(this IMessage message)
+        public static bool HasAttachments(this DiscordMessage message)
             => !message.Attachments.IsEmpty();
 
-        public static bool HasColor(this IRole role)
-            => !(role.Color.RawValue is 0);
+        public static bool HasColor(this DiscordRole role)
+            => !(role.Color.Value is 0);
     }
 }

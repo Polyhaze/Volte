@@ -1,13 +1,11 @@
-using Discord;
-using Discord.WebSocket;
-using Gommon;
+using DSharpPlus.Entities;
 
 namespace Volte.Core.Models.EventArgs
 {
     public sealed class JoinedGuildEventArgs : System.EventArgs
     {
-        public SocketGuild Guild { get; }
+        public DiscordGuild Guild { get; }
 
-        public JoinedGuildEventArgs(SocketGuild guild) => Guild = guild;
+        public JoinedGuildEventArgs(DiscordGuild guild) => Guild = guild;
     }
 }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Gommon;
 using LiteDB;
 using Volte.Core;
 using Volte.Core.Models.Guild;
@@ -34,7 +37,7 @@ namespace Volte.Services
             UpdateData(d);
         }
 
-        public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
+        public GuildData GetData(DiscordGuild guild) => GetData(guild.Id);
 
         public GuildData GetData(ulong id)
         {
@@ -53,11 +56,11 @@ namespace Volte.Services
             collection.Update(newConfig);
         }
 
-        private static GuildData Create(SocketGuild guild)
+        private static GuildData Create(DiscordGuild guild)
             => new GuildData
             {
                 Id = guild.Id,
-                OwnerId = guild.OwnerId,
+                OwnerId = guild.Owner.Id,
                 Configuration = new GuildConfiguration
                 {
                     Autorole = default,
@@ -76,7 +79,7 @@ namespace Volte.Services
                     {
                         LeavingMessage = string.Empty,
                         WelcomeChannel = default,
-                        WelcomeColor = new Color(0x7000FB).RawValue,
+                        WelcomeColor = new DiscordColor(0x7000FB).Value,
                         WelcomeMessage = string.Empty
                     }
                 },

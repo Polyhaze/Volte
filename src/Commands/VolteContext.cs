@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Qmmands;
 using Gommon;
 using Volte.Core;
@@ -12,41 +12,43 @@ namespace Volte.Commands
 {
     public sealed class VolteContext : CommandContext
     {
-        public static VolteContext Create(SocketMessage msg, IServiceProvider provider) 
+        public static VolteContext Create(DiscordMessage msg, IServiceProvider provider) 
             => new VolteContext(msg, provider);
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
+        private VolteContext(DiscordMessage msg, IServiceProvider provider) : base(provider)
         {
             provider.Get<DatabaseService>(out var db);
             provider.Get(out Client);
-            Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
-            Channel = msg.Channel.Cast<SocketTextChannel>();
-            User = msg.Author.Cast<SocketGuildUser>();
-            Message = msg.Cast<SocketUserMessage>();
+            Guild = msg.Channel.Guild;
+            Channel = msg.Channel;
+            Member = msg.Author.Cast<DiscordMember>();
+            Message = msg;
             GuildData = db.GetData(Guild);
             Now = DateTimeOffset.UtcNow;
         }
         
         public readonly DiscordShardedClient Client;
-        public readonly SocketGuild Guild;
-        public readonly SocketTextChannel Channel;
-        public readonly SocketGuildUser User;
-        public readonly SocketUserMessage Message;
+        public readonly DiscordGuild Guild;
+        public readonly DiscordChannel Channel;
+        public readonly DiscordMember Member;
+        public readonly DiscordMessage Message;
         public readonly GuildData GuildData;
         public readonly DateTimeOffset Now;
 
-        public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
+        public DiscordEmbed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
-        public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
-            .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(User).WithDescription(content ?? string.Empty);
+        public DiscordEmbedBuilder CreateEmbedBuilder(string content = null) => new DiscordEmbedBuilder()
+            .WithColor(Member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor))
+            .WithAuthor(Member.GetEffectiveUsername(), iconUrl: Member.AvatarUrl)
+            .WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
 
-        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
+        public Task ReplyAsync(DiscordEmbed embed) => embed.SendToAsync(Channel);
 
-        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
+        public Task ReplyAsync(DiscordEmbedBuilder embed) => embed.SendToAsync(Channel);
 
-        public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
+        public Task ReactAsync(string unicode) => Message.CreateReactionAsync(unicode.ToEmoji());
     }
 }

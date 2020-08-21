@@ -3,9 +3,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Net;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -37,17 +38,17 @@ namespace Volte.Services
         {
             return args switch
             {
-                JoinedGuildEventArgs joinedArgs => OnJoinAsync(joinedArgs),
-                LeftGuildEventArgs leftArgs => OnLeaveAsync(leftArgs),
+                GuildCreateEventArgs joinedArgs => OnJoinAsync(joinedArgs),
+                GuildDeleteEventArgs leftArgs => OnLeaveAsync(leftArgs),
                 _ => Task.CompletedTask
             };
         }
         
 
-        private async Task OnJoinAsync(JoinedGuildEventArgs args)
+        private async Task OnJoinAsync(GuildCreateEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Joined a guild.");
-            if (Config.BlacklistedOwners.Contains(args.Guild.OwnerId))
+            if (Config.BlacklistedOwners.Contains(args.Guild.Owner.Id))
             {
                 _logger.Warn(LogSource.Volte,
                     $"Left guild \"{args.Guild.Name}\" owned by blacklisted owner {args.Guild.Owner}.");
@@ -58,7 +59,7 @@ namespace Volte.Services
             var data = _db.GetData(args.Guild.Id); //create this guild's configuration if it doesn't already exist (i.e. kicking Volte and reinviting it)
             
             
-            var embed = new EmbedBuilder()
+            var embed = new DiscordEmbedBuilder()
                 .WithTitle("Hey there!")
                 .WithSuccessColor()
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
@@ -79,9 +80,9 @@ namespace Volte.Services
                 _logger.Error(LogSource.Volte,
                     "Sent the guild owner the introduction message.");
             }
-            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.Forbidden)
+            catch (UnauthorizedException)
             {
-                var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
+                var c = args.Guild.Channels.OrderByDescending(x => x.Value.Position).FirstOrDefault().Value;
                 _logger.Error(LogSource.Volte,
                     "Could not DM the guild owner; sending to the upper-most channel instead.");
                 if (c is not null) await embed.SendToAsync(c);
@@ -93,31 +94,31 @@ namespace Volte.Services
                 return;
             }
 
-            var all = args.Guild.Users;
+            var all = args.Guild.Members.Select(x => x.Value).ToList();
             var users = all.Where(u => !u.IsBot).ToList();
             var bots = all.Where(u => u.IsBot).ToList();
 
-            var e = new EmbedBuilder()
-                .WithAuthor(args.Guild.Owner)
+            var e = new DiscordEmbedBuilder()
+                .WithAuthor(args.Guild.Owner.GetEffectiveUsername(), iconUrl: args.Guild.Owner.GetAvatarUrl(ImageFormat.Auto))
                 .WithTitle("Joined Guild")
                 .AddField("Name", args.Guild.Name, true)
                 .AddField("ID", args.Guild.Id, true)
-                .WithThumbnailUrl(args.Guild.IconUrl)
-                .WithCurrentTimestamp()
-                .AddField("Users", users.Count(), true)
-                .AddField("Bots", bots.Count(), true);
+                .WithThumbnail(args.Guild.IconUrl)
+                .WithTimestamp(DateTimeOffset.Now)
+                .AddField("Users", users.Count, true)
+                .AddField("Bots", bots.Count, true);
 
             if (bots.Count > users.Count)
             {
                 await SendMessageWithGuildLeaveOptionAsync(channel,
-                    $"{_client.GetOwner().Mention}: Joined a guild with more bots than users. Possibly a bot farm?",
+                    $"<@{Config.Owner}>: Joined a guild with more bots than users. Possibly a bot farm?",
                     e.WithSuccessColor().Build(), args.Guild);
             }
             else
                 await e.WithSuccessColor().SendToAsync(channel);
         }
 
-        private async Task OnLeaveAsync(LeftGuildEventArgs args)
+        private async Task OnLeaveAsync(GuildDeleteEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
@@ -127,20 +128,20 @@ namespace Volte.Services
             }
             
 
-            await new EmbedBuilder()
+            await new DiscordEmbedBuilder()
                 .WithTitle("Left Guild")
                 .AddField("Name", args.Guild.Name, true)
                 .AddField("ID", args.Guild.Id, true)
-                .WithThumbnailUrl(args.Guild.IconUrl)
+                .WithThumbnail(args.Guild.IconUrl)
                 .WithErrorColor()
                 .SendToAsync(channel);
         }
 
-        private async Task<IUserMessage> SendMessageWithGuildLeaveOptionAsync(SocketTextChannel channel, string content, Embed embed, SocketGuild guild,
-            TimeSpan? timeout = null, RequestOptions options = null)
+        private async Task<DiscordMessage> SendMessageWithGuildLeaveOptionAsync(DiscordChannel channel, string content, DiscordEmbed embed, DiscordGuild guild,
+            TimeSpan? timeout = null)
         {
-            var m = await channel.SendMessageAsync(content, embed: embed, options: options);
-            await m.AddReactionAsync(EmojiHelper.X.ToEmoji());
+            var m = await channel.SendMessageAsync(content, embed: embed);
+            await m.CreateReactionAsync(EmojiHelper.X.ToEmoji());
             _interactive.AddReactionCallback(m, new LeaveGuildReactionCallback(guild));
             return m;
         }
