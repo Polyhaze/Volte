@@ -1,34 +1,34 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Checks
 {
     public sealed class RequireBotChannelPermissionAttribute : CheckAttribute
     {
-        private readonly ChannelPermission[] _permissions;
+        private readonly Permissions[] _permissions;
 
-        public RequireBotChannelPermissionAttribute(params ChannelPermission[] permissions) => _permissions = permissions;
+        public RequireBotChannelPermissionAttribute(params Permissions[] permissions) => _permissions = permissions;
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.AsVolteContext();
-            foreach (var perm in ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).ToList())
+            foreach (var perm in ctx.Guild.CurrentMember.PermissionsIn(ctx.Channel).GetFlags())
             {
-                if (ctx.Guild.CurrentUser.GuildPermissions.Administrator)
+                if (ctx.Guild.CurrentMember.GetGuildPermissions().HasPermission(Permissions.Administrator))
                     return CheckResult.Successful;
                 if (_permissions.Contains(perm))
                     return CheckResult.Successful;
             }
 
-            await new EmbedBuilder()
+            await new DiscordEmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
                 .AddField("Error Reason", $"I am missing the following channel-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
                 .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
-                .WithAuthor(ctx.User)
+                .WithAuthor(ctx.Member)
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);
 

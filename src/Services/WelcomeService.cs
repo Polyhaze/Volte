@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Gommon;
 using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
@@ -23,13 +24,13 @@ namespace Volte.Services
         {
             return args switch
             {
-                UserJoinedEventArgs joined => JoinAsync(joined),
-                UserLeftEventArgs left => LeaveAsync(left),
+                GuildMemberAddEventArgs joined => JoinAsync(joined),
+                GuildMemberRemoveEventArgs left => LeaveAsync(left),
                 _ => Task.CompletedTask
             };
         }
 
-        internal async Task JoinAsync(UserJoinedEventArgs args)
+        internal async Task JoinAsync(GuildMemberAddEventArgs args)
         {
             var data = _db.GetData(args.Guild);
 
@@ -40,15 +41,15 @@ namespace Volte.Services
 
             _logger.Debug(LogSource.Volte,
                 "User joined a guild, let's check to see if we should send a welcome embed.");
-            var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
-            var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
+            var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.Member);
+            var c = args.Guild.GetChannel(data.Configuration.Welcome.WelcomeChannel);
 
             if (c is not null)
             {
-                await new EmbedBuilder()
+                await new DiscordEmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl())
+                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Png, 256))
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 
@@ -60,23 +61,23 @@ namespace Volte.Services
                 "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
 
-        internal Task JoinDmAsync(UserJoinedEventArgs args)
-            => args.User.TrySendMessageAsync(_db.GetData(args.Guild).Configuration.Welcome.FormatDmMessage(args.User));
+        internal Task JoinDmAsync(GuildMemberAddEventArgs args)
+            => args.Member.TrySendMessageAsync(_db.GetData(args.Guild).Configuration.Welcome.FormatDmMessage(args.Member));
 
-        internal async Task LeaveAsync(UserLeftEventArgs args)
+        internal async Task LeaveAsync(GuildMemberRemoveEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
             _logger.Debug(LogSource.Volte,
                 "User left a guild, let's check to see if we should send a leaving embed.");
-            var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
-            var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
+            var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.Member);
+            var c = args.Guild.GetChannel(data.Configuration.Welcome.WelcomeChannel);
             if (c is not null)
             {
-                await new EmbedBuilder()
+                await new DiscordEmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(leavingMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl())
+                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Png, 256))
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
                 _logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");

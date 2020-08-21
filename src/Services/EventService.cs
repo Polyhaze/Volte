@@ -5,7 +5,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -91,17 +93,19 @@ namespace Volte.Services
             }
         }
 
-        public async Task OnShardReadyAsync(ShardReadyEventArgs args)
+        public async Task OnShardReadyAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
         {
-            await SendInfoToBotListsAsync(args);
-            var guilds = args.Shard.Guilds.Count;
-            var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
-            var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
+            var shard = args.Client;
+            
+            await SendInfoToBotListsAsync(shardedClient, args);
+            var guilds = shard.Guilds.Count;
+            var users = shard.Guilds.SelectMany(x => x.Value.Members).DistinctBy(x => x.Value.Id).Count();
+            var channels = shard.Guilds.SelectMany(x => x.Value.Channels).DistinctBy(x => x.Value.Id).Count();
 
             _logger.PrintVersion();
             _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
-            _logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
-            _logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");
+            _logger.Info(LogSource.Volte, $"{shardedClient.GetInviteUrl()}");
+            _logger.Info(LogSource.Volte, $"Logged in as {shard.CurrentUser}, shard {shard.ShardId}");
             _logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
             _logger.Info(LogSource.Volte, "Connected to:");
             _logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
@@ -112,20 +116,20 @@ namespace Volte.Services
             {
                 if (_shouldSetGame)
                 {
-                    await args.Shard.SetGameAsync(Config.Game);
-                    _logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                    await shard.UpdateStatusAsync(new DiscordActivity(Config.Game, ActivityType.Playing));
+                    _logger.Info(LogSource.Volte, $"Set {shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
                 }
             }
             else
             {
-                await args.Shard.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
+                await shard.UpdateStatusAsync(new DiscordActivity(Config.Game, ActivityType.Streaming) {StreamUrl = Config.FormattedStreamUrl});
                 _logger.Info(LogSource.Volte,
-                    $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
+                    $"Set {shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
             
-            foreach (var guild in args.Shard.Guilds)
+            foreach (var (_, guild) in shard.Guilds)
             {
-                if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+                if (Config.BlacklistedOwners.Contains(guild.Owner.Id))
                 {
                     _logger.Warn(LogSource.Volte,
                         $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
@@ -133,7 +137,7 @@ namespace Volte.Services
                 }
 
                 var data = _db.GetData(guild);
-                foreach (var u in await guild.GetUsersAsync().FlattenAsync())
+                foreach (var u in await guild.GetAllMembersAsync())
                 {
                     var d = data.UserData.FirstOrDefault(x => x.Id == u.Id);
                     if (d is null)
@@ -147,9 +151,9 @@ namespace Volte.Services
                 }
             }
 
-            if (Config.GuildLogging.EnsureValidConfiguration(args.Client, out var channel))
+            if (Config.GuildLogging.EnsureValidConfiguration(shardedClient, out var channel))
             {
-                await new EmbedBuilder()
+                await new DiscordEmbedBuilder()
                     .WithSuccessColor()
                     .WithDescription(
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
@@ -157,9 +161,9 @@ namespace Volte.Services
             }
         }
 
-        public async Task SendInfoToBotListsAsync(ShardReadyEventArgs args)
+        public async Task SendInfoToBotListsAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
         {
-            var guildCount = args.Client.Shards.Sum(x => x.Guilds.Count);
+            var guildCount = shardedClient.ShardClients.Sum(x => x.Value.Guilds.Count);
             if (Config.IsValidDblToken())
             {
                 using (var httpReq = new HttpRequestMessage())

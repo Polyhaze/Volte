@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Net;
-using Discord.WebSocket;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
-using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
@@ -108,6 +103,9 @@ namespace Gommon
         public static int GetShardId(ulong guildId, int shardCount)
             => (int)(guildId >> 22) % shardCount;
 
+        public static DiscordClient GetShardFor(this DiscordShardedClient client, DiscordGuild guild)
+            => client.ShardClients[GetShardId(guild.Id, client.ShardClients.Count)];
+
         public static DiscordGuild GetGuild(this DiscordShardedClient client, ulong guildId)
             => client.ShardClients[GetShardId(guildId, client.ShardClients.Count)].Guilds[guildId]; // TODO test
 
@@ -131,7 +129,7 @@ namespace Gommon
                 if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(args);
             };
 
-            client.Ready += async args => await evt.OnShardReadyAsync(args);
+            client.Ready += async args => await evt.OnShardReadyAsync(client, args);
             client.MessageCreated += async args =>
             {
                 if (args.Message.ShouldHandle())
@@ -157,11 +155,29 @@ namespace Gommon
         public static async Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordMember u) =>
             await u.SendMessageAsync(string.Empty, false, e);
 
+        public static async Task<bool> TryDeleteAsync(this DiscordMessage message)
+        {
+            try
+            {
+                await message.DeleteAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, uint color) => e.WithColor(new DiscordColor((int) color));
 
         public static DiscordEmbedBuilder WithSuccessColor(this DiscordEmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
         public static DiscordEmbedBuilder WithErrorColor(this DiscordEmbedBuilder e) => e.WithColor(Config.ErrorColor);
+
+        public static DiscordEmbedBuilder WithCurrentTimestamp(this DiscordEmbedBuilder e) => e.WithTimestamp(DateTimeOffset.Now);
+
+        public static DiscordEmbedBuilder WithAuthor(this DiscordEmbedBuilder builder, DiscordUser user) =>
+            builder.WithAuthor($"{user.Username}#{user.Discriminator}", user.GetAvatarUrl(ImageFormat.Png, 256));
 
         public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 
@@ -178,5 +194,43 @@ namespace Gommon
 
         public static bool HasColor(this DiscordRole role)
             => !(role.Color.Value is 0);
+        
+        public static Permissions GetGuildPermissions(this DiscordMember member)
+        {
+            // future note: might be able to simplify @everyone role checks to just check any role ... but i'm not sure
+            // xoxo, ~uwx
+            //
+            // you should use a single tilde
+            // ~emzi
+            
+            // user > role > everyone
+            // allow > deny > undefined
+            // =>
+            // user allow > user deny > role allow > role deny > everyone allow > everyone deny
+            // thanks to meew0
+
+            var guild = member.Guild;
+
+            if (guild.Owner == member)
+                return Permissions.All;
+
+            Permissions perms;
+
+            // assign @everyone permissions
+            var everyoneRole = guild.EveryoneRole;
+            perms = everyoneRole.Permissions;
+
+            // roles that member is in
+            var mbRoles = member.Roles.Where(xr => xr.Id != everyoneRole.Id);
+
+            // assign permissions from member's roles (in order)
+            perms |= mbRoles.Aggregate(Permissions.None, (c, role) => c | role.Permissions);
+
+            // Adminstrator grants all permissions and cannot be overridden
+            if ((perms & Permissions.Administrator) == Permissions.Administrator)
+                return Permissions.All;
+
+            return perms;
+        }
     }
 }

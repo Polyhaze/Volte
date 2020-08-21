@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -21,7 +20,7 @@ namespace Volte.Commands.Modules
 
             if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
             {
-                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null).WithFooter($"Requested by {Context.User}."), async message =>
+                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithFooter($"Requested by {Context.Member}."), async message =>
                 {
                     if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                     {
@@ -45,7 +44,7 @@ namespace Volte.Commands.Modules
         [Remarks("tags stats {Tag}")]
         public async Task<ActionResult> TagStatsAsync([Remainder] Tag tag)
         {
-            var u = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
+            var u = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle($"Tag {tag.Name}")

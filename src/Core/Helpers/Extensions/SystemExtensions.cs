@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Humanizer;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Gommon
 {
@@ -39,11 +37,11 @@ namespace Gommon
             };
         }
 
-        public static Task<IUserMessage> SendFileToAsync(this MemoryStream stream, 
-            ITextChannel channel, string text = null, bool isTts = false, Embed embed = null, RequestOptions options = null,
-            bool isSpoiler = false, AllowedMentions allowedMentions = null)
+        public static Task<DiscordMessage> SendFileToAsync(this MemoryStream stream, 
+            DiscordChannel channel, string text = null, bool isTts = false, DiscordEmbed embed = null,
+            IEnumerable<IMention> allowedMentions = null)
         {
-            return channel.SendFileAsync(stream, "", text, isTts, embed, options, isSpoiler, allowedMentions);
+            return channel.SendFileAsync("", stream, text, isTts, embed, allowedMentions);
         }
 
         public static bool IsMatch(this Regex regex, string str, out Match match)
@@ -62,6 +60,11 @@ namespace Gommon
             if (!t.IsEmpty()) vs += $"<{t.Select(a => a.Name).Join(", ")}>";
 
             return vs;
+        }
+        
+        public static IEnumerable<T> GetFlags<T>(this T input) where T : Enum
+        {
+            return Enumerable.Cast<T>(Enum.GetValues(input.GetType())).Where(e => input.HasFlag(e));
         }
     }
 
