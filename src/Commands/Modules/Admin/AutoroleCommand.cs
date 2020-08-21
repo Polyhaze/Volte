@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("Autorole")]
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("autorole {Role}")]
-        public Task<ActionResult> AutoroleAsync([Remainder] DiscordRole role)
+        public Task<ActionResult> AutoroleAsync([Remainder]DiscordRole role)
         {
             ModifyData(data =>
             {

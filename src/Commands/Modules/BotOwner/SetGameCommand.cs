@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
         [Remarks("setgame {String}")]
-        public Task<ActionResult> SetGameAsync([Remainder] string game)
+        public Task<ActionResult> SetGameAsync([Remainder]string game)
         {
             // TODO: DSharpPlus does not cache activities. The only way to implement this is manually caching.
             var activity = Context.Client.Activity;

@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
             [Command("Channel", "C")]
             [Description("Sets the channel used for welcoming new users for this guild.")]
             [Remarks("welcome channel {Channel}")]
-            public Task<ActionResult> WelcomeChannelAsync([Remainder] DiscordChannel channel)
+            public Task<ActionResult> WelcomeChannelAsync([Remainder]DiscordChannel channel)
             {
                 ModifyData(data =>
                 {
@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
             [Description(
                 "Sets or shows the welcome message used to welcome new users for this guild.")]
             [Remarks("welcomemessage [String]")]
-            public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
+            public Task<ActionResult> WelcomeMessageAsync([Remainder]string message = null)
             {
                 if (message is null)
                 {
@@ -68,7 +68,7 @@ namespace Volte.Commands.Modules
             [Command("Color", "Colour", "Cl")]
             [Description("Sets the color used for welcome embeds for this guild.")]
             [Remarks("welcome color {Color}")]
-            public Task<ActionResult> WelcomeColorAsync([Remainder] DiscordColor color)
+            public Task<ActionResult> WelcomeColorAsync([Remainder]DiscordColor color)
             {
                 ModifyData(data =>
                 {
@@ -81,7 +81,7 @@ namespace Volte.Commands.Modules
             [Command("LeavingMessage", "Lmsg")]
             [Description("Sets or shows the leaving message used to say bye for this guild.")]
             [Remarks("welcome leavingmessage [String]")]
-            public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
+            public Task<ActionResult> LeavingMessageAsync([Remainder]string message = null)
             {
                 if (message is null)
                 {

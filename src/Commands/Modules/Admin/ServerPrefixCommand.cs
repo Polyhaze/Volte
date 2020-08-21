@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
         [Command("ServerPrefix", "Sp", "GuildPrefix", "Gp")]
         [Description("Sets the command prefix for this guild.")]
         [Remarks("serverprefix {String}")]
-        public Task<ActionResult> ServerPrefixAsync([Remainder] string newPrefix)
+        public Task<ActionResult> ServerPrefixAsync([Remainder]string newPrefix)
         {
             ModifyData(data =>
             {

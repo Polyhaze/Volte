@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("modrole {Role}")]
-        public Task<ActionResult> ModRoleAsync([Remainder] DiscordRole role)
+        public Task<ActionResult> ModRoleAsync([Remainder]DiscordRole role)
         {
             ModifyData(data =>
             {

@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("CreateConfig")]
         [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
         [Remarks("createconfig [Guild]")]
-        public Task<ActionResult> CreateConfigAsync([Remainder] DiscordGuild guild = null)
+        public Task<ActionResult> CreateConfigAsync([Remainder]DiscordGuild guild = null)
         {
             guild ??= Context.Guild;
             return Ok($"Created a config for {Formatter.Bold(guild.Name)} if it didn't exist.", m =>

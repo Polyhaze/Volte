@@ -9,13 +9,13 @@ namespace Volte.Commands.Modules
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
         [Remarks("eval {String}")]
-        public Task<ActionResult> EvalAsync([Remainder] string code)
+        public Task<ActionResult> EvalAsync([Remainder]string code)
             => None(async () => await Eval.EvaluateAsync(this, code), false);
 
         [Command("Inspect", "Insp")]
         [Description("Inspects a .NET object.")]
         [Remarks("inspect {String}")]
-        public Task<ActionResult> InspectAsync([Remainder] string obj)
+        public Task<ActionResult> InspectAsync([Remainder]string obj)
             => EvalAsync($"Inspect({obj})");
 
         [Command("Inheritance", "Inh")]

@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the name of the current channel. Replaces all spaces with a -.")]
         [Remarks("channelname {String}")]
         [RequireBotChannelPermission(Permissions.ManageChannels)]
-        public async Task<ActionResult> ChannelNameAsync([Remainder] string name)
+        public async Task<ActionResult> ChannelNameAsync([Remainder]string name)
         {
             await Context.Channel.ModifyAsync(c => c.Name = name.Replace(" ", "-"));
             return Ok($"Set this channel's name to **{name}**.");

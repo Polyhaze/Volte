@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
             [Command("Add")]
             [Description("Adds a given word/phrase to the blacklist for this guild.")]
             [Remarks("blacklist add {String}")]
-            public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
+            public Task<ActionResult> BlacklistAddAsync([Remainder]string phrase)
             {
                 if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 {
@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
             [Command("Remove", "Rem")]
             [Description("Removes a given word/phrase from the blacklist for this guild.")]
             [Remarks("blacklist remove {String}")]
-            public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
+            public Task<ActionResult> BlacklistRemoveAsync([Remainder]string phrase)
             {
                 if (Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 {

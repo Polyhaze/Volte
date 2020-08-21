@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("Get")]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("tags get {Tag}")]
-        public Task<ActionResult> TagAsync([Remainder] Tag tag)
+        public Task<ActionResult> TagAsync([Remainder]Tag tag)
         {
             tag.Uses += 1;
             Db.UpdateData(Context.GuildData);
@@ -42,7 +42,7 @@ namespace Volte.Commands.Modules
         [Command("Stats")]
         [Description("Shows stats for a tag.")]
         [Remarks("tags stats {Tag}")]
-        public async Task<ActionResult> TagStatsAsync([Remainder] Tag tag)
+        public async Task<ActionResult> TagStatsAsync([Remainder]Tag tag)
         {
             var u = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
 

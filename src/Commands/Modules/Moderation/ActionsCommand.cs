@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Command("Actions")]
         [Description("Show all the moderator actions taken against a user.")]
         [Remarks("actions [User]")]
-        public async Task<ActionResult> ActionsAsync([Remainder] DiscordMember user = null)
+        public async Task<ActionResult> ActionsAsync([Remainder]DiscordMember user = null)
         {
             user ??= Context.Member;
             var allActions = Context.GuildData.GetUserData(user.Id).Actions;

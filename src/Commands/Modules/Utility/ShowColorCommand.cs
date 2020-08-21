@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("ShowColor", "Sc")]
         [Description("Shows an image purely made up of the specified color.")]
         [Remarks("showcolor {Color}")]
-        public Task<ActionResult> ShowColorAsync([Remainder] DiscordColor color)
+        public Task<ActionResult> ShowColorAsync([Remainder]DiscordColor color)
             => Ok(async () =>
             {
                 await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();

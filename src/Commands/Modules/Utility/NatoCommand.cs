@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("Nato")]
         [Description("Translates a string into the NATO Phonetic Alphabet. If no string is provided, then a full rundown of the NATO alphabet is shown.")]
         [Remarks("nato [String]")]
-        public Task<ActionResult> NatoAsync([Remainder] string input = null)
+        public Task<ActionResult> NatoAsync([Remainder]string input = null)
         {
             if (input.IsNullOrEmpty())
                 return Ok(new PaginatedMessageBuilder(Context).WithPages(_nato.Select(x => $"**{x.Key.ToString().ToUpper()}**: `{x.Value}`")).SplitPages(10));
