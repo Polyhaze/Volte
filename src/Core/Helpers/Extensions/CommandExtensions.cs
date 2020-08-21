@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands;
+using Volte.Commands.Checks;
 using Volte.Core;
-using Volte.Core.Attributes;
+using Volte.Commands.TypeParsers;
 using Module = Qmmands.Module;
 
 namespace Gommon
@@ -66,7 +66,7 @@ namespace Gommon
             return module.Attributes.Any(x => x is RequireBotOwnerAttribute);
         }
 
-        internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
+        internal static List<Type> AddTypeParsersAsync(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;
             var meth = typeof(CommandService).GetMethod("AddTypeParser");
@@ -84,7 +84,7 @@ namespace Gommon
                 loadedTypes.Add(parserType);
             });
 
-            return Task.FromResult(loadedTypes);
+            return loadedTypes;
         }
 
         public static Command GetCommand(this CommandService service, string name)

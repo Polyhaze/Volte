@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Commands.Checks;
 using Volte.Core.Models.Guild;
 using Volte.Commands.Results;
 
@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag != null)
+            if (tag is not null)
             {
                 var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(

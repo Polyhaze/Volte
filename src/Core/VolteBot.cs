@@ -42,11 +42,11 @@ namespace Volte.Core
 
             Config.Load();
 
-            if (!Config.IsValidToken()) return;
+            if (!Config.IsValidDiscordToken()) return;
             int shardCount;
             using (var rest = new DiscordRestClient())
             {
-                await rest.LoginAsync(TokenType.Bot, Config.Token);
+                await rest.LoginAsync(TokenType.Bot, Config.Tokens.DiscordToken);
                 shardCount = await rest.GetRecommendedShardCountAsync();
                 await rest.LogoutAsync();
             }
@@ -57,10 +57,10 @@ namespace Volte.Core
             _cts = _provider.Get<CancellationTokenSource>();
             var logger = _provider.Get<LoggingService>();
 
-            await _client.LoginAsync(TokenType.Bot, Config.Token);
+            await _client.LoginAsync(TokenType.Bot, Config.Tokens.DiscordToken);
             await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));
 
-            await InitializeAsync(_provider);
+            Initialize(_provider);
 
             try
             {
@@ -98,13 +98,13 @@ namespace Volte.Core
             Environment.Exit(0);
         }
         
-        public async Task InitializeAsync(IServiceProvider provider)
+        public void Initialize(IServiceProvider provider)
         {
             var commandService = provider.Get<CommandService>();
             var logger = provider.Get<LoggingService>();
             
             var sw = Stopwatch.StartNew();
-            var l = await commandService.AddTypeParsersAsync();
+            var l = commandService.AddTypeParsersAsync();
             sw.Stop();
             logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();

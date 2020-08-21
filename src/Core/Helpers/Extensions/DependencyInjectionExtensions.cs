@@ -25,11 +25,7 @@ namespace Gommon
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoresExtraArguments = true,
-                    StringComparison = StringComparison.OrdinalIgnoreCase,
-                    DefaultRunMode = RunMode.Sequential,
-                    SeparatorRequirement = SeparatorRequirement.SeparatorOrWhitespace,
-                    Separator = " ",
-                    NullableNouns = null
+                    Separator = " "
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
@@ -39,6 +35,11 @@ namespace Gommon
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50,
+                    GatewayIntents = GatewayIntents.Guilds | 
+                                     GatewayIntents.GuildMembers | 
+                                     GatewayIntents.GuildMessages | 
+                                     GatewayIntents.GuildMessageReactions |
+                                     GatewayIntents.GuildPresences,
                     TotalShards = shardCount
                 }));
 

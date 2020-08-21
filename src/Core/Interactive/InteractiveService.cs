@@ -18,13 +18,12 @@ namespace Volte.Interactive
         private readonly TimeSpan _defaultTimeout;
 
         // helpers to allow DI containers to resolve without a custom factory
-        public InteractiveService(DiscordShardedClient discord, InteractiveServiceConfig config = null)
+        public InteractiveService(DiscordShardedClient discord, TimeSpan? defaultTimeout = null)
         {
             _client = discord;
             _client.ReactionAdded += HandleReactionAsync;
 
-            config ??= new InteractiveServiceConfig();
-            _defaultTimeout = config.DefaultTimeout;
+            _defaultTimeout = defaultTimeout ?? TimeSpan.FromSeconds(15);
 
             _callbacks = new Dictionary<ulong, IReactionCallback>();
         }
@@ -127,7 +126,7 @@ namespace Volte.Interactive
                         RemoveReactionCallback(message.Id);
                     break;
                 default:
-                    throw new InvalidOperationException("Cannot perform an Interactivity callback with an invalid RunMode. Received: " + callback.RunMode);
+                    throw new InvalidOperationException($"Cannot perform an Interactivity callback with an invalid RunMode. Received: {callback.RunMode}.");
             }
         }
 

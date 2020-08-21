@@ -58,7 +58,7 @@ namespace Volte.Core
             if (IsValidConfig()) return true;
             _configuration = new BotConfig
             {
-                Token = "token here",
+                Tokens = new Tokens(),
                 CommandPrefix = "$",
                 Owner = 0,
                 Game = "game here",
@@ -96,7 +96,7 @@ namespace Volte.Core
             var logger = provider.Get<LoggingService>();
             try
             {
-                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath));
+                Load();
                 return true;
             }
             catch (JsonException e)
@@ -106,10 +106,13 @@ namespace Volte.Core
             }
         }
 
-        public static bool IsValidToken() 
-            => !(Token.IsNullOrEmpty() || Token.Equals("token here"));
+        public static bool IsValidDiscordToken() 
+            => !(Tokens.DiscordToken.IsNullOrEmpty() || Tokens.DiscordToken.Equals("discord bot token here"));
 
-        public static string Token => _configuration.Token;
+        public static bool IsValidDblToken()
+            => !(Tokens.DblToken.IsNullOrEmpty() || Tokens.DblToken.EqualsIgnoreCase("discord bot list token here"));
+
+        public static Tokens Tokens => _configuration.Tokens;
 
         public static string CommandPrefix => _configuration.CommandPrefix;
 
@@ -138,8 +141,8 @@ namespace Volte.Core
         // ReSharper disable MemberHidesStaticFromOuterClass
         private class BotConfig
         {
-            [JsonPropertyName("discord_token")]
-            public string Token { get; set; }
+            [JsonPropertyName("tokens")]
+            public Tokens Tokens { get; set; }
 
             [JsonPropertyName("command_prefix")]
             public string CommandPrefix { get; set; }

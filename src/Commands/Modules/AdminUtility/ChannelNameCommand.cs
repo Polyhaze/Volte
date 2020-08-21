@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Commands.Checks;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules

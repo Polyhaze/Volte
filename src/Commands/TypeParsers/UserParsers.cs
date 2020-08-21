@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -6,7 +5,6 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
 
 namespace Volte.Commands.TypeParsers
 {

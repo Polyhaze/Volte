@@ -139,7 +139,7 @@ namespace Volte.Services
                 content.Append(message);
             }
 
-            if (e != null)
+            if (e is not null)
             {
                 var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
                 Append(toWrite, Color.IndianRed);
@@ -189,21 +189,23 @@ namespace Volte.Services
 
         private void LogExceptionInDiscord(Exception e)
         {
+            if (e is GatewayReconnectException) return;
+            
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
-                Error(LogSource.Volte, "Invalid guild_logging.guild_id and/or guild_logging.channel_id configuration. Check your IDs and try again.");
+                Error(LogSource.Volte, "Could not send an exception report to Discord as the GuildLogging configuration is invalid.");
                 return;
             }
 
             _ = Task.Run(async () =>
             {
-                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));                
-                var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());                
+                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
+                var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
                 var url = $"https://paste.greemdev.net/{jDocument.RootElement.GetProperty("key").GetString()}.cs";
                 await new EmbedBuilder()
                     .WithErrorColor()
                     .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
-                    .AddField("Exception Type", e.GetType(), true)
+                    .AddField("Exception Type", e.GetType().AsPrettyString(), true)
                     .AddField("Exception Message", e.Message, true)
                     .WithDescription($"View the full Stack Trace [here]({url}).")
                     .SendToAsync(channel);

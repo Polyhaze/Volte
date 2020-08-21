@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
 
 namespace Volte.Commands.TypeParsers
 {

@@ -7,23 +7,17 @@ namespace Volte.Core.Models.EventArgs
 {
     public sealed class CommandCalledEventArgs : CommandEventArgs
     {
-        public IResult Result { get; }
+        public override IResult Result { get; }
         public override VolteContext Context { get; }
         public override Stopwatch Stopwatch { get; }
-        public override string Command { get; }
-        public override string Arguments { get; }
+        public override string FullMessageContent { get; }
 
-        public CommandCalledEventArgs(IResult res, CommandContext context, Stopwatch sw)
+        public CommandCalledEventArgs(IResult res, VolteContext context, Stopwatch sw)
         {
             Result = res;
-            Context = context.Cast<VolteContext>();
+            Context = context;
             Stopwatch = sw;
-            Command = Context.Message.Content.Split(" ")[0];
-            Arguments = Context.Message.Content.Replace($"{Command}", "").Trim();
-            if (string.IsNullOrEmpty(Arguments)) Arguments = "None";
+            FullMessageContent = context.Message.Content;
         }
-
-        public string ExecutedLogMessage()
-            => $"                    |           -Executed: {Result.IsSuccessful}";
-        }
+    }
 }

@@ -1,4 +1,4 @@
-using Volte.Core.Attributes;
+using Volte.Commands.Checks;
 
 namespace Volte.Commands.Modules
 {

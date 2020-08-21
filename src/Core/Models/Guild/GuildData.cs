@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Gommon;
 
 namespace Volte.Core.Models.Guild
 {
@@ -32,9 +33,7 @@ namespace Volte.Core.Models.Guild
 
         public GuildData AddActionForUser(ulong id, ModAction action)
         {
-            var d = UserData.FirstOrDefault(x => x.Id == id) ??
-                    throw new InvalidOperationException("Cannot add ModAction for user that doesn't exist in the database.");
-            d.Actions.Add(action);
+            this.GetUserData(id).Actions.Add(action);
             return this;
         }
 

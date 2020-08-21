@@ -27,8 +27,7 @@ namespace Volte.Core.Models
 
         public static EvalEnvironment From(VolteContext ctx)
         {
-            return new EvalEnvironment
-            {
+            var e = new EvalEnvironment {
                 Context = ctx,
                 Client = ctx.Client.GetShardFor(ctx.Guild),
                 Data = ctx.ServiceProvider.Get<DatabaseService>().GetData(ctx.Guild),
@@ -36,6 +35,9 @@ namespace Volte.Core.Models
                 Commands = ctx.ServiceProvider.Get<CommandService>(),
                 Database = ctx.ServiceProvider.Get<DatabaseService>()
             };
+            e.Environment = e;
+            return e;
+
         }
 
         public VolteContext Context { get; set; }
@@ -47,7 +49,7 @@ namespace Volte.Core.Models
         public EvalEnvironment Environment { get; set; }
 
         public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
-        public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
+        public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
         public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
         public SocketUserMessage Message(ulong id) => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ?? throw new InvalidOperationException($"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
         
@@ -73,31 +75,30 @@ namespace Volte.Core.Models
             throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
         }
 
-        public string Inheritance<T>() => Inheritance(typeof(T));
-        public string Inheritance(object obj) => Inheritance(obj.GetType());
-        public string Inheritance(Type type)
+        public string Inheritance<T>() => InheritanceInternal(typeof(T));
+        public string Inheritance(object obj) => InheritanceInternal(obj is Type type ? type : obj.GetType());
+        private string InheritanceInternal(Type type)
         {
             var baseTypes = new List<Type> {type};
             var latestType = type.BaseType;
 
-            while (latestType != null)
+            while (latestType is not null)
             {
                 baseTypes.Add(latestType);
                 latestType = latestType.BaseType;
             }
 
-            var sb = new StringBuilder().AppendLine($"Inheritance tree for type [{type.FullName}]").AppendLine();
+            var sb = new StringBuilder().AppendLine($"Inheritance tree for type [{type.AsPrettyString()}]").AppendLine();
 
             foreach (var baseType in baseTypes)
             {
                 sb.Append($"[{baseType.AsPrettyString()}]");
                 var inheritors = baseType.GetInterfaces().ToList();
-                if (baseType.BaseType != null)
+                if (baseType.BaseType is not null)
                 {
-                    inheritors = inheritors.ToList();
                     inheritors.Add(baseType.BaseType);
                 }
-                if (inheritors.Count > 0) sb.Append($": {string.Join(", ", inheritors.Select(x => x.AsPrettyString()))}");
+                if (inheritors.Count > 0) sb.Append($": {inheritors.Select(x => x.AsPrettyString()).Join(", ")}");
 
                 sb.AppendLine();
             }
@@ -110,17 +111,16 @@ namespace Volte.Core.Models
             var type = obj.GetType();
 
             var inspection = new StringBuilder();
-            inspection.Append("<< Inspecting type [").Append(type.AsPrettyString()).AppendLine("] >>");
-            inspection.AppendLine();
+            inspection.AppendLine($"<< Inspecting object of type [{type.AsPrettyString()}] >>").AppendLine();
 
             var props = type.GetProperties().Where(a => a.GetIndexParameters().Length == 0)
                 .OrderBy(a => a.Name).ToList();
 
             var fields = type.GetFields().OrderBy(a => a.Name).ToList();
 
-            if (props.Count != 0)
+            if (props.Count is not 0)
             {
-                if (fields.Count != 0) inspection.AppendLine("<< Properties >>");
+                if (fields.Count is not 0) inspection.AppendLine("<< Properties >>");
 
                 var columnWidth = props.Max(a => a.Name.Length) + 5;
                 foreach (var prop in props)
@@ -133,9 +133,9 @@ namespace Volte.Core.Models
                 }
             }
 
-            if (fields.Count != 0)
+            if (fields.Count is not 0)
             {
-                if (props.Count != 0)
+                if (props.Count is not 0)
                 {
                     inspection.AppendLine();
                     inspection.AppendLine("<< Fields >>");
@@ -185,14 +185,14 @@ namespace Volte.Core.Models
                 if (value is IEnumerable e && !(value is string))
                 {
                     var enu = e.Cast<object>().ToList();
-                    return $"{enu.Count} [{enu.GetType().Name}]";
+                    return $"{enu.Count} [{enu.GetType().AsPrettyString()}]";
                 }
                 return value + $" [{value.GetType().AsPrettyString()}]";
 
             }
             catch (Exception e)
             {
-                return $"[[{e.GetType().Name} thrown, message: \"{e.Message}\"]]";
+                return $"[[{e.GetType().AsPrettyString()} thrown, message: \"{e.Message}\"]]";
             }
         }
         

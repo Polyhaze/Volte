@@ -58,10 +58,10 @@ namespace Volte.Core.Models.Misc
 
         public PollInfo AddFields(params (string Name, string Value)[] fields)
         {
-            foreach (var field in fields)
+            foreach (var (name, value) in fields)
             {
-                if (field.Name.IsNullOrEmpty() || field.Value.IsNullOrEmpty()) continue;
-                Fields.Add(field.Name, field.Value);
+                if (name.IsNullOrEmpty() || value.IsNullOrEmpty()) continue;
+                Fields.Add(name, value);
             }
 
             return this;

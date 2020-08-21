@@ -1,22 +1,22 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Attributes
+namespace Volte.Commands.Checks
 {
-    public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
+    public sealed class RequireBotChannelPermissionAttribute : CheckAttribute
     {
-        private readonly GuildPermission[] _permissions;
+        private readonly ChannelPermission[] _permissions;
 
-        public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
+        public RequireBotChannelPermissionAttribute(params ChannelPermission[] permissions) => _permissions = permissions;
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            var ctx = context.Cast<VolteContext>();
-            foreach (var perm in ctx.Guild.CurrentUser.GuildPermissions.ToList())
+            var ctx = context.AsVolteContext();
+            foreach (var perm in ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).ToList())
             {
                 if (ctx.Guild.CurrentUser.GuildPermissions.Administrator)
                     return CheckResult.Successful;
@@ -26,12 +26,13 @@ namespace Volte.Core.Attributes
 
             await new EmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
-                .AddField("Error Reason", $"I am missing the following guild-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
+                .AddField("Error Reason", $"I am missing the following channel-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
                 .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
                 .WithAuthor(ctx.User)
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);
-            return CheckResult.Unsuccessful("Insufficient permission.");
+
+            return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
         }
     }
 }

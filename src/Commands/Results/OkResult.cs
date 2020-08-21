@@ -49,7 +49,7 @@ namespace Volte.Commands.Results
                 return new ResultCompletionData(m);
             }
 
-            if (_separateLogic != null)
+            if (_separateLogic is not null)
             {
                 if (_runFuncAsync)
                     await Executor.ExecuteAsync(_separateLogic);
@@ -71,7 +71,7 @@ namespace Volte.Commands.Results
                 message = await _embed.SendToAsync(ctx.Channel);
 
 
-            if (_callback != null)
+            if (_callback is not null)
             {
                 if (_runFuncAsync)
                     await Executor.ExecuteAsync(async () => await _callback(message));

@@ -47,6 +47,11 @@ namespace Volte.Commands
             Db.ModifyAndSaveData(Context.Guild.Id, func);
         }
 
+        public Task ModifyDataAsync(Func<GuildData, Task<GuildData>> func)
+        {
+            return Db.ModifyAndSaveDataAsync(Context.Guild.Id, func);
+        }
+
         public Task<IUserMessage> PagedReplyAsync(List<object> pages, bool fromSourceUser = true)
         {
             var pager = new PaginatedMessage

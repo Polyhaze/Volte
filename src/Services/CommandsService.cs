@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -62,7 +63,6 @@ namespace Volte.Services
                         $"The command {args.Context.Command.Name} didn't return some form of ActionResult. " +
                         "This is developer error. " +
                         "Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
-                    data = null;
                     return;
                 }
                     
@@ -72,17 +72,16 @@ namespace Volte.Services
             if (!Config.LogAllCommands) return;
             
             var sb = new StringBuilder()
-                .AppendLine(CommandFrom(args))
-                .AppendLine(CommandIssued(args))
-                .AppendLine(ArgsPassed(args))
-                .AppendLine(InGuild(args))
-                .AppendLine(InChannel(args))
-                .AppendLine(TimeIssued(args))
-                .AppendLine(args.ExecutedLogMessage())
-                .AppendLine(After(args));
+                .AppendLine(_commandFrom(args))
+                .AppendLine(_fullMessage(args))
+                .AppendLine(_inGuild(args))
+                .AppendLine(_inChannel(args))
+                .AppendLine(_timeIssued(args))
+                .AppendLine(_executed(args, string.Empty))
+                .AppendLine(_after(args));
             if (data is not null)
             {
-                sb.AppendLine(ResultMessage(data));
+                sb.AppendLine(_resultMessage(data));
             }
             sb.Append(_separator);
             _logger.Info(LogSource.Volte, sb.ToString());
@@ -99,7 +98,7 @@ namespace Volte.Services
                 TypeParseFailedResult tpfr => tpfr.Reason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 ExecutionFailedResult efr => ExecutionFailed(efr),
-                _ => Unknown(args.Result)
+                _ => Unknown(args.FailedResult)
             };
 
             string Unknown(FailedResult result)
@@ -126,14 +125,13 @@ namespace Volte.Services
                 if (!Config.LogAllCommands) return;
                 
                 _logger.Error(LogSource.Module, new StringBuilder()
-                    .AppendLine(CommandFrom(args))
-                    .AppendLine(CommandIssued(args))
-                    .AppendLine(ArgsPassed(args))
-                    .AppendLine(InGuild(args))
-                    .AppendLine(InChannel(args))
-                    .AppendLine(TimeIssued(args))
-                    .AppendLine(args.ExecutedLogMessage(reason))
-                    .AppendLine(After(args))
+                    .AppendLine(_commandFrom(args))
+                    .AppendLine(_fullMessage(args))
+                    .AppendLine(_inGuild(args))
+                    .AppendLine(_inChannel(args))
+                    .AppendLine(_timeIssued(args))
+                    .AppendLine(_executed(args, reason))
+                    .AppendLine(_after(args))
                     .Append(_separator).ToString());
             }
         }
@@ -141,32 +139,36 @@ namespace Volte.Services
         private void OnBadRequest(CommandBadRequestEventArgs args)
         {
             var sb = new StringBuilder()
-                .AppendLine(CommandFrom(args))
-                .AppendLine(CommandIssued(args))
-                .AppendLine(ArgsPassed(args))
-                .AppendLine(InGuild(args))
-                .AppendLine(InChannel(args))
-                .AppendLine(TimeIssued(args))
-                .AppendLine(args.ExecutedLogMessage())
-                .AppendLine(After(args));
+                .AppendLine(_commandFrom(args))
+                .AppendLine(_fullMessage(args))
+                .AppendLine(_inGuild(args))
+                .AppendLine(_inChannel(args))
+                .AppendLine(_timeIssued(args))
+                .AppendLine(_executed(args, string.Empty))
+                .AppendLine(_after(args));
             
             if (args.ResultCompletionData is not null)
             {
-                sb.AppendLine(ResultMessage(args.ResultCompletionData));
+                sb.AppendLine(_resultMessage(args.ResultCompletionData));
             }
             sb.Append(_separator);
             _logger.Error(LogSource.Module, sb.ToString());
         }
 
         private readonly string _separator                        = "                    -------------------------------------------------";
-        private string CommandFrom(CommandEventArgs args)                           => $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})"; //yes, the spaces in front of each string are indeed intentional on all lines after this
-        private string CommandIssued(CommandEventArgs args)     => $"                    |     -Command Issued: {args.Context.Command.Name}";
-        private string ArgsPassed(CommandEventArgs args)        => $"                    |        -Args Passed: {args.Arguments.Trim()}";
-        private string InGuild(CommandEventArgs args)           => $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
-        private string InChannel(CommandEventArgs args)         => $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";
-        private string TimeIssued(CommandEventArgs args)        => $"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}";
-        private string After(CommandEventArgs args)             => $"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}";
-        private string ResultMessage(ResultCompletionData data) => $"                    |     -Result Message: {data.Message?.Id}";
+        private readonly Func<CommandEventArgs, string> _commandFrom = args =>       $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})";
+        private readonly Func<CommandEventArgs, string> _fullMessage = args =>       $"                    |    -Message Content: {args.FullMessageContent}";
+        private readonly Func<CommandEventArgs, string> _inGuild = args =>           $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
+        private readonly Func<CommandEventArgs, string> _inChannel = args =>         $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";
+        private readonly Func<CommandEventArgs, string> _timeIssued = args =>        $"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}";
+        private readonly Func<CommandEventArgs, string> _after = args =>             $"                    |              -After: {args.Stopwatch.Elapsed.Humanize(3)}";
+        private readonly Func<ResultCompletionData, string> _resultMessage = data => $"                    |     -Result Message: {data.Message?.Id}";
+        private readonly Func<CommandEventArgs, string, string> _executed = (args, reason) =>
+        {
+            if (args.Result.IsSuccessful) 
+                return $"                    |           -Executed: {args.Result.IsSuccessful}";
+            return $"                    |           -Executed: {args.Result.IsSuccessful} | Reason: {reason}";
+        };
     }
     
 }

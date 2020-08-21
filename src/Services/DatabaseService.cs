@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using LiteDB;
@@ -23,6 +24,13 @@ namespace Volte.Services
         {
             var d = GetData(id);
             d = func(d);
+            UpdateData(d);
+        }
+        
+        public async Task ModifyAndSaveDataAsync(ulong id, Func<GuildData, Task<GuildData>> func)
+        {
+            var d = GetData(id);
+            d = await func(d);
             UpdateData(d);
         }
 

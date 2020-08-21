@@ -23,18 +23,12 @@ namespace Volte.Services
     {
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
-        private readonly DatabaseService _db;
+        
         private readonly LoggingService _logger;
-        private readonly CommandService _commands;
 
-        public EvalService(DatabaseService databaseService,
-            LoggingService loggingService,
-            CommandService commandService)
+        public EvalService(LoggingService loggingService)
         {
-            _db = databaseService;
             _logger = loggingService;
-            _commands = commandService;
         }
 
         public async Task EvaluateAsync(BotOwnerModule module, string code)
@@ -108,13 +102,12 @@ namespace Volte.Services
             _ = await msg.TryDeleteAsync();
         }
 
-        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(
-            new List<string>
+        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>
             {
-                "System", "System.Collections.Generic", "System.Linq", "System.Text",
+                "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Reflection",
                 "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
                 "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
-                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-            }));
+                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Volte.Commands.TypeParsers"
+            });
     }
 }

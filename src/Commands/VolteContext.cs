@@ -28,8 +28,6 @@ namespace Volte.Commands
             Now = DateTimeOffset.UtcNow;
         }
         
-        
-
         public readonly DiscordShardedClient Client;
         public readonly SocketGuild Guild;
         public readonly SocketTextChannel Channel;

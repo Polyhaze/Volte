@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core.Models.Guild;
 

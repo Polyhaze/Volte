@@ -5,7 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Attributes
+namespace Volte.Commands.Checks
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class CheckHierarchyAttribute : ParameterCheckAttribute
@@ -13,7 +13,7 @@ namespace Volte.Core.Attributes
         public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
         {
             var u = argument.Cast<SocketGuildUser>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
-            var ctx = context.Cast<VolteContext>();
+            var ctx = context.AsVolteContext();
 
             return ctx.User.Hierarchy >= u.Hierarchy
                 ? CheckResult.Successful

@@ -28,8 +28,7 @@ namespace Volte.Services
 
         private async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
-            if (!Config.EnabledFeatures.ModLog)
-                return;
+            if (!Config.EnabledFeatures.ModLog) return;
 
             _logger.Debug(LogSource.Volte, "Attempting to post a modlog message.");
 
@@ -61,7 +60,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(TargetUser(args, true, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Channel(args))
                             .AppendLine(Time(args))
                             .ToString())
@@ -77,7 +76,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args))
                             .ToString())
@@ -100,7 +99,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args))
                             .ToString())
@@ -121,7 +120,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
@@ -145,7 +144,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args))
                             .ToString())
@@ -168,7 +167,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args))
                             .ToString())
@@ -191,7 +190,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, true))
+                            .AppendLine(TargetUser(args))
                             .AppendLine(Time(args))
                             .ToString())
                         .SendToAsync(c);
@@ -227,11 +226,12 @@ namespace Volte.Services
         private string Case(ModActionEventArgs args) => $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
         private string Count(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
 
-        private string TargetUser(ModActionEventArgs args, bool isOnMessageDelete, bool isOnIdBan) => isOnMessageDelete
-            ? $"**Message Deleted:** {args.TargetId}"
-            : isOnIdBan
-                ? $"**User:** {args.TargetId}"
-                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
+        private string TargetUser(ModActionEventArgs args) => args.ActionType switch
+        {
+            ModActionType.Delete => $"**Message Deleted:** {args.TargetId}",
+            ModActionType.IdBan => $"**User:** {args.TargetId}",
+            _ => $"**User:** {args.TargetUser} ({args.TargetUser.Id})"
+        };
 
         private string Time(ModActionEventArgs args) => $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
     }

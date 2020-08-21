@@ -74,7 +74,7 @@ namespace Volte.Interactive
                     await message.AddReactionAsync(options.Info);
             });
 
-            if (Timeout != null)
+            if (Timeout is not null)
             {
                 _ = Task.Delay(Timeout.Value).ContinueWith(_ =>
                 {

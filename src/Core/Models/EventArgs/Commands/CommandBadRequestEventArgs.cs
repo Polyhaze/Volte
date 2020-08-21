@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using Gommon;
+using Qmmands;
 using Volte.Commands;
 using Volte.Commands.Results;
 
@@ -6,24 +8,21 @@ namespace Volte.Core.Models.EventArgs
 {
     public sealed class CommandBadRequestEventArgs : CommandEventArgs
     {
-        public BadRequestResult Result { get; }
+        public BadRequestResult BadResult { get; }
+        public override IResult Result { get; }
         public ResultCompletionData ResultCompletionData { get; }
         public override VolteContext Context { get; }
-        public override string Arguments { get; }
-        public override string Command { get; }
+        public override string FullMessageContent { get; }
         public override Stopwatch Stopwatch { get; }
 
-        public CommandBadRequestEventArgs(BadRequestResult res, ResultCompletionData data, CommandCalledEventArgs args)
+        public CommandBadRequestEventArgs(BadRequestResult res, ResultCompletionData data, CommandEventArgs args)
         {
             Result = res;
+            BadResult = Result.Cast<BadRequestResult>();
             ResultCompletionData = data;
             Context = args.Context;
-            Arguments = args.Arguments;
-            Command = args.Command;
+            FullMessageContent = Context.Message.Content;
             Stopwatch = args.Stopwatch;
         }
-
-        public string ExecutedLogMessage()
-            => $"                    |           -Executed: {Result.IsSuccessful} | Reason: {Result.Reason}";
     }
 }

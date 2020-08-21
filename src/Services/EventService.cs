@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Rest;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -25,7 +26,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
-        private readonly ModLogService _modLog;
+        private readonly HttpClient _http;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -41,7 +42,7 @@ namespace Volte.Services
             CommandService commandService,
             CommandsService commandsService,
             QuoteService quoteService,
-            ModLogService modLogService)
+            HttpClient httpClient)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -51,7 +52,7 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
-            _modLog = modLogService;
+            _http = httpClient;
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
@@ -92,6 +93,7 @@ namespace Volte.Services
 
         public async Task OnShardReadyAsync(ShardReadyEventArgs args)
         {
+            await SendInfoToBotListsAsync(args);
             var guilds = args.Shard.Guilds.Count;
             var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
@@ -149,10 +151,28 @@ namespace Volte.Services
             {
                 await new EmbedBuilder()
                     .WithSuccessColor()
-                    .WithAuthor(args.Client.GetOwner())
                     .WithDescription(
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
                     .SendToAsync(channel);
+            }
+        }
+
+        public async Task SendInfoToBotListsAsync(ShardReadyEventArgs args)
+        {
+            var guildCount = args.Client.Shards.Sum(x => x.Guilds.Count);
+            if (Config.IsValidDblToken())
+            {
+                using (var httpReq = new HttpRequestMessage())
+                {
+                    var content = new StringContent($"{{\"guilds\": {guildCount}}}");
+                    httpReq.Headers.Add("Authorization", Config.Tokens.DblToken);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    httpReq.Content = content;
+                    httpReq.Method = HttpMethod.Post;
+                    httpReq.RequestUri = new Uri($"https://discordbotlist.com/api/v1/bots/{args.Client.CurrentUser.Id}/stats");
+
+                    await _http.SendAsync(httpReq);
+                }
             }
         }
     }
