@@ -66,9 +66,9 @@ namespace Volte.Commands.Modules
                 .AddField("Region", Context.Guild.VoiceRegion.Id)
                 .AddField("Members", Context.Guild.MemberCount, true)
                 .AddField("Roles", Context.Guild.Roles.Count, true)
-                .AddField("Category Channels", Context.Guild.Channels.Count(e => e.Value.IsCategory), true)
-                .AddField("Voice Channels", Context.Guild.Channels.Count(e => e.Value.Type == ChannelType.Voice), true)
-                .AddField("Text Channels", Context.Guild.Channels.Count(e => e.Value.Type != ChannelType.Voice && !e.Value.IsCategory), true)
+                .AddField("Category Channels", Context.Guild.GetCategoryChannels().Count(), true)
+                .AddField("Voice Channels", Context.Guild.GetVoiceChannels().Count(), true)
+                .AddField("Text Channels", Context.Guild.GetTextChannels().Count(), true)
                 .WithThumbnail(Context.Guild.IconUrl));
         }
 

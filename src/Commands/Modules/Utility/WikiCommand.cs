@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
         [Remarks("wiki [String]")]
         public Task<ActionResult> WikiAsync([Remainder]string page = null)
         {
-            var embed = Context.CreateEmbedBuilder(string.Empty).WithThumbnailUrl("https://i.greemdev.net/volte_whitepinkyellow.png");
+            var embed = Context.CreateEmbedBuilder(string.Empty).WithThumbnail("https://i.greemdev.net/volte_whitepinkyellow.png");
             var pages = new Dictionary<string, string>
             { 
                 { "Home", _baseWikiUrl },

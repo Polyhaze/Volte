@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -245,8 +246,15 @@ namespace Gommon
             => await client.ShardClients.First().Value.UpdateCurrentUserAsync(username, avatar);
 
         public static int GetMeanLatency(this DiscordShardedClient client)
-        {
-            return (int) Math.Round((double) client.ShardClients.Sum(e => e.Value.Ping) / client.ShardClients.Count);
-        }
+            => (int) Math.Round((double) client.ShardClients.Sum(e => e.Value.Ping) / client.ShardClients.Count);
+
+        public static IEnumerable<DiscordChannel> GetCategoryChannels(this DiscordGuild guild)
+            => guild.Channels.Where(e => e.Value.IsCategory).Select(e => e.Value);
+        
+        public static IEnumerable<DiscordChannel> GetVoiceChannels(this DiscordGuild guild)
+            => guild.Channels.Where(e => e.Value.Type == ChannelType.Voice).Select(e => e.Value);
+        
+        public static IEnumerable<DiscordChannel> GetTextChannels(this DiscordGuild guild)
+            => guild.Channels.Where(e => e.Value.Type != ChannelType.Voice && !e.Value.IsCategory).Select(e => e.Value);
     }
 }
