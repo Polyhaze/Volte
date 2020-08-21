@@ -256,5 +256,19 @@ namespace Gommon
         
         public static IEnumerable<DiscordChannel> GetTextChannels(this DiscordGuild guild)
             => guild.Channels.Where(e => e.Value.Type != ChannelType.Voice && !e.Value.IsCategory).Select(e => e.Value);
+        
+        public static DiscordChannel FindFirstChannel(this DiscordShardedClient client, ulong id)
+        {
+            foreach (var (_, shard) in client.ShardClients)
+            foreach (var (_, guild) in shard.Guilds)
+            {
+                if (guild.Channels.TryGetValue(id, out var channel))
+                {
+                    return channel;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -1,41 +1,51 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class GuildParser : TypeParser<SocketGuild>
+    public sealed class GuildParser : TypeParser<DiscordGuild>
     {
-        public override ValueTask<TypeParserResult<SocketGuild>> ParseAsync(
+        public override ValueTask<TypeParserResult<DiscordGuild>> ParseAsync(
             Parameter parameter,
             string value,
             CommandContext context)
         {
             var ctx = context.AsVolteContext();
-            SocketGuild guild = null;
+            DiscordGuild guild = null;
 
-            var guilds = ctx.Client.Guilds;
-
-            if (ulong.TryParse(value, out var id))
-                guild = guilds.FirstOrDefault(x => x.Id == id);
+            var isId = ulong.TryParse(value, out var id);
+            if (isId)
+            {
+                foreach (var clientGuilds in ctx.Client.ShardClients.Select(e => e.Value.Guilds))
+                {
+                    if (clientGuilds.TryGetValue(id, out guild))
+                    {
+                        break;
+                    }
+                }
+            }
 
             if (guild is null)
             {
-                var match = guilds.Where(x =>
-                    x.Name.EqualsIgnoreCase(value)).ToArray();
+                // SLOW AS HELL
+                var match = ctx.Client.ShardClients
+                    .SelectMany(e => e.Value.Guilds)
+                    .Where(e => e.Value.Name.EqualsIgnoreCase(value)).ToArray();
+
                 if (match.Length > 1)
-                    return TypeParserResult<SocketGuild>.Unsuccessful(
+                    return TypeParserResult<DiscordGuild>.Unsuccessful(
                         "Multiple guilds found with that name, try using its ID.");
 
-                guild = match.FirstOrDefault();
+                guild = match.FirstOrDefault().Value;
             }
 
             return guild is null
-                ? TypeParserResult<SocketGuild>.Unsuccessful("Guild not found.")
-                : TypeParserResult<SocketGuild>.Successful(guild);
+                ? TypeParserResult<DiscordGuild>.Unsuccessful("Guild not found.")
+                : TypeParserResult<DiscordGuild>.Successful(guild);
         }
     }
 }

@@ -1,39 +1,39 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class RoleParser : TypeParser<SocketRole>
+    public sealed class RoleParser : TypeParser<DiscordRole>
     {
-        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(
+        public override ValueTask<TypeParserResult<DiscordRole>> ParseAsync(
             Parameter param,
             string value,
             CommandContext context)
         {
             var ctx = context.AsVolteContext();
-            SocketRole role = null;
+            DiscordRole role = null;
 
-            if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
-                role = ctx.Guild.GetRole(id).Cast<SocketRole>();
+            if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseRole(value, out id))
+                role = ctx.Guild.GetRole(id);
 
             if (role is null)
             {
-                var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
-                if (match.Count > 1)
-                    return TypeParserResult<SocketRole>.Unsuccessful(
+                var match = ctx.Guild.Roles.Where(x => x.Value.Name.EqualsIgnoreCase(value)).ToArray();
+                if (match.Length > 1)
+                    return TypeParserResult<DiscordRole>.Unsuccessful(
                         "Multiple roles found with that name. Try mentioning the specific role or using its ID.");
 
-                role = match.FirstOrDefault().Cast<SocketRole>();
+                role = match.FirstOrDefault().Value;
             }
 
             return role is null
-                ? TypeParserResult<SocketRole>.Unsuccessful($"Role `{value}` not found.")
-                : TypeParserResult<SocketRole>.Successful(role);
+                ? TypeParserResult<DiscordRole>.Unsuccessful($"Role `{value}` not found.")
+                : TypeParserResult<DiscordRole>.Successful(role);
         }
     }
 }

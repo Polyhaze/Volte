@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Qmmands;
 
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class ColorParser : TypeParser<Color>
+    public sealed class ColorParser : TypeParser<DiscordColor>
     {
-        public override ValueTask<TypeParserResult<Color>> ParseAsync(
+        public override ValueTask<TypeParserResult<DiscordColor>> ParseAsync(
             Parameter parameter, 
             string value, 
             CommandContext context)
         {
-            Color? c = null;
+            DiscordColor? c = null;
 
             if (uint.TryParse(value.StartsWith("#") ? value.Substring(1) : value, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
-                c = new Color(colorInt);
+                c = new DiscordColor((int) colorInt);
 
             if (c is null)
             {
@@ -30,11 +30,11 @@ namespace Volte.Commands.TypeParsers
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return TypeParserResult<Color>.Unsuccessful(
+                        return TypeParserResult<DiscordColor>.Unsuccessful(
                             "A value in an RGB sequence may not be over the value of 255.");
                     }
 
-                    c = new Color(r, g, b);
+                    c = new DiscordColor(r, g, b);
                 }
                 catch (Exception)
                 { 
@@ -43,8 +43,8 @@ namespace Volte.Commands.TypeParsers
             }
 
             return c is null
-                ? TypeParserResult<Color>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
-                : TypeParserResult<Color>.Successful(c.Value);
+                ? TypeParserResult<DiscordColor>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
+                : TypeParserResult<DiscordColor>.Successful(c.Value);
         }
     }
 }
