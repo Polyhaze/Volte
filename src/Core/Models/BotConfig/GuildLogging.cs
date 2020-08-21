@@ -1,5 +1,7 @@
-using Discord.WebSocket;
 using System.Text.Json.Serialization;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Gommon;
 
 namespace Volte.Core.Models.BotConfig
 {
@@ -19,7 +21,7 @@ namespace Volte.Core.Models.BotConfig
         public ulong ChannelId { get; set; }
 
 
-        public bool EnsureValidConfiguration(DiscordShardedClient client, out SocketTextChannel channel)
+        public bool EnsureValidConfiguration(DiscordShardedClient client, out DiscordChannel channel)
         {
             if (!Enabled)
             {
@@ -34,7 +36,7 @@ namespace Volte.Core.Models.BotConfig
             }
 
             var g = client.GetGuild(GuildId);
-            channel = g?.GetTextChannel(ChannelId);
+            channel = g?.Channels[ChannelId];
             if (g is null)
             {
                 return false;

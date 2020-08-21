@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
@@ -19,50 +22,50 @@ namespace Gommon
         /// </summary>
         /// <param name="user">The current user</param>
         /// <returns>True, if the current user is the bot's owner; false otherwise.</returns>
-        public static bool IsBotOwner(this SocketGuildUser user)
+        public static bool IsBotOwner(this DiscordMember user)
             => Config.Owner == user.Id;
 
-        private static bool IsGuildOwner(this SocketGuildUser user)
-            => user.Guild.OwnerId == user.Id || IsBotOwner(user);
+        private static bool IsGuildOwner(this DiscordMember user)
+            => user.Guild.Owner == user || IsBotOwner(user);
 
-        public static bool IsModerator(this SocketGuildUser user, VolteContext ctx)
+        public static bool IsModerator(this DiscordMember user, VolteContext ctx)
         {
             return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
                    IsAdmin(user, ctx) ||
                    IsGuildOwner(user);
         }
 
-        private static bool HasRole(this SocketGuildUser user, ulong roleId)
+        private static bool HasRole(this DiscordMember user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
+        public static bool IsAdmin(this DiscordMember user, VolteContext ctx)
         {
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
         }
 
-        public static SocketRole GetHighestRole(this SocketGuildUser member)
+        public static DiscordRole GetHighestRole(this DiscordMember member)
         {
             var roles = member.Roles.OrderByDescending(x => x.Position);
             return roles.FirstOrDefault();
         }
         
-        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member)
+        public static DiscordRole GetHighestRoleWithColor(this DiscordMember member)
         {
-            var coloredRoles = member.Roles.Where(x => x.Color.RawValue != new Color(0, 0, 0).RawValue);
+            var coloredRoles = member.Roles.Where(x => x.Color.Value != new DiscordColor(0, 0, 0).Value);
             var roles = coloredRoles.OrderByDescending(x => x.Position);
             return roles.FirstOrDefault();
         }
 
-        public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,
-            bool isTts = false, Embed embed = null, RequestOptions options = null)
+        public static async Task<bool> TrySendMessageAsync(this DiscordMember user, string text = null,
+            bool isTts = false, DiscordEmbed embed = null)
         {
             try
             {
-                await user.SendMessageAsync(text, isTts, embed, options);
+                await user.SendMessageAsync(text, isTts, embed);
                 return true;
             }
-            catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden)
+            catch (UnauthorizedException e)
             {
                 return false;
             }
@@ -92,6 +95,19 @@ namespace Gommon
 
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
             => client.GetGuild(405806471578648588);
+        
+        // https://discord.com/developers/docs/topics/gateway#sharding-sharding-formula
+        /// <summary>
+        /// Gets a shard id from a guild id and total shard count.
+        /// </summary>
+        /// <param name="guildId">The guild id the shard is on.</param>
+        /// <param name="shardCount">The total amount of shards.</param>
+        /// <returns>The shard id.</returns>
+        public static int GetShardId(ulong guildId, int shardCount)
+            => (int)(guildId >> 22) % shardCount;
+
+        public static DiscordGuild GetGuild(this DiscordShardedClient client, ulong guildId)
+            => client.ShardClients[GetShardId(guildId, client.ShardClients.Count)].Guilds[guildId]; // TODO test
 
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
@@ -139,9 +155,13 @@ namespace Gommon
         public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
             await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e);
 
-        public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
+        public static Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder builder, DiscordChannel channel) => channel.SendMessageAsync(embed: builder.Build());
+        
+        public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, uint color) => e.WithColor(new DiscordColor((int) color));
 
-        public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
+        public static DiscordEmbedBuilder WithSuccessColor(this DiscordEmbedBuilder e) => e.WithColor(Config.SuccessColor);
+
+        public static DiscordEmbedBuilder WithErrorColor(this DiscordEmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
 

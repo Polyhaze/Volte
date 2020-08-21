@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Rest;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -28,9 +28,9 @@ namespace Volte.Core
         private DiscordShardedClient _client;
         private CancellationTokenSource _cts;
 
-        private static IServiceProvider BuildServiceProvider(int shardCount)
+        private static IServiceProvider BuildServiceProvider()
             => new ServiceCollection() 
-                .AddAllServices(shardCount)
+                .AddAllServices()
                 .BuildServiceProvider();
 
         private VolteBot() 
@@ -43,22 +43,15 @@ namespace Volte.Core
             Config.Load();
 
             if (!Config.IsValidDiscordToken()) return;
-            int shardCount;
-            using (var rest = new DiscordRestClient())
-            {
-                await rest.LoginAsync(TokenType.Bot, Config.Tokens.DiscordToken);
-                shardCount = await rest.GetRecommendedShardCountAsync();
-                await rest.LogoutAsync();
-            }
-            
-            _provider = BuildServiceProvider(shardCount);
+
+            _provider = BuildServiceProvider();
             
             _client = _provider.Get<DiscordShardedClient>();
             _cts = _provider.Get<CancellationTokenSource>();
             var logger = _provider.Get<LoggingService>();
 
-            await _client.LoginAsync(TokenType.Bot, Config.Tokens.DiscordToken);
-            await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));
+            await _client.StartAsync();
+            await _client.StartAsync().ContinueWith(_ => _client.UpdateStatusAsync(userStatus: UserStatus.Online));
 
             Initialize(_provider);
 
@@ -79,9 +72,9 @@ namespace Volte.Core
         {
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
-                await new EmbedBuilder()
+                await new DiscordEmbedBuilder()
                     .WithErrorColor()
-                    .WithAuthor(client.GetOwner())
+                    .WithAuthor(client.CurrentApplication.Owners.FirstOrDefault()?.Username ?? "<N/A>")
                     .WithDescription(
                         $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);
@@ -92,9 +85,12 @@ namespace Volte.Core
                 disposable?.Dispose();
             }
             
-            await client.SetStatusAsync(UserStatus.Invisible);
-            await client.LogoutAsync();
-            await client.StopAsync();
+            await client.UpdateStatusAsync(userStatus: UserStatus.Invisible);
+            foreach (var (_, aclient) in client.ShardClients)
+            {
+                await aclient.DisconnectAsync();
+                aclient.Dispose();
+            }
             Environment.Exit(0);
         }
         

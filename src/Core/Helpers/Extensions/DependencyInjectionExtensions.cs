@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
 using RestSharp;
 using Volte;
+using Volte.Core;
 using Volte.Services;
 using Version = Volte.Version;
 
@@ -16,7 +16,7 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static IServiceCollection AddAllServices(this IServiceCollection coll, int shardCount) =>
+        public static IServiceCollection AddAllServices(this IServiceCollection coll) =>
             //add all other services; formerly in the VolteBot class
             coll.AddVolteServices()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
@@ -27,20 +27,16 @@ namespace Gommon
                     IgnoresExtraArguments = true,
                     Separator = " "
                 }))
-                .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
+                .AddSingleton(new DiscordShardedClient(new DiscordConfiguration
                 {
                     LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
-                        ? LogSeverity.Debug
-                        : LogSeverity.Verbose,
-                    AlwaysDownloadUsers = true,
-                    ConnectionTimeout = 10000,
+                        ? LogLevel.Debug
+                        : LogLevel.Info,
+                    // ConnectionTimeout = 10000, -- TODO XXX
                     MessageCacheSize = 50,
-                    GatewayIntents = GatewayIntents.Guilds | 
-                                     GatewayIntents.GuildMembers | 
-                                     GatewayIntents.GuildMessages | 
-                                     GatewayIntents.GuildMessageReactions |
-                                     GatewayIntents.GuildPresences,
-                    TotalShards = shardCount
+                    // ShardCount = shardCount TODO
+                    TokenType = TokenType.Bot,
+                    Token = Config.Tokens.DiscordToken
                 }));
 
         public static IServiceCollection AddVolteServices(this IServiceCollection coll)

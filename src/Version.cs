@@ -1,4 +1,7 @@
-﻿using SysVer = System.Version;
+﻿using System;
+using DSharpPlus;
+using Microsoft.VisualBasic.CompilerServices;
+using SysVer = System.Version;
 
 namespace Volte
 {
@@ -11,7 +14,12 @@ namespace Volte
         private static int Hotfix => 0;
         public static DevelopmentStage ReleaseType => DevelopmentStage.Development;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        public static string DiscordNetVersion => Discord.DiscordConfig.Version;
+        private static readonly Lazy<string> GetVersionString = new Lazy<string>(() =>
+        {
+            using var client = new DiscordClient(new DiscordConfiguration());
+            return client.VersionString;
+        });
+        public static string DiscordNetVersion => GetVersionString.Value;
         public enum DevelopmentStage
         {
             Development,
