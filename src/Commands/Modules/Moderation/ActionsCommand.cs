@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
 using Volte.Core.Models;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -15,15 +14,15 @@ namespace Volte.Commands.Modules
         [Command("Actions")]
         [Description("Show all the moderator actions taken against a user.")]
         [Remarks("actions [User]")]
-        public async Task<ActionResult> ActionsAsync([Remainder]SocketGuildUser user = null)
+        public async Task<ActionResult> ActionsAsync([Remainder] DiscordMember user = null)
         {
-            user ??= Context.User;
+            user ??= Context.Member;
             var allActions = Context.GuildData.GetUserData(user.Id).Actions;
             var l = new List<string>();
 
             foreach (var action in allActions)
             {
-                var mod = await Context.Client.Shards.First().Rest.GetUserAsync(action.Moderator);
+                var mod = await Context.Client.ShardClients.First().Value.GetUserAsync(action.Moderator);
                 var reason = action.Reason.IsNullOrEmpty() ? "No reason provided." : action.Reason;
                 var str = action.Type switch
                 {

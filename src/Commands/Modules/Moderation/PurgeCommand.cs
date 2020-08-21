@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Rest;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -18,12 +18,12 @@ namespace Volte.Commands.Modules
         [Command("Purge", "clear", "clean")]
         [Description("Purges the last x messages, or the last x messages by a given user.")]
         [Remarks("purge {Int} [RestUser]")]
-        [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        public async Task<ActionResult> PurgeAsync(int count, RestUser targetAuthor = null)
+        [RequireBotChannelPermission(Permissions.ManageMessages)]
+        public async Task<ActionResult> PurgeAsync(int count, DiscordUser targetAuthor = null)
         {
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
             //lets you theoretically use 0 to delete only the invocation message, for testing or something.
-            var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync()).ToList();
+            var messages = (await Context.Channel.GetMessagesAsync(count + 1)).ToList();
             try
             {
                 if (!(targetAuthor is null))

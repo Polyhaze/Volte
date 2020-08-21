@@ -1,15 +1,13 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Discord.Net;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -22,9 +20,9 @@ namespace Volte.Commands.Modules
             [Description("Warns the target user for the given reason.")]
             [Priority(100)]
             [Remarks("warn {Member} {String}")]
-            public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
+            public async Task<ActionResult> WarnAsync([CheckHierarchy] DiscordMember user, [Remainder] string reason)
             {
-                await ModerationModule.WarnAsync(Context.User, Context.GuildData, user, Db, Logger, reason);
+                await ModerationModule.WarnAsync(Context.Member, Context.GuildData, user, Db, Logger, reason);
 
                 return Ok($"Successfully warned **{user}** for **{reason}**.",
                     _ => ModLogService.DoAsync(ModActionEventArgs.New
@@ -38,7 +36,7 @@ namespace Volte.Commands.Modules
             [Command("List", "L")]
             [Description("Shows all the warns for the given user.")]
             [Remarks("warn list {Member}")]
-            public Task<ActionResult> WarnsAsync(SocketGuildUser user)
+            public Task<ActionResult> WarnsAsync(DiscordMember user)
             {
                 var warns = Context.GuildData.Extras.Warns.Where(x => x.User == user.Id).ToList();
                 if (warns.IsEmpty()) return BadRequest("This user doesn't have any warnings.");
@@ -53,7 +51,7 @@ namespace Volte.Commands.Modules
             [Command("Clear", "C")]
             [Description("Clears the warnings for the given user.")]
             [Remarks("warn clear {Member}")]
-            public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
+            public async Task<ActionResult> ClearWarnsAsync(DiscordMember user)
             {
                 var oldWarnList = Context.GuildData.Extras.Warns;
                 var newWarnList = Context.GuildData.Extras.Warns.Where(x => x.User != user.Id).ToList();
@@ -68,7 +66,7 @@ namespace Volte.Commands.Modules
                     await Context.CreateEmbed($"Your warns in **{Context.Guild.Name}** have been cleared. Hooray!")
                         .SendToAsync(user);
                 }
-                catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
+                catch (UnauthorizedException e)
                 {
                     Logger.Warn(LogSource.Volte,
                         $"encountered a 403 when trying to message {user}!", e);

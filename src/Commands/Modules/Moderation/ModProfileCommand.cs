@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -13,15 +14,15 @@ namespace Volte.Commands.Modules
         [Command("ModProfile", "MP")]
         [Description("Shows a moderator relevant information about a user, or if no user is given, yourself.")]
         [Remarks("modprofile [Member]")]
-        public Task<ActionResult> ModProfileAsync(SocketGuildUser user = null)
+        public Task<ActionResult> ModProfileAsync(DiscordMember user = null)
         {
-            user ??= Context.User;
+            user ??= Context.Member;
             var ud = Context.GuildData.GetUserData(user.Id);
 
             var note = ud.Note.IsNullOrEmpty() ? "No note provided." : ud.Note;
                 var e = Context.CreateEmbedBuilder()
-                .WithAuthor($"{user}'s Moderator Profile", user.GetAvatarUrl())
-                .WithThumbnailUrl(user.GetAvatarUrl(size: 512))
+                .WithAuthor($"{user}'s Moderator Profile", user.GetAvatarUrl(ImageFormat.Auto, 256))
+                .WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto, 512))
                 .AddField("Username/Nickname", user.GetEffectiveUsername(), true)
                 .AddField("Discriminator", user.Discriminator, true)
                 .AddField("Can use Volte Mod Commands", user.IsModerator(Context), true)

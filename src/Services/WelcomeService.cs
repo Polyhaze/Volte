@@ -49,7 +49,7 @@ namespace Volte.Services
                 await new DiscordEmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
-                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Png, 256))
+                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Auto, 256))
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 
@@ -77,7 +77,7 @@ namespace Volte.Services
                 await new DiscordEmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(leavingMessage)
-                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Png, 256))
+                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Auto, 256))
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
                 _logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");

@@ -156,11 +156,11 @@ namespace Gommon
         public static async Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordMember u) =>
             await u.SendMessageAsync(string.Empty, false, e);
 
-        public static async Task<bool> TryDeleteAsync(this DiscordMessage message)
+        public static async Task<bool> TryDeleteAsync(this DiscordMessage message, string reason = null)
         {
             try
             {
-                await message.DeleteAsync();
+                await message.DeleteAsync(reason);
                 return true;
             }
             catch

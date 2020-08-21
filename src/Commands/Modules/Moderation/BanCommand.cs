@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -15,8 +15,8 @@ namespace Volte.Commands.Modules
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
         [Remarks("ban {Member} [String]")]
-        [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        public async Task<ActionResult> BanAsync([CheckHierarchy] SocketGuildUser user,
+        [RequireBotGuildPermission(Permissions.BanMembers)]
+        public async Task<ActionResult> BanAsync([CheckHierarchy] DiscordMember user,
             [Remainder] string reason = "Banned by a Moderator.")
         {
             if (!await user.TrySendMessageAsync(

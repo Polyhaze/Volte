@@ -20,7 +20,7 @@ namespace Volte.Commands.Modules
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag is not null)
             {
-                var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
+                var user = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
                 return BadRequest(
                     $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
             }
@@ -29,7 +29,7 @@ namespace Volte.Commands.Modules
             {
                 Name = name,
                 Response = response,
-                CreatorId = Context.User.Id,
+                CreatorId = Context.Member.Id,
                 GuildId = Context.Guild.Id,
                 Uses = default
             };
@@ -44,7 +44,7 @@ namespace Volte.Commands.Modules
                 .WithTitle("Tag Created!")
                 .AddField("Name", tag.Name)
                 .AddField("Response", tag.Response)
-                .AddField("Creator", Context.User.Mention));
+                .AddField("Creator", Context.Member.Mention));
         }
 
         [Command("Delete", "Del", "Rem")]
@@ -59,7 +59,7 @@ namespace Volte.Commands.Modules
                 return data;
             });
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{await Context.Client.Shards.First().Rest.GetUserAsync(tag.CreatorId)}**, with " +
+                      $"**{await Context.Client.ShardClients.First().Value.GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");
         }
 
@@ -77,7 +77,7 @@ namespace Volte.Commands.Modules
                 .WithTitle("Tag Updated")
                 .AddField("Name", tag.Name)
                 .AddField("Response", content)
-                .AddField("Creator", Context.User.Mention)
+                .AddField("Creator", Context.Member.Mention)
                 .AddField("Uses", tag.Uses));
         }
     }

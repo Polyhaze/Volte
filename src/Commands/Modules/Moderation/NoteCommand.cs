@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("Note")]
         [Description("Adds a note to a user to let other moderators know something relevant about them.")]
         [Remarks("note {Member} [String]")]
-        public Task<ActionResult> NoteAsync(SocketGuildUser user, [Remainder] string note = null)
+        public Task<ActionResult> NoteAsync(DiscordMember user, [Remainder] string note = null)
         {
             var userNote = Context.GuildData.GetUserData(user.Id).Note;
             if (note is null)

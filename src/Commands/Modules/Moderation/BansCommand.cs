@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Gommon;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -15,7 +13,7 @@ namespace Volte.Commands.Modules
         [Command("Bans")]
         [Description("Shows all bans in this guild.")]
         [Remarks("bans")]
-        [RequireBotGuildPermission(GuildPermission.BanMembers)]
+        [RequireBotGuildPermission(Permissions.BanMembers)]
         public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();

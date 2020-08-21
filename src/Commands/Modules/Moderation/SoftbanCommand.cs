@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Commands.Results;
-using Gommon;
 
 namespace Volte.Commands.Modules
 {
@@ -15,8 +15,8 @@ namespace Volte.Commands.Modules
         [Command("Softban")]
         [Description("Softbans the mentioned user, kicking them and deleting the last x (where x is defined by the daysToDelete parameter) days of messages.")]
         [Remarks("softban {Member} [Int] [String]")]
-        [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
-        public async Task<ActionResult> SoftBanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete = 0,
+        [RequireBotGuildPermission(Permissions.KickMembers | Permissions.BanMembers)]
+        public async Task<ActionResult> SoftBanAsync([CheckHierarchy] DiscordMember user, int daysToDelete = 0,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {
             if (!await user.TrySendMessageAsync(
@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
             }
 
             await user.BanAsync(daysToDelete == 0 ? 7 : daysToDelete, reason);
-            await Context.Guild.RemoveBanAsync(user);
+            await Context.Guild.UnbanMemberAsync(user);
 
             return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
