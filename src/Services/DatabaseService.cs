@@ -40,7 +40,7 @@ namespace Volte.Services
         public GuildData GetData(ulong id)
         {
             var coll = Database.GetCollection<GuildData>("guilds");
-            var conf = coll.FindOne(g => g.Id == id);
+            var conf = coll.FindOne(g => (ulong)g.Id == (ulong)id);
             if (conf is not null) return conf;
             var newConf = Create(_client.GetGuild(id));
             coll.Insert(newConf);

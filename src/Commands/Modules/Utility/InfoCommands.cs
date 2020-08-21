@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
                 .AddField("Author", $"{await Context.Client.ShardClients.First().Value.GetUserAsync(168548441939509248)}, contributors on [GitHub](https://github.com/Ultz/Volte), and members of the Ultz organization.", true)
-                .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
+                .AddField("Language/Library", $"C# 9, Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Guilds", Context.Client.GetGuildCount(), true)
                 .AddField("Shards", Context.Client.ShardClients.Count, true)
                 .AddField("Channels", Context.Client.GetChannelCount(), true) // TODO grossly oversimplified for now
@@ -40,8 +40,6 @@ namespace Volte.Commands.Modules
                 .WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto, 512))
                 .WithTitle("User Info")
                 .AddField("User ID", user.Id, true)
-                .AddField("Game", user.Presence?.Activity?.Name ?? "Nothing", true) // TODO: DSharpPlus does not cache activity.
-                .AddField("Status", user.Presence?.Status.ToString() ?? "Offline", true) // TODO: DSharpPlus does not cache activity.
                 .AddField("Is Bot", user.IsBot, true)
                 .AddField("Account Created",
                     $"{user.CreationTimestamp.FormatDate()}, {user.CreationTimestamp.FormatFullTime()}")

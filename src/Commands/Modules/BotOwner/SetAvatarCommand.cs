@@ -28,6 +28,7 @@ namespace Volte.Commands.Modules
             }
 
             await using var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream();
+            img.Position = 0;
             await Context.Client.UpdateCurrentUserAsync(avatar: img); // TODO this stream may need to be rewound
             return Ok("Done!");
         }

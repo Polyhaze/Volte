@@ -127,12 +127,13 @@ namespace Volte.Services
                     $"Set {shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
             
-            foreach (var (_, guild) in shard.Guilds)
+            foreach (var guild in shard.Guilds.Values)
             {
+                Console.WriteLine(guild.Id);
                 if (Config.BlacklistedOwners.Contains(guild.Owner.Id))
                 {
                     _logger.Warn(LogSource.Volte,
-                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
+                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner.AsPrettyString()}.");
                     await guild.LeaveAsync();
                 }
 

@@ -11,6 +11,7 @@ using DSharpPlus.Exceptions;
 using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
+using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
 
@@ -138,6 +139,11 @@ namespace Gommon
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var logger = provider.Get<LoggingService>();
+            client.ClientErrored += (args) =>
+            {
+                logger.Error(LogSource.Discord, args.Exception.Message, args.Exception.InnerException);
+                return Task.CompletedTask;
+            };
             client.DebugLogger.LogMessageReceived += async (_, args) => await logger.DoAsync(new LogEventArgs(args));
             client.GuildCreated += async args => await guild.DoAsync(args);
             client.GuildDeleted += async args => await guild.DoAsync(args);

@@ -32,9 +32,8 @@ namespace Gommon
                     LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
                         ? LogLevel.Debug
                         : LogLevel.Info,
-                    // ConnectionTimeout = 10000, -- TODO XXX
+                    HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,
-                    // ShardCount = shardCount TODO
                     TokenType = TokenType.Bot,
                     Token = Config.Tokens.DiscordToken
                 }));
