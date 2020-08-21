@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Command("GuildName", "Gn")]
         [Description("Sets the name of the current guild.")]
         [Remarks("guildname {String}")]
-        [RequireBotGuildPermission(GuildPermission.ManageGuild)]
+        [RequireBotGuildPermission(Permissions.ManageGuild)]
         public async Task<ActionResult> GuildNameAsync([Remainder] string name)
         {
             await Context.Guild.ModifyAsync(g => g.Name = name);

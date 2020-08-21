@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -13,8 +13,8 @@ namespace Volte.Commands.Modules
         [Description(
             "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [Remarks("mentionrole {Role}")]
-        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public Task<ActionResult> MentionRoleAsync([Remainder] SocketRole role)
+        [RequireBotGuildPermission(Permissions.ManageRoles)]
+        public Task<ActionResult> MentionRoleAsync([Remainder] DiscordRole role)
         {
             if (role.IsMentionable)
             {

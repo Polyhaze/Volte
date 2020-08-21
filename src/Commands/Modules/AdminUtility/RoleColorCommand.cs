@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -12,8 +12,8 @@ namespace Volte.Commands.Modules
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role. Accepts a Hex or RGB value.")]
         [Remarks("rolecolor {Role} {Color}")]
-        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public async Task<ActionResult> RoleColorAsync(SocketRole role, [Remainder] Color color)
+        [RequireBotGuildPermission(Permissions.ManageRoles)]
+        public async Task<ActionResult> RoleColorAsync(DiscordRole role, [Remainder] DiscordColor color)
         {
             await role.ModifyAsync(x => x.Color = color);
             return Ok($"Successfully changed the color of the role **{role.Name}**.");
