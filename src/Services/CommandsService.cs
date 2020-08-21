@@ -156,7 +156,7 @@ namespace Volte.Services
         }
 
         private readonly string _separator                        = "                    -------------------------------------------------";
-        private readonly Func<CommandEventArgs, string> _commandFrom = args =>       $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})";
+        private readonly Func<CommandEventArgs, string> _commandFrom = args =>       $"|  -Command from user: {args.Context.Member}";
         private readonly Func<CommandEventArgs, string> _fullMessage = args =>       $"                    |    -Message Content: {args.FullMessageContent}";
         private readonly Func<CommandEventArgs, string> _inGuild = args =>           $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
         private readonly Func<CommandEventArgs, string> _inChannel = args =>         $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";

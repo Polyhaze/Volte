@@ -60,7 +60,7 @@ namespace Volte.Services
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = module.Context.CreateEmbedBuilder();
-            var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
+            var msg = await embed.WithTitle("Evaluating").WithDescription($"```cs\n{code}```")
                 .SendToAsync(module.Context.Channel);
             try
             {
@@ -82,21 +82,20 @@ namespace Volte.Services
                         DiscordChannel channel => $"#{channel.Name} ({channel.Id})",
                         _ => state.ReturnValue.ToString()
                     };
-                    await module.ReplyWithDeleteReactionAsync(embed: embed.WithTitle("Eval")
+                    await module.Context.ReplyAsync(embed.WithTitle("Eval")
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                         .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                         .WithFooter("Click the X below to delete this message.")
-                        .WithDescription($"```ini\n{res}```").Build());
+                        .WithDescription($"```ini\n{res}```"));
                 }
             }
             catch (Exception ex)
             {
-                await module.ReplyWithDeleteReactionAsync(embed: embed
+                await module.Context.ReplyAsync(embed
                     .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
                     .AddField("Message", ex.Message, true)
                     .WithTitle("Error")
-                    .WithFooter("Click the X below to delete this message.")
-                    .Build());
+                    .WithFooter("Click the X below to delete this message."));
             }
 
             await msg.DeleteAsync();

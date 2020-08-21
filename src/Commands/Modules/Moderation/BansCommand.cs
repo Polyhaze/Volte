@@ -20,9 +20,11 @@ namespace Volte.Commands.Modules
             if (banList.IsEmpty()) return BadRequest("This guild doesn't have anyone banned.");
             else
             {
-                return Ok(new PaginatedMessageBuilder(Context)
-                    .WithPages(banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`"))
-                    .SplitPages(10));
+                return None(async () =>
+                {
+                    await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
+                        banList.Select(x => $"**{x.User}**: `{x.Reason ?? "No reason provided."}`").GetPages(10));
+                }, false);
             }
         }
     }

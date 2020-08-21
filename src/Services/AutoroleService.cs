@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DSharpPlus.EventArgs;
 using Gommon;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
@@ -19,17 +20,17 @@ namespace Volte.Services
         }
 
         public override Task DoAsync(EventArgs args)
-            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>() ?? throw new InvalidOperationException($"AutoRole was triggered with a null event. Expected: {nameof(UserJoinedEventArgs)}, Received: {args.GetType().Name}"));
+            => ApplyRoleAsync(args.Cast<GuildMemberAddEventArgs>() ?? throw new InvalidOperationException($"AutoRole was triggered with a null event. Expected: {nameof(GuildMemberAddEventArgs)}, Received: {args.GetType().Name}"));
 
-        private async Task ApplyRoleAsync(UserJoinedEventArgs args)
+        private async Task ApplyRoleAsync(GuildMemberAddEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             var targetRole = args.Guild.GetRole(data.Configuration.Autorole);
             if (targetRole is not null)
             {
-                await args.User.AddRoleAsync(targetRole);
+                await args.Member.GrantRoleAsync(targetRole);
                 _logger.Debug(LogSource.Volte,
-                    $"Applied role {targetRole.Name} to user {args.User} in guild {args.Guild.Name}.");
+                    $"Applied role {targetRole.Name} to user {args.Member} in guild {args.Guild.Name}.");
             }
         }
     }

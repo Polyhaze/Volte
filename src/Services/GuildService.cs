@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -9,10 +8,8 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using Volte.Core;
 using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
 using Gommon;
 using Volte.Core.Helpers;
-using Volte.Interactive;
 
 namespace Volte.Services
 {
@@ -21,17 +18,14 @@ namespace Volte.Services
         private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;
         private readonly DatabaseService _db;
-        private readonly InteractiveService _interactive;
 
         public GuildService(LoggingService loggingService,
             DiscordShardedClient discordShardedClient,
-            DatabaseService databaseService,
-            InteractiveService interactiveService)
+            DatabaseService databaseService)
         {
             _logger = loggingService;
             _client = discordShardedClient;
             _db = databaseService;
-            _interactive = interactiveService;
         }
 
         public override Task DoAsync(EventArgs args)
@@ -110,9 +104,9 @@ namespace Volte.Services
 
             if (bots.Count > users.Count)
             {
-                await SendMessageWithGuildLeaveOptionAsync(channel,
+                await channel.SendMessageAsync(
                     $"<@{Config.Owner}>: Joined a guild with more bots than users. Possibly a bot farm?",
-                    e.WithSuccessColor().Build(), args.Guild);
+                    embed: e.WithSuccessColor().Build());
             }
             else
                 await e.WithSuccessColor().SendToAsync(channel);
@@ -135,15 +129,6 @@ namespace Volte.Services
                 .WithThumbnail(args.Guild.IconUrl)
                 .WithErrorColor()
                 .SendToAsync(channel);
-        }
-
-        private async Task<DiscordMessage> SendMessageWithGuildLeaveOptionAsync(DiscordChannel channel, string content, DiscordEmbed embed, DiscordGuild guild,
-            TimeSpan? timeout = null)
-        {
-            var m = await channel.SendMessageAsync(content, embed: embed);
-            await m.CreateReactionAsync(EmojiHelper.X.ToEmoji());
-            _interactive.AddReactionCallback(m, new LeaveGuildReactionCallback(guild));
-            return m;
         }
     }
 }

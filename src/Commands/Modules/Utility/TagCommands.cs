@@ -4,7 +4,6 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
 using Volte.Core.Models.Guild;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -62,10 +61,11 @@ namespace Volte.Commands.Modules
             if (tagsList.IsEmpty()) return BadRequest("This guild doesn't have any tags.");
             else
             {
-                return Ok(new PaginatedMessageBuilder(Context)
-                    .WithPages(tagsList.Select(x => $"`{x.Name}`"))
-                    .SplitPages(10)
-                    .Build());
+                return None(async () =>
+                {
+                    await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
+                        tagsList.Select(x => $"`{x.Name}`").GetPages(10));
+                }, false);
             }
         }
             

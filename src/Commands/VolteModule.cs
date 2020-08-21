@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
-using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Core.Helpers;
 using Volte.Core.Models.Guild;
-using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -23,7 +16,6 @@ namespace Volte.Commands
         public ModLogService ModLogService { get; set; }
         public CommandService CommandService { get; set; }
         public LoggingService Logger { get; set; }
-        public InteractiveService Interactive { get; set; }
         public CancellationTokenSource Cts { get; set; }
         public new VolteContext Context => base.Context;
 
@@ -60,9 +52,6 @@ namespace Volte.Commands
 
         protected ActionResult Ok(DiscordEmbedBuilder embed) 
             => new OkResult(null, true, embed);
-        
-        protected ActionResult Ok(PaginatedMessage message) 
-            => new OkResult(message);
 
         protected ActionResult BadRequest(string reason) 
             => new BadRequestResult(reason);

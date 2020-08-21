@@ -42,9 +42,11 @@ namespace Volte.Commands.Modules
                 if (warns.IsEmpty()) return BadRequest("This user doesn't have any warnings.");
                 else
                 {
-                    return Ok(new PaginatedMessageBuilder(Context)
-                        .WithPages(warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**"))
-                        .SplitPages(10));
+                    return None(async () =>
+                    {
+                        await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
+                            warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").GetPages(10));
+                    }, false);
                 }
             }
 

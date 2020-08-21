@@ -6,8 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Colorful;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Volte.Core;
 using Volte.Core.Models;
@@ -52,11 +52,11 @@ namespace Volte.Services
             Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
         }
 
-        private void Log(LogSeverity s, LogSource from, string message, Exception e = null)
+        private void Log(LogLevel s, LogSource from, string message, Exception e = null)
         {
             lock (_lock)
             {
-                if (s is LogSeverity.Debug)
+                if (s is LogLevel.Debug)
                 {
                     if (!Config.EnableDebugLogging) return;
                 }
@@ -66,12 +66,12 @@ namespace Volte.Services
         }
 
         /// <summary>
-        ///     Prints a <see cref="LogSeverity.Debug"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
+        ///     Prints a <see cref="System.Diagnostics.Debug"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         public void Debug(LogSource src, string message) 
-            => Log(LogSeverity.Debug, src, message);
+            => Log(LogLevel.Debug, src, message);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Info"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
@@ -79,7 +79,7 @@ namespace Volte.Services
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         public void Info(LogSource src, string message)
-            => Log(LogSeverity.Info, src, message);
+            => Log(LogLevel.Info, src, message);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
@@ -88,7 +88,7 @@ namespace Volte.Services
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
         public void Error(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Error, src, message, e);
+            => Log(LogLevel.Error, src, message, e);
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
         /// </summary>
@@ -96,7 +96,7 @@ namespace Volte.Services
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
         public void Critical(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Critical, src, message, e);
+            => Log(LogLevel.Critical, src, message, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
@@ -105,23 +105,23 @@ namespace Volte.Services
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
         public void Warn(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Warning, src, message, e);
+            => Log(LogLevel.Warning, src, message, e);
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Verbose"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         public void Verbose(LogSource src, string message)
-            => Log(LogSeverity.Verbose, src, message);
+            => Log(LogLevel.Info, src, message);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
         /// </summary>
         /// <param name="e">Exception to print.</param>
         public void Exception(Exception e)
-            => Execute(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+            => Execute(LogLevel.Critical, LogSource.Volte, string.Empty, e);
 
-        private void Execute(LogSeverity s, LogSource src, string message, Exception e)
+        private void Execute(LogLevel s, LogSource src, string message, Exception e)
         {
             var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
@@ -175,22 +175,20 @@ namespace Volte.Services
                 };
 
 
-        private (Color Color, string Level) VerifySeverity(LogSeverity severity) =>
+        private (Color Color, string Level) VerifySeverity(LogLevel severity) =>
             severity switch
             {
-                LogSeverity.Critical => (Color.Maroon, "CRITICAL"),
-                LogSeverity.Error => (Color.DarkRed, "ERROR"),
-                LogSeverity.Warning => (Color.Yellow, "WARN"),
-                LogSeverity.Info => (Color.SpringGreen, "INFO"),
-                LogSeverity.Verbose => (Color.Pink, "VERBOSE"),
-                LogSeverity.Debug => (Color.SandyBrown, "DEBUG"),
+                LogLevel.Critical => (Color.Maroon, "CRITICAL"),
+                LogLevel.Error => (Color.DarkRed, "ERROR"),
+                LogLevel.Warning => (Color.Yellow, "WARN"),
+                LogLevel.Info => (Color.SpringGreen, "INFO"),
+                LogLevel.Debug => (Color.SandyBrown, "DEBUG"),
                 _ => throw new InvalidOperationException($"The specified LogSeverity ({severity}) is invalid.")
             };
 
         private void LogExceptionInDiscord(Exception e)
         {
-            if (e is GatewayReconnectException) return;
-            
+
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
                 Error(LogSource.Volte, "Could not send an exception report to Discord as the GuildLogging configuration is invalid.");
@@ -202,7 +200,7 @@ namespace Volte.Services
                 var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
                 var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
                 var url = $"https://paste.greemdev.net/{jDocument.RootElement.GetProperty("key").GetString()}.cs";
-                await new EmbedBuilder()
+                await new DiscordEmbedBuilder()
                     .WithErrorColor()
                     .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
                     .AddField("Exception Type", e.GetType().AsPrettyString(), true)

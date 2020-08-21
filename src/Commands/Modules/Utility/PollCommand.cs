@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.Interactivity.Enums;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -35,21 +36,14 @@ namespace Volte.Commands.Modules
 
             return Ok(embed.WithFooter($"This poll will end in {duration.Humanize(3)}"), async msg =>
             {
-                
-                _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
-                await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg);
-                await Executor.ExecuteAfterDelayAsync(duration, async () =>
+                var result = await Context.Interactivity.DoPollAsync(msg, EmojiHelper.GetPollEmojisList().ToArray(), PollBehaviour.KeepEmojis, duration);
+                embed = embed.WithTitle("Poll Ended! Here are the results:");
+                foreach (var res in result)
                 {
-                    var result = Context.CreateEmbedBuilder().WithTitle("Poll Ended! Final Results:")
-                        .WithDescription($"\"{content.First()}\"");
-                    foreach (var (emoji, votes) in await PollHelpers.GetPollVotesAsync(Context, msg.Id, choicesCount))
-                    {
-                        var option = msg.Embeds.First().Fields.First(x => x.Name.Equals(emoji)).Value;
-                        result.AddField(emoji, $"**{option}**: {votes}", true);
-                    }
+                    embed.AddField(res.Emoji.Name, res.Total);
+                }
 
-                    await msg.ModifyAsync(embed: result.Build());
-                });
+                await Context.ReplyAsync(embed);
 
             }, false);
         }

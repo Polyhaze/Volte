@@ -2,11 +2,14 @@
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
 using Qmmands;
 using Gommon;
+using Humanizer;
 using Volte.Core;
 using Volte.Core.Models.Guild;
 using Volte.Services;
+using Extensions = Gommon.Extensions;
 
 namespace Volte.Commands
 {
@@ -19,13 +22,14 @@ namespace Volte.Commands
         private VolteContext(DiscordMessage msg, IServiceProvider provider) : base(provider)
         {
             provider.Get<DatabaseService>(out var db);
-            provider.Get(out Client);
+            Client = provider.Get<DiscordShardedClient>();
             Guild = msg.Channel.Guild;
             Channel = msg.Channel;
             Member = msg.Author.Cast<DiscordMember>();
             Message = msg;
             GuildData = db.GetData(Guild);
             Now = DateTimeOffset.UtcNow;
+            Interactivity = Client.GetInteractivity()[Extensions.GetShardId(Guild.Id, Client.ShardClients.Count)];
         }
         
         public readonly DiscordShardedClient Client;
@@ -33,6 +37,7 @@ namespace Volte.Commands
         public readonly DiscordChannel Channel;
         public readonly DiscordMember Member;
         public readonly DiscordMessage Message;
+        public readonly InteractivityExtension Interactivity;
         public readonly GuildData GuildData;
         public readonly DateTimeOffset Now;
 

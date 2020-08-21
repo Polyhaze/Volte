@@ -38,7 +38,10 @@ namespace Volte.Commands.Modules
                 l.Add(str);
             }
 
-            return Ok(new PaginatedMessageBuilder(Context).WithPages(l).SplitPages(10));
+            return None(async () =>
+            {
+                await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member, l.GetPages(10));
+            }, false);
         }
     }
 }

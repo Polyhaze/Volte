@@ -49,7 +49,7 @@ namespace Volte.Services
                 await new DiscordEmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
-                    .WithThumbnail(args.Member.GetAvatarUrl(ImageFormat.Auto, 256))
+                    .WithThumbnail(args.Member.AvatarUrl)
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 

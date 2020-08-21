@@ -1,7 +1,5 @@
 using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Discord;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
@@ -28,11 +26,6 @@ namespace Volte.Commands.Results
             _runFuncAsync = awaitFunc;
         }
 
-        public OkResult( pager)
-        {
-            _pager = pager;
-        }
-
         private readonly bool _runFuncAsync;
 
         private readonly string _message;
@@ -40,19 +33,10 @@ namespace Volte.Commands.Results
         private readonly Func<DiscordMessage, Task> _callback;
         private readonly Func<Task> _separateLogic;
         private readonly DiscordEmbedBuilder _embed;
-        private readonly PaginatedMessage _pager;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.SendMessages)) return new ResultCompletionData();
-            
-            if (!(_pager is null))
-            {
-                var shardId = Extensions.GetShardId(ctx.Guild.Id, ctx.Client.ShardClients.Count);
-                var i = ctx.Client.GetInteractivity()[]
-
-                return new ResultCompletionData(m);
-            }
 
             if (_separateLogic is not null)
             {

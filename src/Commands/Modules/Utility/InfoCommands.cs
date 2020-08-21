@@ -40,8 +40,8 @@ namespace Volte.Commands.Modules
                 .WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto, 512))
                 .WithTitle("User Info")
                 .AddField("User ID", user.Id, true)
-                .AddField("Game", user.Activity?.Name ?? "Nothing", true) // TODO: DSharpPlus does not cache activity.
-                .AddField("Status", user.Status, true) // TODO: DSharpPlus does not cache activity.
+                .AddField("Game", user.Presence?.Activity?.Name ?? "Nothing", true) // TODO: DSharpPlus does not cache activity.
+                .AddField("Status", user.Presence?.Status.ToString() ?? "Offline", true) // TODO: DSharpPlus does not cache activity.
                 .AddField("Is Bot", user.IsBot, true)
                 .AddField("Account Created",
                     $"{user.CreationTimestamp.FormatDate()}, {user.CreationTimestamp.FormatFullTime()}")

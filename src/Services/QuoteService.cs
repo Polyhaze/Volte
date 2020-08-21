@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Volte.Commands;
 using Volte.Core.Models.EventArgs;
@@ -45,8 +45,8 @@ namespace Volte.Services
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
 
-            var g = _client.GetGuild(guildId) ?? args.Context.Guild;
-            var c = g?.GetTextChannel(channelId);
+            var g = _client.GetGuild(guildId);
+            var c = g?.GetChannel(channelId);
                 if (c is null) return;
 
                 var m = await c.GetMessageAsync(messageId);
@@ -57,11 +57,11 @@ namespace Volte.Services
                 _ = await args.Message.TryDeleteAsync();
         }
 
-        private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx, Match match)
+        private DiscordEmbed GenerateQuoteEmbed(DiscordMessage message, VolteContext ctx, Match match)
         {
             var e = ctx.CreateEmbedBuilder()
                 .WithAuthor(message.Author)
-                .WithFooter($"Quoted by {ctx.User}", ctx.User.GetAvatarUrl());
+                .WithFooter($"Quoted by {ctx.Member.AsPrettyString()}", ctx.Member.AvatarUrl);
 
             if (!message.Content.IsNullOrEmpty())
             {
@@ -85,7 +85,7 @@ namespace Volte.Services
                 e.AddField("Comment", strings.IsEmpty() ? comment : strings.Join(" "), true);
             }
 
-            e.AddField("Original Message", $"[Click here]({message.GetJumpUrl()})");
+            e.AddField("Original Message", $"[Click here]({message.JumpLink})");
 
             return e.Build();
         }

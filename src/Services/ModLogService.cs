@@ -31,11 +31,11 @@ namespace Volte.Services
             if (!Config.EnabledFeatures.ModLog) return;
 
             _logger.Debug(LogSource.Volte, "Attempting to post a modlog message.");
-
-            var c = args.Guild.GetTextChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
+            
+            var c = args.Guild.GetChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
 
-            var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
+            var e = args.Context.CreateEmbedBuilder().WithAuthor(args.Moderator.DisplayName, iconUrl: args.Moderator.AvatarUrl);
             _logger.Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
             var sb = new StringBuilder();
 

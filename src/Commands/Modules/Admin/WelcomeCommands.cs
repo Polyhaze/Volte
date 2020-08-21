@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
 using Volte.Services;
@@ -51,18 +53,29 @@ namespace Volte.Commands.Modules
                 });
                 var welcomeChannel =
                     Context.Guild.GetChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
-                var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel is 0 || welcomeChannel is null
+                var sendingTest = welcomeChannel is null
                     ? "Not sending a test message as you do not have a welcome channel set." +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}. This message will have all formatting and placeholders replaced with an actual value.";
-                if (welcomeChannel is null || Context.GuildData.Configuration.Welcome.WelcomeChannel is 0)
-                    return None();
 
                 return Ok(new StringBuilder()
                         .AppendLine($"Set this guild's welcome message to ```{message}```")
                         .AppendLine()
                         .AppendLine($"{sendingTest}").ToString(),
-                    _ => WelcomeService.JoinAsync(new GuildMemberAddEventArgs(Context.User))); // TODO
+                    _ =>
+                    {
+                        if (welcomeChannel is not null)
+                        {
+                            return new DiscordEmbedBuilder()
+                                .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
+                                .WithDescription(
+                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithThumbnail(Context.Member.AvatarUrl)
+                                .WithCurrentTimestamp()
+                                .SendToAsync(welcomeChannel);
+                        }
+                        return Task.CompletedTask;
+                    });
             }
 
             [Command("Color", "Colour", "Cl")]
@@ -72,7 +85,7 @@ namespace Volte.Commands.Modules
             {
                 ModifyData(data =>
                 {
-                    data.Configuration.Welcome.WelcomeColor = (uint)color.Value;
+                    data.Configuration.Welcome.WelcomeColor = color.Value;
                     return data;
                 });
                 return Ok("Successfully set this guild's welcome message embed color!");
@@ -99,18 +112,30 @@ namespace Volte.Commands.Modules
                 });
                 var welcomeChannel =
                     Context.Guild.GetChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
-                var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
+                var sendingTest = welcomeChannel is null
                     ? "Not sending a test message, as you do not have a welcome channel set. " +
                       "Set a welcome channel to fully complete the setup!"
                     : $"Sending a test message to {welcomeChannel.Mention}.";
-                if (welcomeChannel is null || Context.GuildData.Configuration.Welcome.WelcomeChannel is 0)
-                    return None();
 
                 return Ok(new StringBuilder()
                         .AppendLine($"Set this server's leaving message to ```{message}```")
                         .AppendLine()
-                        .AppendLine($"{sendingTest}").ToString(),
-                    _ => WelcomeService.LeaveAsync(new GuildMemberRemoveEventArgs(Context.User))); // TODO
+                        .AppendLine($"{sendingTest}")
+                        .ToString(),
+                    _ =>
+                    {
+                        if (welcomeChannel is not null)
+                        {
+                            return new DiscordEmbedBuilder()
+                                .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
+                                .WithDescription(
+                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithThumbnail(Context.Member.AvatarUrl)
+                                .WithCurrentTimestamp()
+                                .SendToAsync(welcomeChannel);
+                        }
+                        return Task.CompletedTask;
+                    });
             }
 
             [Command("DmMessage", "Dmm")]
@@ -130,7 +155,24 @@ namespace Volte.Commands.Modules
                     return data;
                 });
                 return Ok($"Set the WelcomeDmMessage to: ```{message}```\n\nAttempting to send a test message.",
-                    _ => WelcomeService.JoinDmAsync(new GuildMemberAddEventArgs(Context.User))); // TODO
+                    _ =>
+                    {
+                        try
+                        {
+                            return new DiscordEmbedBuilder()
+                                .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
+                                .WithDescription(
+                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithThumbnail(Context.Member.AvatarUrl)
+                                .WithCurrentTimestamp()
+                                .SendToAsync(Context.Member);
+                        }
+                        catch (Exception)
+                        {
+                            return Task.CompletedTask;
+                        }
+                        
+                    });
             }
         }
     }

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Xml;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
+using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models.EventArgs;
@@ -33,6 +36,9 @@ namespace Gommon
                    IsGuildOwner(user);
         }
 
+        public static string AsPrettyString(this DiscordMember member)
+            => $"{member.Username}#{member.Discriminator}";
+
         private static bool HasRole(this DiscordMember user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
@@ -55,6 +61,20 @@ namespace Gommon
             return roles.FirstOrDefault();
         }
 
+        public static List<Page> GetPages<T>(this IEnumerable<T> current, int entriesPerPage = 1)
+        {
+            var temp = current.ToList();
+            var pageList = new List<Page>();
+
+            do
+            {
+                pageList.Add(new Page(temp.Take(entriesPerPage).Select(x => x.ToString()).Join("\n")));
+                temp.RemoveRange(0, temp.Count < entriesPerPage ? temp.Count : entriesPerPage);
+            } while (!temp.IsEmpty());
+
+            return pageList;
+        }
+
         public static async Task<bool> TrySendMessageAsync(this DiscordMember user, string text = null,
             bool isTts = false, DiscordEmbed embed = null)
         {
@@ -63,7 +83,7 @@ namespace Gommon
                 await user.SendMessageAsync(text, isTts, embed);
                 return true;
             }
-            catch (UnauthorizedException e)
+            catch (UnauthorizedException)
             {
                 return false;
             }
@@ -179,7 +199,7 @@ namespace Gommon
         public static DiscordEmbedBuilder WithCurrentTimestamp(this DiscordEmbedBuilder e) => e.WithTimestamp(DateTimeOffset.Now);
 
         public static DiscordEmbedBuilder WithAuthor(this DiscordEmbedBuilder builder, DiscordUser user) =>
-            builder.WithAuthor($"{user.Username}#{user.Discriminator}", user.GetAvatarUrl(ImageFormat.Png, 256));
+            builder.WithAuthor($"{user.Username}#{user.Discriminator}", iconUrl: user.AvatarUrl);
 
         public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 

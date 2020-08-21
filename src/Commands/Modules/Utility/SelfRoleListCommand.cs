@@ -20,10 +20,12 @@ namespace Volte.Commands.Modules
                 var pages = Context.GuildData.Extras.SelfRoles
                     .Select(x => Context.Guild.Roles.FirstOrDefault(r => r.Value.Name.EqualsIgnoreCase(x)).Value)
                     .Where(r => r is not null);
-                return Ok(new PaginatedMessageBuilder(Context)
-                    .WithPages(pages.Select(x => x.Name))
-                    .SplitPages(10)
-                    .Build());
+
+                return None(async () =>
+                {
+                    await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
+                        pages.Select(x => x.Name).GetPages(10));
+                }, false);
             }
         }
     }

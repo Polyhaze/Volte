@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Enums;
+using Gommon;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
 using Volte.Core.Helpers;
-using Volte.Interactive;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 // ReSharper disable HeuristicUnreachableCode
 
@@ -16,7 +19,7 @@ namespace Volte.Commands.Modules
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
         [Remarks("help")]
-        public Task<ActionResult> HelpAsync([Remainder]string moduleOrCommand = null)
+        public async Task<ActionResult> HelpAsync([Remainder]string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
             {
@@ -58,11 +61,12 @@ namespace Volte.Commands.Modules
 
             if (module is not null && command is null)
             {
-                return Ok(new PaginatedMessageBuilder(Context)
-                    .WithTitle($"Commands for {module.SanitizeName()}")
-                    .WithContent(result)
-                    .WithPages(module.Commands.Select(x => x.FullAliases.First()))
-                    .SplitPages(15));
+                
+                return None(async () =>
+                {
+                    await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
+                        module.Commands.Select(x => x.FullAliases.First()).GetPages(15));
+                }, false);
             }
 
             if (module is null && command is not null)

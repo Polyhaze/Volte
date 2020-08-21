@@ -41,9 +41,9 @@ namespace Volte.Core.Helpers
         /// <exception cref="ArgumentException">Invalid mention format.</exception>
         public static ulong ParseUser(string text)
         {
-            if (TryParseUser(text, out ulong id))
+            if (TryParseUser(text, out var id))
                 return id;
-            throw new ArgumentException(message: "Invalid mention format.", paramName: nameof(text));
+            throw new ArgumentException("Invalid mention format.", nameof(text));
         }
         /// <summary>
         ///     Tries to parse a provided user mention string.

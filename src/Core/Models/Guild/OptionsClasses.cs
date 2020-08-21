@@ -49,7 +49,7 @@ namespace Volte.Core.Models.Guild
         public string LeavingMessage { get; set; }
 
         [JsonPropertyName("welcome_color")]
-        public uint WelcomeColor { get; set; }
+        public int WelcomeColor { get; set; }
 
         [JsonPropertyName("welcome_dm_message")]
         public string WelcomeDmMessage { get; set; }
