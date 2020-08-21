@@ -22,14 +22,11 @@ namespace Volte.Commands.Modules
                 sw.Start();
                 var msg = await e.SendToAsync(Context.Channel);
                 sw.Stop();
-                await msg.ModifyAsync(x =>
-                {
-                    e.WithDescription(new StringBuilder()
-                        .AppendLine($"{EmojiHelper.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
+                await msg.ModifyAsync(embed: e.WithDescription(new StringBuilder()
+                        .AppendLine($"{EmojiHelper.Clap} **Gateway**: {Context.Client.GetMeanLatency()} milliseconds")
                         .AppendLine($"{EmojiHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
-                        .ToString());
-                    x.Embed = e.Build();
-                });
+                        .ToString())
+                    .Build());
             }, false);
     }
 }

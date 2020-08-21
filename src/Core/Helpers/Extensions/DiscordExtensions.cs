@@ -243,5 +243,10 @@ namespace Gommon
         // Dirty workaround for a limitation in D#+
         public static async Task<DiscordUser> UpdateCurrentUserAsync(this DiscordShardedClient client, string username = null, Optional<Stream> avatar = default)
             => await client.ShardClients.First().Value.UpdateCurrentUserAsync(username, avatar);
+
+        public static int GetMeanLatency(this DiscordShardedClient client)
+        {
+            return (int) Math.Round((double) client.ShardClients.Sum(e => e.Value.Ping) / client.ShardClients.Count);
+        }
     }
 }

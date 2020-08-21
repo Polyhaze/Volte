@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -28,7 +26,7 @@ namespace Volte.Commands.Modules
                     : "No options specified.");
 
             var embed = Context.CreateEmbedBuilder()
-                .WithTitle(Format.Bold(content[0]));
+                .WithTitle(Formatter.Bold(content[0]));
 
             foreach (var (key, value) in pollInfo.Fields)
             {
@@ -50,7 +48,7 @@ namespace Volte.Commands.Modules
                         result.AddField(emoji, $"**{option}**: {votes}", true);
                     }
 
-                    await msg.ModifyAsync(x => x.Embed = result.Build());
+                    await msg.ModifyAsync(embed: result.Build());
                 });
 
             }, false);

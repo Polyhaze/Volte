@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Discord;
+using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Core;
 using Volte.Commands.Results;
@@ -18,7 +18,7 @@ namespace Volte.Commands.Modules
         [Description("Runs the say command normally, but doesn't show the author in the message. Useful for announcements.")]
         [Remarks("silentsay {String}")]
         public Task<ActionResult> SilentSayAsync([Remainder] string msg) 
-            => Ok(new EmbedBuilder()
+            => Ok(new DiscordEmbedBuilder()
                 .WithColor(Config.SuccessColor)
                 .WithDescription(msg), _ => Context.Message.DeleteAsync());
     }

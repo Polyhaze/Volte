@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
 using Volte.Services;
@@ -32,11 +32,12 @@ namespace Volte.Commands.Modules
         public CommandsService CommandsService { get; set; }
         
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
-            SocketGuildUser user)
+            DiscordMember user)
         {
-            var propDict = user.GuildPermissions.GetType().GetProperties()
+            var guildPermissions = user.GetGuildPermissions();
+            var propDict = guildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.Inherits<bool>())
-                .Select(a => (a.Name.Humanize(), a.GetValue(user.GuildPermissions).Cast<bool>()))
+                .Select(a => (a.Name.Humanize(), a.GetValue(guildPermissions).Cast<bool>()))
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
                 .ToList(); //holy reflection
 
@@ -44,9 +45,9 @@ namespace Volte.Commands.Modules
 
         }
 
-        private bool CanSeeChannel(IGuildUser member, IGuildChannel channel)
+        private bool CanSeeChannel(DiscordMember member, DiscordChannel channel)
         {
-            return member.GetPermissions(channel).Connect || member.GetPermissions(channel).ViewChannel;
+            return member.PermissionsIn(channel).HasPermission(Permissions.AccessChannels);
         }
 
     }

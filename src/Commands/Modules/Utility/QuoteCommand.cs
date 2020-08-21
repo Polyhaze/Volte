@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -24,10 +24,10 @@ namespace Volte.Commands.Modules
             var e = Context.CreateEmbedBuilder(new StringBuilder()
                 .AppendLine($"{m.Content}")
                 .AppendLine()
-                .AppendLine($"[Jump!]({m.GetJumpUrl()})")
+                .AppendLine($"[Jump!]({m.JumpLink})")
                 .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
-                    m.Author.GetAvatarUrl())
+                    m.Author.GetAvatarUrl(ImageFormat.Auto))
                 .WithFooter(m.Timestamp.Humanize());
             if (!m.Attachments.IsEmpty())
             {
@@ -40,7 +40,7 @@ namespace Volte.Commands.Modules
         [Command("Quote"), Priority(1)]
         [Description("Quotes a user in a different chanel from a given message's ID.")]
         [Remarks("quote {messageId}")]
-        public async Task<ActionResult> QuoteAsync(SocketTextChannel channel, ulong messageId)
+        public async Task<ActionResult> QuoteAsync(DiscordChannel channel, ulong messageId)
         {
             var m = await channel.GetMessageAsync(messageId);
             if (m is null)
@@ -49,10 +49,10 @@ namespace Volte.Commands.Modules
             var e = Context.CreateEmbedBuilder(new StringBuilder()
                     .AppendLine($"{m.Content}")
                     .AppendLine()
-                    .AppendLine($"[Jump!]({m.GetJumpUrl()})")
+                    .AppendLine($"[Jump!]({m.JumpLink})")
                     .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
-                    m.Author.GetAvatarUrl())
+                    m.Author.GetAvatarUrl(ImageFormat.Auto))
                 .WithFooter(m.Timestamp.Humanize());
             if (!m.Attachments.IsEmpty())
             {

@@ -1,10 +1,8 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Gommon;
-using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -15,16 +13,16 @@ namespace Volte.Commands.Modules
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]
         [Remarks("permissions [User]")]
-        public Task<ActionResult> PermissionsAsync(SocketGuildUser user = null)
+        public Task<ActionResult> PermissionsAsync(DiscordMember user = null)
         {
-            user ??= Context.User; // get the user (or the invoker, if none specified)
+            user ??= Context.Member; // get the user (or the invoker, if none specified)
 
 
-            if (user.Id == Context.Guild.OwnerId)
+            if (user.Id == Context.Guild.Owner.Id)
             {
                 return Ok("User is owner of this guild, and has all permissions.");
             }
-            if (user.GuildPermissions.Administrator)
+            if (user.GetGuildPermissions().HasPermission(Permissions.Administrator))
             {
                 return Ok("User has Administrator permission, and has all permissions.");
             }

@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -21,7 +18,7 @@ namespace Volte.Commands.Modules
             else
             {
                 var pages = Context.GuildData.Extras.SelfRoles
-                    .Select(x => Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x)))
+                    .Select(x => Context.Guild.Roles.FirstOrDefault(r => r.Value.Name.EqualsIgnoreCase(x)).Value)
                     .Where(r => r is not null);
                 return Ok(new PaginatedMessageBuilder(Context)
                     .WithPages(pages.Select(x => x.Name))

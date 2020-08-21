@@ -13,8 +13,8 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> FeedbackAsync([Remainder] string feedback)
             => Ok($"Feedback sent! Message: ```{feedback}```", _ =>
                 Context.CreateEmbedBuilder($"```{feedback}```")
-                    .WithTitle($"Feedback from {Context.User}")
-                    .SendToAsync(Context.Client.GetPrimaryGuild().GetTextChannel(415182876326232064))
+                    .WithTitle($"Feedback from {Context.Member}")
+                    .SendToAsync(Context.Client.GetPrimaryGuild().GetChannel(415182876326232064))
             );
     }
 }
