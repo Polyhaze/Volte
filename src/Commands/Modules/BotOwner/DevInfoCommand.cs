@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
+using DSharpPlus;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -17,10 +16,10 @@ namespace Volte.Commands.Modules
         [Description("Shows information about the bot and about the system it's hosted on.")]
         [Remarks("devinfo")]
         public Task<ActionResult> DevInfoAsync() 
-            => Ok(Format.Code(new StringBuilder()
+            => Ok(Formatter.BlockCode(new StringBuilder()
                     .AppendLine("== Core ==")
-                    .AppendLine($"[{Context.Client.Guilds.Count}] Guilds")
-                    .AppendLine($"[{Context.Client.Guilds.Sum(x => x.Channels.Count)}] Text/Voice Channels")
+                    .AppendLine($"[{Context.Client.GetGuildCount()}] Guilds")
+                    .AppendLine($"[{Context.Client.GetChannelCount()}] Text/Voice Channels")
                     .AppendLine("== Commands ==")
                     .AppendLine($"[{CommandService.GetAllModules().Count}] Modules")
                     .AppendLine($"[{CommandService.GetAllCommands().Count}] Commands")

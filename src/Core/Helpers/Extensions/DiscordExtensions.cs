@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -232,5 +233,15 @@ namespace Gommon
 
             return perms;
         }
+
+        public static int GetGuildCount(this DiscordShardedClient client)
+            => client.ShardClients.Sum(e => e.Value.Guilds.Count);
+
+        public static int GetChannelCount(this DiscordShardedClient client)
+            => client.ShardClients.Sum(e => e.Value.Guilds.Sum(e1 => e1.Value.Channels.Count));
+
+        // Dirty workaround for a limitation in D#+
+        public static async Task<DiscordUser> UpdateCurrentUserAsync(this DiscordShardedClient client, string username = null, Optional<Stream> avatar = default)
+            => await client.ShardClients.First().Value.UpdateCurrentUserAsync(username, avatar);
     }
 }

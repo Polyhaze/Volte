@@ -1,6 +1,6 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands.Results;
@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules
             }
 
             await using var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream();
-            await Context.Client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(img));
+            await Context.Client.UpdateCurrentUserAsync(avatar: img); // TODO this stream may need to be rewound
             return Ok("Done!");
         }
     }
