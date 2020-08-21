@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -29,20 +26,20 @@ namespace Gommon
             return @out;
         }
 
-        public static Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
+        public static Task PerformAsync(this BlacklistAction action, VolteContext ctx, DiscordMember member, string word)
         {
             return action switch
             {
                 BlacklistAction.Warn => member.WarnAsync(ctx, $"Used blacklisted word \"{word}\"."),
-                BlacklistAction.Kick => member.KickAsync($"Used blacklisted word \"{word}\"."),
+                BlacklistAction.Kick => member.RemoveAsync($"Used blacklisted word \"{word}\"."),
                 BlacklistAction.Ban => member.BanAsync(7, $"Used blacklisted word \"{word}\"."),
                 _ => Task.CompletedTask
             };
         }
         
-        public static async Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
+        public static async Task WarnAsync(this DiscordMember member, VolteContext ctx, string reason)
         {
-            await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, ctx.ServiceProvider.GetRequiredService<DatabaseService>(), ctx.ServiceProvider.GetRequiredService<LoggingService>(), reason);
+            await ModerationModule.WarnAsync(ctx.Member, ctx.GuildData, member, ctx.ServiceProvider.GetRequiredService<DatabaseService>(), ctx.ServiceProvider.GetRequiredService<LoggingService>(), reason);
         }
 
         public static GuildUserData GetUserData(this GuildData data, ulong id)

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus.Entities;
 using Gommon;
 using Volte.Commands.Checks;
 using Volte.Core;
@@ -15,9 +14,9 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         public static async Task WarnAsync(
-            SocketGuildUser issuer, 
+            DiscordMember issuer, 
             GuildData data, 
-            SocketGuildUser member, 
+            DiscordMember member, 
             DatabaseService db, 
             LoggingService logger, 
             string reason)
@@ -30,7 +29,7 @@ namespace Volte.Commands.Modules
                 Date = DateTimeOffset.Now
             });
             db.UpdateData(data);
-            var embed = new EmbedBuilder().WithColor(member.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor)).WithAuthor(issuer)
+            var embed = new DiscordEmbedBuilder().WithColor(member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor)).WithAuthor(issuer)
                 .WithDescription($"You've been warned in **{issuer.Guild.Name}** for **{reason}**.").Build();
 
             if (!await member.TrySendMessageAsync(
