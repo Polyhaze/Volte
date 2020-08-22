@@ -129,11 +129,11 @@ namespace Volte.Services
             
             foreach (var guild in shard.Guilds.Values)
             {
-                Console.WriteLine(guild.Id);
-                if (Config.BlacklistedOwners.Contains(guild.Owner.Id))
+                var ownerId = typeof(DiscordGuild).GetProperty("OwnerId")?.GetValue(guild).Cast<ulong>();
+                if (ownerId.HasValue && Config.BlacklistedOwners.Contains(ownerId.Value))
                 {
                     _logger.Warn(LogSource.Volte,
-                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner.AsPrettyString()}.");
+                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {ownerId.Value}.");
                     await guild.LeaveAsync();
                 }
 
