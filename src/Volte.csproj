@@ -37,10 +37,4 @@
         <PackageReference Include="RestSharp" Version="106.11.5-alpha.0.18" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0" />
     </ItemGroup>
-    <ItemGroup>
-      <None Remove="data\volte.json" />
-      <Content Include="data\volte.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
 </Project>

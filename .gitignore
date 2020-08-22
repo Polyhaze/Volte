@@ -1,13 +1,10 @@
 .idea/
 .vs/
 data/volte.json
-src/data/volte.json
 src/bin/
 src/obj/
 src/Properties/
-src/data/Volte.db
 *.user
 *.vspscc
 *.vssscc
 *.log
-/src/data/
