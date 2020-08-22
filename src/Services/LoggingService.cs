@@ -130,7 +130,7 @@ namespace Volte.Services
             content.Append($"[{dto.FormatDate()} | {dto.FormatFullTime()}] {value} -> ");
 
             (color, value) = VerifySource(src);
-            Append($"[{value}]".PadRight(10), color);
+            Append($"[{value}]".PadRight(15), color);
             content.Append($"{value} -> ");
 
             if (!message.IsNullOrWhitespace())
@@ -171,6 +171,11 @@ namespace Volte.Services
                 LogSource.Module => (Color.LimeGreen, "MODULE"),
                 LogSource.Rest => (Color.Red, "REST"),
                 LogSource.Unknown => (Color.Fuchsia, "UNKNOWN"),
+                LogSource.Interactivity => (Color.Green, "INTERACTIVE"),
+                LogSource.AutoShard => (Color.Aqua, "AUTOSHARD"),
+                LogSource.WebSocket => (Color.Indigo, "WEBSOCKET"),
+                LogSource.WebSocketDispatch => (Color.Indigo, "WEBSOCKET"),
+                LogSource.DSharpPlus => (Color.Aquamarine, "DSHARPPLUS"),
                 _ => throw new InvalidOperationException($"The specified LogSource {source} is invalid.")
                 };
 

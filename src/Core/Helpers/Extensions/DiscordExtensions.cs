@@ -69,7 +69,7 @@ namespace Gommon
 
             do
             {
-                pageList.Add(new Page(temp.Take(entriesPerPage).Select(x => x.ToString()).Join("\n")));
+                pageList.Add(new Page(embed: new DiscordEmbedBuilder().WithDescription(temp.Take(entriesPerPage).Select(x => x.ToString()).Join("\n"))));
                 temp.RemoveRange(0, temp.Count < entriesPerPage ? temp.Count : entriesPerPage);
             } while (!temp.IsEmpty());
 

@@ -99,18 +99,13 @@ namespace Volte.Services
             
             await SendInfoToBotListsAsync(shardedClient, args);
             var guilds = shard.Guilds.Count;
-            var users = shard.Guilds.SelectMany(x => x.Value.Members).DistinctBy(x => x.Value.Id).Count();
-            var channels = shard.Guilds.SelectMany(x => x.Value.Channels).DistinctBy(x => x.Value.Id).Count();
 
             _logger.PrintVersion();
             _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
             _logger.Info(LogSource.Volte, $"{shardedClient.GetInviteUrl()}");
             _logger.Info(LogSource.Volte, $"Logged in as {shard.CurrentUser}, shard {shard.ShardId}");
             _logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
-            _logger.Info(LogSource.Volte, "Connected to:");
-            _logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
-            _logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
-            _logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
+            _logger.Info(LogSource.Volte, $"Connected to {"guild".ToQuantity(guilds)}");
 
             if (!_shouldStream)
             {

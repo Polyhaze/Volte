@@ -26,6 +26,18 @@ namespace Volte.Core.Models
         ///     Indicates that this log message is from the Volte itself.
         /// </summary>
         Volte = 6,
+        
+        Interactivity = 7,
+        
+        AutoShard = 8,
+
+        WebSocket = 9,
+        
+        WebSocketDispatch = 10,
+        
+        DSharpPlus = 11,
+
+
         /// <summary>
         ///     Indicates that this log message came from an unknown source.
         /// </summary>

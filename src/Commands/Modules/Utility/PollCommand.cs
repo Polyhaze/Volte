@@ -14,8 +14,8 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule
     {
         [Command("Poll")]
-        [Description("Create a poll.")]
-        [Remarks("poll question;option1[;option2;option3;option4;option5]")]
+        [Description("Create a poll. The 'String' argument must be in the form of question;option1[;option2;option3;option4;option5].")]
+        [Remarks("poll {TimeSpan} {String}")]
         public Task<ActionResult> PollAsync(TimeSpan duration, [Remainder] string all)
         {
             var content = all.Split(';', StringSplitOptions.RemoveEmptyEntries);

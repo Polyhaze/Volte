@@ -19,9 +19,17 @@ namespace Volte.Core.Models
                 Exception = message.Exception,
                 Source = message.Application switch
                 {
-                    "Rest" => LogSource.Rest,
+                    "REST" => LogSource.Rest,
+                    "REST API" => LogSource.Rest,
+                    "RESET" => LogSource.Rest,
                     "Discord" => LogSource.Discord,
                     "Gateway" => LogSource.Gateway,
+                    "Websocket:Dispatch" => LogSource.WebSocketDispatch,
+                    "Websocket" => LogSource.WebSocket,
+                    "DSharpPlus" => LogSource.DSharpPlus,
+                    "Interactivity" => LogSource.Interactivity,
+                    "Autoshard" => LogSource.AutoShard,
+                    
                     _ => LogSource.Unknown
                 }
             };

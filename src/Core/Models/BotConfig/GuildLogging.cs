@@ -36,7 +36,7 @@ namespace Volte.Core.Models.BotConfig
             }
 
             var g = client.GetGuild(GuildId);
-            channel = g?.Channels[ChannelId];
+            channel = g?.GetChannel(ChannelId);
             if (g is null)
             {
                 return false;

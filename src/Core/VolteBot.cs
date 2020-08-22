@@ -53,7 +53,6 @@ namespace Volte.Core
             var logger = _provider.Get<LoggingService>();
 
             await _client.StartAsync();
-            await _client.StartAsync().ContinueWith(_ => _client.UpdateStatusAsync(userStatus: UserStatus.Online));
 
             Initialize(_provider);
 
