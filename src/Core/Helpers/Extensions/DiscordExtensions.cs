@@ -198,6 +198,8 @@ namespace Gommon
 
         public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, uint color) => e.WithColor(new DiscordColor((int) color));
 
+        public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, long color) => e.WithColor(new DiscordColor((int) color));
+
         public static DiscordEmbedBuilder WithSuccessColor(this DiscordEmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
         public static DiscordEmbedBuilder WithErrorColor(this DiscordEmbedBuilder e) => e.WithColor(Config.ErrorColor);
