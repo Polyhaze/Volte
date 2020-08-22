@@ -12,6 +12,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core;
+using Volte.Core.Helpers;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Core.Models.Guild;
@@ -20,6 +21,8 @@ namespace Volte.Services
 {
     public sealed class EventService : VolteService
     {
+        private static readonly Func<DiscordGuild, ulong> GetOwnerId = ExpressionHelper.MemberInstance<DiscordGuild, ulong>("OwnerId");
+        
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
@@ -124,11 +127,11 @@ namespace Volte.Services
             
             foreach (var guild in shard.Guilds.Values)
             {
-                var ownerId = typeof(DiscordGuild).GetProperty("OwnerId")?.GetValue(guild).Cast<ulong>();
-                if (ownerId.HasValue && Config.BlacklistedOwners.Contains(ownerId.Value))
+                var ownerId = GetOwnerId(guild);
+                if (ownerId != 0UL && Config.BlacklistedOwners.Contains(ownerId))
                 {
                     _logger.Warn(LogSource.Volte,
-                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {ownerId.Value}.");
+                        $"Left guild \"{guild.Name}\" owned by blacklisted owner {ownerId}.");
                     await guild.LeaveAsync();
                 }
 
