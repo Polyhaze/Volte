@@ -10,9 +10,9 @@ namespace Volte.Commands.TypeParsers
     public sealed class ColorParser : TypeParser<DiscordColor>
     {
         public override ValueTask<TypeParserResult<DiscordColor>> ParseAsync(
-            Parameter parameter, 
+            Parameter _, 
             string value, 
-            CommandContext context)
+            CommandContext __)
         {
             DiscordColor? c = null;
 

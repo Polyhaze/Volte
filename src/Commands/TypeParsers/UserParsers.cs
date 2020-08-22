@@ -8,7 +8,7 @@ using Volte.Core.Helpers;
 namespace Volte.Commands.TypeParsers
 {
     [VolteTypeParser]
-    public sealed class SocketGuildUserParser : TypeParser<DiscordMember>
+    public sealed class MemberParser : TypeParser<DiscordMember>
     {
         // TODO In DSharpPlus, this is member cache-dependent. This needs to be async, and will not support plain names of non-mentioned non-cached members.
         public override async ValueTask<TypeParserResult<DiscordMember>> ParseAsync(
@@ -45,7 +45,7 @@ namespace Volte.Commands.TypeParsers
     }
 
     [VolteTypeParser]
-    public sealed class RestUserParser : TypeParser<DiscordUser>
+    public sealed class UserParser : TypeParser<DiscordUser>
     {
         public override async ValueTask<TypeParserResult<DiscordUser>> ParseAsync(
             Parameter parameter,

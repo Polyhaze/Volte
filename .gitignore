@@ -10,3 +10,4 @@ src/data/Volte.db
 *.vspscc
 *.vssscc
 *.log
+/src/data/

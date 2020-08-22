@@ -23,9 +23,9 @@ namespace Volte.Commands.TypeParsers
             };
 
         public override ValueTask<TypeParserResult<bool>> ParseAsync(
-            Parameter param,
+            Parameter _,
             string value,
-            CommandContext context)
+            CommandContext __)
         {
             if (TrueValues.ContainsIgnoreCase(value))
                 return TypeParserResult<bool>.Successful(true);

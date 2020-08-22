@@ -19,7 +19,7 @@ using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
-    public sealed class EventService : VolteService
+    public sealed class EventService : VolteEventService
     {
         private static readonly Func<DiscordGuild, ulong> GetOwnerId = ExpressionHelper.MemberInstance<DiscordGuild, ulong>("OwnerId");
         
@@ -32,6 +32,7 @@ namespace Volte.Services
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
         private readonly HttpClient _http;
+        private readonly DiscordShardedClient _client;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -47,7 +48,8 @@ namespace Volte.Services
             CommandService commandService,
             CommandsService commandsService,
             QuoteService quoteService,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            DiscordShardedClient discordShardedClient)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -58,6 +60,17 @@ namespace Volte.Services
             _commandsService = commandsService;
             _quoteService = quoteService;
             _http = httpClient;
+            _client = discordShardedClient;
+        }
+        
+        public override Task DoAsync(EventArgs args)
+        {
+            return args switch
+            {
+                MessageReceivedEventArgs messageReceived => HandleMessageAsync(messageReceived),
+                ReadyEventArgs ready => OnShardReadyAsync(_client, ready),
+                _ => Task.CompletedTask
+            };
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)

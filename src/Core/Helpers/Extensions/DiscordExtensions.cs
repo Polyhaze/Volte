@@ -76,6 +76,22 @@ namespace Gommon
             return pageList;
         }
 
+        public static async Task SendPaginatedMessageAsync(this VolteContext ctx, List<Page> pages, string embedTitle = null)
+        {
+            var color = ctx.Member.GetHighestRoleWithColor()?.Color;
+            var embed = new DiscordEmbedBuilder();
+            if (embedTitle is not null) embed.WithTitle(embedTitle);
+            var result = new List<Page>();
+            foreach (var page in pages)
+            {
+                result.Add(color.HasValue
+                    ? new Page(embed: embed.WithDescription(page.Content).WithColor(color.Value))
+                    : new Page(embed: embed.WithDescription(page.Content).WithSuccessColor()));
+            }
+
+            await ctx.Interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, result);
+        }
+
         public static async Task<bool> TrySendMessageAsync(this DiscordMember user, string text = null,
             bool isTts = false, DiscordEmbed embed = null)
         {

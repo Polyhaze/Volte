@@ -64,8 +64,9 @@ namespace Volte.Commands.Modules
                 
                 return None(async () =>
                 {
-                    await Context.Interactivity.SendPaginatedMessageAsync(Context.Channel, Context.Member,
-                        module.Commands.Select(x => x.FullAliases.First()).GetPages(15));
+                    await Context.SendPaginatedMessageAsync(
+                        module.Commands.Select(x => x.FullAliases.First()).GetPages(15),
+                        $"Commands in Module {module.SanitizeName()}");
                 }, false);
             }
 

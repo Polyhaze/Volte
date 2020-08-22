@@ -1,17 +1,20 @@
 {
-  "discord_token": "token here",
-  "command_prefix": "$",
-  "bot_owner": 0,
-  "status_game": "game here",
-  "status_twitch_streamer": "streamer here",
-  "enable_debug_logging": false,
+  "tokens": {
+    "discord_token": "NDEwNTQ3OTI1NTk3NDIxNTcx.XZWLCA.-_Orh3_nyi0OPR7GCVMGnQkinTM",
+    "dbl_token": "discord bot list token here"
+  },
+  "command_prefix": "dev$",
+  "bot_owner": 168548441939509248,
+  "status_game": "in Volte V4!",
+  "status_twitch_streamer": "GreemDev",
+  "enable_debug_logging": true,
   "color_success": 7340283,
   "color_error": 16711680,
   "log_all_commands": true,
   "guild_logging": {
-    "enabled": false,
-    "guild_id": 0,
-    "channel_id": 0
+    "enabled": true,
+    "guild_id": 405806471578648588,
+    "channel_id": 544048742114918410
   },
   "blacklisted_guild_owners": [],
   "enabled_features": {
