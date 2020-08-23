@@ -15,7 +15,7 @@ namespace Volte.Commands.TypeParsers
         // DISGUSTING. Can we PR a built-in impl for this for sharded clients?
         private static readonly IReadOnlyDictionary<string, string> UnicodeEmojis
             = (IReadOnlyDictionary<string, string>) typeof(DiscordEmoji)
-                .GetProperty("UnicodeEmojis", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetProperty("UnicodeEmojis", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
         
         public override ValueTask<TypeParserResult<DiscordEmoji>> ParseAsync(
