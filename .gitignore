@@ -1,9 +1,11 @@
 .idea/
 .vs/
-data/volte.json
+data/
+src/data/
 src/bin/
 src/obj/
 src/Properties/
+
 *.user
 *.vspscc
 *.vssscc

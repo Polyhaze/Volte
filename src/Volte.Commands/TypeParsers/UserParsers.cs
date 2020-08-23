@@ -12,35 +12,35 @@ namespace Volte.Commands.TypeParsers
     {
         // TODO In DSharpPlus, this is member cache-dependent. This needs to be async, and will not support plain names of non-mentioned non-cached members.
         public override async ValueTask<TypeParserResult<DiscordMember>> ParseAsync(
-            Parameter param,
+            Parameter _,
             string value,
             CommandContext context)
         {
             var ctx = context.AsVolteContext();
             var users = ctx.Guild.Members;
 
-            DiscordMember user = default;
+            DiscordMember member = default;
 
             if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseUser(value, out id))
-                user = users.TryGetValue(id, out var foundMember) ? foundMember : await ctx.Guild.GetMemberAsync(id);
+                member = users.TryGetValue(id, out var foundMember) ? foundMember : await ctx.Guild.GetMemberAsync(id);
 
-            if (user is null) user = users.FirstOrDefault(x => x.Value.ToString().EqualsIgnoreCase(value)).Value;
+            if (member is null) member = users.FirstOrDefault(x => x.Value.ToString().EqualsIgnoreCase(value)).Value;
 
-            if (user is null)
+            if (member is null)
             {
-                var match = users.Where(x =>
-                    x.Value.Username.EqualsIgnoreCase(value)
-                    || x.Value.Nickname.EqualsIgnoreCase(value)).ToArray();
+                var match = users.Values.Where(x =>
+                    x.Username.EqualsIgnoreCase(value)
+                    || x.Nickname.EqualsIgnoreCase(value)).ToArray();
                 if (match.Length > 1)
                     return TypeParserResult<DiscordMember>.Unsuccessful(
                         "Multiple users found, try mentioning the user or using their ID.");
 
-                user = match.FirstOrDefault().Value;
+                member = match.FirstOrDefault();
             }
 
-            return user is null
+            return member is null
                 ? TypeParserResult<DiscordMember>.Unsuccessful("User not found.")
-                : TypeParserResult<DiscordMember>.Successful(user);
+                : TypeParserResult<DiscordMember>.Successful(member);
         }
     }
 
@@ -48,7 +48,7 @@ namespace Volte.Commands.TypeParsers
     public sealed class UserParser : TypeParser<DiscordUser>
     {
         public override async ValueTask<TypeParserResult<DiscordUser>> ParseAsync(
-            Parameter parameter,
+            Parameter _,
             string value,
             CommandContext context)
         {
