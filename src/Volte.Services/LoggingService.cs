@@ -124,6 +124,7 @@ namespace Volte.Services
         private void Execute(LogLevel s, LogSource src, string message, Exception e)
         {
             var content = new StringBuilder();
+
             var (color, value) = VerifySeverity(s);
             Append($"{value}:".PadRight(10), color);
             var dto = DateTimeOffset.UtcNow;
@@ -141,14 +142,28 @@ namespace Volte.Services
 
             if (e is not null)
             {
-                var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
-                Append(toWrite, Color.IndianRed);
+                var toWrite = new StringBuilder($"{e.GetType()}: {e.Message}{Environment.NewLine}{e.StackTrace}");
+
+                var cause = e;
+                while ((cause = cause.InnerException) != null)
+                {
+                    toWrite.Append($"{Environment.NewLine}Caused by {e.GetType()}: {e.Message}{Environment.NewLine}{e.StackTrace}");
+                }
+
+                Append(toWrite.ToString(), Color.IndianRed);
                 content.Append(toWrite);
+                
+                Console.WriteLine(); // End the line before LogExceptionInDiscord as it can log to console.
+                content.AppendLine();
+
                 LogExceptionInDiscord(e);
             }
+            else
+            {
+                Console.WriteLine();
+                content.AppendLine();
+            }
 
-            Console.Write(Environment.NewLine);
-            content.AppendLine();
             if (Config.EnabledFeatures.LogToFile)
             {
                 File.AppendAllText(LogFile, content.ToString());
