@@ -299,7 +299,7 @@ namespace Volte.Commands.Modules
 
             return Ok(embed.WithFooter($"This poll will end in {duration.Humanize(3)}"), async msg =>
             {
-                var result = await Context.Interactivity.DoPollAsync(msg, EmojiHelper.GetPollEmojisList().ToArray(), PollBehaviour.KeepEmojis, duration);
+                var result = await Context.Interactivity.DoPollAsync(msg, EmojiHelper.GetPollEmojisList().Take(choicesCount).ToArray(), PollBehaviour.KeepEmojis, duration);
                 embed = embed.WithTitle("Poll Ended! Here are the results:");
                 foreach (var res in result)
                 {
