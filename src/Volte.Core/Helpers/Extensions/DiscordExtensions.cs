@@ -181,7 +181,7 @@ namespace Gommon
                     if (args.Channel is DiscordDmChannel)
                         await args.Channel.SendMessageAsync("I do not support commands via DM.");
                     else
-                        await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider));
+                        _ = Task.Run(async () => await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider)));
                 }
             };
         }
