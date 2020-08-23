@@ -55,34 +55,34 @@ namespace Volte.Core.Models.Guild
         public string WelcomeDmMessage { get; set; }
 
         public string FormatWelcomeMessage(DiscordMember user)
-            => WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+            => WelcomeMessage.ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
-                .ReplaceIgnoreCase("{UserName}", user.Username)
-                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{MemberName}", user.Username)
+                .ReplaceIgnoreCase("{MemberMention}", user.Mention)
                 .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
-                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberTag}", user.Discriminator)
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
-                .ReplaceIgnoreCase("{UserString}", user);
+                .ReplaceIgnoreCase("{MemberString}", user.AsPrettyString());
 
         public string FormatLeavingMessage(DiscordMember user)
-            => LeavingMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+            => LeavingMessage.ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
-                .ReplaceIgnoreCase("{UserName}", user.Username)
-                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{MemberName}", user.Username)
+                .ReplaceIgnoreCase("{MemberMention}", user.Mention)
                 .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
-                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberTag}", user.Discriminator)
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
-                .ReplaceIgnoreCase("{UserString}", user);
+                .ReplaceIgnoreCase("{MemberString}", user.AsPrettyString());
 
         public string FormatDmMessage(DiscordMember user)
-            => WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+            => WelcomeDmMessage.ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
-                .ReplaceIgnoreCase("{UserName}", user.Username)
-                .ReplaceIgnoreCase("{UserMention}", user.Mention)
+                .ReplaceIgnoreCase("{MemberName}", user.Username)
+                .ReplaceIgnoreCase("{MemberMention}", user.Mention)
                 .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
-                .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
+                .ReplaceIgnoreCase("{MemberTag}", user.Discriminator)
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
-                .ReplaceIgnoreCase("{UserString}", user);
+                .ReplaceIgnoreCase("{MemberString}", user.AsPrettyString());
         
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

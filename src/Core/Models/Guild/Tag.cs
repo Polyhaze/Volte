@@ -19,13 +19,14 @@ namespace Volte.Core.Models.Guild
 
         public string FormatContent(VolteContext ctx) 
             => SanitizeContent()
-                .ReplaceIgnoreCase("{ServerName}", ctx.Guild.Name)
                 .ReplaceIgnoreCase("{GuildName}", ctx.Guild.Name)
-                .ReplaceIgnoreCase("{UserName}", ctx.Member.Username)
-                .ReplaceIgnoreCase("{UserMention}", ctx.Member.Mention)
-                .ReplaceIgnoreCase("{UserEffectiveName}", ctx.Member.GetEffectiveUsername())
-                .ReplaceIgnoreCase("{OwnerMention}", ctx.Guild.Owner.Mention)
-                .ReplaceIgnoreCase("{UserTag}", ctx.Member.Discriminator);
+                .ReplaceIgnoreCase("{GuildName}", ctx.Guild.Name)
+                .ReplaceIgnoreCase("{MemberString}", ctx.Member.AsPrettyString())
+                .ReplaceIgnoreCase("{MemberName}", ctx.Member.Username)
+                .ReplaceIgnoreCase("{MemberMention}", ctx.Member.Mention)
+                .ReplaceIgnoreCase("{MemberDisplayName}", ctx.Member.DisplayName)
+                .ReplaceIgnoreCase("{GuildOwnerMention}", ctx.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{MemberTag}", ctx.Member.Discriminator);
         
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

@@ -70,9 +70,9 @@ namespace Volte.Core.Helpers
         /// <exception cref="ArgumentException">Invalid mention format.</exception>
         public static ulong ParseChannel(string text)
         {
-            if (TryParseChannel(text, out ulong id))
+            if (TryParseChannel(text, out var id))
                 return id;
-            throw new ArgumentException(message: "Invalid mention format.", paramName: nameof(text));
+            throw new ArgumentException("Invalid mention format.", nameof(text));
         }
         /// <summary>
         ///     Tries to parse a provided channel mention string.
@@ -96,9 +96,9 @@ namespace Volte.Core.Helpers
         /// <exception cref="ArgumentException">Invalid mention format.</exception>
         public static ulong ParseRole(string text)
         {
-            if (TryParseRole(text, out ulong id))
+            if (TryParseRole(text, out var id))
                 return id;
-            throw new ArgumentException(message: "Invalid mention format.", paramName: nameof(text));
+            throw new ArgumentException("Invalid mention format.", nameof(text));
         }
         /// <summary>
         ///     Tries to parse a provided role mention string.

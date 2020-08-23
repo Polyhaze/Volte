@@ -1,12 +1,10 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Enums;
 using Gommon;
 using Qmmands;
 using Gommon;
+using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core.Helpers;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -65,7 +63,7 @@ namespace Volte.Commands.Modules
                 return None(async () =>
                 {
                     await Context.SendPaginatedMessageAsync(
-                        module.Commands.Select(x => x.FullAliases.First()).GetPages(15),
+                        module.Commands.Where(x => !x.GetType().HasAttribute<HiddenAttribute>()).Select(x => x.FullAliases.First()).GetPages(15),
                         $"Commands in Module {module.SanitizeName()}");
                 }, false);
             }
