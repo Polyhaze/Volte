@@ -147,7 +147,7 @@ namespace Volte.Services
                 var cause = e;
                 while ((cause = cause.InnerException) != null)
                 {
-                    toWrite.Append($"{Environment.NewLine}Caused by {e.GetType()}: {e.Message}{Environment.NewLine}{e.StackTrace}");
+                    toWrite.Append($"{Environment.NewLine}Caused by {cause.GetType()}: {cause.Message}{Environment.NewLine}{cause.StackTrace}");
                 }
 
                 Append(toWrite.ToString(), Color.IndianRed);
