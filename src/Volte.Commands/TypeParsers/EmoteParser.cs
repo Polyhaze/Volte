@@ -24,9 +24,9 @@ namespace Volte.Commands.TypeParsers
             CommandContext context)
         {
             // Use our DisgustingDictionary to parse an unicode emoji
-            if (UnicodeEmojis.ContainsKey(value))
+            if (UnicodeEmojis.TryGetValue(value, out var unicodeEmoji))
             {
-                return TypeParserResult<DiscordEmoji>.Successful(DiscordEmoji.FromUnicode(value));
+                return TypeParserResult<DiscordEmoji>.Successful(DiscordEmoji.FromUnicode(unicodeEmoji));
             }
             
             // Attempt to parse guild emotes
