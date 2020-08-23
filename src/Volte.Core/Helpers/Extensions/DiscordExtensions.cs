@@ -79,14 +79,36 @@ namespace Gommon
         public static async Task SendPaginatedMessageAsync(this VolteContext ctx, List<Page> pages, string embedTitle = null)
         {
             var color = ctx.Member.GetHighestRoleWithColor()?.Color;
-            var embed = new DiscordEmbedBuilder();
-            if (embedTitle is not null) embed.WithTitle(embedTitle);
             var result = new List<Page>();
+            var index = 0;
             foreach (var page in pages)
             {
-                result.Add(color.HasValue
-                    ? new Page(embed: embed.WithDescription(page.Content).WithColor(color.Value))
-                    : new Page(embed: embed.WithDescription(page.Content).WithSuccessColor()));
+                index++;
+
+                var embed = page.Embed != null
+                    ? new DiscordEmbedBuilder(page.Embed)
+                    : new DiscordEmbedBuilder().WithDescription(page.Content);
+
+                if (embed.Title == null && embedTitle != null)
+                {
+                    embed.WithTitle(embedTitle);
+                }
+
+                if (embed.Footer == null)
+                {
+                    embed.WithFooter($"Page {index} / {pages.Count}");
+                }
+
+                if (!embed.Color.HasValue && color.HasValue)
+                {
+                    embed.WithColor(color.Value);
+                }
+                else
+                {
+                    embed.WithSuccessColor();
+                }
+
+                result.Add(new Page(embed: embed));
             }
 
             await ctx.Interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, result);
