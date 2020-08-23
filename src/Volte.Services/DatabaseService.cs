@@ -6,6 +6,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using LiteDB;
 using Volte.Core;
+using Volte.Core.Helpers;
 using Volte.Core.Models.Guild;
 
 namespace Volte.Services
@@ -58,7 +59,7 @@ namespace Volte.Services
             => new GuildData
             {
                 Id = guild.Id,
-                OwnerId = guild.Owner.Id,
+                OwnerId = DiscordReflectionHelper.GetOwnerId(guild),
                 Configuration = new GuildConfiguration
                 {
                     Autorole = default,

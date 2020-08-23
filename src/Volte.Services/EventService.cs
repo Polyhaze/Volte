@@ -21,8 +21,6 @@ namespace Volte.Services
 {
     public sealed class EventService : VolteEventService
     {
-        private static readonly Func<DiscordGuild, ulong> GetOwnerId = ExpressionHelper.MemberInstance<DiscordGuild, ulong>("OwnerId");
-        
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
@@ -140,7 +138,7 @@ namespace Volte.Services
             
             foreach (var guild in shard.Guilds.Values)
             {
-                var ownerId = GetOwnerId(guild);
+                var ownerId = DiscordReflectionHelper.GetOwnerId(guild);
                 if (ownerId != 0UL && Config.BlacklistedOwners.Contains(ownerId))
                 {
                     _logger.Warn(LogSource.Volte,
