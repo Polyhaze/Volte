@@ -110,8 +110,6 @@ namespace Volte.Services
         public async Task OnShardReadyAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
         {
             var shard = args.Client;
-            
-            await SendInfoToBotListsAsync(shardedClient, args);
             var guilds = shard.Guilds.Count;
 
             _logger.PrintVersion();
@@ -168,25 +166,6 @@ namespace Volte.Services
                     .WithDescription(
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
                     .SendToAsync(channel);
-            }
-        }
-
-        public async Task SendInfoToBotListsAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
-        {
-            var guildCount = shardedClient.ShardClients.Sum(x => x.Value.Guilds.Count);
-            if (Config.IsValidDblToken())
-            {
-                using (var httpReq = new HttpRequestMessage())
-                {
-                    var content = new StringContent($"{{\"guilds\": {guildCount}}}");
-                    httpReq.Headers.Add("Authorization", Config.Tokens.DblToken);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    httpReq.Content = content;
-                    httpReq.Method = HttpMethod.Post;
-                    httpReq.RequestUri = new Uri($"https://discordbotlist.com/api/v1/bots/{args.Client.CurrentUser.Id}/stats");
-
-                    await _http.SendAsync(httpReq);
-                }
             }
         }
     }

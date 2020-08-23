@@ -64,19 +64,17 @@ namespace Volte.Commands.Modules
                         .AppendLine($"Set this guild's welcome message to ```{message}```")
                         .AppendLine()
                         .AppendLine($"{sendingTest}").ToString(),
-                    _ =>
+                    async _ =>
                     {
                         if (welcomeChannel is not null)
                         {
-                            return new DiscordEmbedBuilder()
+                            await new DiscordEmbedBuilder()
                                 .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
-                                .WithDescription(
-                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithDescription(WelcomeOptions.FormatMessage(message, Context.Member))
                                 .WithThumbnail(Context.Member.AvatarUrl)
                                 .WithCurrentTimestamp()
                                 .SendToAsync(welcomeChannel);
                         }
-                        return Task.CompletedTask;
                     });
             }
 
@@ -124,19 +122,17 @@ namespace Volte.Commands.Modules
                         .AppendLine()
                         .AppendLine($"{sendingTest}")
                         .ToString(),
-                    _ =>
+                    async _ =>
                     {
                         if (welcomeChannel is not null)
                         {
-                            return new DiscordEmbedBuilder()
+                            await new DiscordEmbedBuilder()
                                 .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
-                                .WithDescription(
-                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithDescription(WelcomeOptions.FormatMessage(message, Context.Member))
                                 .WithThumbnail(Context.Member.AvatarUrl)
                                 .WithCurrentTimestamp()
                                 .SendToAsync(welcomeChannel);
                         }
-                        return Task.CompletedTask;
                     });
             }
 
@@ -157,21 +153,20 @@ namespace Volte.Commands.Modules
                     return data;
                 });
                 return Ok($"Set the WelcomeDmMessage to: ```{message}```\n\nAttempting to send a test message.",
-                    _ =>
+                    async _ =>
                     {
                         try
                         {
-                            return new DiscordEmbedBuilder()
+                            await new DiscordEmbedBuilder()
                                 .WithColor(Context.GuildData.Configuration.Welcome.WelcomeColor)
-                                .WithDescription(
-                                    Context.GuildData.Configuration.Welcome.FormatWelcomeMessage(Context.Member))
+                                .WithDescription(WelcomeOptions.FormatMessage(message, Context.Member))
                                 .WithThumbnail(Context.Member.AvatarUrl)
                                 .WithCurrentTimestamp()
                                 .SendToAsync(Context.Member);
                         }
                         catch (Exception)
                         {
-                            return Task.CompletedTask;
+                            
                         }
                         
                     });
@@ -426,7 +421,7 @@ namespace Volte.Commands.Modules
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");
 
             await user.GrantRoleAsync(role);
-            return Ok($"Added the role **{role}** to {user.Mention}!");
+            return Ok($"Added the role **{role.Name}** to {user.Mention}!");
         }
     }
 }

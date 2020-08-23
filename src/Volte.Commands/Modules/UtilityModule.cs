@@ -14,6 +14,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Helpers;
+using Volte.Core.Models.Misc;
 using Volte.Services;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -282,7 +283,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> PollAsync(TimeSpan duration, [Remainder] string all)
         {
             var content = all.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            var pollInfo = PollHelpers.GetPollBody(content);
+            var pollInfo = GetPollBody(content);
             var choicesCount = content.Length - 1;
             if (!pollInfo.IsValid)
                 return BadRequest(choicesCount > 5
@@ -586,6 +587,12 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithAuthor(user)
                 .WithImageUrl(user.GetAvatarUrl(ImageFormat.Auto, 1024)));
+        }
+        
+        private PollInfo GetPollBody(IEnumerable<string> choices)
+        {
+            var c = choices as string[] ?? choices.ToArray();
+            return PollInfo.FromDefaultFields(c.Length - 1, c);
         }
     }
 }

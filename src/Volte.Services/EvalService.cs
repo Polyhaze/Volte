@@ -104,7 +104,7 @@ namespace Volte.Services
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>
             {
                 "System", "System.Collections.Generic", "System.Linq", "System.Text", "System.Reflection",
-                "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
+                "System.Diagnostics", "DSharpPlus", "DSharpPlus.Entities", "System.IO", "Volte.Core.Models.EventArgs",
                 "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
                 "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Volte.Commands.TypeParsers"
             });

@@ -11,7 +11,7 @@ namespace Volte.Commands.TypeParsers
         private IEnumerable<string> TrueValues =>
             new List<string>
             {
-                "true", "y", "yes", "ye", "yep", "yeah", "sure", "affirmative", "yar", "aff", "ya", "da", "yas",
+                "true", "y", "yes", "ye", "yep", "yeah", "sure", "si", "affirmative", "yar", "aff", "ya", "da", "yas",
                 "enable", "yip", "positive", "1"
             };
 

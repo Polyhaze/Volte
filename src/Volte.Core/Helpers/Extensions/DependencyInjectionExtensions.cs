@@ -35,7 +35,7 @@ namespace Gommon
                     HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,
                     TokenType = TokenType.Bot,
-                    Token = Config.Tokens.DiscordToken
+                    Token = Config.Token
                 }));
 
         public static IServiceCollection AddVolteServices(this IServiceCollection coll)

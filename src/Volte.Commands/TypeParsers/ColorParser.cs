@@ -16,8 +16,8 @@ namespace Volte.Commands.TypeParsers
         {
             DiscordColor? c = null;
 
-            if (uint.TryParse(value.StartsWith("#") ? value.Substring(1) : value, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
-                c = new DiscordColor((int) colorInt);
+            if (int.TryParse(value.StartsWith("#") ? value.Substring(1) : value, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
+                c = new DiscordColor(colorInt);
 
             if (c is null)
             {

@@ -95,7 +95,7 @@ namespace Volte.Services
                 ChecksFailedResult cfr => cfr.Reason,
                 ParameterChecksFailedResult pcfr => $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.Reason).Join('\n')}```",
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
-                TypeParseFailedResult tpfr => tpfr.Reason,
+                TypeParseFailedResult tpfr => $"`{tpfr.Reason}`",
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 ExecutionFailedResult efr => ExecutionFailed(efr),
                 _ => Unknown(args.FailedResult)

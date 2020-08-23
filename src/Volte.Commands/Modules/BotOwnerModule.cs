@@ -22,6 +22,7 @@ namespace Volte.Commands.Modules
     {
         public EvalService Eval { get; set; }
         public HttpClient Http { get; set; }
+        public CacheService Cache { get; set; }
 
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
@@ -51,21 +52,13 @@ namespace Volte.Commands.Modules
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
         [Remarks("setstatus {dnd|idle|invisible|online}")]
-        public Task<ActionResult> SetStatusAsync([Remainder]string status) 
-            => status.ToLower() switch
-            {
-                "dnd" => Ok("Set the status to Do Not Disturb.",
-                    _ => Context.Client.UpdateStatusAsync(userStatus: UserStatus.DoNotDisturb)),
-                "idle" => Ok("Set the status to Idle.", _ => Context.Client.UpdateStatusAsync(userStatus: UserStatus.Idle)),
-                "invisible" => Ok("Set the status to Invisible.",
-                    _ => Context.Client.UpdateStatusAsync(userStatus: UserStatus.Invisible)),
-                "online" => Ok("Set the status to Online.",
-                    _ => Context.Client.UpdateStatusAsync(userStatus: UserStatus.Online)),
-                _ => BadRequest(new StringBuilder()
-                    .AppendLine("Your option wasn't known, so I didn't modify the status.")
-                    .AppendLine("Available options for this command are `dnd`, `idle`, `invisible`, or `online`.")
-                    .ToString())
-            };
+        public async Task<ActionResult> SetStatusAsync([Remainder] UserStatus status)
+        {
+            var currentUserPresence = Cache.GetBotPresence(Context.Client);
+
+            await Context.Client.UpdateStatusAsync(currentUserPresence.Activity, status);
+            return Ok($"Set the my status to `{status}`!");
+        }
 
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar to the image at the given URL.")]
@@ -87,7 +80,7 @@ namespace Volte.Commands.Modules
 
             await using var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream();
             img.Position = 0;
-            await Context.Client.UpdateCurrentUserAsync(avatar: img); // TODO this stream may need to be rewound
+            await Context.Client.UpdateCurrentUserAsync(avatar: img);
             return Ok("Done!");
         }
 
