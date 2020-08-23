@@ -29,9 +29,9 @@ namespace Volte.Core.Helpers
         public static (DiscordEmoji One, DiscordEmoji Two, DiscordEmoji Three, DiscordEmoji Four, DiscordEmoji Five) GetPollEmojis()
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
 
-        public static List<DiscordEmoji> GetPollEmojisList()
+        public static IReadOnlyList<DiscordEmoji> GetPollEmojisList()
         {
-            return new List<DiscordEmoji>
+            return new[]
             {
                 One.ToEmoji(),
                 Two.ToEmoji(),
