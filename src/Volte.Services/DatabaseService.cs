@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -92,7 +93,7 @@ namespace Volte.Services
                 {
                     ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
-                    StarboardedMessages = new List<StarboardEntry>(),
+                    StarboardedMessages = new ConcurrentDictionary<ulong, StarboardEntry>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
                 }

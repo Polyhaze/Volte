@@ -370,6 +370,51 @@ namespace Volte.Commands.Modules
 
                 return Ok($"Set **{action}** as the action performed when a member uses a blacklisted word/phrase.");
             }
+
+            [Group("Starboard", "Sb")]
+            [RequireGuildAdmin]
+            public sealed class StarboardModule : VolteModule
+            {
+                [Command("Channel", "Ch")]
+                [Description("Sets the channel to be used by starboard when a message is starred.")]
+                [Remarks("starboard channel {Channel}")]
+                public Task<ActionResult> StarboardChannelAsync(DiscordChannel channel)
+                {
+                    ModifyData(data =>
+                    {
+                        data.Configuration.Starboard.StarboardChannel = channel.Id;
+                        return data;
+                    });
+                    return Ok($"Successfully set the starboard channel to {channel.Mention}.");
+                }
+
+                [Command("Amount", "Count")]
+                [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
+                [Remarks("starboard amount {Int}")]
+                public Task<ActionResult> StarsRequiredToPostAsync(int amount)
+                {
+                    ModifyData(data =>
+                    {
+                        data.Configuration.Starboard.StarsRequiredToPost = amount;
+                        return data;
+                    });
+                    return Ok($"Set the amount of stars required to be posted as a starboard message to **{amount}**.");
+                }
+
+                [Command("Enable")]
+                [Description("Enable or disable the Starboard in this guild.")]
+                [Remarks("starboard enable {Boolean}")]
+                public Task<ActionResult> StarboardEnableAsync(bool enabled)
+                {
+                    ModifyData(data =>
+                    {
+                        data.Configuration.Starboard.Enabled = enabled;
+                        return data;
+                    });
+                    return Ok(
+                        enabled ? "Enabled the Starboard in this Guild." : "Disabled the Starboard in this Guild.");
+                }
+            }
         }
 
         [Command("Autorole")]
