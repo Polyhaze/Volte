@@ -18,7 +18,7 @@ namespace Volte.Commands.TypeParsers
             var ctx = context.AsVolteContext();
             DiscordRole role = null;
 
-            if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseRole(value, out id))
+            if (ulong.TryParse(value, out var id) || MentionHelper.TryParseRole(value, out id))
                 role = ctx.Guild.GetRole(id);
 
             if (role is null)

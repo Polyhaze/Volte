@@ -18,7 +18,7 @@ namespace Volte.Commands.TypeParsers
             var ctx = context.AsVolteContext();
             DiscordChannel channel = null;
 
-            if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseChannel(value, out id))
+            if (ulong.TryParse(value, out var id) || MentionHelper.TryParseChannel(value, out id))
                 channel = ctx.Client.FindFirstChannel(id);
     
             if (channel is null)

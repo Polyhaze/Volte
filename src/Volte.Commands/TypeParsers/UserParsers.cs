@@ -21,7 +21,7 @@ namespace Volte.Commands.TypeParsers
 
             DiscordMember member = default;
 
-            if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseUser(value, out id))
+            if (ulong.TryParse(value, out var id) || MentionHelper.TryParseUser(value, out id))
                 member = users.TryGetValue(id, out var foundMember) ? foundMember : await ctx.Guild.GetMemberAsync(id);
 
             if (member is null) member = users.FirstOrDefault(x => x.Value.ToString().EqualsIgnoreCase(value)).Value;
@@ -56,7 +56,7 @@ namespace Volte.Commands.TypeParsers
 
             DiscordUser user = null;
 
-            if (ulong.TryParse(value, out var id) || MentionHelpers.TryParseUser(value, out id))
+            if (ulong.TryParse(value, out var id) || MentionHelper.TryParseUser(value, out id))
                 user = await ctx.Client.ShardClients.First().Value.GetUserAsync(id);
 
             return user is null

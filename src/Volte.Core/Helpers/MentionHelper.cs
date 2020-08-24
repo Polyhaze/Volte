@@ -7,7 +7,7 @@ namespace Volte.Core.Helpers
     ///     Provides a series of helper methods for parsing mentions.
     /// </summary>
     /// <remarks>Code for this class was taken from Discord.Net</remarks>
-    public static class MentionHelpers
+    public static class MentionHelper
     {
         //If the system can't be positive a user doesn't have a nickname, assume useNickname = true (source: Jake)
         internal static string MentionUser(string id, bool useNickname = true) => useNickname ? $"<@!{id}>" : $"<@{id}>";
