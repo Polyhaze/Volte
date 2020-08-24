@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using DSharpPlus.Entities;
 using Gommon;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Models.Guild
 {
@@ -81,10 +82,15 @@ namespace Volte.Core.Models.Guild
     {
         [JsonPropertyName("starboard_channel")]
         public ulong StarboardChannel { get; set; }
+        
         [JsonPropertyName("starboard_enabled")]
         public bool Enabled { get; set; }
+        
         [JsonPropertyName("number_of_required_stars")]
         public int StarsRequiredToPost { get; set; }
+        
+        [JsonPropertyName("delete_invalid_stars")]
+        public bool DeleteInvalidStars { get; set; }
     }
 
     public static class BlacklistActions

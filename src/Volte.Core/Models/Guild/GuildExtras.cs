@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -19,8 +20,8 @@ namespace Volte.Core.Models.Guild
         [JsonPropertyName("tags")]
         public List<Tag> Tags { get; set; }
         
-        [JsonPropertyName("starboard_entries")]
-        public List<StarboardEntry> StarboardEntries { get; set; }
+        [JsonPropertyName("starboarded_messages")]
+        public ConcurrentDictionary<ulong, StarboardEntry> StarboardedMessages { get; set; }
 
         [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }

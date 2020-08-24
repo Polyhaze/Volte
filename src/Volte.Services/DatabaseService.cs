@@ -92,7 +92,7 @@ namespace Volte.Services
                 {
                     ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
-                    StarboardEntries = new List<StarboardEntry>(),
+                    StarboardedMessages = new List<StarboardEntry>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
                 }

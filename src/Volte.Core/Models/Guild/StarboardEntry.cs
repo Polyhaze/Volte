@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using DSharpPlus.Interactivity.Concurrency;
 
 namespace Volte.Core.Models.Guild
 {
@@ -7,16 +9,15 @@ namespace Volte.Core.Models.Guild
     {
         public StarboardEntry()
         {
-            StarredUserIds = new List<ulong>();
+            StarredUserIds = new HashSet<ulong>();
         }
-        
+
         [JsonPropertyName("starred_users")]
-        public List<ulong> StarredUserIds { get; set; }
+        public HashSet<ulong> StarredUserIds { get; set; }
         [JsonPropertyName("starred_message_id")]
         public ulong MessageId { get; set; }
-        
-        [JsonPropertyName("star_count")]
-        public int StarCount { get; set; }
+        [JsonIgnore]
+        public int StarCount => StarredUserIds.Count;
         [JsonPropertyName("starboard_message_id")]
         public ulong StarboardMessageId { get; set; }
     }
