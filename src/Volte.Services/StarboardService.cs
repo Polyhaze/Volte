@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using Gommon;
 using Volte.Core.Helpers;
+using Volte.Core.Models.Guild;
 
 namespace Volte.Services
 {
@@ -67,7 +71,10 @@ namespace Volte.Services
                     if (entry.StarredUserIds.Add(starrerId))
                     {
                         // Update message star count
-                        await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        using (await _messageWriteLock.LockAsync(messageId))
+                        {
+                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        }
                     }
                     else
                     {
@@ -85,6 +92,7 @@ namespace Volte.Services
                 {
                     // Create new star message!
                     using (await _starrerLock.LockAsync((messageId, starrerId)))
+                    using (await _messageWriteLock.LockAsync(messageId))
                     {
                         var newEntry = data.Extras.StarboardedMessages.AddOrUpdate(
                             messageId,
@@ -107,7 +115,41 @@ namespace Volte.Services
 
         private async Task HandleReactionRemoveAsync(MessageReactionRemoveEventArgs args)
         {
+            if (args.Channel is DiscordDmChannel) return;
+            if (args.Emoji.Name != EmojiHelper.Star) return;
+            if (args.User.IsCurrent) return;
             
+            var data = _db.GetData(args.Guild.Id);
+            var starboard = data.Configuration.Starboard;
+            
+            var starboardChannel = await args.Client.GetChannelAsync(starboard.StarboardChannel);
+            if (starboardChannel is null) return;
+            if (args.Channel == starboardChannel) return; // TODO Support starring the starboard message
+
+            var messageId = args.Message.Id;
+            var starrerId = args.User.Id;
+
+            if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
+            {
+                using (await _starrerLock.LockAsync((messageId, starrerId)))
+                {
+                    // Add the star to the database
+                    if (entry.StarredUserIds.Remove(starrerId))
+                    {
+                        // Update message star count
+                        using (await _messageWriteLock.LockAsync(messageId))
+                        {
+                            if (entry.StarCount < starboard.StarsRequiredToPost)
+                            {
+                                // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
+                                // so we do not need to pass a value to TryRemove.
+                                data.Extras.StarboardedMessages.TryRemove(messageId, out _);
+                                await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async Task HandleReactionsClearAsync(MessageReactionsClearEventArgs args)
@@ -115,6 +157,7 @@ namespace Volte.Services
             
         }
 
+        // Calls to this method should be synchronized to _messageWriteLock beforehand!
         private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, DiscordMessage message, StarboardEntry entry)
         {
             var starboardChannel = message.Channel.Guild.GetChannel(starboard.StarboardChannel);
@@ -123,9 +166,6 @@ namespace Volte.Services
                 return;
             }
 
-            using (await _messageWriteLock.LockAsync(message.Id))
-            {
-            }
             if (entry.StarboardMessageId == 0)
             {
                 if (entry.StarCount >= starboard.StarsRequiredToPost)
