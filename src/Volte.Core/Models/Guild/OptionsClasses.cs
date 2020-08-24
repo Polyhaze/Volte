@@ -77,6 +77,16 @@ namespace Volte.Core.Models.Guild
             => JsonSerializer.Serialize(this, Config.JsonOptions);
     }
 
+    public sealed class StarboardOptions
+    {
+        [JsonPropertyName("starboard_channel")]
+        public ulong StarboardChannel { get; set; }
+        [JsonPropertyName("starboard_enabled")]
+        public bool Enabled { get; set; }
+        [JsonPropertyName("number_of_required_stars")]
+        public int StarsRequiredToPost { get; set; }
+    }
+
     public static class BlacklistActions
     {
         public static BlacklistAction DetermineAction(string input)

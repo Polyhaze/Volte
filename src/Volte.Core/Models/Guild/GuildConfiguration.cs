@@ -22,6 +22,9 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("moderation_options")]
         public ModerationOptions Moderation { get; set; }
+        
+        [JsonPropertyName("starboard_options")]
+        public StarboardOptions Starboard { get; set; }
 
         [JsonPropertyName("delete_message_on_command")]
         public bool DeleteMessageOnCommand { get; set; }

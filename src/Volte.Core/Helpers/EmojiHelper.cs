@@ -18,6 +18,7 @@ namespace Volte.Core.Helpers
         public static string Three { get; } = "\u0033\u20E3";
         public static string Four { get; } = "\u0034\u20E3";
         public static string Five { get; } = "\u0035\u20E3";
+        public static string Star { get; } = "\u2B50";
         public static string First { get; } = "⏮";
         public static string Back { get; } = "◀";
         public static string Next { get; } = "▶";

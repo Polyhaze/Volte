@@ -27,7 +27,7 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("extras")]
         public GuildExtras Extras { get; set; }
-        
+
         [JsonPropertyName("userdata")]
         public List<GuildUserData> UserData { get; set; }
 

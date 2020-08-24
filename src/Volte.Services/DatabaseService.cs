@@ -80,12 +80,19 @@ namespace Volte.Services
                         WelcomeChannel = default,
                         WelcomeColor = new DiscordColor(0x7000FB).Value,
                         WelcomeMessage = string.Empty
+                    },
+                    Starboard = new StarboardOptions
+                    {
+                        Enabled = false,
+                        StarboardChannel = default,
+                        StarsRequiredToPost = 1
                     }
                 },
                 Extras = new GuildExtras
                 {
                     ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
+                    StarboardEntries = new List<StarboardEntry>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
                 }

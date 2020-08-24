@@ -18,6 +18,9 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("tags")]
         public List<Tag> Tags { get; set; }
+        
+        [JsonPropertyName("starboard_entries")]
+        public List<StarboardEntry> StarboardEntries { get; set; }
 
         [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }

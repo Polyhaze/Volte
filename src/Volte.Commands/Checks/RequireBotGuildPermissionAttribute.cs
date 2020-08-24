@@ -9,25 +9,24 @@ namespace Volte.Commands.Checks
 {
     public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
     {
-        private readonly Permissions[] _permissions;
+        private readonly Permissions _permission;
 
-        public RequireBotGuildPermissionAttribute(params Permissions[] perms) => _permissions = perms;
+        public RequireBotGuildPermissionAttribute(Permissions perm) => _permission = perm;
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.AsVolteContext();
             var guildPermissions = ctx.Guild.CurrentMember.GetGuildPermissions();
-            foreach (var perm in guildPermissions.GetFlags())
+            if (guildPermissions.HasPermission(Permissions.Administrator))
+                return CheckResult.Successful;
+            if (guildPermissions.GetFlags().Any(perm => _permission == perm))
             {
-                if (guildPermissions.HasPermission(Permissions.Administrator))
-                    return CheckResult.Successful;
-                if (_permissions.Contains(perm))
-                    return CheckResult.Successful;
+                return CheckResult.Successful;
             }
 
             await new DiscordEmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
-                .AddField("Error Reason", $"I am missing the following guild-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
+                .AddField("Error Reason", $"I am missing the following guild-level permissions required to execute this command: `{ _permission}`")
                 .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
                 .WithAuthor(ctx.Member)
                 .WithErrorColor()
