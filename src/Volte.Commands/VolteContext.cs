@@ -9,7 +9,6 @@ using Humanizer;
 using Volte.Core;
 using Volte.Core.Models.Guild;
 using Volte.Services;
-using Extensions = Gommon.Extensions;
 
 namespace Volte.Commands
 {

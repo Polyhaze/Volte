@@ -14,12 +14,12 @@ namespace Volte
         private static int Hotfix => 0;
         public static DevelopmentStage ReleaseType => DevelopmentStage.Development;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
-        private static readonly Lazy<string> GetVersionString = new Lazy<string>(() =>
+        private static readonly Lazy<string> VersionString = new Lazy<string>(() =>
         {
             using var client = new DiscordClient(new DiscordConfiguration());
             return client.VersionString;
         });
-        public static string DiscordNetVersion => GetVersionString.Value;
+        public static string DSharpPlusVersion => VersionString.Value;
         public enum DevelopmentStage
         {
             Development,

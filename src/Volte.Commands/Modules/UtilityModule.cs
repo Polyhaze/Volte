@@ -16,6 +16,7 @@ using Volte.Core;
 using Volte.Core.Helpers;
 using Volte.Core.Models.Misc;
 using Volte.Services;
+using Volte.Volte.Commands.Checks;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -422,7 +423,7 @@ namespace Volte.Commands.Modules
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
                 .AddField("Author", $"{await Context.Client.ShardClients.First().Value.GetUserAsync(168548441939509248)}, contributors on [GitHub](https://github.com/Ultz/Volte), and members of the Ultz organization.", true)
-                .AddField("Language/Library", $"C# 9, Discord.Net {Version.DiscordNetVersion}", true)
+                .AddField("Language/Library", $"C# 9, DSharpPlus {Version.DSharpPlusVersion}", true)
                 .AddField("Guilds", Context.Client.GetGuildCount(), true)
                 .AddField("Shards", Context.Client.ShardClients.Count, true)
                 .AddField("Channels", Context.Client.GetChannelCount(), true) // TODO grossly oversimplified for now
@@ -430,7 +431,7 @@ namespace Volte.Commands.Modules
                 .AddField("Uptime", Process.GetCurrentProcess().CalculateUptime(), true)
                 .AddField("Successful Commands", CommandsService.SuccessfulCommandCalls, true)
                 .AddField("Failed Commands", CommandsService.FailedCommandCalls, true)
-                .WithThumbnail(Context.Client.CurrentUser.GetAvatarUrl(ImageFormat.Auto, 512)));
+                .WithThumbnail(Context.Client.CurrentUser.AvatarUrl));
 
         [Command("UserInfo", "Ui")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
@@ -440,7 +441,7 @@ namespace Volte.Commands.Modules
             user ??= Context.Member;
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto, 512))
+                .WithThumbnail(user.AvatarUrl)
                 .WithTitle("User Info")
                 .AddField("User ID", user.Id, true)
                 .AddField("Is Bot", user.IsBot, true)
@@ -519,8 +520,9 @@ namespace Volte.Commands.Modules
         }
 
         [Command("Feedback", "Fb")]
-        [Description("Submit feedback directly to the Volte guild.")]
+        [Description("Submit feedback directly to the Volte guild. Won't work on non-public Volte.")]
         [Remarks("feedback {String}")]
+        [EnsurePublicVolte]
         public Task<ActionResult> FeedbackAsync([Remainder]string feedback)
             => Ok($"Feedback sent! Message: ```{feedback}```", _ =>
                 Context.CreateEmbedBuilder($"```{feedback}```")

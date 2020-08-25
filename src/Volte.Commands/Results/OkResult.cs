@@ -2,9 +2,7 @@ using System;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
 using Gommon;
-using Extensions = Gommon.Extensions;
 
 namespace Volte.Commands.Results
 {
