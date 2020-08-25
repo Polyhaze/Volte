@@ -370,7 +370,8 @@ namespace Volte.Commands.Modules
 
                 return Ok($"Set **{action}** as the action performed when a member uses a blacklisted word/phrase.");
             }
-
+        }
+        
             [Group("Starboard", "Sb")]
             [RequireGuildAdmin]
             public sealed class StarboardModule : VolteModule
@@ -415,7 +416,6 @@ namespace Volte.Commands.Modules
                         enabled ? "Enabled the Starboard in this Guild." : "Disabled the Starboard in this Guild.");
                 }
             }
-        }
 
         [Command("Autorole")]
         [Description("Sets the role to be used for Autorole.")]

@@ -66,7 +66,7 @@ namespace Volte.Services
             return args switch
             {
                 MessageReceivedEventArgs messageReceived => HandleMessageAsync(messageReceived),
-                ReadyEventArgs ready => OnShardReadyAsync(_client, ready),
+                ReadyEventArgs ready => OnReadyAsync(_client, ready),
                 _ => Task.CompletedTask
             };
         }
@@ -107,7 +107,7 @@ namespace Volte.Services
             }
         }
 
-        public async Task OnShardReadyAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
+        public async Task OnReadyAsync(DiscordShardedClient shardedClient, ReadyEventArgs args)
         {
             var shard = args.Client;
             var guilds = shard.Guilds.Count;

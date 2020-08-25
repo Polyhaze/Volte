@@ -38,8 +38,11 @@ namespace Volte.Commands.Modules
                 Date = DateTimeOffset.Now
             });
             db.UpdateData(data);
-            var embed = new DiscordEmbedBuilder().WithColor(member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor)).WithAuthor(issuer)
-                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for **{reason}**.").Build();
+            var embed = new DiscordEmbedBuilder()
+                .WithColor(member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor))
+                .WithAuthor(issuer)
+                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for **{reason}**.")
+                .Build();
 
             if (!await member.TrySendMessageAsync(
                 embed: embed))

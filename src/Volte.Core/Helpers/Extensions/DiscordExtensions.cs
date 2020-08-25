@@ -195,7 +195,7 @@ namespace Gommon
                 if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(args);
             };
 
-            client.Ready += async args => await evt.OnShardReadyAsync(client, args);
+            client.Ready += async args => await evt.OnReadyAsync(client, args);
             client.MessageCreated += async args =>
             {
                 if (args.Message.ShouldHandle())

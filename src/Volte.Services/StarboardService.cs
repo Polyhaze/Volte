@@ -21,7 +21,7 @@ namespace Volte.Services
         // Ensures starboard message creations don't happen twice, and edits are atomic.
         private readonly AsyncDuplicateLock<ulong> _messageWriteLock;
 
-        private static readonly DiscordEmoji StarEmoji = DiscordEmoji.FromUnicode(EmojiHelper.Star);
+        private readonly DiscordEmoji _starEmoji = DiscordEmoji.FromUnicode(EmojiHelper.Star);
 
         public StarboardService(DatabaseService databaseService, DiscordShardedClient discordShardedClient,
             AsyncDuplicateLock<ulong> messageWriteLock)
@@ -75,13 +75,13 @@ namespace Volte.Services
                     // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
                     if (starboard.DeleteInvalidStars)
                     {
-                        await args.Message.DeleteReactionAsync(StarEmoji, args.User, "Star reaction is invalid: User has already starred!");
+                        await args.Message.DeleteReactionAsync(_starEmoji, args.User, "Star reaction is invalid: User has already starred!");
                     }
                 }
             }
             else
             {
-                if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == StarEmoji)?.Count >= starboard.StarsRequiredToPost)
+                if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == _starEmoji)?.Count >= starboard.StarsRequiredToPost)
                 {
                     // Create new star message!
                     using (await _messageWriteLock.LockAsync(messageId))
@@ -145,8 +145,15 @@ namespace Volte.Services
         {
             
         }
-
-        // Calls to this method should be synchronized to _messageWriteLock beforehand!
+        
+        /// <summary>
+        ///     Updates or posts a message to the starboard in a guild.
+        ///     Calls to this method should be synchronized to _messageWriteLock beforehand!
+        /// </summary>
+        /// <param name="starboard">The guild's starboard configuration</param>
+        /// <param name="message">The message to star</param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, DiscordMessage message, StarboardEntry entry)
         {
             var starboardChannel = message.Channel.Guild.GetChannel(starboard.StarboardChannel);
@@ -211,8 +218,8 @@ namespace Volte.Services
                 .WithAuthor(message.Author)
                 .AddField("Original Message", message.JumpLink);
 
-            var result = await starboardChannel.SendMessageAsync($"{EmojiHelper.Star} {starCount}", embed: e.Build());
-            await result.CreateReactionAsync(StarEmoji);
+            var result = await starboardChannel.SendMessageAsync($"{_starEmoji} {starCount}", embed: e.Build());
+            await result.CreateReactionAsync(_starEmoji);
             return result;
         }
     }
