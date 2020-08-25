@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.TypeParsers
 {
@@ -18,7 +19,7 @@ namespace Volte.Commands.TypeParsers
                 .GetProperty("UnicodeEmojis", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
         
-        private static readonly Regex EmojiRegex = new Regex(@"^<a?:\w+:(?<id>\d+)>$", RegexOptions.Compiled);
+        private static readonly Regex EmojiRegex = new Regex(@"^<(?<isAnimated>a)?:(?<name>\w+):(?<id>\d+)>$", RegexOptions.Compiled);
         
         public override ValueTask<TypeParserResult<DiscordEmoji>> ParseAsync(
             Parameter param,
@@ -41,7 +42,15 @@ namespace Volte.Commands.TypeParsers
                 if (match.Success)
                 {
                     var id = ulong.Parse(match.Groups["id"].Value);
-
+                    var name = match.Groups["name"].Value;
+                    var isAnimated = match.Groups["isAnimated"].Success;
+                    
+                    if (context.AsVolteContext().Guild.Emojis.TryGetValue(id, out var emojiInGuild))
+                    {
+                        return TypeParserResult<DiscordEmoji>.Successful(emojiInGuild);
+                    }
+                    
+                    /* Optional: Find full emoji instance. We could also keep a ConditionalWeakTable mapping of all IDs to emoji instances.
                     foreach (var emojis in shards
                         .SelectMany(e => e.Value.Guilds)
                         .Select(e => e.Value.Emojis))
@@ -49,6 +58,16 @@ namespace Volte.Commands.TypeParsers
                         if (emojis.TryGetValue(id, out var emoji))
                             return TypeParserResult<DiscordEmoji>.Successful(emoji);
                     }
+                    */
+                    
+                    return TypeParserResult<DiscordEmoji>.Successful(new DiscordReflectionHelper.DiscordEmojiBuilder()
+                        .WithId(id)
+                        .WithRequiresColons(true) // Probably not correct, actually.
+                        .WithIsManaged(false)
+                        .WithIsAnimated(isAnimated)
+                        .WithName(name)
+                        .Build()
+                    );
                 }
             }
 
@@ -56,6 +75,13 @@ namespace Volte.Commands.TypeParsers
             if (value[0] == ':' && value[^1] == ':')
             {
                 var nameSanitized = value.Substring(1, value.Length - 2);
+                
+                foreach (var (_, emoji) in context.AsVolteContext().Guild.Emojis)
+                {
+                    if (emoji.Name == nameSanitized)
+                        return TypeParserResult<DiscordEmoji>.Successful(emoji);
+                }
+
                 foreach (var (_, emoji) in shards
                     .SelectMany(e => e.Value.Guilds)
                     .SelectMany(e => e.Value.Emojis))
