@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -42,6 +43,7 @@ namespace Gommon
             await ModerationModule.WarnAsync(ctx.Member, ctx.GuildData, member, ctx.ServiceProvider.GetRequiredService<DatabaseService>(), ctx.ServiceProvider.GetRequiredService<LoggingService>(), reason);
         }
 
+        [NotNull]
         public static GuildUserData GetUserData(this GuildData data, ulong id)
         {
             GuildUserData Create()

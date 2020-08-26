@@ -1,6 +1,7 @@
 using System;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
+using JetBrains.Annotations;
 
 namespace Volte.Core.Models
 {
@@ -9,6 +10,7 @@ namespace Volte.Core.Models
         public LogLevel Severity { get; private set; }
         public LogSource Source { get; private set; }
         public string Message { get; private set; }
+        [CanBeNull]
         public Exception Exception { get; private set; }
 
         public static LogMessage FromDiscordLogMessage(DebugLogMessageEventArgs message)
@@ -17,19 +19,18 @@ namespace Volte.Core.Models
                 Message = message.Message,
                 Severity = message.Level,
                 Exception = message.Exception,
-                Source = message.Application switch
+                Source = message.Application.ToLower() switch
                 {
-                    "REST" => LogSource.Rest,
-                    "REST API" => LogSource.Rest,
-                    "RESET" => LogSource.Rest,
-                    "Discord" => LogSource.Discord,
-                    "Gateway" => LogSource.Gateway,
-                    "WebSocket:Dispatch" => LogSource.WebSocketDispatch,
-                    "WebSocket" => LogSource.WebSocket,
-                    "DSharpPlus" => LogSource.DSharpPlus,
-                    "Interactivity" => LogSource.Interactivity,
-                    "Autoshard" => LogSource.AutoShard,
-                    
+                    "rest" => LogSource.Rest,
+                    "rest api" => LogSource.Rest,
+                    "reset" => LogSource.Rest,
+                    "discord" => LogSource.Discord,
+                    "gateway" => LogSource.Gateway,
+                    "websocket:dispatch" => LogSource.WebSocketDispatch,
+                    "websocket" => LogSource.WebSocket,
+                    "dsharpplus" => LogSource.DSharpPlus,
+                    "interactivity" => LogSource.Interactivity,
+                    "autoshard" => LogSource.AutoShard,
                     _ => LogSource.Unknown
                 }
             };

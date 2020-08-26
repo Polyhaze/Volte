@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Gommon;
+using JetBrains.Annotations;
 using Volte.Core.Helpers;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -45,7 +46,7 @@ namespace Volte.Core.Models.Misc
 
         public static PollInfo FromValid(bool isValid)
             => new PollInfo {IsValid = isValid};
-
+        
         public Dictionary<string, string> Fields { get; }
         public bool IsValid { get; set; }
         public string Footer { get; } = "Click one of the numbers above to vote. Note: you can vote for more than one.";
@@ -63,6 +64,8 @@ namespace Volte.Core.Models.Misc
                 if (name.IsNullOrEmpty() || value.IsNullOrEmpty()) continue;
                 Fields.Add(name, value);
             }
+
+            IsValid = true;
 
             return this;
         }

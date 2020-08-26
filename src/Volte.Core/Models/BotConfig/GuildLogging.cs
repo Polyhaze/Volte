@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
+using JetBrains.Annotations;
 
 namespace Volte.Core.Models.BotConfig
 {
@@ -21,7 +22,7 @@ namespace Volte.Core.Models.BotConfig
         public ulong ChannelId { get; set; }
 
 
-        public bool EnsureValidConfiguration(DiscordShardedClient client, out DiscordChannel channel)
+        public bool EnsureValidConfiguration([NotNull] DiscordShardedClient client, [CanBeNull] out DiscordChannel channel)
         {
             if (!Enabled)
             {

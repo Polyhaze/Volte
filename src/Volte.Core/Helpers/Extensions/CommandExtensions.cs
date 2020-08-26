@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Qmmands;
+using Qommon.Collections;
 using Volte.Commands;
 using Volte.Commands.Checks;
 using Volte.Core;
@@ -27,9 +29,10 @@ namespace Gommon
         private static string AsPrettyString(this Command c)
             => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
 
+        [NotNull]
         public static VolteContext AsVolteContext(this CommandContext ctx) =>
             ctx.Cast<VolteContext>() ?? throw new ArgumentException($"Cast to {nameof(VolteContext)} from {ctx.GetType().AsPrettyString()} unsuccessful. Please make sure the {nameof(CommandContext)} you passed is actually a {nameof(VolteContext)}.");
-
+        
         public static bool IsMod(this Command command)
         {
             if (command is null) return false;
@@ -66,7 +69,7 @@ namespace Gommon
             return module.Attributes.Any(x => x is RequireBotOwnerAttribute);
         }
 
-        internal static List<Type> AddTypeParsersAsync(this CommandService service)
+        internal static ReadOnlyList<Type> AddTypeParsersAsync(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;
             var meth = typeof(CommandService).GetMethod("AddTypeParser");
@@ -84,7 +87,7 @@ namespace Gommon
                 loadedTypes.Add(parserType);
             });
 
-            return loadedTypes;
+            return new ReadOnlyList<Type>(loadedTypes);
         }
 
         public static Command GetCommand(this CommandService service, string name)

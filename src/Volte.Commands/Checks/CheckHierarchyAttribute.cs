@@ -12,9 +12,8 @@ namespace Volte.Commands.Checks
         public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
         {
             var u = argument.Cast<DiscordMember>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(DiscordMember)}.");
-            var ctx = context.AsVolteContext();
 
-            return ctx.Member.Hierarchy >= u.Hierarchy
+            return context.AsVolteContext().Member.Hierarchy >= u.Hierarchy
                 ? CheckResult.Successful
                 : CheckResult.Unsuccessful("Cannot ban someone in a higher, or equal, hierarchy position than yourself.");
         }

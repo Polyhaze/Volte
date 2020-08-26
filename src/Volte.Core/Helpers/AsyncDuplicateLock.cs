@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Volte.Core.Helpers
 {
@@ -10,7 +11,7 @@ namespace Volte.Core.Helpers
     {
         private sealed class RefCounted<TR>
         {
-            public RefCounted(TR value)
+            public RefCounted([NotNull] TR value)
             {
                 RefCount = 1;
                 Value = value;
@@ -23,6 +24,7 @@ namespace Volte.Core.Helpers
         private static readonly Dictionary<T, RefCounted<SemaphoreSlim>> SemaphoreSlims
             = new Dictionary<T, RefCounted<SemaphoreSlim>>();
 
+        [NotNull]
         private static SemaphoreSlim GetOrCreate(T key)
         {
             RefCounted<SemaphoreSlim> item;

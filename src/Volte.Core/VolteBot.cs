@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
 using Gommon;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Helpers;
@@ -85,7 +86,7 @@ namespace Volte.Core
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        public static async Task ShutdownAsync(DiscordShardedClient client, IServiceProvider provider)
+        public static async Task ShutdownAsync([NotNull] DiscordShardedClient client, [NotNull] IServiceProvider provider)
         {
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {

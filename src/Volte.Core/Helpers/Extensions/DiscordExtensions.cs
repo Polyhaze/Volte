@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Xml;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
@@ -14,6 +12,7 @@ using Volte.Core;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
+using Math = System.Math;
 
 namespace Gommon
 {

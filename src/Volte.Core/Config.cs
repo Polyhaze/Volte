@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Gommon;
+using JetBrains.Annotations;
 using Volte.Core.Models.BotConfig;
 using Volte.Services;
 
@@ -91,7 +92,7 @@ namespace Volte.Core
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }
 
-        public static bool Reload(IServiceProvider provider)
+        public static bool Reload([NotNull] IServiceProvider provider)
         {
             var logger = provider.Get<LoggingService>();
             try

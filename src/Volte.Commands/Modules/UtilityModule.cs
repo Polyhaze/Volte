@@ -195,7 +195,7 @@ namespace Volte.Commands.Modules
             => Ok(async () =>
             {
                 await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
-                await stream.SendFileToAsync(Context.Channel, "role.png", false, new DiscordEmbedBuilder()
+                await stream.SendFileToAsync("role.png", Context.Channel, embed: new DiscordEmbedBuilder()
                     .WithColor(color)
                     .WithTitle($"Color {color}")
                     .WithDescription(new StringBuilder()
@@ -538,7 +538,7 @@ namespace Volte.Commands.Modules
             if (!role.HasColor()) return BadRequest("Role does not have a color.");
             
             await using var stream = new Rgba32(role.Color.R, role.Color.G, role.Color.B).CreateColorImage();
-            await stream.SendFileToAsync(Context.Channel, "role.png", false, new DiscordEmbedBuilder()
+            await stream.SendFileToAsync("color.png", Context.Channel, embed: new DiscordEmbedBuilder()
                 .WithColor(role.Color)
                 .WithTitle("Role Color")
                 .WithDescription(new StringBuilder()
