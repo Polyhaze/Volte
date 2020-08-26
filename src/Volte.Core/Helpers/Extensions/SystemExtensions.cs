@@ -71,7 +71,7 @@ namespace Gommon
                     "UInt64" => "ulong",
                     "Char" => "char",
                     "String" => "string",
-                    _ => type.Name
+                    _ => t.Name
                 };
 
             var types = type.GenericTypeArguments;
