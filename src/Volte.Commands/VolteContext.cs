@@ -28,7 +28,7 @@ namespace Volte.Commands
             Message = msg;
             GuildData = db.GetData(Guild);
             Now = DateTimeOffset.UtcNow;
-            Interactivity = Client.GetInteractivity()[Extensions.GetShardId(Guild.Id, Client.ShardClients.Count)];
+            Interactivity = Client.GetInteractivity()[Client.GetShardId(Guild.Id)];
         }
         
         public readonly DiscordShardedClient Client;

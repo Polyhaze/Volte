@@ -161,14 +161,14 @@ namespace Gommon
         /// <param name="guildId">The guild id the shard is on.</param>
         /// <param name="shardCount">The total amount of shards.</param>
         /// <returns>The shard id.</returns>
-        public static int GetShardId(ulong guildId, int shardCount)
-            => (int)(guildId >> 22) % shardCount;
+        public static int GetShardId(this DiscordShardedClient client, ulong guildId)
+            => (int)(guildId >> 22) % client.ShardClients.Count;
 
         public static DiscordClient GetShardFor(this DiscordShardedClient client, DiscordGuild guild)
-            => client.ShardClients[GetShardId(guild.Id, client.ShardClients.Count)];
+            => client.ShardClients[client.GetShardId(guild.Id)];
 
         public static DiscordGuild GetGuild(this DiscordShardedClient client, ulong guildId)
-            => client.ShardClients[GetShardId(guildId, client.ShardClients.Count)].Guilds[guildId]; // TODO test
+            => client.ShardClients[client.GetShardId(guildId)].Guilds[guildId]; // TODO test
 
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {

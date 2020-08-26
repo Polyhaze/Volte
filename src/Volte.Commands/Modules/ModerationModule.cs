@@ -314,6 +314,32 @@ namespace Volte.Commands.Modules
             }
         }
 
+        [Command("ShadowBan", "Shdwb")]
+        [Description("Shadowbans the mentioned user, completely skipping sending a message to the modlog.")]
+        [Remarks("shadowban {Member} [Reason]")]
+        [RequireBotGuildPermission(Permissions.BanMembers)]
+        public async Task<ActionResult> ShadowBanAsync([CheckHierarchy] DiscordMember member, 
+            [Remainder] string reason = "Shadowbanned by a Moderator.")
+        {
+            if (!await member.TrySendMessageAsync(
+                embed: Context.CreateEmbed($"You've been shadowbanned from **{Context.Guild.Name}** for **{reason}**.")))
+            {
+                Logger.Warn(LogSource.Volte,
+                    $"encountered a 403 when trying to message {member}!");
+            }
+            
+            await member.BanAsync(7, reason);
+            var ud = Context.GuildData.GetUserData(member.Id);
+            ud.Actions.Add(new ModAction
+            {
+                Moderator = Context.Member.Id,
+                Reason = reason,
+                Time = Context.Now,
+                Type = ModActionType.Ban
+            });
+            return Ok($"Successfully shadowbanned **{member.Mention}** from this guild.");
+        }
+
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
         [Remarks("ban {Member} [String]")]
@@ -329,7 +355,7 @@ namespace Volte.Commands.Modules
             }
 
             await user.BanAsync(7, reason);
-            return Ok($"Successfully banned **{user}** from this guild.", _ =>
+            return Ok($"Successfully banned **{user.Mention}** from this guild.", _ =>
                 ModLogService.DoAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Ban)

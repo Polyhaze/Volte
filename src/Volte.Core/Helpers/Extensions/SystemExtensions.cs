@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Humanizer;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Gommon
 {
@@ -17,10 +19,10 @@ namespace Gommon
     public static partial class Extensions
     {
         private const int MemoryTierSize = 1024;
-        
+
         public static string ReplaceIgnoreCase(this string str, string toReplace, object replacement)
             => str.Replace(toReplace, replacement.ToString(), StringComparison.OrdinalIgnoreCase);
-        
+
         public static string CalculateUptime(this Process process)
             => (DateTime.Now - process.StartTime).Humanize(3);
 
@@ -38,7 +40,7 @@ namespace Gommon
             };
         }
 
-        public static Task<DiscordMessage> SendFileToAsync(this MemoryStream stream, 
+        public static Task<DiscordMessage> SendFileToAsync(this MemoryStream stream,
             DiscordChannel channel, string text = null, bool isTts = false, DiscordEmbed embed = null,
             IEnumerable<IMention> allowedMentions = null)
         {
@@ -55,14 +57,33 @@ namespace Gommon
 
         public static string AsPrettyString(this Type type)
         {
-            var t = type.GenericTypeArguments;
-            var vs = type.Name.Replace($"`{t.Length}", ""); //thanks .NET for putting an annoying ass backtick and number at the end of type names.
+            string FormatTypeName(Type t)
+                => t.Name switch
+                {
+                    "Boolean" => "bool",
+                    "Byte" => "byte",
+                    "SByte" => "sbyte",
+                    "Int16" => "short",
+                    "UInt16" => "ushort",
+                    "Int32" => "int",
+                    "UInt32" => "uint",
+                    "Int64" => "long",
+                    "UInt64" => "ulong",
+                    "Char" => "char",
+                    "String" => "string",
+                    _ => type.Name
+                };
 
-            if (!t.IsEmpty()) vs += $"<{t.Select(a => a.Name).Join(", ")}>";
+            var types = type.GenericTypeArguments;
+
+            //thanks .NET for putting an annoying ass backtick and number at the end of type names.
+            var vs = FormatTypeName(type).Replace($"`{types.Length}", "");
+
+            if (!types.IsEmpty()) vs += $"<{types.Select(FormatTypeName).Join(", ")}>";
 
             return vs;
         }
-        
+
         public static IEnumerable<T> GetFlags<T>(this T input) where T : Enum
         {
             return Enumerable.Cast<T>(Enum.GetValues(input.GetType())).Where(e => input.HasFlag(e));
@@ -83,7 +104,7 @@ namespace Gommon
     {
         Terabytes,
         Gigabytes,
-        Megabytes, 
+        Megabytes,
         Kilobytes,
         Bytes
     }

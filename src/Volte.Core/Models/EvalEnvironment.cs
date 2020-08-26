@@ -27,7 +27,7 @@ namespace Volte.Core.Models
 
         public static EvalEnvironment From(VolteContext ctx)
         {
-            var shardId = Extensions.GetShardId(ctx.Guild.Id, ctx.Client.ShardClients.Count);
+            var shardId = ctx.Client.GetShardId(ctx.Guild.Id);
             var e = new EvalEnvironment {
                 Context = ctx,
                 Client = ctx.Client.ShardClients[shardId],
@@ -49,9 +49,9 @@ namespace Volte.Core.Models
         public DatabaseService Database { get; set; }
         public EvalEnvironment Environment { get; set; }
 
-        public DiscordMember User(ulong id) => Context.Guild.Members[id];
-        public DiscordMember User(string username) => Context.Guild.Members.Select(x => x.Value).FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
-        public DiscordChannel TextChannel(ulong id) => Context.Client.GetGuild(Context.Guild.Id).GetChannel(id);
+        public DiscordMember Membe(ulong id) => Context.Guild.Members[id];
+        public DiscordMember Member(string username) => Context.Guild.Members.Select(x => x.Value).FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
+        public DiscordChannel TextChannel(ulong id) => Context.Client.FindFirstChannel(id);
         public Task<DiscordMessage> MessageAsync(ulong id) => Context.Channel.GetMessageAsync(id);
 
         public DiscordGuild Guild(ulong id) => Context.Client.GetGuild(id);
