@@ -16,7 +16,8 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-        public static IServiceCollection AddAllServices(this IServiceCollection coll) =>
+        public static IServiceCollection AddAllServices(this IServiceCollection coll)
+        {
             //add all other services; formerly in the VolteBot class
             coll.AddVolteServices()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
@@ -29,14 +30,13 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordConfiguration
                 {
-                    LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
-                        ? LogLevel.Debug
-                        : LogLevel.Info,
                     HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,
                     TokenType = TokenType.Bot,
                     Token = Config.Token
                 }));
+            return coll;
+        }
 
         public static IServiceCollection AddVolteServices(this IServiceCollection coll)
         {

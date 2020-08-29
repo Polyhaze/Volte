@@ -5,9 +5,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
@@ -52,7 +54,7 @@ namespace Volte.Services
                 GC.WaitForPendingFinalizers();
             }
         }
-
+        
         private async Task ExecuteScriptAsync(VolteModule module, string code)
         {
             var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
@@ -86,7 +88,7 @@ namespace Volte.Services
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                         .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                         .WithFooter("Click the X below to delete this message.")
-                        .WithDescription($"```ini\n{res}```"));
+                        .WithDescription(Formatter.BlockCode(res, "ini")));
                 }
             }
             catch (Exception ex)

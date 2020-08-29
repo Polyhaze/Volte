@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DSharpPlus.Entities;
 using Gommon;
 using JetBrains.Annotations;
+using Qommon.Collections;
 
 namespace Volte.Core.Helpers
 {
@@ -31,16 +32,16 @@ namespace Volte.Core.Helpers
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
 
         [NotNull]
-        public static IReadOnlyList<DiscordEmoji> GetPollEmojisList()
+        public static ReadOnlyList<DiscordEmoji> GetPollEmojisList()
         {
-            return new[]
+            return new ReadOnlyList<DiscordEmoji>(new[]
             {
                 One.ToEmoji(),
                 Two.ToEmoji(),
                 Three.ToEmoji(),
                 Four.ToEmoji(),
                 Five.ToEmoji()
-            };
+            });
         }
 
         public static (DiscordEmoji X, DiscordEmoji BallotBoxWithCheck) GetCommandEmojis() 

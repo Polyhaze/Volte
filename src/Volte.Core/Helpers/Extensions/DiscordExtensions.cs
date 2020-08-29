@@ -9,6 +9,7 @@ using DSharpPlus.Exceptions;
 using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
+using Volte.Core.Helpers;
 using Volte.Core.Models;
 using Volte.Core.Models.EventArgs;
 using Volte.Services;
@@ -181,7 +182,6 @@ namespace Gommon
                 logger.Error(LogSource.Discord, args.Exception.Message, args.Exception.InnerException);
                 return Task.CompletedTask;
             };
-            client.DebugLogger.LogMessageReceived += async (_, args) => await logger.DoAsync(new LogEventArgs(args));
             client.GuildCreated += async args => await guild.DoAsync(args);
             client.GuildDeleted += async args => await guild.DoAsync(args);
             client.GuildMemberAdded += async args =>
@@ -278,14 +278,12 @@ namespace Gommon
 
             var guild = member.Guild;
 
-            if (guild.Owner == member)
+            if (DiscordReflectionHelper.GetOwnerId(guild) == member.Id)
                 return Permissions.All;
-
-            Permissions perms;
 
             // assign @everyone permissions
             var everyoneRole = guild.EveryoneRole;
-            perms = everyoneRole.Permissions;
+            var perms = everyoneRole.Permissions;
 
             // roles that member is in
             var mbRoles = member.Roles.Where(xr => xr.Id != everyoneRole.Id);
@@ -293,7 +291,7 @@ namespace Gommon
             // assign permissions from member's roles (in order)
             perms |= mbRoles.Aggregate(Permissions.None, (c, role) => c | role.Permissions);
 
-            // Adminstrator grants all permissions and cannot be overridden
+            // Administrator grants all permissions and cannot be overridden
             if ((perms & Permissions.Administrator) == Permissions.Administrator)
                 return Permissions.All;
 

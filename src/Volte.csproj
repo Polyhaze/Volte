@@ -25,8 +25,8 @@
             <Pack>True</Pack>
         </None>
         <PackageReference Include="Colorful.Console" Version="1.2.11" />
-        <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00712" />
-        <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00712" />
+        <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00719" />
+        <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00719" />
         <PackageReference Include="Gommon" Version="1.2.2" />
         <PackageReference Include="Humanizer.Core" Version="2.8.26" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />

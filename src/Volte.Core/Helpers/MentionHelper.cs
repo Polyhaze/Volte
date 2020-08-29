@@ -9,31 +9,29 @@ namespace Volte.Core.Helpers
     /// <remarks>Code for this class was taken from Discord.Net</remarks>
     public static class MentionHelper
     {
-        //If the system can't be positive a user doesn't have a nickname, assume useNickname = true (source: Jake)
-        internal static string MentionUser(string id, bool useNickname = true) => useNickname ? $"<@!{id}>" : $"<@{id}>";
         /// <summary>
         ///     Returns a mention string based on the user ID.
         /// </summary>
         /// <returns>
         ///     A user mention string (e.g. &lt;@80351110224678912&gt;).
         /// </returns>
-        public static string MentionUser(ulong id) => MentionUser(id.ToString());
-        internal static string MentionChannel(string id) => $"<#{id}>";
+        public static string MentionUser(ulong id) => Mention(id, MentionType.User);
+
         /// <summary>
         ///     Returns a mention string based on the channel ID.
         /// </summary>
         /// <returns>
         ///     A channel mention string (e.g. &lt;#103735883630395392&gt;).
         /// </returns>
-        public static string MentionChannel(ulong id) => MentionChannel(id.ToString());
-        internal static string MentionRole(string id) => $"<@&{id}>";
+        public static string MentionChannel(ulong id) => Mention(id, MentionType.Channel);
+
         /// <summary>
         ///     Returns a mention string based on the role ID.
         /// </summary>
         /// <returns>
         ///     A role mention string (e.g. &lt;@&amp;165511591545143296&gt;).
         /// </returns>
-        public static string MentionRole(ulong id) => MentionRole(id.ToString());
+        public static string MentionRole(ulong id) => Mention(id, MentionType.Role);
 
         /// <summary>
         ///     Parses a provided user mention string.
@@ -114,6 +112,24 @@ namespace Volte.Core.Helpers
             }
             roleId = 0;
             return false;
+        }
+
+        private static string Mention(ulong id, MentionType type)
+        {
+            return type switch
+            {
+                MentionType.User => $"<@{id}>",
+                MentionType.Role => $"<@&{id}>",
+                MentionType.Channel => $"<#{id}>",
+                _ => $"<@{id}>"
+            };
+        }
+        
+        private enum MentionType
+        {
+            User,
+            Role,
+            Channel
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Volte.Core
             _client = _provider.Get<DiscordShardedClient>();
             _cts = _provider.Get<CancellationTokenSource>();
             var logger = _provider.Get<LoggingService>();
-
+            
             await _client.StartAsync();
 
             Initialize(_provider);
