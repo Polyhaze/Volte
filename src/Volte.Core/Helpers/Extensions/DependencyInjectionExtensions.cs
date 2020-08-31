@@ -18,11 +18,13 @@ namespace Gommon
     {
         public static IServiceCollection AddAllServices(this IServiceCollection coll)
         {
+            var logger = new LoggingService();
             //add all other services; formerly in the VolteBot class
             coll.AddVolteServices()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton<HttpClient>()
                 .AddSingleton<CancellationTokenSource>()
+                .AddSingleton(logger)
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoresExtraArguments = true,
@@ -30,6 +32,7 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordConfiguration
                 {
+                    LoggerFactory = logger,
                     HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,
                     TokenType = TokenType.Bot,

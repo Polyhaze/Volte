@@ -17,18 +17,14 @@ using Console = Colorful.Console;
 
 namespace Volte.Services
 {
-    public sealed class LoggingService : VolteService, ILogger<BaseDiscordClient>, ILoggerFactory
+    public sealed class LoggingService : ILogger<BaseDiscordClient>, ILoggerFactory
     {
-        private readonly DiscordShardedClient _client;
-        private readonly HttpClient _http;
-        private readonly object _lock = new object();
+        private readonly object _lock;
         private const string LogFile = "data/Volte.log";
 
-        public LoggingService(DiscordShardedClient discordShardedClient,
-            HttpClient httpClient)
+        public LoggingService()
         {
-            _client = discordShardedClient;
-            _http = httpClient;
+            _lock = new object();
         }
         
 
@@ -109,10 +105,11 @@ namespace Volte.Services
         ///     Prints a <see cref="LogLevel.Error"/> message to the console from the specified <paramref name="e"/> exception.
         /// </summary>
         /// <param name="e">Exception to print.</param>
-        public void Exception(Exception e)
-            => Execute(LogLevel.Critical, LogSource.Volte, string.Empty, e);
-
-        private void Execute(LogLevel s, LogSource src, string message, Exception e)
+        public void Exception(Exception e, IServiceProvider provider = null)
+            => Execute(LogLevel.Critical, LogSource.Volte, string.Empty, e, provider);
+        
+        
+        private void Execute(LogLevel s, LogSource src, string message, Exception e, IServiceProvider provider = null)
         {
             var content = new StringBuilder();
 
@@ -147,7 +144,11 @@ namespace Volte.Services
                 Console.WriteLine(); // End the line before LogExceptionInDiscord as it can log to console.
                 content.AppendLine();
 
-                LogExceptionInDiscord(e);
+                if (provider is not null)
+                {
+                    LogExceptionInDiscord(e, provider);
+                }
+                
             }
             else
             {
@@ -193,14 +194,18 @@ namespace Volte.Services
                 LogLevel.Error => (Color.DarkRed, "ERROR"),
                 LogLevel.Warning => (Color.Yellow, "WARN"),
                 LogLevel.Information => (Color.SpringGreen, "INFO"),
-                LogLevel.Trace => (Color.SandyBrown, "DEBUG"),
+                LogLevel.Trace => (Color.SandyBrown, "TRACE"),
+                LogLevel.Debug => (Color.SandyBrown, "TRACE"),
+                LogLevel.None => (Color.Chocolate, "NONE"),
                 _ => throw new InvalidOperationException($"The specified LogSeverity ({severity}) is invalid.")
             };
 
-        private void LogExceptionInDiscord(Exception e)
+        private void LogExceptionInDiscord(Exception e, IServiceProvider provider)
         {
+            var client = provider.Get<DiscordShardedClient>();
+            var http = provider.Get<HttpClient>();
 
-            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
+            if (!Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
                 Error(LogSource.Volte, "Could not send an exception report to Discord as the GuildLogging configuration is invalid.");
                 return;
@@ -208,7 +213,7 @@ namespace Volte.Services
 
             _ = Task.Run(async () =>
             {
-                var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
+                var response = await http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
                 var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
                 var url = $"https://paste.greemdev.net/{jDocument.RootElement.GetProperty("key").GetString()}.cs";
                 await new DiscordEmbedBuilder()

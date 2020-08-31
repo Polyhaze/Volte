@@ -28,6 +28,7 @@ namespace Volte.Services
 
         private async Task HandlePresenceUpdated(PresenceUpdateEventArgs args)
         {
+            await Task.Yield();
             if (args.User.Id == args.Client.CurrentUser.Id)
             {
                 CachedPresences.Clear();
