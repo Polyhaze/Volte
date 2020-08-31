@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using Gommon;
 using Volte.Commands;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

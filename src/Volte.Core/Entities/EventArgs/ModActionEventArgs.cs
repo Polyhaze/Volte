@@ -2,9 +2,9 @@ using System;
 using DSharpPlus.Entities;
 using Volte.Commands;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
-    public class ModActionEventArgs : System.EventArgs
+    public class ModActionEventArgs : EventArgs
     {
         public DiscordMember Moderator { get; private set; }
         public VolteContext Context { get; private set; }

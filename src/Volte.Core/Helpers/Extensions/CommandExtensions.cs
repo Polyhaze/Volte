@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using JetBrains.Annotations;
 using Qmmands;
 using Qommon.Collections;
@@ -9,6 +10,7 @@ using Volte.Commands;
 using Volte.Commands.Checks;
 using Volte.Core;
 using Volte.Commands.TypeParsers;
+using Volte.Core.Entities.Attributes;
 using Module = Qmmands.Module;
 
 namespace Gommon
@@ -28,6 +30,20 @@ namespace Gommon
 
         private static string AsPrettyString(this Command c)
             => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
+
+        public static string GenerateHelp(this Command c)
+        {
+            var sb = new StringBuilder().Append(c.AsPrettyString()).Append(' ');
+
+            foreach (var arg in c.Parameters)
+            {
+                sb.Append(arg.Attributes.Any(x => x is OptionalArgumentAttribute)
+                    ? $"[{arg.Type.AsPrettyString()}]"
+                    : $"{{{arg.Type.AsPrettyString()}}}");
+            }
+
+            return sb.ToString();
+        }
 
         [NotNull]
         public static VolteContext AsVolteContext(this CommandContext ctx) =>

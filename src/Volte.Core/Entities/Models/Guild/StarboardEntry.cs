@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using DSharpPlus.Interactivity.Concurrency;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public class StarboardEntry
     {

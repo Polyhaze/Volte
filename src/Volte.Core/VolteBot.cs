@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Helpers;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 using Volte.Services;
 using Console = Colorful.Console;
 

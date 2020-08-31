@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -13,9 +12,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Core;
 using Volte.Core.Helpers;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

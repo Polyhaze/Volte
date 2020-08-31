@@ -1,6 +1,6 @@
 using System;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public class ModAction
     {

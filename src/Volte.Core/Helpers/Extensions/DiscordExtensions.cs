@@ -10,8 +10,7 @@ using DSharpPlus.Interactivity;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Helpers;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 using Volte.Services;
 using Math = System.Math;
 

@@ -5,7 +5,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {

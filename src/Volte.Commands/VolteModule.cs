@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Commands

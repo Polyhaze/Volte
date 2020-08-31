@@ -11,11 +11,10 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core.Models.Guild;
 using Volte.Services;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Core.Models
+namespace Volte.Core.Entities
 {
     public sealed class EvalEnvironment
     {

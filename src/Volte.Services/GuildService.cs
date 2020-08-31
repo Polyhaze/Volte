@@ -7,9 +7,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using Volte.Core;
-using Volte.Core.Models;
 using Gommon;
-using Volte.Core.Helpers;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

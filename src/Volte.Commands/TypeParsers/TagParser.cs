@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.TypeParsers
 {

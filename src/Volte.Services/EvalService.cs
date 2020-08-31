@@ -17,7 +17,7 @@ using Qommon.Collections;
 using Volte.Commands;
 using Volte.Commands.Modules;
 using Volte.Core.Helpers;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

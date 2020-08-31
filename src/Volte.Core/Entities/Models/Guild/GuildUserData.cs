@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public class GuildUserData
     {

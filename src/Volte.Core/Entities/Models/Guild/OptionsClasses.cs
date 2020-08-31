@@ -6,7 +6,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using Volte.Core.Helpers;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class ModerationOptions
     {

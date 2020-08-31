@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using Gommon;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-
+using Volte.Core.Entities;
 namespace Volte.Services
 {
     public sealed class AutoroleService : VolteEventService

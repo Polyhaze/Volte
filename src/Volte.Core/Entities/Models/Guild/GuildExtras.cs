@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class GuildExtras
     {

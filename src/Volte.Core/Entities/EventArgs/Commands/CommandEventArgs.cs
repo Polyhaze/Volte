@@ -3,7 +3,7 @@ using Qmmands;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using Volte.Commands;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     /// <summary>
     ///     The base class for all Command-related Volte EventArgs.

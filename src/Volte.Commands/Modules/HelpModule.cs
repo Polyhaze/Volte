@@ -5,6 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
+using Volte.Core.Entities.Attributes;
 using Volte.Core.Helpers;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 // ReSharper disable HeuristicUnreachableCode
@@ -15,8 +16,8 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Get help for any of Volte's modules or commands.")]
-        [Remarks("help {String}")]
-        public Task<ActionResult> HelpAsync([Remainder] string moduleOrCommand = null)
+        [Remarks("help [String]")]
+        public Task<ActionResult> HelpAsync([Remainder] [OptionalArgument] string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
             {
@@ -61,7 +62,8 @@ namespace Volte.Commands.Modules
                 return None(async () =>
                 {
                     await Context.SendPaginatedMessageAsync(
-                        module.Commands.Where(x => !x.GetType().HasAttribute<HiddenAttribute>()).Select(x => x.FullAliases.First()).GetPages(15),
+                        module.Commands.Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
+                            .Select(x => x.FullAliases[0]).GetPages(15),
                         $"Commands in Module {module.SanitizeName()}");
                 }, false);
             }
@@ -74,7 +76,8 @@ namespace Volte.Commands.Modules
                     "**Module**: {command.Module.SanitizeName()}",
                     result,
                     $"**Description**: {command.Description ?? "No summary provided."}",
-                    $"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet-V4): {command.GetUsage(Context)}"
+                    "[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet-V4): " +
+                    $"{Context.GuildData.Configuration.CommandPrefix}{command.GenerateHelp()}"
                     ).ToString()));
             }
 

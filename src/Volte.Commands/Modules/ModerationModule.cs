@@ -12,9 +12,7 @@ using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Helpers;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

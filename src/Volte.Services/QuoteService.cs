@@ -6,7 +6,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

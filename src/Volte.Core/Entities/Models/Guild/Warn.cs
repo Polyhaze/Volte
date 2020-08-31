@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class Warn
     {

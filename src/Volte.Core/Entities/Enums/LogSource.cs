@@ -1,4 +1,4 @@
-namespace Volte.Core.Models
+namespace Volte.Core.Entities
 {
     public enum LogSource : uint
     {

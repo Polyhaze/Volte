@@ -11,7 +11,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using Microsoft.Extensions.Logging;
 using Volte.Core;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 using Color = System.Drawing.Color;
 using Console = Colorful.Console;
 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 
 namespace Gommon
 {

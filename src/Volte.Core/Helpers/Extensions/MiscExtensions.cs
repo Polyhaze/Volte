@@ -9,7 +9,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Volte.Commands;
 using Volte.Commands.Modules;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Gommon

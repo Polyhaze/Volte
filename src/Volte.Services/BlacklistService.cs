@@ -3,8 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Gommon;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

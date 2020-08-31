@@ -7,13 +7,14 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
+using Volte.Core.Entities.Attributes;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
     [RequireGuildAdmin]
-    public sealed class AdminModule : VolteModule 
+    public sealed class AdminModule : VolteModule
     {
         public WelcomeService WelcomeService { get; set; }
 
@@ -23,7 +24,7 @@ namespace Volte.Commands.Modules
             [Command("Channel", "C")]
             [Description("Sets the channel used for welcoming new users for this guild.")]
             [Remarks("welcome channel {Channel}")]
-            public Task<ActionResult> WelcomeChannelAsync([Remainder]DiscordChannel channel)
+            public Task<ActionResult> WelcomeChannelAsync([Remainder, RequiredArgument] DiscordChannel channel)
             {
                 ModifyData(data =>
                 {
@@ -37,7 +38,7 @@ namespace Volte.Commands.Modules
             [Description(
                 "Sets or shows the welcome message used to welcome new users for this guild.")]
             [Remarks("welcomemessage [String]")]
-            public Task<ActionResult> WelcomeMessageAsync([Remainder]string message = null)
+            public Task<ActionResult> WelcomeMessageAsync([Remainder, OptionalArgument] string message = null)
             {
                 if (message is null)
                 {
@@ -81,7 +82,7 @@ namespace Volte.Commands.Modules
             [Command("Color", "Colour", "Cl")]
             [Description("Sets the color used for welcome embeds for this guild.")]
             [Remarks("welcome color {Color}")]
-            public Task<ActionResult> WelcomeColorAsync([Remainder]DiscordColor color)
+            public Task<ActionResult> WelcomeColorAsync([Remainder, RequiredArgument] DiscordColor color)
             {
                 ModifyData(data =>
                 {
@@ -94,7 +95,7 @@ namespace Volte.Commands.Modules
             [Command("LeavingMessage", "Lmsg")]
             [Description("Sets or shows the leaving message used to say bye for this guild.")]
             [Remarks("welcome leavingmessage [String]")]
-            public Task<ActionResult> LeavingMessageAsync([Remainder]string message = null)
+            public Task<ActionResult> LeavingMessageAsync([Remainder, OptionalArgument] string message = null)
             {
                 if (message is null)
                 {
@@ -139,7 +140,7 @@ namespace Volte.Commands.Modules
             [Command("DmMessage", "Dmm")]
             [Description("Sets the message to be (attempted to) sent to members upon joining.")]
             [Remarks("welcome dmmessage [String]")]
-            public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
+            public Task<ActionResult> WelcomeDmMessageAsync([Remainder, OptionalArgument] string message = null)
             {
                 if (message is null)
                 {
@@ -166,9 +167,8 @@ namespace Volte.Commands.Modules
                         }
                         catch (Exception)
                         {
-                            
+                            // ignored
                         }
-                        
                     });
             }
         }
@@ -176,7 +176,7 @@ namespace Volte.Commands.Modules
         [Command("GuildPrefix", "Gp")]
         [Description("Sets the command prefix for this guild.")]
         [Remarks("guildprefix {String}")]
-        public Task<ActionResult> GuildPrefixAsync([Remainder]string newPrefix)
+        public Task<ActionResult> GuildPrefixAsync([Remainder, RequiredArgument] string newPrefix)
         {
             ModifyData(data =>
             {
@@ -189,7 +189,8 @@ namespace Volte.Commands.Modules
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]
         [Remarks("remrole {Member} {Role}")]
-        public async Task<ActionResult> RemRoleAsync(DiscordMember user, [Remainder] DiscordRole role)
+        public async Task<ActionResult> RemRoleAsync([RequiredArgument] DiscordMember user,
+            [Remainder, RequiredArgument] DiscordRole role)
         {
             if (role.Position > Context.Guild.CurrentMember.Hierarchy)
             {
@@ -201,9 +202,10 @@ namespace Volte.Commands.Modules
         }
 
         [Command("QuoteLinkReply", "QuoteLink", "QuoteReply", "JumpUrlReply", "Qrl", "Qlr")]
-        [Description("Enables or disables the Quote link parsing and sending into a channel that a 'Quote URL' is posted to for this guild.")]
+        [Description(
+            "Enables or disables the Quote link parsing and sending into a channel that a 'Quote URL' is posted to for this guild.")]
         [Remarks("quotelinkreply {Boolean}")]
-        public Task<ActionResult> QuoteLinkReplyCommandAsync(bool enabled)
+        public Task<ActionResult> QuoteLinkReplyCommandAsync([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
@@ -216,7 +218,7 @@ namespace Volte.Commands.Modules
         [Command("PingChecks")]
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
         [Remarks("pingchecks {Boolean}")]
-        public Task<ActionResult> PingChecksAsync(bool enabled)
+        public Task<ActionResult> PingChecksAsync([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
@@ -229,7 +231,7 @@ namespace Volte.Commands.Modules
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         [Remarks("modrole {Role}")]
-        public Task<ActionResult> ModRoleAsync([Remainder]DiscordRole role)
+        public Task<ActionResult> ModRoleAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             ModifyData(data =>
             {
@@ -242,7 +244,7 @@ namespace Volte.Commands.Modules
         [Command("ModLog")]
         [Description("Sets the channel to be used for mod log.")]
         [Remarks("modlog {Channel}")]
-        public Task<ActionResult> ModLogAsync(DiscordChannel c)
+        public Task<ActionResult> ModLogAsync([RequiredArgument] DiscordChannel c)
         {
             ModifyData(data =>
             {
@@ -253,13 +255,14 @@ namespace Volte.Commands.Modules
         }
 
         [Command("TagShow", "TagSh")]
-        [Description("Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]
-        [Remarks("tagshow {Boolean}")]   
-        public Task<ActionResult> ShowRequesterAndEmbedTagsAsync(bool enabled)
+        [Description(
+            "Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]
+        [Remarks("tagshow {Boolean}")]
+        public Task<ActionResult> ShowRequesterAndEmbedTagsAsync([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
-                data.Configuration.EmbedTagsAndShowAuthor = enabled; 
+                data.Configuration.EmbedTagsAndShowAuthor = enabled;
                 return data;
             });
             return Ok(enabled
@@ -270,7 +273,7 @@ namespace Volte.Commands.Modules
         [Command("DeleteMessageOnCommand", "Dmoc")]
         [Description("Enable/Disable deleting the command message upon execution of a command for this guild.")]
         [Remarks("deletemessageoncommand {Boolean}")]
-        public Task<ActionResult> DeleteMessageOnCommandAsync(bool enabled)
+        public Task<ActionResult> DeleteMessageOnCommandAsync([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
@@ -286,7 +289,7 @@ namespace Volte.Commands.Modules
         [Description(
             "Enable/Disable deleting the command message upon usage of the tag retrieval command for this guild.")]
         [Remarks("deletemessageontagcommand {Boolean}")]
-        public Task<ActionResult> DeleteMessageOnTagCommand(bool enabled)
+        public Task<ActionResult> DeleteMessageOnTagCommand([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
@@ -305,7 +308,7 @@ namespace Volte.Commands.Modules
             [Command("Add")]
             [Description("Adds a given word/phrase to the blacklist for this guild.")]
             [Remarks("blacklist add {String}")]
-            public Task<ActionResult> BlacklistAddAsync([Remainder]string phrase)
+            public Task<ActionResult> BlacklistAddAsync([Remainder, RequiredArgument] string phrase)
             {
                 if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 {
@@ -323,7 +326,7 @@ namespace Volte.Commands.Modules
             [Command("Remove", "Rem")]
             [Description("Removes a given word/phrase from the blacklist for this guild.")]
             [Remarks("blacklist remove {String}")]
-            public Task<ActionResult> BlacklistRemoveAsync([Remainder]string phrase)
+            public Task<ActionResult> BlacklistRemoveAsync([Remainder, RequiredArgument] string phrase)
             {
                 if (Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 {
@@ -357,7 +360,7 @@ namespace Volte.Commands.Modules
             [Description(
                 "Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
             [Remarks("blacklist action {nothing/warn/kick/ban}")]
-            public Task<ActionResult> BlacklistActionAsync(string input)
+            public Task<ActionResult> BlacklistActionAsync([RequiredArgument] string input)
             {
                 var action = BlacklistActions.DetermineAction(input);
 
@@ -371,56 +374,11 @@ namespace Volte.Commands.Modules
                 return Ok($"Set **{action}** as the action performed when a member uses a blacklisted word/phrase.");
             }
         }
-        
-            [Group("Starboard", "Sb")]
-            [RequireGuildAdmin]
-            public sealed class StarboardModule : VolteModule
-            {
-                [Command("Channel", "Ch")]
-                [Description("Sets the channel to be used by starboard when a message is starred.")]
-                [Remarks("starboard channel {Channel}")]
-                public Task<ActionResult> StarboardChannelAsync(DiscordChannel channel)
-                {
-                    ModifyData(data =>
-                    {
-                        data.Configuration.Starboard.StarboardChannel = channel.Id;
-                        return data;
-                    });
-                    return Ok($"Successfully set the starboard channel to {channel.Mention}.");
-                }
-
-                [Command("Amount", "Count")]
-                [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
-                [Remarks("starboard amount {Int}")]
-                public Task<ActionResult> StarsRequiredToPostAsync(int amount)
-                {
-                    ModifyData(data =>
-                    {
-                        data.Configuration.Starboard.StarsRequiredToPost = amount;
-                        return data;
-                    });
-                    return Ok($"Set the amount of stars required to be posted as a starboard message to **{amount}**.");
-                }
-
-                [Command("Enable")]
-                [Description("Enable or disable the Starboard in this guild.")]
-                [Remarks("starboard enable {Boolean}")]
-                public Task<ActionResult> StarboardEnableAsync(bool enabled)
-                {
-                    ModifyData(data =>
-                    {
-                        data.Configuration.Starboard.Enabled = enabled;
-                        return data;
-                    });
-                    return Ok(
-                        enabled ? "Enabled the Starboard in this Guild." : "Disabled the Starboard in this Guild.");
-                }
-            }
 
         [Command("Autorole")]
         [Description("Sets the role to be used for Autorole.")]
         [Remarks("autorole {Role}")]
-        public Task<ActionResult> AutoroleAsync([Remainder]DiscordRole role)
+        public Task<ActionResult> AutoroleAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             ModifyData(data =>
             {
@@ -433,7 +391,7 @@ namespace Volte.Commands.Modules
         [Command("Antilink", "Al")]
         [Description("Enable/Disable Antilink for the current guild.")]
         [Remarks("antilink {Boolean}")]
-        public Task<ActionResult> AntilinkAsync(bool enabled)
+        public Task<ActionResult> AntilinkAsync([RequiredArgument] bool enabled)
         {
             ModifyData(data =>
             {
@@ -446,7 +404,7 @@ namespace Volte.Commands.Modules
         [Command("AdminRole")]
         [Description("Sets the role able to use Admin commands for the current guild.")]
         [Remarks("adminrole {Role}")]
-        public Task<ActionResult> AdminRoleAsync([Remainder]DiscordRole role)
+        public Task<ActionResult> AdminRoleAsync([Remainder] DiscordRole role)
         {
             ModifyData(data =>
             {
@@ -460,13 +418,58 @@ namespace Volte.Commands.Modules
         [Description("Grants a role to the mentioned user.")]
         [Remarks("addrole {Member} {Role}")]
         [RequireBotGuildPermission(Permissions.ManageRoles)]
-        public async Task<ActionResult> AddRoleAsync(DiscordMember user, [Remainder] DiscordRole role)
+        public async Task<ActionResult> AddRoleAsync([RequiredArgument] DiscordMember user, [Remainder, RequiredArgument] DiscordRole role)
         {
             if (role.Position > Context.Guild.CurrentMember.Hierarchy)
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");
 
             await user.GrantRoleAsync(role);
             return Ok($"Added the role **{role.Name}** to {user.Mention}!");
+        }
+    }
+
+    [Group("Starboard", "Sb")]
+    [RequireGuildAdmin]
+    public sealed class StarboardModule : VolteModule
+    {
+        [Command("Channel", "Ch")]
+        [Description("Sets the channel to be used by starboard when a message is starred.")]
+        [Remarks("starboard channel {Channel}")]
+        public Task<ActionResult> StarboardChannelAsync([RequiredArgument] DiscordChannel channel)
+        {
+            ModifyData(data =>
+            {
+                data.Configuration.Starboard.StarboardChannel = channel.Id;
+                return data;
+            });
+            return Ok($"Successfully set the starboard channel to {channel.Mention}.");
+        }
+
+        [Command("Amount", "Count")]
+        [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
+        [Remarks("starboard amount {Int}")]
+        public Task<ActionResult> StarsRequiredToPostAsync([RequiredArgument] int amount)
+        {
+            ModifyData(data =>
+            {
+                data.Configuration.Starboard.StarsRequiredToPost = amount;
+                return data;
+            });
+            return Ok($"Set the amount of stars required to be posted as a starboard message to **{amount}**.");
+        }
+
+        [Command("Enable")]
+        [Description("Enable or disable the Starboard in this guild.")]
+        [Remarks("starboard enable {Boolean}")]
+        public Task<ActionResult> StarboardEnableAsync([RequiredArgument] bool enabled)
+        {
+            ModifyData(data =>
+            {
+                data.Configuration.Starboard.Enabled = enabled;
+                return data;
+            });
+            return Ok(
+                enabled ? "Enabled the Starboard in this Guild." : "Disabled the Starboard in this Guild.");
         }
     }
 }
