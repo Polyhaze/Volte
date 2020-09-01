@@ -73,7 +73,7 @@ namespace Volte.Commands.Modules
                 return Ok(Context.CreateEmbedBuilder(new StringBuilder()
                     .AppendAllLines(
                     $"**Command**: {command.Name}",
-                    "**Module**: {command.Module.SanitizeName()}",
+                    $"**Module**: {command.Module.SanitizeName()}",
                     result,
                     $"**Description**: {command.Description ?? "No summary provided."}",
                     "[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet-V4): " +
