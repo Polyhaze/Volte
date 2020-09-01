@@ -20,7 +20,7 @@ namespace Volte.Core.Entities
             {
                 var name = logSource.ToString();
                 var attr = (LogSourceAttribute) typeof(LogSource)
-                    .GetField(name)
+                    .GetField(name)!
                     .GetCustomAttribute(typeof(LogSourceAttribute));
                 attr.Name ??= name;
                 logSources[logSource] = attr;
