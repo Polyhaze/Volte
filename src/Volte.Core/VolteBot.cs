@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +46,11 @@ namespace Volte.Core
 
             Config.Load();
 
-            if (!Config.IsValidDiscordToken()) return;
+            if (!Config.IsValidDiscordToken())
+            {
+                Console.WriteLine($"Token is invalid!", Color.Red);
+                return;
+            }
 
             _provider = BuildServiceProvider();
             

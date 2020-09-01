@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,7 +28,6 @@ namespace Volte.Services
         {
             _lock = new object();
         }
-        
 
         internal void PrintVersion()
         {
@@ -168,23 +169,11 @@ namespace Volte.Services
             Console.Write(m);
         }
 
-        private (Color Color, string Source) VerifySource(LogSource source) =>
-            source switch
-                {
-                LogSource.Discord => (Color.RoyalBlue, "DISCORD"),
-                LogSource.Gateway => (Color.RoyalBlue, "DISCORD"),
-                LogSource.Volte => (Color.LawnGreen, "CORE"),
-                LogSource.Service => (Color.Gold, "SERVICE"),
-                LogSource.Module => (Color.LimeGreen, "MODULE"),
-                LogSource.Rest => (Color.Red, "REST"),
-                LogSource.Unknown => (Color.Fuchsia, "UNKNOWN"),
-                LogSource.Interactivity => (Color.Green, "INTERACTIVE"),
-                LogSource.AutoShard => (Color.Aqua, "AUTOSHARD"),
-                LogSource.WebSocket => (Color.Indigo, "WEBSOCKET"),
-                LogSource.WebSocketDispatch => (Color.Indigo, "WEBSOCKET"),
-                LogSource.DSharpPlus => (Color.Aquamarine, "DSHARPPLUS"),
-                _ => throw new InvalidOperationException($"The specified LogSource {source} is invalid.")
-                };
+        private (Color Color, string Source) VerifySource(LogSource source)
+        {
+            var sourceAttr = LogSourceAttribute.LogSources[source];
+            return (sourceAttr.Color, sourceAttr.Name);
+        }
 
 
         private (Color Color, string Level) VerifySeverity(LogLevel severity) =>
@@ -237,8 +226,8 @@ namespace Volte.Services
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            if (logLevel is LogLevel.Trace) // && (Version.ReleaseType is Version.DevelopmentStage.Development ||
-                return false;             //Config.EnableDebugLogging)) return true;
+            if (logLevel is LogLevel.Trace && (Version.ReleaseType is Version.DevelopmentStage.Development ||
+                Config.EnableDebugLogging)) return true;
 
             return true;
         }
