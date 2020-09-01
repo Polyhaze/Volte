@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Volte.Core.Models.BotConfig
+namespace Volte.Core.Entities
 {
     /// <summary>
     ///     Model that represents enabled/disabled features as defined in your config.

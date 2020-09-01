@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
-using Gommon;
 using JetBrains.Annotations;
 using RestSharp.Extensions;
 
@@ -13,7 +11,7 @@ namespace Volte.Core.Entities
     {
         public static IReadOnlyDictionary<LogSource, LogSourceAttribute> LogSources { get; }
         public static IReadOnlyDictionary<int, LogSource> EventIdMappings { get; }
-        
+
         static LogSourceAttribute()
         {
             var logSources = new Dictionary<LogSource, LogSourceAttribute>();

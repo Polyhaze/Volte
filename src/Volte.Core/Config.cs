@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Gommon;
 using JetBrains.Annotations;
-using Volte.Core.Models.BotConfig;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Core

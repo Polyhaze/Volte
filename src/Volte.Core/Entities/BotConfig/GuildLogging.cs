@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using JetBrains.Annotations;
 
-namespace Volte.Core.Models.BotConfig
+namespace Volte.Core.Entities
 {
     public sealed class GuildLogging
     {

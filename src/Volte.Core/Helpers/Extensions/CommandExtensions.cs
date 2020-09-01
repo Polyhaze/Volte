@@ -10,7 +10,7 @@ using Volte.Commands;
 using Volte.Commands.Checks;
 using Volte.Core;
 using Volte.Commands.TypeParsers;
-using Volte.Core.Entities.Attributes;
+using Volte.Core.Entities;
 using Module = Qmmands.Module;
 
 namespace Gommon

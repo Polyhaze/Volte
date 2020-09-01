@@ -5,6 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {
@@ -35,7 +36,7 @@ namespace Volte.Commands.Modules
         [Description("Adds a role to the list of self roles for this guild.")]
         [Remarks("selfrole add {Role}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleAddAsync([Remainder]DiscordRole role)
+        public Task<ActionResult> SelfRoleAddAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
             if (target is null)
@@ -56,7 +57,7 @@ namespace Volte.Commands.Modules
         [Description("Removes a role from the list of self roles for this guild.")]
         [Remarks("selfrole remove {Role}")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleRemoveAsync([Remainder]DiscordRole role)
+        public Task<ActionResult> SelfRoleRemoveAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
             {

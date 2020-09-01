@@ -11,7 +11,7 @@ using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core;
-using Volte.Core.Entities.Attributes;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
 // ReSharper disable MemberCanBePrivate.Global

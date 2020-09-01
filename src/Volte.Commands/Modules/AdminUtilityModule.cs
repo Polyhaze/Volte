@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
-using Volte.Core.Entities.Attributes;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {

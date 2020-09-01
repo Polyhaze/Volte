@@ -1,6 +1,6 @@
 using System;
 
-namespace Volte.Core.Entities.Attributes
+namespace Volte.Core.Entities
 {
     public class RequiredArgumentAttribute : Attribute
     {

@@ -9,12 +9,12 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {
-    [Group("Tags", "T")]
+    [Group("Tags", "T", "Tag")]
     public sealed class TagsModule : VolteModule {
-        [Command("Get")]
+        [Command]
         [Description("Gets a tag's contents if it exists.")]
-        [Remarks("tags get {Tag}")]
-        public Task<ActionResult> TagAsync([Remainder]Tag tag)
+        [Remarks("tags {Tag}")]
+        public Task<ActionResult> TagAsync([Remainder, RequiredArgument] Tag tag)
         {
             tag.Uses += 1;
             Db.UpdateData(Context.GuildData);
@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
         [Command("Stats")]
         [Description("Shows stats for a tag.")]
         [Remarks("tags stats {Tag}")]
-        public async Task<ActionResult> TagStatsAsync([Remainder]Tag tag)
+        public async Task<ActionResult> TagStatsAsync([Remainder, RequiredArgument] Tag tag)
         {
             var u = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
 
@@ -75,7 +75,7 @@ namespace Volte.Commands.Modules
         [Description("Creates a tag with the specified name and response (in that order).")]
         [Remarks("tags create {String} {String}")]
         [RequireGuildModerator]
-        public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
+        public async Task<ActionResult> TagCreateAsync([RequiredArgument] string name, [Remainder, RequiredArgument] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag is not null)
@@ -111,7 +111,7 @@ namespace Volte.Commands.Modules
         [Description("Deletes a tag if it exists.")]
         [Remarks("tags delete {Tag}")]
         [RequireGuildModerator]
-        public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
+        public async Task<ActionResult> TagDeleteAsync([Remainder, RequiredArgument] Tag tag)
         {
             ModifyData(data =>
             {
@@ -119,11 +119,16 @@ namespace Volte.Commands.Modules
                 return data;
             });
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{await Context.Client.ShardClients.First().Value.GetUserAsync(tag.CreatorId)}**, with " +
+                      $"**{await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");
         }
-
-        public Task<ActionResult> TagEditAsync(Tag tag, [Remainder] string content)
+        
+        
+        [Command("Edit")]
+        [Description("Edits a tag's content if it exists.")]
+        [Remarks("tags edit {Tag} {String}")]
+        [RequireGuildModerator]
+        public Task<ActionResult> TagEditAsync([RequiredArgument] Tag tag, [Remainder, RequiredArgument] string content)
         {
             tag.Response = content;
             ModifyData(data =>
@@ -136,7 +141,7 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Updated")
                 .AddField("Name", tag.Name)
-                .AddField("Response", content)
+                .AddField("New Response", content)
                 .AddField("Creator", Context.Member.Mention)
                 .AddField("Uses", tag.Uses));
         }

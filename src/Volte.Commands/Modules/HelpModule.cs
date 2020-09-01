@@ -5,7 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
-using Volte.Core.Entities.Attributes;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 // ReSharper disable HeuristicUnreachableCode
@@ -17,7 +17,7 @@ namespace Volte.Commands.Modules
         [Command("Help", "H")]
         [Description("Get help for any of Volte's modules or commands.")]
         [Remarks("help [String]")]
-        public Task<ActionResult> HelpAsync([Remainder] [OptionalArgument] string moduleOrCommand = null)
+        public Task<ActionResult> HelpAsync([Remainder, OptionalArgument] string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
             {
