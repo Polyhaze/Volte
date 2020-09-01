@@ -32,6 +32,7 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordConfiguration
                 {
+                    Intents = DiscordIntents.All,
                     LoggerFactory = logger,
                     HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,

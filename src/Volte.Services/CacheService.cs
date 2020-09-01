@@ -10,7 +10,12 @@ namespace Volte.Services
 {
     public class CacheService : VolteEventService
     {
-        public Dictionary<ulong, DiscordPresence> CachedPresences;
+        public readonly Dictionary<ulong, DiscordPresence> CachedPresences;
+
+        public CacheService()
+        {
+            CachedPresences = new Dictionary<ulong, DiscordPresence>();
+        }
 
         public override Task DoAsync(EventArgs args)
         {

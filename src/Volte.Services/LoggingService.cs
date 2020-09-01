@@ -197,7 +197,7 @@ namespace Volte.Services
                 LogLevel.Trace => (Color.SandyBrown, "TRACE"),
                 LogLevel.Debug => (Color.SandyBrown, "TRACE"),
                 LogLevel.None => (Color.Chocolate, "NONE"),
-                _ => throw new InvalidOperationException($"The specified LogSeverity ({severity}) is invalid.")
+                _ => throw new InvalidOperationException($"The specified {nameof(LogLevel)} ({severity}) is invalid.")
             };
 
         private void LogExceptionInDiscord(Exception e, IServiceProvider provider)
@@ -228,13 +228,17 @@ namespace Volte.Services
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Log(logLevel, eventId.GetSource(), state.ToString(), exception);
+            if (IsEnabled(logLevel))
+            {
+                Log(logLevel, eventId.GetSource(), state.ToString(), exception);
+            }
+
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            if (logLevel is LogLevel.Trace && (Version.ReleaseType is Version.DevelopmentStage.Development ||
-                                               Config.EnableDebugLogging)) return true;
+            if (logLevel is LogLevel.Trace) // && (Version.ReleaseType is Version.DevelopmentStage.Development ||
+                return false;             //Config.EnableDebugLogging)) return true;
 
             return true;
         }

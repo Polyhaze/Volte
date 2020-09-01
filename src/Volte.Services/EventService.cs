@@ -79,7 +79,7 @@ namespace Volte.Services
 
             var prefixes = new List<string>
             {
-                args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
+                args.Data.Configuration.CommandPrefix, $"{args.Context.Client.CurrentUser.Mention} ",
                 $"<@!{args.Context.Client.CurrentUser.Id}> "
             };
 

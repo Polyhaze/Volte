@@ -11,6 +11,7 @@ using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core;
+using Volte.Core.Entities.Attributes;
 using Volte.Core.Helpers;
 using Volte.Services;
 // ReSharper disable MemberCanBePrivate.Global
@@ -37,7 +38,7 @@ namespace Volte.Commands.Modules
         [Command("SetStream")]
         [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]
         [Remarks("setstream {String} {String}")]
-        public async Task<ActionResult> SetStreamAsync(string stream, [Remainder] string game)
+        public async Task<ActionResult> SetStreamAsync([RequiredArgument] string stream, [Remainder, RequiredArgument] string game)
         {
             await Context.Client.UpdateStatusAsync(new DiscordActivity
             {
@@ -52,7 +53,7 @@ namespace Volte.Commands.Modules
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
         [Remarks("setstatus {dnd|idle|invisible|online}")]
-        public async Task<ActionResult> SetStatusAsync([Remainder] UserStatus status)
+        public async Task<ActionResult> SetStatusAsync([Remainder, RequiredArgument] UserStatus status)
         {
             var currentUserPresence = Cache.GetBotPresence(Context.Client);
 
@@ -63,7 +64,7 @@ namespace Volte.Commands.Modules
         [Command("SetAvatar")]
         [Description("Sets the bot's avatar to the image at the given URL.")]
         [Remarks("setavatar {String}")]
-        public async Task<ActionResult> SetAvatarAsync(string url)
+        public async Task<ActionResult> SetAvatarAsync([RequiredArgument] string url)
         {
             if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
@@ -87,13 +88,13 @@ namespace Volte.Commands.Modules
         [Command("SetName")]
         [Description("Sets the bot's username.")]
         [Remarks("setname {String}")]
-        public Task<ActionResult> SetNameAsync([Remainder]string name) 
+        public Task<ActionResult> SetNameAsync([Remainder, RequiredArgument] string name) 
             => Ok($"Set my username to **{name}**.", _ => Context.Client.UpdateCurrentUserAsync(name));
 
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
         [Remarks("setgame {String}")]
-        public async Task<ActionResult> SetGameAsync([Remainder]string game)
+        public async Task<ActionResult> SetGameAsync([Remainder, RequiredArgument] string game)
         {
             await Context.Client.UpdateStatusAsync(new DiscordActivity(game, ActivityType.Playing));
             return Ok($"Set my game to {game}!");
@@ -111,27 +112,25 @@ namespace Volte.Commands.Modules
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
         [Remarks("eval {String}")]
-        public Task<ActionResult> EvalAsync([Remainder]string code)
+        public Task<ActionResult> EvalAsync([Remainder, RequiredArgument] string code)
             => None(async () => await Eval.EvaluateAsync(this, code), false);
 
-        [Command("Inspect", "Insp")]
+        [Hidden, Command("Inspect", "Insp")]
         [Description("Inspects a .NET object.")]
         [Remarks("inspect {String}")]
-        [Hidden]
-        public Task<ActionResult> InspectAsync([Remainder]string obj)
+        public Task<ActionResult> InspectAsync([Remainder, RequiredArgument] string obj)
             => EvalAsync($"Inspect({obj})");
 
-        [Command("Inheritance", "Inh")]
+        [Hidden, Command("Inheritance", "Inh")]
         [Description("Shows the inheritance tree of a .NET type.")]
         [Remarks("inheritance {String}")]
-        [Hidden]
-        public Task<ActionResult> InheritanceAsync(string type)
+        public Task<ActionResult> InheritanceAsync([RequiredArgument] string type)
             => EvalAsync($"Inheritance<{type}>()");
 
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
         [Remarks("forceleave {Guild}")]
-        public async Task<ActionResult> ForceLeaveAsync([Remainder]DiscordGuild guild)
+        public async Task<ActionResult> ForceLeaveAsync([Remainder, RequiredArgument] DiscordGuild guild)
         {
             await guild.LeaveAsync();
             return Ok($"Successfully left **{guild.Name}**.");
@@ -167,7 +166,7 @@ namespace Volte.Commands.Modules
         [Description("Create a config for the guild with the given ID, if one somehow doesn't exist.")]
         [Remarks("createconfig [Guild]")]
         [Hidden]
-        public Task<ActionResult> CreateConfigAsync([Remainder]DiscordGuild guild = null)
+        public Task<ActionResult> CreateConfigAsync([Remainder, OptionalArgument] DiscordGuild guild = null)
         {
             guild ??= Context.Guild;
             return Ok($"Created a config for {Formatter.Bold(guild.Name)} if it didn't exist.", m =>
