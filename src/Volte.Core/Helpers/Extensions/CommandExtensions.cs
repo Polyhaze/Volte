@@ -28,18 +28,37 @@ namespace Gommon
                 .Replace(c.Name.ToLower(), c.AsPrettyString().ToLower())
                 .Insert(0, ctx.GuildData.Configuration.CommandPrefix);
 
-        private static string AsPrettyString(this Command c)
+        public static string AsPrettyString(this Command c)
             => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
 
         public static string GenerateHelp(this Command c)
         {
-            var sb = new StringBuilder().Append(c.AsPrettyString()).Append(' ');
+            var sb = new StringBuilder();
 
             foreach (var arg in c.Parameters)
             {
-                sb.Append(arg.Attributes.Any(x => x is OptionalArgumentAttribute)
-                    ? $"[{arg.Type.AsPrettyString()}]"
-                    : $"{{{arg.Type.AsPrettyString()}}}");
+                var optionalAttr = arg.Attributes.FirstOrDefault(x => x is OptionalArgumentAttribute)
+                    .Cast<OptionalArgumentAttribute>();
+                var requiredAttr = arg.Attributes.FirstOrDefault(x => x is RequiredArgumentAttribute)
+                    .Cast<RequiredArgumentAttribute>();
+
+                if (optionalAttr is not null)
+                {
+                    sb.Append(optionalAttr.ValidFormat is not null
+                        ? $"[{optionalAttr.ValidFormat}]"
+                        : $"[{arg.Type.AsPrettyString()}]");
+                    continue;
+                }
+
+                if (requiredAttr is not null)
+                {
+                    sb.Append(requiredAttr.ValidFormat is not null
+                        ? $"{{{requiredAttr.ValidFormat}}}"
+                        : $"{{{arg.Type.AsPrettyString()}}}");
+                    continue;
+                }
+
+                sb.Append($"{{{arg.Type.AsPrettyString()}}}");
             }
 
             return sb.ToString();

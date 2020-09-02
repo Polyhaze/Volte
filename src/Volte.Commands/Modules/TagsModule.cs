@@ -10,7 +10,8 @@ using Volte.Core.Entities;
 namespace Volte.Commands.Modules
 {
     [Group("Tags", "T", "Tag")]
-    public sealed class TagsModule : VolteModule {
+    public sealed class TagsModule : VolteModule 
+    {
         [Command]
         [Description("Gets a tag's contents if it exists.")]
         [Remarks("tags {Tag}")]
@@ -21,7 +22,7 @@ namespace Volte.Commands.Modules
 
             if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
             {
-                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithFooter($"Requested by {Context.Member}."), async message =>
+                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(Context.Member), async message =>
                 {
                     if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                     {

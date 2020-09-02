@@ -13,6 +13,7 @@ using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands.Results;
 using Volte.Core;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Core.Models.Misc;
 using Volte.Services;
@@ -74,7 +75,7 @@ namespace Volte.Commands.Modules
         }.ToArray();
 
         private string GetNato(char i) => 
-            Enumerable.First<(char Key, string Value)>(_nato, x => x.Key.ToString().EqualsIgnoreCase(i.ToString())).Value;
+            _nato.First(x => x.Key.ToString().EqualsIgnoreCase(i.ToString())).Value;
 
         private readonly string _baseWikiUrl = "https://github.com/Ultz/Volte/wiki";
         public CommandsService CommandsService { get; set; }
@@ -101,7 +102,7 @@ namespace Volte.Commands.Modules
         [Command("Wiki", "VolteWiki")]
         [Description("List all wiki pages or get a specific one in this one command.")]
         [Remarks("wiki [String]")]
-        public Task<ActionResult> WikiAsync([Remainder]string page = null)
+        public Task<ActionResult> WikiAsync([Remainder, OptionalArgument] string page = null)
         {
             var embed = Context.CreateEmbedBuilder(string.Empty).WithThumbnail("https://i.greemdev.net/volte_whitepinkyellow.png");
             var pages = new Dictionary<string, string>
@@ -153,7 +154,7 @@ namespace Volte.Commands.Modules
         [Command("Snowflake")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
         [Remarks("snowflake {Ulong}")]
-        public Task<ActionResult> SnowflakeAsync(ulong id)
+        public Task<ActionResult> SnowflakeAsync([RequiredArgument] ulong id)
         {
             var date = SnowflakeUtils.FromSnowflake(id);
             return Ok(new StringBuilder()
@@ -191,7 +192,7 @@ namespace Volte.Commands.Modules
         [Command("ShowColor", "Sc")]
         [Description("Shows an image purely made up of the specified color.")]
         [Remarks("showcolor {Color}")]
-        public Task<ActionResult> ShowColorAsync([Remainder]DiscordColor color)
+        public Task<ActionResult> ShowColorAsync([Remainder, RequiredArgument] DiscordColor color)
             => Ok(async () =>
             {
                 await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
@@ -210,21 +211,21 @@ namespace Volte.Commands.Modules
         [Command("Say")]
         [Description("Bot repeats what you tell it to.")]
         [Remarks("say {String}")]
-        public Task<ActionResult> SayAsync([Remainder]string msg) 
+        public Task<ActionResult> SayAsync([Remainder, RequiredArgument] string msg) 
             => Ok(msg, _ => Context.Message.DeleteAsync());
 
         [Command("SilentSay", "SSay")]
         [Description("Runs the say command normally, but doesn't show the author in the message. Useful for announcements.")]
         [Remarks("silentsay {String}")]
-        public Task<ActionResult> SilentSayAsync([Remainder]string msg) 
+        public Task<ActionResult> SilentSayAsync([Remainder, RequiredArgument] string msg) 
             => Ok(new DiscordEmbedBuilder()
-                .WithColor(Config.SuccessColor)
+                .WithColor(Context.Member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor))
                 .WithDescription(msg), _ => Context.Message.DeleteAsync());
 
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]
         [Remarks("quote {Ulong}")]
-        public async Task<ActionResult> QuoteAsync(ulong messageId)
+        public async Task<ActionResult> QuoteAsync([RequiredArgument] ulong messageId)
         {
             var m = await Context.Channel.GetMessageAsync(messageId);
             if (m is null)
@@ -249,7 +250,7 @@ namespace Volte.Commands.Modules
         [Command("Quote"), Priority(1)]
         [Description("Quotes a user in a different chanel from a given message's ID.")]
         [Remarks("quote {messageId}")]
-        public async Task<ActionResult> QuoteAsync(DiscordChannel channel, ulong messageId)
+        public async Task<ActionResult> QuoteAsync([RequiredArgument] DiscordChannel channel, [RequiredArgument] ulong messageId)
         {
             var m = await channel.GetMessageAsync(messageId);
             if (m is null)
@@ -265,7 +266,7 @@ namespace Volte.Commands.Modules
                 .WithFooter(m.Timestamp.Humanize());
             if (!m.Attachments.IsEmpty())
             {
-                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
+                e.WithImageUrl(m.Attachments[0].Url);
             }
 
             return Ok(e);
@@ -281,7 +282,7 @@ namespace Volte.Commands.Modules
         [Command("Poll")]
         [Description("Create a poll. The 'String' argument must be in the form of question;option1[;option2;option3;option4;option5].")]
         [Remarks("poll {TimeSpan} {String}")]
-        public Task<ActionResult> PollAsync(TimeSpan duration, [Remainder] string all)
+        public Task<ActionResult> PollAsync([RequiredArgument] TimeSpan duration, [Remainder, RequiredArgument] string all)
         {
             var content = all.Split(';', StringSplitOptions.RemoveEmptyEntries);
             var pollInfo = GetPollBody(content);
@@ -303,7 +304,7 @@ namespace Volte.Commands.Modules
             {
                 var result = await Context.Interactivity.DoPollAsync(msg, EmojiHelper.GetPollEmojisList().Take(choicesCount).ToArray(), PollBehaviour.KeepEmojis, duration);
                 embed = embed.WithTitle("Poll Ended! Here are the results:");
-                foreach (var res in result)
+                foreach (var res in result.OrderByDescending(x => x.Total))
                 {
                     embed.AddField(res.Emoji.Name, res.Total);
                 }
@@ -334,7 +335,7 @@ namespace Volte.Commands.Modules
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]
         [Remarks("permissions [User]")]
-        public Task<ActionResult> PermissionsAsync(DiscordMember user = null)
+        public Task<ActionResult> PermissionsAsync([Remainder, OptionalArgument] DiscordMember user = null)
         {
             user ??= Context.Member; // get the user (or the invoker, if none specified)
 
@@ -370,7 +371,7 @@ namespace Volte.Commands.Modules
         [Command("Nato")]
         [Description("Translates a string into the NATO Phonetic Alphabet. If no string is provided, then a full rundown of the NATO alphabet is shown.")]
         [Remarks("nato [String]")]
-        public Task<ActionResult> NatoAsync([Remainder] string input = null)
+        public Task<ActionResult> NatoAsync([Remainder, OptionalArgument] string input = null)
         {
             if (input.IsNullOrEmpty())
                 return None(async () =>
@@ -436,7 +437,7 @@ namespace Volte.Commands.Modules
         [Command("UserInfo", "Ui")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
         [Remarks("userinfo [user]")]
-        public Task<ActionResult> UserInfoAsync(DiscordMember user = null)
+        public Task<ActionResult> UserInfoAsync([Remainder, OptionalArgument] DiscordMember user = null)
         {
             user ??= Context.Member;
 
@@ -477,7 +478,7 @@ namespace Volte.Commands.Modules
         [Command("IamNot")]
         [Description("Take a role from yourself, if it is in the current guild's self role list.")]
         [Remarks("iamnot {String}")]
-        public async Task<ActionResult> IamNotAsync([Remainder]DiscordRole role)
+        public async Task<ActionResult> IamNotAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             if (!Context.GuildData.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
             {
@@ -497,19 +498,20 @@ namespace Volte.Commands.Modules
         [Command("Iam")]
         [Description("Gives yourself a role, if it is in the current guild's self role list.")]
         [Remarks("iam {String}")]
-        public async Task<ActionResult> IamAsync([Remainder]DiscordRole role)
+        public async Task<ActionResult> IamAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             if (Context.GuildData.Extras.SelfRoles.IsEmpty())
             {
                 return BadRequest("This guild does not have any roles you can give yourself.");
             }
+
+            var target = Context.Guild.Roles.FirstOrDefault(x => x.Value.Name.EqualsIgnoreCase(role.Name)).Value;
             
             if (!Context.GuildData.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
             {
                 return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");
             }
-
-            var target = Context.Guild.Roles.FirstOrDefault(x => x.Value.Name.EqualsIgnoreCase(role.Name)).Value;
+            
             if (target is null)
             {
                 return BadRequest($"The role **{role.Name}** doesn't exist in this guild.");
@@ -533,7 +535,7 @@ namespace Volte.Commands.Modules
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current guild.")]
         [Remarks("color {Role}")]
-        public async Task<ActionResult> RoleColorAsync([Remainder]DiscordRole role)
+        public async Task<ActionResult> RoleColorAsync([Remainder, RequiredArgument] DiscordRole role)
         {
             if (!role.HasColor()) return BadRequest("Role does not have a color.");
             
@@ -555,13 +557,13 @@ namespace Volte.Commands.Modules
         [Command("Choose")]
         [Description("Choose an item from a list separated by |.")]
         [Remarks("choose {String}")]
-        public Task<ActionResult> ChooseAsync([Remainder]string options) 
+        public Task<ActionResult> ChooseAsync([Remainder, RequiredArgument("option1|option2|option3|...")] string options) 
             => Ok($"I choose `{options.Split('|', StringSplitOptions.RemoveEmptyEntries).Random()}`.");
 
         [Command("BigEmoji", "HugeEmoji", "BigEmote", "HugeEmote")]
         [Description("Shows the image URL for a given emoji.")]
         [Remarks("bigemoji {Emote}")]
-        public Task<ActionResult> BigEmojiAsync(DiscordEmoji emoteIn)
+        public Task<ActionResult> BigEmojiAsync([RequiredArgument] DiscordEmoji emoteIn)
         {
             string url = null;
             try
@@ -583,7 +585,7 @@ namespace Volte.Commands.Modules
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
         [Remarks("avatar [User]")]
-        public Task<ActionResult> AvatarAsync(DiscordMember user = null)
+        public Task<ActionResult> AvatarAsync([Remainder, OptionalArgument] DiscordMember user = null)
         {
             user ??= Context.Member;
             return Ok(Context.CreateEmbedBuilder()

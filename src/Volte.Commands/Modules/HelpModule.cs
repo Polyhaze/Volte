@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gommon;
+using JetBrains.Annotations;
 using Qmmands;
 using Volte.Commands.Checks;
 using Volte.Commands.Results;
@@ -51,52 +52,55 @@ namespace Volte.Commands.Modules
             else
                 result += "Default";
 
-            if (module is null && command is null)
+            if (module is null)
             {
-                return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
-            }
-
-            if (module is not null && command is null)
-            {
-                
-                return None(async () =>
+                if (command is null)
                 {
-                    await Context.SendPaginatedMessageAsync(
-                        module.Commands.Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
-                            .Select(x => x.FullAliases[0]).GetPages(15),
-                        $"Commands in Module {module.SanitizeName()}");
-                }, false);
+                    return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
+                }
+                else
+                {
+                    return Ok(Context.CreateEmbedBuilder(new StringBuilder()
+                        .AppendAllLines(
+                            $"**Command**: {command.Name}",
+                            $"**Module**: {command.Module.SanitizeName()}",
+                            result,
+                            $"**Description**: {command.Description ?? "No summary provided."}",
+                            $"**Valid Command Usages**: {Context.GuildData.Configuration.CommandPrefix}{command.AsPrettyString()}",
+                            "[**Valid Arguments**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet-V4): " +
+                            $"{command.GenerateHelp()}"
+                        ).ToString()));
+                }
             }
-
-            if (module is null && command is not null)
+            else
             {
-                return Ok(Context.CreateEmbedBuilder(new StringBuilder()
-                    .AppendAllLines(
-                    $"**Command**: {command.Name}",
-                    $"**Module**: {command.Module.SanitizeName()}",
-                    result,
-                    $"**Description**: {command.Description ?? "No summary provided."}",
-                    "[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet-V4): " +
-                    $"{Context.GuildData.Configuration.CommandPrefix}{command.GenerateHelp()}"
-                    ).ToString()));
+                if (command is null)
+                {
+                    return None(async () =>
+                    {
+                        await Context.SendPaginatedMessageAsync(
+                            module.Commands.Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
+                                .Select(x => x.FullAliases[0]).GetPages(15),
+                            $"Commands in Module {module.SanitizeName()}");
+                    }, false);
+                }
+                else
+                {
+                    return BadRequest(new StringBuilder()
+                        .AppendAllLines(
+                            $"{EmojiHelper.X} Found more than one Module or Command. Results:",
+                            $"**{module.SanitizeName()}** Module",
+                            $"**{command.Name}** Command"
+                        ).ToString());
+                }
             }
-
-            if (module is not null && command is not null)
-            {
-                return BadRequest(new StringBuilder()
-                    .AppendAllLines(
-                    $"{EmojiHelper.X} Found more than one Module or Command. Results:",
-                    $"**{module.SanitizeName()}** Module",
-                    $"**{command.Name}** Command"
-                    ).ToString());
-            }
-
-            return None();
         }
 
+        [CanBeNull]
         private Module GetTargetModule(string input)
             => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
 
+        [CanBeNull]
         private Command GetTargetCommand(string input)
             => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
     }
