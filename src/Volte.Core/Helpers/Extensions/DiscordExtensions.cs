@@ -215,6 +215,7 @@ namespace Gommon
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var logger = provider.Get<LoggingService>();
+            var starboard = provider.Get<StarboardService>();
             client.ClientErrored += (args) =>
             {
                 logger.Error(LogSource.Discord, args.Exception.Message, args.Exception.InnerException);
@@ -243,6 +244,10 @@ namespace Gommon
                         _ = Task.Run(async () => await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider)));
                 }
             };
+
+            client.MessageReactionAdded += async args => await starboard.DoAsync(args);
+            client.MessageReactionRemoved += async args => await starboard.DoAsync(args);
+            client.MessageReactionsCleared += async args => await starboard.DoAsync(args);
         }
 
         public static Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder e, DiscordChannel c) =>

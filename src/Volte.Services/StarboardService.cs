@@ -15,19 +15,16 @@ namespace Volte.Services
     public sealed class StarboardService : VolteEventService
     {
         private readonly DatabaseService _db;
-        private readonly DiscordShardedClient _client;
 
         // Ensures starboard message creations don't happen twice, and edits are atomic.
         private readonly AsyncDuplicateLock<ulong> _messageWriteLock;
 
         private readonly DiscordEmoji _starEmoji = DiscordEmoji.FromUnicode(EmojiHelper.Star);
 
-        public StarboardService(DatabaseService databaseService, DiscordShardedClient discordShardedClient,
-            AsyncDuplicateLock<ulong> messageWriteLock)
+        public StarboardService(DatabaseService databaseService)
         {
             _db = databaseService;
-            _client = discordShardedClient;
-            _messageWriteLock = messageWriteLock;
+            _messageWriteLock = new AsyncDuplicateLock<ulong>();
         }
 
 
@@ -86,7 +83,7 @@ namespace Volte.Services
                     {
                         var newEntry = data.Extras.StarboardedMessages.AddOrUpdate(
                             messageId,
-                            id => new StarboardEntry
+                            _ => new StarboardEntry
                             {
                                 StarredUsers =
                                 {
@@ -94,7 +91,7 @@ namespace Volte.Services
                                 },
                                 MessageId = messageId
                             },
-                            (id, existingEntry) =>
+                            (_, existingEntry) =>
                             {
                                 existingEntry.StarredUsers.Add(starrerId, StarTarget.OriginalMessage);
                                 return existingEntry;
@@ -144,7 +141,7 @@ namespace Volte.Services
 
         private async Task HandleReactionsClearAsync(MessageReactionsClearEventArgs args)
         {
-            if (args.Channel is DiscordDmChannel) return;
+            if (args.Channel.Type is ChannelType.Private) return;
 
             var data = _db.GetData(args.Guild.Id);
             var starboard = data.Configuration.Starboard;
