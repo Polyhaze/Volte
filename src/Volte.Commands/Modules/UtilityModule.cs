@@ -17,7 +17,7 @@ using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Core.Models.Misc;
 using Volte.Services;
-using Volte.Volte.Commands.Checks; //using System.ComponentModel;
+using Volte.Volte.Commands.Checks;
 
 // ReSharper disable MemberCanBePrivate.Global
 
