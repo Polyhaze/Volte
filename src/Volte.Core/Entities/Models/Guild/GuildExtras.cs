@@ -11,6 +11,7 @@ namespace Volte.Core.Entities
         {
             SelfRoles = new List<string>();
             Tags = new List<Tag>();
+            StarboardedMessages = new ConcurrentDictionary<ulong, StarboardEntry>();
             Warns = new List<Warn>();
         }
 
