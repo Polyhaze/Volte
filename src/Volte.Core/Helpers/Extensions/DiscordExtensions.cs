@@ -62,6 +62,8 @@ namespace Gommon
             member.Roles.Where(x => x.HasColor())
                 .OrderByDescending(x => x.Position).FirstOrDefault();
 
+        public static string AsPrettyString(this DiscordUser user) => $"{user.Username}#{user.Discriminator}";
+
         [NotNull]
         public static List<Page> GetPages<T>(this IEnumerable<T> current, int entriesPerPage = 1)
         {

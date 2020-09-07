@@ -37,6 +37,7 @@ namespace Gommon
 
             foreach (var arg in c.Parameters)
             {
+                var result = arg.Type.AsPrettyString().Replace("Discord", string.Empty);
                 var optionalAttr = arg.Attributes.FirstOrDefault(x => x is OptionalArgumentAttribute)
                     .Cast<OptionalArgumentAttribute>();
                 var requiredAttr = arg.Attributes.FirstOrDefault(x => x is RequiredArgumentAttribute)
@@ -46,7 +47,7 @@ namespace Gommon
                 {
                     sb.Append(optionalAttr.ValidFormat is not null
                         ? $"[{optionalAttr.ValidFormat}]"
-                        : $"[{arg.Type.AsPrettyString()}]");
+                        : $"[{result}]");
                     continue;
                 }
 
@@ -54,11 +55,11 @@ namespace Gommon
                 {
                     sb.Append(requiredAttr.ValidFormat is not null
                         ? $"{{{requiredAttr.ValidFormat}}}"
-                        : $"{{{arg.Type.AsPrettyString()}}}");
+                        : $"{{{result}}}");
                     continue;
                 }
 
-                sb.Append($"{{{arg.Type.AsPrettyString()}}}");
+                sb.Append($"{{{result}}}");
             }
 
             return sb.ToString();
