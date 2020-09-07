@@ -47,7 +47,7 @@ namespace Gommon
                 {
                     sb.Append(optionalAttr.ValidFormat is not null
                         ? $"[{optionalAttr.ValidFormat}]"
-                        : $"[{result}]");
+                        : $"[{result}]").Append(' ');
                     continue;
                 }
 
@@ -55,11 +55,11 @@ namespace Gommon
                 {
                     sb.Append(requiredAttr.ValidFormat is not null
                         ? $"{{{requiredAttr.ValidFormat}}}"
-                        : $"{{{result}}}");
+                        : $"{{{result}}}").Append(' ');
                     continue;
                 }
 
-                sb.Append($"{{{result}}}");
+                sb.Append($"{{{result}}}").Append(' ');
             }
 
             return sb.ToString();
@@ -67,7 +67,8 @@ namespace Gommon
 
         [NotNull]
         public static VolteContext AsVolteContext(this CommandContext ctx) =>
-            ctx.Cast<VolteContext>() ?? throw new ArgumentException($"Cast to {nameof(VolteContext)} from {ctx.GetType().AsPrettyString()} unsuccessful. Please make sure the {nameof(CommandContext)} you passed is actually a {nameof(VolteContext)}.");
+            ctx.Cast<VolteContext>() ?? throw new InvalidOperationException($"Cast to {nameof(VolteContext)} from {ctx.GetType().AsPrettyString()} was unsuccessful. " +
+                                                                            $"Please make sure the {nameof(CommandContext)} you passed is actually a {nameof(VolteContext)}. Received: {ctx.GetType().AsPrettyString()}");
         
         public static bool IsMod(this Command command)
         {

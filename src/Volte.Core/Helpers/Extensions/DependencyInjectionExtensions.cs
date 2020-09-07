@@ -37,7 +37,7 @@ namespace Gommon
                     HttpTimeout = TimeSpan.FromSeconds(10),
                     MessageCacheSize = 50,
                     TokenType = TokenType.Bot,
-                    Token = Config.Token
+                    Token = Config.Tokens.Discord
                 }));
             return coll;
         }

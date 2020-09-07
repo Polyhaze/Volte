@@ -59,7 +59,7 @@ namespace Volte.Core
             if (IsValidConfig()) return true;
             _configuration = new BotConfig
             {
-                Token = "discord bot token here",
+                Tokens = new Tokens(),
                 CommandPrefix = "$",
                 Owner = 0,
                 Game = "game here",
@@ -108,9 +108,12 @@ namespace Volte.Core
         }
 
         public static bool IsValidDiscordToken() 
-            => !(Token.IsNullOrEmpty() || Token.Equals("discord bot token here"));
+            => !(Tokens.Discord.IsNullOrEmpty() || Tokens.Discord.Equals("discord bot token here"));
 
-        public static string Token => _configuration.Token;
+        public static bool IsValidTwitchApiToken()
+            => !(Tokens.TwitchApi.IsNormalized() || Tokens.TwitchApi.Equals("twitch api token here"));
+
+        public static Tokens Tokens => _configuration.Tokens;
 
         public static string CommandPrefix => _configuration.CommandPrefix;
 
@@ -139,8 +142,8 @@ namespace Volte.Core
         // ReSharper disable MemberHidesStaticFromOuterClass
         private class BotConfig
         {
-            [JsonPropertyName("discord_token")]
-            public string Token { get; set; }
+            [JsonPropertyName("tokens")]
+            public Tokens Tokens { get; set; }
 
             [JsonPropertyName("command_prefix")]
             public string CommandPrefix { get; set; }
