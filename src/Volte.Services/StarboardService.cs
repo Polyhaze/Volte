@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -52,7 +53,6 @@ namespace Volte.Services
             
             var starboardChannel = await args.Client.GetChannelAsync(starboard.StarboardChannel);
             if (starboardChannel is null) return;
-            if (args.Channel == starboardChannel) return; // TODO Support starring the starboard message
 
             var messageId = args.Message.Id;
             var starrerId = args.User.Id;
@@ -60,10 +60,10 @@ namespace Volte.Services
             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
             {
                 // Add the star to the database
-                if (entry.StarredUserIds.Add(starrerId))
+                if (entry.StarredUsers.TryAdd(starrerId, args.Channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
                 {
                     // Update message star count
-                    using (await _messageWriteLock.LockAsync(messageId))
+                    using (await _messageWriteLock.LockAsync(entry.MessageId))
                     {
                         await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
                     }
@@ -77,7 +77,7 @@ namespace Volte.Services
                     }
                 }
             }
-            else
+            else if (args.Channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
             {
                 if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == _starEmoji)?.Count >= starboard.StarsRequiredToPost)
                 {
@@ -88,12 +88,15 @@ namespace Volte.Services
                             messageId,
                             id => new StarboardEntry
                             {
-                                StarredUserIds = {starrerId},
+                                StarredUsers =
+                                {
+                                    [starrerId] = StarTarget.OriginalMessage
+                                },
                                 MessageId = messageId
                             },
                             (id, existingEntry) =>
                             {
-                                existingEntry.StarredUserIds.Add(starrerId);
+                                existingEntry.StarredUsers.Add(starrerId, StarTarget.OriginalMessage);
                                 return existingEntry;
                             }
                         );
@@ -114,24 +117,24 @@ namespace Volte.Services
             
             var starboardChannel = await args.Client.GetChannelAsync(starboard.StarboardChannel);
             if (starboardChannel is null) return;
-            if (args.Channel == starboardChannel) return; // TODO Support starring the starboard message
 
             var messageId = args.Message.Id;
             var starrerId = args.User.Id;
 
             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
             {
-                // Add the star to the database
-                if (entry.StarredUserIds.Remove(starrerId))
+                // Remove the star from the database
+                if (entry.StarredUsers.Remove(starrerId))
                 {
                     // Update message star count
-                    using (await _messageWriteLock.LockAsync(messageId))
+                    using (await _messageWriteLock.LockAsync(entry.MessageId))
                     {
                         if (entry.StarCount < starboard.StarsRequiredToPost)
                         {
                             // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
                             // so we do not need to pass a value to TryRemove.
-                            data.Extras.StarboardedMessages.TryRemove(messageId, out _);
+                            data.Extras.StarboardedMessages.TryRemove(entry.MessageId, out _);
+                            data.Extras.StarboardedMessages.TryRemove(entry.StarboardMessageId, out _);
                             await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
                         }
                     }
@@ -141,7 +144,51 @@ namespace Volte.Services
 
         private async Task HandleReactionsClearAsync(MessageReactionsClearEventArgs args)
         {
-            await Task.Yield();
+            if (args.Channel is DiscordDmChannel) return;
+
+            var data = _db.GetData(args.Guild.Id);
+            var starboard = data.Configuration.Starboard;
+            
+            var starboardChannel = await args.Client.GetChannelAsync(starboard.StarboardChannel);
+            if (starboardChannel is null) return;
+
+            var messageId = args.Message.Id;
+
+            if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
+            {
+                var clearedStarTarget = messageId == entry.MessageId
+                    ? StarTarget.OriginalMessage
+                    : StarTarget.StarboardMessage;
+                
+                // TODO May have issues with multithread access. Revisit if concurrency is needed.
+                var clearList = (
+                    from kvp in entry.StarredUsers
+                    where kvp.Value == clearedStarTarget
+                    select kvp.Key
+                ).ToArray();
+
+                // Remove the stars from the database
+                if (clearList.Length > 0)
+                {
+                    foreach (var userId in clearList)
+                    {
+                        entry.StarredUsers.Remove(userId);
+                    }
+                    
+                    // Update message star count
+                    using (await _messageWriteLock.LockAsync(entry.MessageId))
+                    {
+                        if (entry.StarCount < starboard.StarsRequiredToPost)
+                        {
+                            // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
+                            // so we do not need to pass a value to TryRemove.
+                            data.Extras.StarboardedMessages.TryRemove(entry.MessageId, out _);
+                            data.Extras.StarboardedMessages.TryRemove(entry.StarboardMessageId, out _);
+                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        }
+                    }
+                }
+            }
         }
         
         /// <summary>

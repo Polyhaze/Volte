@@ -9,16 +9,21 @@ namespace Volte.Core.Entities
     {
         public StarboardEntry()
         {
-            StarredUserIds = new HashSet<ulong>();
+            StarredUsers = new Dictionary<ulong, StarTarget>();
         }
 
         [JsonPropertyName("starred_users")]
-        public HashSet<ulong> StarredUserIds { get; set; }
+        public Dictionary<ulong, StarTarget> StarredUsers { get; set; }
         [JsonPropertyName("starred_message_id")]
         public ulong MessageId { get; set; }
         [JsonIgnore]
-        public int StarCount => StarredUserIds.Count;
+        public int StarCount => StarredUsers.Count;
         [JsonPropertyName("starboard_message_id")]
         public ulong StarboardMessageId { get; set; }
+    }
+
+    public enum StarTarget : byte
+    {
+        OriginalMessage, StarboardMessage
     }
 }
