@@ -9,6 +9,7 @@ namespace Volte.Core.Entities
         {
             Moderation = new ModerationOptions();
             Welcome = new WelcomeOptions();
+            Starboard = new StarboardOptions();
         }
 
         [JsonPropertyName("autorole")]
