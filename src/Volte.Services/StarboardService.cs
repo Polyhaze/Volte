@@ -257,6 +257,10 @@ namespace Volte.Services
                 return null;
             }
 
+            // Discord API limitation: Fetch a full message. The message in OnReactionXXX does not contain an Author
+            // field unless it is present in DSharpPlus' message cache.
+            message = await message.Channel.GetMessageAsync(message.Id);
+
             var e = new DiscordEmbedBuilder()
                 .WithSuccessColor()
                 .WithDescription(message.Content)
