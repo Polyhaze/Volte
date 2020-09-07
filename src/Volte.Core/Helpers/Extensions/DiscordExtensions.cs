@@ -70,11 +70,41 @@ namespace Gommon
 
             do
             {
-                pageList.Add(new Page(embed: new DiscordEmbedBuilder().WithDescription(temp.Take(entriesPerPage).Select(x => x.ToString()).Join("\n"))));
+                pageList.Add(new Page(
+                    embed: new DiscordEmbedBuilder().WithDescription(temp.Take(entriesPerPage).Select(x => x.ToString())
+                        .Join("\n"))));
                 temp.RemoveRange(0, temp.Count < entriesPerPage ? temp.Count : entriesPerPage);
             } while (!temp.IsEmpty());
 
             return pageList;
+        }
+
+        public static List<Page> GeneratePages(this IEnumerable<(string Name, object Value)> current,
+            int fieldsPerPage = 1)
+        {
+            return current.Select(x => (x.Name, x.Value, true)).GeneratePages(fieldsPerPage);
+        }
+
+        public static List<Page> GeneratePages(this IEnumerable<(string Name, object Value, bool Inline)> current, 
+            int fieldsPerPage = 1)
+        {
+            var temp = current.ToList();
+            var pages = new List<Page>();
+
+            do
+            {
+                var fields = temp.Take(fieldsPerPage);
+                var result = new DiscordEmbedBuilder();
+                foreach (var (name, value, inline) in fields)
+                {
+                    result.AddField(name, value, inline);
+                }
+
+                pages.Add(new Page(embed: result));
+                temp.RemoveRange(0, temp.Count < fieldsPerPage ? temp.Count : fieldsPerPage);
+            } while (!temp.IsEmpty());
+
+            return pages;
         }
 
         public static async Task SendPaginatedMessageAsync(this VolteContext ctx, List<Page> pages, string embedTitle = null)

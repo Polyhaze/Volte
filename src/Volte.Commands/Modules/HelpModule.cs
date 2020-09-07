@@ -78,9 +78,9 @@ namespace Volte.Commands.Modules
                 {
                     return None(async () =>
                     {
+                        var fields = module.Commands.Select(x => (x.Name, x.Description.HardCast<object>()));
                         await Context.SendPaginatedMessageAsync(
-                            module.Commands.Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
-                                .Select(x => x.FullAliases[0]).GetPages(15),
+                            fields.GeneratePages(12),
                             $"Commands in Module {module.SanitizeName()}");
                     }, false);
                 }
