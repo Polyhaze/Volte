@@ -36,5 +36,6 @@
         <PackageReference Include="Qmmands" Version="3.1.3-nightly-00248" />
         <PackageReference Include="RestSharp" Version="106.11.5-alpha.0.18" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+        <PackageReference Include="TwitchLib.Api" Version="3.1.4-CI-20200902-20" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -7,6 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
 using RestSharp;
+using TwitchLib.Api;
+using TwitchLib.Api.Core;
+using TwitchLib.Api.Core.Enums;
+using TwitchLib.Api.Services;
 using Volte;
 using Volte.Core;
 using Volte.Services;
@@ -19,12 +24,19 @@ namespace Gommon
         public static IServiceCollection AddAllServices(this IServiceCollection coll)
         {
             var logger = new LoggingService();
+            var twitch = new TwitchAPI(logger, settings: new ApiSettings
+            {
+                ClientId = Config.Tokens.TwitchApi
+            });
+            var monitor = new LiveStreamMonitorService(twitch);
+            
             //add all other services; formerly in the VolteBot class
             coll.AddVolteServices()
                 .AddSingleton(new RestClient {UserAgent = $"Volte/{Version.FullVersion}"})
                 .AddSingleton<HttpClient>()
                 .AddSingleton<CancellationTokenSource>()
                 .AddSingleton(logger)
+                .AddSingleton(monitor)
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoresExtraArguments = true,

@@ -92,6 +92,20 @@ namespace Volte.Core.Entities
         [JsonPropertyName("delete_invalid_stars")]
         public bool DeleteInvalidStars { get; set; }
     }
+    public sealed class TwitchOptions
+    {
+        [JsonPropertyName("twitch_channel")]
+        public ulong ChannelId { get; set; }
+        
+        [JsonPropertyName("twitch_streamers")]
+        public List<string> Streamers { get; set; }
+        
+        [JsonPropertyName("twitch_enabled")]
+        public bool Enabled { get; set; }
+        
+        [JsonPropertyName("twitch_notification_type")]
+        public NotificationType NotificationType { get; set; }
+    }
 
     public static class BlacklistActions
     {
@@ -113,5 +127,12 @@ namespace Volte.Core.Entities
         Kick,
         Ban
 
+    }
+
+    public enum NotificationType
+    {
+        MentionEveryone,
+        MentionHere,
+        Nothing
     }
 }
