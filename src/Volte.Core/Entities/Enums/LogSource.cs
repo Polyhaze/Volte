@@ -33,13 +33,13 @@ namespace Volte.Core.Entities
         /// <summary>
         ///     Indicates that this log message is from the Volte itself.
         /// </summary>
-        [LogSource(KnownColor.LawnGreen)]
+        [LogSource(KnownColor.LawnGreen, Name = "Core")]
         Volte = 6,
         
         [LogSource(KnownColor.Green, Name = "Interactive")]
         Interactivity = 7,
         
-        [LogSource(KnownColor.Aqua)]
+        [LogSource(KnownColor.Aqua, Name = "Shard")]
         AutoShard = 8,
 
         [LogSource(KnownColor.Indigo)]
@@ -68,7 +68,7 @@ namespace Volte.Core.Entities
         /// <summary>
         /// Events typically emitted whenever WebSocket connections fail or are terminated.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 102, Name = "Gateway")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 102, Name = "Connection")] 
         ConnectionFailure = MaxValue + 102,
 
         /// <summary>
@@ -86,49 +86,49 @@ namespace Volte.Core.Entities
         /// <summary>
         /// Events emitted for various high-level WebSocket receive events.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 105, Name = "WebSocket")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 105, Name = nameof(WebSocket))]
         WebSocketReceive = MaxValue + 105,
 
         /// <summary>
         /// Events emitted for various low-level WebSocket receive events.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 106, Name = "WebSocket")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 106, Name = nameof(WebSocket))]
         WebSocketReceiveRaw = MaxValue + 106,
 
         /// <summary>
         /// Events emitted for various low-level WebSocket send events.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 107, Name = "WebSocket")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 107, Name = nameof(WebSocket))]
         WebSocketSendRaw = MaxValue + 107,
 
         /// <summary>
         /// Events emitted for various WebSocket payload processing failures, typically when deserialization or decoding fails.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 108, Name = "WebSocket")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 108, Name = nameof(WebSocket))]
         WebSocketReceiveFailure = MaxValue + 108,
 
         /// <summary>
         /// Events pertaining to connection lifecycle, specifically, heartbeats.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 109, Name = "Heartbeat")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 109, Name = nameof(Heartbeat))] 
         Heartbeat = MaxValue + 109,
 
         /// <summary>
         /// Events pertaining to various heartbeat failures, typically fatal.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 110, Name = "Heartbeat")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 110, Name = nameof(Heartbeat))] 
         HeartbeatFailure = MaxValue + 110,
 
         /// <summary>
         /// Events pertaining to clean connection closes.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 111, Name = "Gateway")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 111, Name = "Connection")] 
         ConnectionClose = MaxValue + 111,
 
         /// <summary>
         /// Events emitted when REST processing fails for any reason.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 112, Name = "Rest")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 112, Name = "RestErr")] 
         RestError = MaxValue + 112,
 
         /// <summary>
@@ -158,19 +158,19 @@ namespace Volte.Core.Entities
         /// <summary>
         /// Events pertaining to audit log processing.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 117)] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 117, Name = "DSharpPlus")] 
         AuditLog = MaxValue + 117,
 
         /// <summary>
         /// Events containing raw (but decompressed) payloads, received from Discord Gateway.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 118, Name = "Gateway")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 118, Name = "GatewayRx")] 
         GatewayWsRx = MaxValue + 118,
 
         /// <summary>
         /// Events containing raw payloads, as they're being sent to Discord Gateway.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 119, Name = "Gateway")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 119, Name = "GatewayTx")] 
         GatewayWsTx = MaxValue + 119,
 
         /// <summary>
@@ -188,13 +188,13 @@ namespace Volte.Core.Entities
         /// <summary>
         /// Events containing raw payloads, as they're received from Discord's REST API.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 122, Name = "Rest")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 122, Name = "RestRx")] 
         RestRx = MaxValue + 122,
 
         /// <summary>
         /// Events containing raw payloads, as they're sent to Discord's REST API.
         /// </summary>
-        [LogSource(KnownColor.LimeGreen, MapsToEventId = 123, Name = "Rest")] 
+        [LogSource(KnownColor.LimeGreen, MapsToEventId = 123, Name = "RestTx")] 
         RestTx = MaxValue + 123,
         
         /// <summary>

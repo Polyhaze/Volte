@@ -87,7 +87,6 @@ namespace Volte.Services
                     await module.Context.ReplyAsync(embed.WithTitle("Eval")
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                         .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                        .WithFooter("Click the X below to delete this message.")
                         .WithDescription(Formatter.BlockCode(res, "ini")));
                 }
             }
@@ -96,8 +95,7 @@ namespace Volte.Services
                 await module.Context.ReplyAsync(embed
                     .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
                     .AddField("Message", ex.Message, true)
-                    .WithTitle("Error")
-                    .WithFooter("Click the X below to delete this message."));
+                    .WithTitle("Error"));
             }
 
             await msg.DeleteAsync();
