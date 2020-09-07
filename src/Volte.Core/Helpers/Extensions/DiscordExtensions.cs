@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Interactivity;
+using JetBrains.Annotations;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Helpers;
@@ -48,19 +51,18 @@ namespace Gommon
                    IsGuildOwner(user);
         }
 
+        [CanBeNull]
         public static DiscordRole GetHighestRole(this DiscordMember member)
         {
-            var roles = member.Roles.OrderByDescending(x => x.Position);
-            return roles.FirstOrDefault();
+            return member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
         }
         
-        public static DiscordRole GetHighestRoleWithColor(this DiscordMember member)
-        {
-            var coloredRoles = member.Roles.Where(x => x.Color.Value != new DiscordColor(0, 0, 0).Value);
-            var roles = coloredRoles.OrderByDescending(x => x.Position);
-            return roles.FirstOrDefault();
-        }
+        [CanBeNull]
+        public static DiscordRole GetHighestRoleWithColor(this DiscordMember member) =>
+            member.Roles.Where(x => x.HasColor())
+                .OrderByDescending(x => x.Position).FirstOrDefault();
 
+        [NotNull]
         public static List<Page> GetPages<T>(this IEnumerable<T> current, int entriesPerPage = 1)
         {
             var temp = current.ToList();
@@ -140,25 +142,32 @@ namespace Gommon
                 return false;
             }
         }
-
+        
+        [NotNull]
         public static string GetInviteUrl(this DiscordShardedClient client, bool withAdmin = true)
             => withAdmin
                 ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
                 : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
 
+        [CanBeNull]
         public static DiscordGuild GetPrimaryGuild(this DiscordShardedClient client)
             => client.GetGuild(405806471578648588);
 
+        [NotNull]
         public static DiscordEmbedBuilder AddField(this DiscordEmbedBuilder builder, string name, object value,
             bool inline = false)
             => builder.AddField(name, value.ToString(), inline);
-        
+
+        [NotNull]
+        public static DiscordEmbedBuilder WithRequester(this DiscordEmbedBuilder builder, DiscordUser user) =>
+            builder.WithFooter($"Requested by {user.Username}#{user.Discriminator}.", user.AvatarUrl);
+
         // https://discord.com/developers/docs/topics/gateway#sharding-sharding-formula
         /// <summary>
         /// Gets a shard id from a guild id and total shard count.
         /// </summary>
         /// <param name="guildId">The guild id the shard is on.</param>
-        /// <param name="shardCount">The total amount of shards.</param>
+        /// <param name="client">The current Discord client.</param>
         /// <returns>The shard id.</returns>
         public static int GetShardId(this DiscordShardedClient client, ulong guildId)
             => (int)(guildId >> 22) % client.ShardClients.Count;
@@ -185,12 +194,12 @@ namespace Gommon
             client.GuildDeleted += async args => await guild.DoAsync(args);
             client.GuildMemberAdded += async args =>
             {
-                if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(args);
+                if (Config.EnabledFeatures.Welcome) await welcome.DoAsync(args);
                 if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(args);
             };
             client.GuildMemberRemoved += async args =>
             {
-                if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(args);
+                if (Config.EnabledFeatures.Welcome) await welcome.DoAsync(args);
             };
 
             client.Ready += async args => await evt.OnReadyAsync(client, args);
@@ -247,19 +256,13 @@ namespace Gommon
 
         public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 
-        public static bool ShouldHandle(this DiscordMessage message)
-        {
-            return !message.Author.IsBot;
-        }
-
-        public static string GetEffectiveUsername(this DiscordMember user) =>
-            user.Nickname ?? user.Username;
+        public static bool ShouldHandle(this DiscordMessage message) => !message.Author.IsBot;
 
         public static bool HasAttachments(this DiscordMessage message)
             => !message.Attachments.IsEmpty();
 
         public static bool HasColor(this DiscordRole role)
-            => !(role.Color.Value is 0);
+            => role.Color.Value != new DiscordColor(0, 0, 0).Value;
         
         public static Permissions GetGuildPermissions(this DiscordMember member)
         {

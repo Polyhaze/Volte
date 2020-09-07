@@ -11,7 +11,9 @@ using Colorful;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Qmmands;
 using Volte.Core;
 using Volte.Core.Entities;
 using Color = System.Drawing.Color;
@@ -192,7 +194,7 @@ namespace Volte.Services
         private void LogExceptionInDiscord(Exception e, IServiceProvider provider)
         {
             var client = provider.Get<DiscordShardedClient>();
-            var http = provider.Get<HttpClient>();
+            var http = provider.Get<HttpService>();
 
             if (!Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
@@ -202,12 +204,11 @@ namespace Volte.Services
 
             _ = Task.Run(async () =>
             {
-                var response = await http.PostAsync("https://paste.greemdev.net/documents", new StringContent(e.StackTrace, Encoding.UTF8, "text/plain"));
-                var jDocument = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-                var url = $"https://paste.greemdev.net/{jDocument.RootElement.GetProperty("key").GetString()}.cs";
+                var url = await http.PostToGreemPasteAsync(e.StackTrace);
                 await new DiscordEmbedBuilder()
                     .WithErrorColor()
-                    .WithTitle($"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
+                    .WithTitle(
+                        $"Exception at {DateTimeOffset.UtcNow.FormatDate()}, {DateTimeOffset.UtcNow.FormatFullTime()} UTC")
                     .AddField("Exception Type", e.GetType().AsPrettyString(), true)
                     .AddField("Exception Message", e.Message, true)
                     .WithDescription($"View the full Stack Trace [here]({url}).")
@@ -226,15 +227,15 @@ namespace Volte.Services
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            if (logLevel is LogLevel.Trace && (Version.ReleaseType is Version.DevelopmentStage.Development ||
-                Config.EnableDebugLogging)) return true;
+            if (logLevel is LogLevel.Trace && !(Version.ReleaseType is Version.DevelopmentStage.Development ||
+                Config.EnableDebugLogging)) return false;
 
             return true;
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            throw new NotImplementedException();
+            return new ServiceCollection().BuildServiceProvider();
         }
 
         public void Dispose()

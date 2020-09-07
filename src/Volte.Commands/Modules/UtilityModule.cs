@@ -17,7 +17,7 @@ using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Core.Models.Misc;
 using Volte.Services;
-using Volte.Volte.Commands.Checks;
+using Volte.Volte.Commands.Checks; //using System.ComponentModel;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -25,6 +25,9 @@ namespace Volte.Commands.Modules
 {
     public sealed class UtilityModule : VolteModule 
     {
+        public CommandsService CommandsService { get; set; }
+        public HttpService HttpService { get; set; }
+        
         [Command("Tree")]
         [Description("Shows all categories in this guild and their children channels.")]
         [Remarks("tree")]
@@ -39,7 +42,7 @@ namespace Volte.Commands.Modules
                     .Where(a => a.ParentId == null)).OrderBy(c => c.Position))
             {
                 if (CanSeeChannel(Context.Member, c))
-                    uncategorized.AppendLine($"- {(c.Type == ChannelType.Voice ? "" : "#")}{c.Name}");
+                    uncategorized.AppendLine($"- {(c.Type is ChannelType.Voice ? "" : "#")}{c.Name}");
             }
 
             uncategorized.AppendLine();
@@ -78,8 +81,7 @@ namespace Volte.Commands.Modules
             _nato.First(x => x.Key.ToString().EqualsIgnoreCase(i.ToString())).Value;
 
         private readonly string _baseWikiUrl = "https://github.com/Ultz/Volte/wiki";
-        public CommandsService CommandsService { get; set; }
-        
+
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
             DiscordMember user)
         {
@@ -156,37 +158,11 @@ namespace Volte.Commands.Modules
         [Remarks("snowflake {Ulong}")]
         public Task<ActionResult> SnowflakeAsync([RequiredArgument] ulong id)
         {
-            var date = SnowflakeUtils.FromSnowflake(id);
+            var date = id.FromDiscordSnowflake();
             return Ok(new StringBuilder()
                 .AppendLine($"**Date:** {date.FormatDate()}")
                 .AppendLine($"**Time**: {date.FormatFullTime()}")
                 .ToString());
-        }
-
-        /// <summary>
-        ///     Provides a series of helper methods for handling snowflake identifiers.
-        /// </summary>
-        /// <remarks>Taken from <a href="https://github.com/discord-net/Discord.Net/blob/ff0fea98a65d907fbce07856f1a9ef4aebb9108b/src/Discord.Net.Core/Utils/SnowflakeUtils.cs">Discord.Net</a> source.</remarks>
-        private static class SnowflakeUtils
-        {
-            /// <summary>
-            ///     Resolves the time of which the snowflake is generated.
-            /// </summary>
-            /// <param name="value">The snowflake identifier to resolve.</param>
-            /// <returns>
-            ///     A <see cref="DateTimeOffset" /> representing the time for when the object is geenrated.
-            /// </returns>
-            public static DateTimeOffset FromSnowflake(ulong value)
-                => DateTimeOffset.FromUnixTimeMilliseconds((long)((value >> 22) + 1420070400000UL));
-            /// <summary>
-            ///     Generates a pseudo-snowflake identifier with a <see cref="DateTimeOffset"/>.
-            /// </summary>
-            /// <param name="value">The time to be used in the new snowflake.</param>
-            /// <returns>
-            ///     A <see cref="UInt64" /> representing the newly generated snowflake identifier.
-            /// </returns>
-            public static ulong ToSnowflake(DateTimeOffset value)
-                => ((ulong)value.ToUnixTimeMilliseconds() - 1420070400000UL) << 22;
         }
 
         [Command("ShowColor", "Sc")]
@@ -444,8 +420,8 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithThumbnail(user.AvatarUrl)
                 .WithTitle("User Info")
-                .AddField("User ID", user.Id, true)
-                .AddField("Is Bot", user.IsBot, true)
+                .AddField("User ID", user.Id)
+                .AddField("Is Bot", user.IsBot)
                 .AddField("Account Created",
                     $"{user.CreationTimestamp.FormatDate()}, {user.CreationTimestamp.FormatFullTime()}")
                 .AddField("Joined This Guild",
@@ -485,7 +461,8 @@ namespace Volte.Commands.Modules
                 return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");
             }
 
-            var target = Context.Guild.Roles.FirstOrDefault(x => x.Value.Name.EqualsIgnoreCase(role.Name)).Value;
+            Context.Guild.Roles.FirstOrDefault(x => x.Value.Name.EqualsIgnoreCase(role.Name)).Deconstruct(out _, out var target);
+            
             if (target is null)
             {
                 return BadRequest($"The role **{role.Name}** doesn't exist in this guild.");
@@ -493,6 +470,15 @@ namespace Volte.Commands.Modules
 
             await Context.Member.RevokeRoleAsync(target);
             return Ok($"Took away your **{role.Name}** role.");
+        }
+
+        [Command("Hastebin")]
+        [Description("Posts the provided content to https://paste.greemdev.net and returns the URL so you can send it to people.")]
+        [Remarks("hastebin {String}")]
+        public async Task<ActionResult> HastebinAsync([Remainder, RequiredArgument] string content)
+        {
+            var url = await HttpService.PostToGreemPasteAsync(content);
+            return Ok($"Click [here]({url}) to see the paste!");
         }
 
         [Command("Iam")]
@@ -590,7 +576,7 @@ namespace Volte.Commands.Modules
             user ??= Context.Member;
             return Ok(Context.CreateEmbedBuilder()
                 .WithAuthor(user)
-                .WithImageUrl(user.GetAvatarUrl(ImageFormat.Auto, 1024)));
+                .WithImageUrl(user.GetAvatarUrl(ImageFormat.Auto)));
         }
         
         private PollInfo GetPollBody(IEnumerable<string> choices)

@@ -1,5 +1,6 @@
 using System;
 using DSharpPlus.Entities;
+using Gommon;
 using Volte.Commands;
 
 namespace Volte.Core.Entities
@@ -82,5 +83,47 @@ namespace Volte.Core.Entities
 
             return this;
         }
+
+        internal string Format(FormatType type)
+        {
+            return type switch
+            {
+                FormatType.Reason => $"**Reason:** {Reason}",
+                FormatType.Action => $"**Action:** {ActionType}",
+                FormatType.Moderator => $"**Moderator:** {Moderator.Mention} ({Moderator.Id})",
+                FormatType.Channel => $"**Channel:** {Context.Channel.Mention}",
+                FormatType.Case => $"**Case:** {Context.GuildData.Extras.ModActionCaseNumber}",
+                FormatType.Count => $"**Messages Cleared:** {Count}",
+                FormatType.TargetUser => ActionType switch
+                {
+                    ModActionType.Delete => $"**Message Deleted:** {TargetId}",
+                    ModActionType.IdBan => $"**User:** {TargetId}",
+                    _ => $"**User:** {TargetUser} ({TargetUser.Id})"
+                },
+                FormatType.Time => $"**Time:** {Time.FormatFullTime()}, {Time.FormatDate()}",
+                _ => throw new FormatException("FormatType was invalid.")
+            };
+        }
+
+        public string FormatReason() => Format(FormatType.Reason);
+        public string FormatAction() => Format(FormatType.Action);
+        public string FormatModerator() => Format(FormatType.Moderator);
+        public string FormatChannel() => Format(FormatType.Channel);
+        public string FormatCase() => Format(FormatType.Case);
+        public string FormatCount() => Format(FormatType.Count);
+        public string FormatTargetUser() => Format(FormatType.TargetUser);
+        public string FormatTime() => Format(FormatType.Time);
+    }
+
+    internal enum FormatType
+    {
+        Reason,
+        Action,
+        Moderator,
+        Channel,
+        Case,
+        Count,
+        TargetUser,
+        Time
     }
 }

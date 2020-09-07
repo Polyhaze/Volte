@@ -43,7 +43,7 @@ namespace Volte.Commands
 
         public DiscordEmbedBuilder CreateEmbedBuilder(string content = null) => new DiscordEmbedBuilder()
             .WithColor(Member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor))
-            .WithAuthor(Member.GetEffectiveUsername(), iconUrl: Member.AvatarUrl)
+            .WithRequester(Member)
             .WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);

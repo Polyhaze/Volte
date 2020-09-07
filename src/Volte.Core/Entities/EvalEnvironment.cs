@@ -27,7 +27,8 @@ namespace Volte.Core.Entities
         public static EvalEnvironment From(VolteContext ctx)
         {
             var shardId = ctx.Client.GetShardId(ctx.Guild.Id);
-            var e = new EvalEnvironment {
+            var e = new EvalEnvironment 
+            {
                 Context = ctx,
                 Client = ctx.Client.ShardClients[shardId],
                 Data = ctx.ServiceProvider.Get<DatabaseService>().GetData(ctx.Guild),
@@ -48,13 +49,14 @@ namespace Volte.Core.Entities
         public DatabaseService Database { get; set; }
         public EvalEnvironment Environment { get; set; }
 
-        public DiscordMember Membe(ulong id) => Context.Guild.Members[id];
-        public DiscordMember Member(string username) => Context.Guild.Members.Select(x => x.Value).FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
+        public DiscordMember Member(ulong id) => Context.Guild.Members[id];
+        public DiscordMember Member(string username) => Context.Guild.Members.Values.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || 
+            (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
         public DiscordChannel TextChannel(ulong id) => Context.Client.FindFirstChannel(id);
         public Task<DiscordMessage> MessageAsync(ulong id) => Context.Channel.GetMessageAsync(id);
 
         public DiscordGuild Guild(ulong id) => Context.Client.GetGuild(id);
-        public T GetFromProvider<T>() => Context.ServiceProvider.GetRequiredService<T>();
+        public T GetService<T>() => Context.ServiceProvider.GetRequiredService<T>();
 
         public Task<DiscordMessage> MessageAsync(string id)
         {
@@ -137,7 +139,7 @@ namespace Volte.Core.Entities
                     if (inspection.Length > 1800) break;
 
                     var sep = new string(' ', columnWidth - prop.Name.Length);
-                    inspection.Append(prop.Name).Append(":").Append(sep).Append(ReadValue(prop, obj)).AppendLine();
+                    inspection.Append(prop.Name).Append(':').Append(sep).Append(ReadValue(prop, obj)).AppendLine();
                 }
             }
             

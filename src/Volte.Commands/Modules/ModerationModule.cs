@@ -210,7 +210,7 @@ namespace Volte.Commands.Modules
             var e = Context.CreateEmbedBuilder()
                 .WithAuthor($"{user}'s Moderator Profile", user.GetAvatarUrl(ImageFormat.Auto, 256))
                 .WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto, 512))
-                .AddField("Username/Nickname", user.GetEffectiveUsername(), true)
+                .AddField("Username/Nickname", user.DisplayName, true)
                 .AddField("Discriminator", user.Discriminator, true)
                 .AddField("Can use Volte Mod Commands", user.IsModerator(Context), true)
                 .AddField("Has ever been Kicked/Banned", ud.Actions.Any(x

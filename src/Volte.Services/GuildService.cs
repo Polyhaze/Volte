@@ -92,7 +92,7 @@ namespace Volte.Services
             var bots = all.Where(u => u.IsBot).ToList();
 
             var e = new DiscordEmbedBuilder()
-                .WithAuthor(args.Guild.Owner.GetEffectiveUsername(), iconUrl: args.Guild.Owner.GetAvatarUrl(ImageFormat.Auto))
+                .WithAuthor(args.Guild.Owner)
                 .WithTitle("Joined Guild")
                 .AddField("Name", args.Guild.Name, true)
                 .AddField("ID", args.Guild.Id, true)
