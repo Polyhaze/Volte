@@ -18,6 +18,7 @@ namespace Volte.Services
 
         private readonly DiscordShardedClient _client;
         private readonly ILiteCollection<GuildData> _guildData;
+        private readonly ILiteCollection<StargazerCollection> _stargazerData;
 
         public DatabaseService(DiscordShardedClient discordShardedClient)
         {
@@ -25,6 +26,9 @@ namespace Volte.Services
             
             _guildData = Database.GetCollection<GuildData>("guilds");
             _guildData.EnsureIndex(s => s.Id, true);
+            
+            _stargazerData = Database.GetCollection<StargazerCollection>("stargazers");
+            _stargazerData.EnsureIndex(s => s.MessageId, true);
         }
 
         public void ModifyAndSaveData(ulong id, Func<GuildData, GuildData> func)
@@ -47,7 +51,7 @@ namespace Volte.Services
         {
             var conf = _guildData.FindOne(g => (ulong)g.Id == (ulong)id);
             if (conf is not null) return conf;
-            var newConf = Create(_client.GetGuild(id));
+            var newConf = CreateData(_client.GetGuild(id));
             _guildData.Insert(newConf);
             return newConf;
         }
@@ -57,7 +61,7 @@ namespace Volte.Services
             _guildData.Update(newConfig);
         }
 
-        private static GuildData Create(DiscordGuild guild)
+        private static GuildData CreateData(DiscordGuild guild)
             => new GuildData
             {
                 Id = guild.Id,
@@ -99,6 +103,12 @@ namespace Volte.Services
                     Warns = new List<Warn>()
                 }
             };
+        
+        
+        public void UpdateStargazers(StargazerCollection collection)
+        {
+            _stargazerData.Insert(collection);
+        }
 
         public void Dispose() 
             => Database.Dispose();

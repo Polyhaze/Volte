@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using DSharpPlus.Interactivity.Concurrency;
+using LiteDB;
 
 namespace Volte.Core.Entities
 {
@@ -9,17 +10,33 @@ namespace Volte.Core.Entities
     {
         public StarboardEntry()
         {
-            StarredUsers = new Dictionary<ulong, StarTarget>();
+            StargazerCollection = new StargazerCollection();
         }
 
         [JsonPropertyName("starred_users")]
-        public Dictionary<ulong, StarTarget> StarredUsers { get; set; }
+        [BsonRef("stargazers")]
+        public StargazerCollection StargazerCollection { get; set; }
         [JsonPropertyName("starred_message_id")]
         public ulong MessageId { get; set; }
         [JsonIgnore]
-        public int StarCount => StarredUsers.Count;
+        public int StarCount => StargazerCollection.Count;
         [JsonPropertyName("starboard_message_id")]
         public ulong StarboardMessageId { get; set; }
+    }
+
+    public class StargazerCollection
+    {
+        public StargazerCollection()
+        {
+            Stargazers = new Dictionary<ulong, StarTarget>();
+        }
+
+        [JsonPropertyName("starred_message_id")]
+        public ulong MessageId { get; set; }
+        [JsonPropertyName("stargazers")]
+        public Dictionary<ulong, StarTarget> Stargazers { get; set; }
+        [JsonIgnore]
+        public int Count => Stargazers.Count;
     }
 
     public enum StarTarget : byte

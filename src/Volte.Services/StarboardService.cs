@@ -63,7 +63,7 @@ namespace Volte.Services
                 using (await _messageStargazerWriteLock.LockAsync(entry.MessageId))
                 {
                     // Add the star to the database
-                    if (entry.Stargazers.TryAdd(starrerId, args.Channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
+                    if (entry.StargazerCollection.Stargazers.TryAdd(starrerId, args.Channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
                     {
                         // Update message star count
                         using (await _starListWriteLock.LockAsync(entry.MessageId))
@@ -79,6 +79,8 @@ namespace Volte.Services
                             await args.Message.DeleteReactionAsync(_starEmoji, args.User, "Star reaction is invalid: User has already starred!");
                         }
                     }
+
+                    _db.UpdateStargazers(entry.StargazerCollection);
                 }
             }
             else if (args.Channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
@@ -92,23 +94,34 @@ namespace Volte.Services
                         {
                             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out entry))
                             {
-                                entry.Stargazers.Add(starrerId, StarTarget.OriginalMessage);
+                                entry.StargazerCollection.Stargazers.Add(starrerId, StarTarget.OriginalMessage);
                             }
                             else
                             {
                                 entry = data.Extras.StarboardedMessages[messageId] = new StarboardEntry
                                 {
-                                    Stargazers =
+                                    StargazerCollection =
                                     {
-                                        [starrerId] = StarTarget.OriginalMessage
+                                        Stargazers =
+                                        {
+                                            [starrerId] = StarTarget.OriginalMessage
+                                        }
                                     },
                                     MessageId = messageId
                                 };
                             }
+                            
+                            _db.ModifyAndSaveData(args.Guild.Id, e =>
+                            {
+                                e.Extras.StarboardedMessages = data.Extras.StarboardedMessages;
+                                return e;
+                            });
 
                             await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
                         }
                     }
+                    
+                    _db.UpdateStargazers(entry.StargazerCollection);
                 }
             }
         }
@@ -133,7 +146,7 @@ namespace Volte.Services
                 using (await _messageStargazerWriteLock.LockAsync(entry.MessageId))
                 {
                     // Remove the star from the database
-                    if (entry.Stargazers.Remove(starrerId))
+                    if (entry.StargazerCollection.Stargazers.Remove(starrerId))
                     {
                         // Update message star count
                         using (await _starListWriteLock.LockAsync(entry.MessageId))
@@ -148,6 +161,8 @@ namespace Volte.Services
                             }
                         }
                     }
+                    
+                    _db.UpdateStargazers(entry.StargazerCollection);
                 }
             }
         }
@@ -172,9 +187,8 @@ namespace Volte.Services
                         ? StarTarget.OriginalMessage
                         : StarTarget.StarboardMessage;
 
-                    // TODO May have issues with multithread access. Revisit if concurrency is needed.
                     var clearList = (
-                        from kvp in entry.Stargazers
+                        from kvp in entry.StargazerCollection.Stargazers
                         where kvp.Value == clearedStarTarget
                         select kvp.Key
                     ).ToArray();
@@ -184,7 +198,7 @@ namespace Volte.Services
                     {
                         foreach (var userId in clearList)
                         {
-                            entry.Stargazers.Remove(userId);
+                            entry.StargazerCollection.Stargazers.Remove(userId);
                         }
 
                         // Update message star count
@@ -200,6 +214,8 @@ namespace Volte.Services
                             }
                         }
                     }
+                    
+                    _db.UpdateStargazers(entry.StargazerCollection);
                 }
             }
         }
