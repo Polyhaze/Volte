@@ -17,10 +17,14 @@ namespace Volte.Services
         public static readonly LiteDatabase Database = new LiteDatabase("filename=data/Volte.db;upgrade=true;connection=direct");
 
         private readonly DiscordShardedClient _client;
+        private readonly ILiteCollection<GuildData> _guildData;
 
         public DatabaseService(DiscordShardedClient discordShardedClient)
         {
             _client = discordShardedClient;
+            
+            _guildData = Database.GetCollection<GuildData>("guilds");
+            _guildData.EnsureIndex(s => s.Id, true);
         }
 
         public void ModifyAndSaveData(ulong id, Func<GuildData, GuildData> func)
@@ -41,19 +45,16 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            var coll = Database.GetCollection<GuildData>("guilds");
-            var conf = coll.FindOne(g => (ulong)g.Id == (ulong)id);
+            var conf = _guildData.FindOne(g => (ulong)g.Id == (ulong)id);
             if (conf is not null) return conf;
             var newConf = Create(_client.GetGuild(id));
-            coll.Insert(newConf);
+            _guildData.Insert(newConf);
             return newConf;
         }
 
         public void UpdateData(GuildData newConfig)
         {
-            var collection = Database.GetCollection<GuildData>("guilds");
-            collection.EnsureIndex(s => s.Id, true);
-            collection.Update(newConfig);
+            _guildData.Update(newConfig);
         }
 
         private static GuildData Create(DiscordGuild guild)
@@ -93,7 +94,7 @@ namespace Volte.Services
                 {
                     ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
-                    StarboardedMessages = new ConcurrentDictionary<ulong, StarboardEntry>(),
+                    StarboardedMessages = new Dictionary<ulong, StarboardEntry>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
                 }

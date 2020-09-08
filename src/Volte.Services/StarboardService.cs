@@ -16,15 +16,19 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        // Ensures starboard message creations don't happen twice, and edits are atomic.
-        private readonly AsyncDuplicateLock<ulong> _messageWriteLock;
+        // Ensures starboard message creations don't happen twice, and edits are atomic. Also ensures dictionary updates
+        // don't happen at the same time.
+        private readonly AsyncDuplicateLock<ulong> _starListWriteLock;
+        
+        private readonly AsyncDuplicateLock<ulong> _messageStargazerWriteLock;
 
         private readonly DiscordEmoji _starEmoji = DiscordEmoji.FromUnicode(EmojiHelper.Star);
 
         public StarboardService(DatabaseService databaseService)
         {
             _db = databaseService;
-            _messageWriteLock = new AsyncDuplicateLock<ulong>();
+            _starListWriteLock = new AsyncDuplicateLock<ulong>();
+            _messageStargazerWriteLock = new AsyncDuplicateLock<ulong>();
         }
 
 
@@ -56,48 +60,54 @@ namespace Volte.Services
             
             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
             {
-                // Add the star to the database
-                if (entry.StarredUsers.TryAdd(starrerId, args.Channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
+                using (await _messageStargazerWriteLock.LockAsync(entry.MessageId))
                 {
-                    // Update message star count
-                    using (await _messageWriteLock.LockAsync(entry.MessageId))
+                    // Add the star to the database
+                    if (entry.Stargazers.TryAdd(starrerId, args.Channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
                     {
-                        await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        // Update message star count
+                        using (await _starListWriteLock.LockAsync(entry.MessageId))
+                        {
+                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        }
                     }
-                }
-                else
-                {
-                    // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
-                    if (starboard.DeleteInvalidStars)
+                    else
                     {
-                        await args.Message.DeleteReactionAsync(_starEmoji, args.User, "Star reaction is invalid: User has already starred!");
+                        // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
+                        if (starboard.DeleteInvalidStars)
+                        {
+                            await args.Message.DeleteReactionAsync(_starEmoji, args.User, "Star reaction is invalid: User has already starred!");
+                        }
                     }
                 }
             }
             else if (args.Channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
             {
-                if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == _starEmoji)?.Count >= starboard.StarsRequiredToPost)
+                using (await _messageStargazerWriteLock.LockAsync(messageId))
                 {
-                    // Create new star message!
-                    using (await _messageWriteLock.LockAsync(messageId))
+                    if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == _starEmoji)?.Count >= starboard.StarsRequiredToPost)
                     {
-                        var newEntry = data.Extras.StarboardedMessages.AddOrUpdate(
-                            messageId,
-                            _ => new StarboardEntry
+                        // Create new star message!
+                        using (await _starListWriteLock.LockAsync(messageId))
+                        {
+                            if (data.Extras.StarboardedMessages.TryGetValue(messageId, out entry))
                             {
-                                StarredUsers =
-                                {
-                                    [starrerId] = StarTarget.OriginalMessage
-                                },
-                                MessageId = messageId
-                            },
-                            (_, existingEntry) =>
-                            {
-                                existingEntry.StarredUsers.Add(starrerId, StarTarget.OriginalMessage);
-                                return existingEntry;
+                                entry.Stargazers.Add(starrerId, StarTarget.OriginalMessage);
                             }
-                        );
-                        await UpdateOrPostToStarboardAsync(starboard, args.Message, newEntry);
+                            else
+                            {
+                                entry = data.Extras.StarboardedMessages[messageId] = new StarboardEntry
+                                {
+                                    Stargazers =
+                                    {
+                                        [starrerId] = StarTarget.OriginalMessage
+                                    },
+                                    MessageId = messageId
+                                };
+                            }
+
+                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                        }
                     }
                 }
             }
@@ -120,19 +130,22 @@ namespace Volte.Services
 
             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
             {
-                // Remove the star from the database
-                if (entry.StarredUsers.Remove(starrerId))
+                using (await _messageStargazerWriteLock.LockAsync(entry.MessageId))
                 {
-                    // Update message star count
-                    using (await _messageWriteLock.LockAsync(entry.MessageId))
+                    // Remove the star from the database
+                    if (entry.Stargazers.Remove(starrerId))
                     {
-                        if (entry.StarCount < starboard.StarsRequiredToPost)
+                        // Update message star count
+                        using (await _starListWriteLock.LockAsync(entry.MessageId))
                         {
-                            // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
-                            // so we do not need to pass a value to TryRemove.
-                            data.Extras.StarboardedMessages.TryRemove(entry.MessageId, out _);
-                            data.Extras.StarboardedMessages.TryRemove(entry.StarboardMessageId, out _);
-                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                            if (entry.StarCount < starboard.StarsRequiredToPost)
+                            {
+                                // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
+                                // so we do not need to pass a value to TryRemove.
+                                data.Extras.StarboardedMessages.Remove(entry.MessageId);
+                                data.Extras.StarboardedMessages.Remove(entry.StarboardMessageId);
+                                await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                            }
                         }
                     }
                 }
@@ -153,35 +166,38 @@ namespace Volte.Services
 
             if (data.Extras.StarboardedMessages.TryGetValue(messageId, out var entry))
             {
-                var clearedStarTarget = messageId == entry.MessageId
-                    ? StarTarget.OriginalMessage
-                    : StarTarget.StarboardMessage;
-                
-                // TODO May have issues with multithread access. Revisit if concurrency is needed.
-                var clearList = (
-                    from kvp in entry.StarredUsers
-                    where kvp.Value == clearedStarTarget
-                    select kvp.Key
-                ).ToArray();
-
-                // Remove the stars from the database
-                if (clearList.Length > 0)
+                using (await _messageStargazerWriteLock.LockAsync(entry.MessageId))
                 {
-                    foreach (var userId in clearList)
+                    var clearedStarTarget = messageId == entry.MessageId
+                        ? StarTarget.OriginalMessage
+                        : StarTarget.StarboardMessage;
+
+                    // TODO May have issues with multithread access. Revisit if concurrency is needed.
+                    var clearList = (
+                        from kvp in entry.Stargazers
+                        where kvp.Value == clearedStarTarget
+                        select kvp.Key
+                    ).ToArray();
+
+                    // Remove the stars from the database
+                    if (clearList.Length > 0)
                     {
-                        entry.StarredUsers.Remove(userId);
-                    }
-                    
-                    // Update message star count
-                    using (await _messageWriteLock.LockAsync(entry.MessageId))
-                    {
-                        if (entry.StarCount < starboard.StarsRequiredToPost)
+                        foreach (var userId in clearList)
                         {
-                            // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
-                            // so we do not need to pass a value to TryRemove.
-                            data.Extras.StarboardedMessages.TryRemove(entry.MessageId, out _);
-                            data.Extras.StarboardedMessages.TryRemove(entry.StarboardMessageId, out _);
-                            await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                            entry.Stargazers.Remove(userId);
+                        }
+
+                        // Update message star count
+                        using (await _starListWriteLock.LockAsync(entry.MessageId))
+                        {
+                            if (entry.StarCount < starboard.StarsRequiredToPost)
+                            {
+                                // In this case, due to locking, StarboardedMessages[messageId] should always == entry,
+                                // so we do not need to pass a value to TryRemove.
+                                data.Extras.StarboardedMessages.Remove(entry.MessageId);
+                                data.Extras.StarboardedMessages.Remove(entry.StarboardMessageId);
+                                await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+                            }
                         }
                     }
                 }

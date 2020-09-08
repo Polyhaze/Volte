@@ -1,7 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using LiteDB;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Volte.Core.Entities
 {
@@ -11,7 +12,7 @@ namespace Volte.Core.Entities
         {
             SelfRoles = new List<string>();
             Tags = new List<Tag>();
-            StarboardedMessages = new ConcurrentDictionary<ulong, StarboardEntry>();
+            StarboardedMessages = new Dictionary<ulong, StarboardEntry>();
             Warns = new List<Warn>();
         }
 
@@ -22,7 +23,7 @@ namespace Volte.Core.Entities
         public List<Tag> Tags { get; set; }
         
         [JsonPropertyName("starboarded_messages")]
-        public ConcurrentDictionary<ulong, StarboardEntry> StarboardedMessages { get; set; }
+        public Dictionary<ulong, StarboardEntry> StarboardedMessages { get; set; }
 
         [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }
