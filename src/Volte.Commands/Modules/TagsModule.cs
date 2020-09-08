@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
 
             if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
             {
-                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(Context.Member), async message =>
+                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)), async message =>
                 {
                     if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
                     {
@@ -40,6 +40,22 @@ namespace Volte.Commands.Modules
             }, false);
 
         }
+        
+        [Command("Embed", "Em")]
+        [Description(
+            "Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]
+        [Remarks("tag embed {Boolean}")]
+        public Task<ActionResult> ShowRequesterAndEmbedTagsAsync([RequiredArgument] bool enabled)
+        {
+            ModifyData(data =>
+            {
+                data.Configuration.EmbedTagsAndShowAuthor = enabled;
+                return data;
+            });
+            return Ok(enabled
+                ? "Tags will now show their requester and be displayed in an embed!"
+                : "Tags will **NO LONGER** show their requester and be displayed in an embed!");
+        }
 
         [Command("Stats")]
         [Description("Shows stats for a tag.")]
@@ -49,10 +65,10 @@ namespace Volte.Commands.Modules
             var u = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithTitle($"Tag {tag.Name}")
-                .AddField("Response", $"`{tag.Response}`", true)
-                .AddField("Creator", $"{u}", true)
-                .AddField("Uses", $"**{tag.Uses}**", true));
+                .WithTitle($"Tag Stats for {tag.Name}")
+                .AddField("Response", $"`{tag.Response}`")
+                .AddField("Creator", $"{u.AsPrettyString()}")
+                .AddField("Uses", $"**{tag.Uses}**"));
         }
 
         [Command("List")]
@@ -83,7 +99,7 @@ namespace Volte.Commands.Modules
             {
                 var user = await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId);
                 return BadRequest(
-                    $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
+                    $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user.AsPrettyString()}**.");
             }
 
             tag = new Tag
@@ -116,11 +132,11 @@ namespace Volte.Commands.Modules
         {
             ModifyData(data =>
             {
-                data.Extras.Tags.Remove(tag);
+                data.Extras.Tags.RemoveAt(data.Extras.Tags.FindIndex(x => x.Name == tag.Name && x.CreatorId == tag.CreatorId));
                 return data;
             });
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId)}**, with " +
+                      $"**{(await Context.Client.GetShardFor(Context.Guild).GetUserAsync(tag.CreatorId)).AsPrettyString()}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");
         }
         
@@ -134,7 +150,7 @@ namespace Volte.Commands.Modules
             tag.Response = content;
             ModifyData(data =>
             {
-                data.Extras.Tags.Remove(tag);
+                data.Extras.Tags.RemoveAt(data.Extras.Tags.FindIndex(x => x.Name == tag.Name && x.CreatorId == tag.CreatorId));
                 data.Extras.Tags.Add(tag);
                 return data;
             });
@@ -143,7 +159,7 @@ namespace Volte.Commands.Modules
                 .WithTitle("Tag Updated")
                 .AddField("Name", tag.Name)
                 .AddField("New Response", content)
-                .AddField("Creator", Context.Member.Mention)
+                .AddField("Creator", Context.Member.AsPrettyString())
                 .AddField("Uses", tag.Uses));
         }
     }
