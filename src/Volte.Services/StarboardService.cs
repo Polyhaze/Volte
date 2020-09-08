@@ -187,11 +187,10 @@ namespace Volte.Services
                         ? StarTarget.OriginalMessage
                         : StarTarget.StarboardMessage;
 
-                    var clearList = (
-                        from kvp in entry.StargazerCollection.Stargazers
-                        where kvp.Value == clearedStarTarget
-                        select kvp.Key
-                    ).ToArray();
+
+                    var clearList = entry.StargazerCollection.Stargazers
+                        .Where(x => x.Value == clearedStarTarget)
+                        .Select(x => x.Key).ToArray();
 
                     // Remove the stars from the database
                     if (clearList.Length > 0)
