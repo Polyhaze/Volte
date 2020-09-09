@@ -10,7 +10,6 @@ namespace Volte.Core.Entities
             Moderation = new ModerationOptions();
             Welcome = new WelcomeOptions();
             Starboard = new StarboardOptions();
-            Twitch = new TwitchOptions();
         }
 
         [JsonPropertyName("autorole")]
@@ -27,9 +26,6 @@ namespace Volte.Core.Entities
         
         [JsonPropertyName("starboard_options")]
         public StarboardOptions Starboard { get; set; }
-        
-        [JsonPropertyName("twitch_options")]
-        public TwitchOptions Twitch { get; set; }
 
         [JsonPropertyName("delete_message_on_command")]
         public bool DeleteMessageOnCommand { get; set; }

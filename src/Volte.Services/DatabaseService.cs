@@ -92,13 +92,6 @@ namespace Volte.Services
                         Enabled = false,
                         StarboardChannel = default,
                         StarsRequiredToPost = 1
-                    },
-                    Twitch = new TwitchOptions
-                    {
-                        Enabled = false,
-                        ChannelId = 0,
-                        NotificationType = NotificationType.Nothing,
-                        Streamers = new List<string>()
                     }
                 },
                 Extras = new GuildExtras
