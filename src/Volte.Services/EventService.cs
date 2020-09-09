@@ -26,7 +26,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
-        private readonly HttpClient _http;
+        private readonly IServiceProvider _provider;
         private readonly DiscordShardedClient _client;
 
         private readonly bool _shouldStream =
@@ -43,7 +43,7 @@ namespace Volte.Services
             CommandService commandService,
             CommandsService commandsService,
             QuoteService quoteService,
-            HttpClient httpClient,
+            IServiceProvider serviceProvider,
             DiscordShardedClient discordShardedClient)
         {
             _logger = loggingService;
@@ -54,7 +54,7 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
-            _http = httpClient;
+            _provider = serviceProvider;
             _client = discordShardedClient;
         }
         
@@ -64,8 +64,14 @@ namespace Volte.Services
             {
                 MessageReceivedEventArgs messageReceived => HandleMessageAsync(messageReceived),
                 ReadyEventArgs ready => OnReadyAsync(_client, ready),
+                MessageUpdateEventArgs messageUpdate => HandleMessageUpdateAsync(messageUpdate),
                 _ => Task.CompletedTask
             };
+        }
+
+        public async Task HandleMessageUpdateAsync(MessageUpdateEventArgs args)
+        {
+            await HandleMessageAsync(new MessageReceivedEventArgs(args.Message, _provider));
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)

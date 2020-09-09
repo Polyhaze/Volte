@@ -9,10 +9,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
 using Humanizer;
-using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
 using Volte.Commands.Modules;
@@ -23,6 +21,8 @@ namespace Volte.Services
 {
     public sealed class EvalService : VolteService
     {
+        private readonly Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)> _evals;
+        
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         
@@ -30,6 +30,7 @@ namespace Volte.Services
 
         public EvalService(LoggingService loggingService)
         {
+            _evals = new Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)>();
             _logger = loggingService;
         }
 
@@ -62,8 +63,31 @@ namespace Volte.Services
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = module.Context.CreateEmbedBuilder();
-            var msg = await embed.WithTitle("Evaluating").WithDescription($"```cs\n{code}```")
-                .SendToAsync(module.Context.Channel);
+            DiscordMessage msg;
+
+            if (_evals.Any(x => x.Key == module.Context.Message.Id))
+            {
+                var (guildId, channelId, resultId) = _evals[module.Context.Message.Id];
+
+                var g = module.Context.Client.GetGuild(guildId);
+                var c = g?.GetChannel(channelId);
+
+                if (c is not null)
+                {
+                    msg = await c.GetMessageAsync(resultId);
+                }
+                else
+                {
+                    msg = await embed.WithTitle("Evaluating").WithDescription($"```cs\n{code}```")
+                        .SendToAsync(module.Context.Channel);
+                }
+            }
+            else
+            {
+                msg = await embed.WithTitle("Evaluating").WithDescription($"```cs\n{code}```")
+                    .SendToAsync(module.Context.Channel);
+            }
+            
             try
             {
                 var sw = Stopwatch.StartNew();
@@ -84,21 +108,28 @@ namespace Volte.Services
                         DiscordChannel channel => $"#{channel.Name} ({channel.Id})",
                         _ => state.ReturnValue.ToString()
                     };
-                    await module.Context.ReplyAsync(embed.WithTitle("Eval")
+                    await msg.ModifyAsync(embed: embed.WithTitle("Eval")
                         .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                         .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                        .WithDescription(Formatter.BlockCode(res, "ini")));
+                        .WithDescription(Formatter.BlockCode(res, "ini")).Build());
                 }
             }
             catch (Exception ex)
             {
-                await module.Context.ReplyAsync(embed
+                await msg.ModifyAsync(embed: embed
                     .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
                     .AddField("Message", ex.Message, true)
-                    .WithTitle("Error"));
+                    .WithTitle("Error")
+                    .Build());
             }
 
-            await msg.DeleteAsync();
+            if (_evals.All(x => x.Key != module.Context.Message.Id))
+            {
+                _evals.Add(module.Context.Message.Id, (module.Context.Guild.Id, module.Context.Channel.Id, msg.Id));
+            }
+            
+            
+            
         }
 
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>

@@ -236,6 +236,7 @@ namespace Gommon
             };
 
             client.Ready += async args => await evt.OnReadyAsync(client, args);
+            client.MessageUpdated += async args => await evt.HandleMessageUpdateAsync(args);
             client.MessageCreated += async args =>
             {
                 if (args.Message.ShouldHandle())
