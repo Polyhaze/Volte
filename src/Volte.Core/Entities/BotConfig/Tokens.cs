@@ -6,7 +6,5 @@ namespace Volte.Core.Entities
     {
         [JsonPropertyName("discord_token")]
         public string Discord { get; set; }
-        [JsonPropertyName("twitch_api_token")]
-        public string TwitchApi { get; set; }
     }
 }

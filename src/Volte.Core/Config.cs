@@ -110,9 +110,6 @@ namespace Volte.Core
         public static bool IsValidDiscordToken() 
             => !(Tokens.Discord.IsNullOrEmpty() || Tokens.Discord.Equals("discord bot token here"));
 
-        public static bool IsValidTwitchApiToken()
-            => !(Tokens.TwitchApi.IsNormalized() || Tokens.TwitchApi.Equals("twitch api token here"));
-
         public static Tokens Tokens => _configuration.Tokens;
 
         public static string CommandPrefix => _configuration.CommandPrefix;
