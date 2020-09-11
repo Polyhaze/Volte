@@ -74,7 +74,7 @@ namespace Volte.Services
 
         public async Task HandleMessageUpdateAsync(MessageUpdateEventArgs args)
         {
-            if (_eval.Evals.ContainsKey(args.Message.Id))
+            if (_eval.Evals.TryGetValue(args.Message, out _))
             {
                 await HandleMessageAsync(new MessageReceivedEventArgs(args.Message, _provider));
             }

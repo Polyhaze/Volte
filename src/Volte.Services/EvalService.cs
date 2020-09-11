@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -19,9 +21,10 @@ using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class EvalService : VolteService
+    public sealed class EvalService : VolteService, IDisposable
     {
-        public readonly Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)> Evals;
+        public readonly ConditionalWeakTable<DiscordMessage, DiscordMessage> Evals;
+        private readonly Timer _timer;
         
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -30,8 +33,16 @@ namespace Volte.Services
 
         public EvalService(LoggingService loggingService)
         {
-            Evals = new Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)>();
+            Evals = new ConditionalWeakTable<DiscordMessage, DiscordMessage>();
             _logger = loggingService;
+            _timer = new Timer(
+                _ => Evals.Clear(), 
+                null, 
+                TimeSpan.FromMinutes(1), 
+                TimeSpan.FromMinutes(20)
+                );
+
+            
         }
 
         public async Task EvaluateAsync(BotOwnerModule module, string code)
@@ -63,24 +74,12 @@ namespace Volte.Services
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = module.Context.CreateEmbedBuilder();
+            // ReSharper disable once InlineOutVariableDeclaration
             DiscordMessage msg;
 
-            if (Evals.Any(x => x.Key == module.Context.Message.Id))
+            if (Evals.TryGetValue(module.Context.Message, out var result))
             {
-                var (guildId, channelId, resultId) = Evals[module.Context.Message.Id];
-
-                var g = module.Context.Client.GetGuild(guildId);
-                var c = g?.GetChannel(channelId);
-
-                if (c is not null)
-                {
-                    msg = await c.GetMessageAsync(resultId);
-                }
-                else
-                {
-                    msg = await embed.WithTitle("Evaluating").WithDescription($"```cs\n{code}```")
-                        .SendToAsync(module.Context.Channel);
-                }
+                msg = result;
             }
             else
             {
@@ -123,9 +122,9 @@ namespace Volte.Services
                     .Build());
             }
 
-            if (Evals.All(x => x.Key != module.Context.Message.Id))
+            if (Evals.All(x => x.Key.Id != module.Context.Message.Id))
             {
-                Evals.Add(module.Context.Message.Id, (module.Context.Guild.Id, module.Context.Channel.Id, msg.Id));
+                Evals.Add(module.Context.Message, msg);
             }
             
             
@@ -139,5 +138,10 @@ namespace Volte.Services
                 "System.Threading", "Gommon", "Volte.Core.Entities", "Humanizer", "System.Globalization",
                 "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Volte.Commands.TypeParsers"
             });
+
+        public void Dispose()
+        {
+            _timer.Dispose();
+        }
     }
 }

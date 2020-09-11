@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,14 +48,14 @@ namespace Volte.Services
 
             var g = _client.GetGuild(guildId);
             var c = g?.GetChannel(channelId);
-                if (c is null) return;
+            if (c is null) return;
 
-                var m = await c.GetMessageAsync(messageId);
-                if (m is null) return;
+            var m = await c.GetMessageAsync(messageId);
+            if (m is null) return;
 
-                await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel);
+            await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel);
 
-                _ = await args.Message.TryDeleteAsync();
+            _ = await args.Message.TryDeleteAsync();
         }
 
         private DiscordEmbed GenerateQuoteEmbed(DiscordMessage message, VolteContext ctx, Match match)
@@ -70,19 +71,28 @@ namespace Volte.Services
 
             if (message.Content.IsNullOrEmpty() && message.HasAttachments())
             {
-                e.WithImageUrl(message.Attachments.First().Url);
+                e.WithImageUrl(message.Attachments[0].Url);
             }
 
             if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
             {
-                e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
+                e.WithDescription(message.Content).WithImageUrl(message.Attachments[0].Url);
             }
 
             if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
-                var comment = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ");
-                var strings = comment.Split("  ");
-                e.AddField("Comment", strings.IsEmpty() ? comment : strings.Join(" "), true);
+                var strings = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ")
+                    .Split("  ", StringSplitOptions.RemoveEmptyEntries);
+                
+                if (strings.Length is 2)
+                    strings = strings.Select(x =>
+                    {
+                        if (x.EndsWith('|') || x.StartsWith('|'))
+                            return x.Replace("|", "");
+                        
+                        return x;
+                    }).ToArray();
+                e.AddField("Comment", strings.Join(" "), true);
             }
 
             e.AddField("Original Message", $"[Click here]({message.JumpLink})");
