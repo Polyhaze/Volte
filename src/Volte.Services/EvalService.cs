@@ -21,7 +21,7 @@ namespace Volte.Services
 {
     public sealed class EvalService : VolteService
     {
-        private readonly Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)> _evals;
+        public readonly Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)> Evals;
         
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -30,7 +30,7 @@ namespace Volte.Services
 
         public EvalService(LoggingService loggingService)
         {
-            _evals = new Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)>();
+            Evals = new Dictionary<ulong, (ulong GuildId, ulong ChannelId, ulong ResultId)>();
             _logger = loggingService;
         }
 
@@ -65,9 +65,9 @@ namespace Volte.Services
             var embed = module.Context.CreateEmbedBuilder();
             DiscordMessage msg;
 
-            if (_evals.Any(x => x.Key == module.Context.Message.Id))
+            if (Evals.Any(x => x.Key == module.Context.Message.Id))
             {
-                var (guildId, channelId, resultId) = _evals[module.Context.Message.Id];
+                var (guildId, channelId, resultId) = Evals[module.Context.Message.Id];
 
                 var g = module.Context.Client.GetGuild(guildId);
                 var c = g?.GetChannel(channelId);
@@ -123,9 +123,9 @@ namespace Volte.Services
                     .Build());
             }
 
-            if (_evals.All(x => x.Key != module.Context.Message.Id))
+            if (Evals.All(x => x.Key != module.Context.Message.Id))
             {
-                _evals.Add(module.Context.Message.Id, (module.Context.Guild.Id, module.Context.Channel.Id, msg.Id));
+                Evals.Add(module.Context.Message.Id, (module.Context.Guild.Id, module.Context.Channel.Id, msg.Id));
             }
             
             

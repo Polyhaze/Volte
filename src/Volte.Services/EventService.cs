@@ -28,6 +28,7 @@ namespace Volte.Services
         private readonly QuoteService _quoteService;
         private readonly IServiceProvider _provider;
         private readonly DiscordShardedClient _client;
+        private readonly EvalService _eval;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -44,7 +45,8 @@ namespace Volte.Services
             CommandsService commandsService,
             QuoteService quoteService,
             IServiceProvider serviceProvider,
-            DiscordShardedClient discordShardedClient)
+            DiscordShardedClient discordShardedClient,
+            EvalService evalService)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -56,6 +58,7 @@ namespace Volte.Services
             _quoteService = quoteService;
             _provider = serviceProvider;
             _client = discordShardedClient;
+            _eval = evalService;
         }
         
         public override Task DoAsync(EventArgs args)
@@ -71,7 +74,10 @@ namespace Volte.Services
 
         public async Task HandleMessageUpdateAsync(MessageUpdateEventArgs args)
         {
-            await HandleMessageAsync(new MessageReceivedEventArgs(args.Message, _provider));
+            if (_eval.Evals.ContainsKey(args.Message.Id))
+            {
+                await HandleMessageAsync(new MessageReceivedEventArgs(args.Message, _provider));
+            }
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
