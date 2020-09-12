@@ -50,7 +50,7 @@ namespace Volte.Commands
         public DiscordEmbed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
         public DiscordEmbedBuilder CreateEmbedBuilder(string content = null) => new DiscordEmbedBuilder()
-            .WithColor(Member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(Config.SuccessColor))
+            .WithColor(Member.GetHighestRoleWithColor()?.Color ?? new DiscordColor(112, 0, 251))
             .WithRequester(Member)
             .WithDescription(content ?? string.Empty);
 

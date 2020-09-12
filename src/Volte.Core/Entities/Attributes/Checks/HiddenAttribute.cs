@@ -1,7 +1,8 @@
 using System;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class HiddenAttribute : Attribute
     {
         public HiddenAttribute()

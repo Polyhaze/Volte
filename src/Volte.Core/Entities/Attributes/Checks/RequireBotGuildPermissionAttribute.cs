@@ -5,7 +5,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
     public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
     {

@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Qmmands;
-using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core.Entities;
 
@@ -60,5 +59,16 @@ namespace Volte.Commands.Modules
             await Context.Channel.ModifyAsync(c => c.Name = name.Replace(" ", "-"));
             return Ok($"Set this channel's name to **{name}**.");
         }
+
+        /* D#+ does not have the News channel crossposting/publishing functionality implemented yet so this will stay commented until it does.
+         
+        public async Task<ActionResult> PublishAync([RequiredArgument] ulong messageId)
+        {
+            if (Context.Channel.Type is not ChannelType.News)
+                return BadRequest("Cannot publish messages from a non-news channel.");
+
+            var m = await Context.Channel.GetMessageAsync(messageId);
+            await m;
+        }*/
     }
 }

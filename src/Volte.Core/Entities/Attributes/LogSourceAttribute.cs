@@ -15,13 +15,13 @@ namespace Volte.Core.Entities
         static LogSourceAttribute()
         {
             var logSources = new Dictionary<LogSource, LogSourceAttribute>();
-            foreach (LogSource logSource in Enum.GetValues(typeof(LogSource)))
+            foreach (LogSource src in Enum.GetValues(typeof(LogSource)))
             {
-                var name = logSource.ToString();
+                var name = src.ToString();
                 var attr = typeof(LogSource).GetField(name)!
                     .GetAttribute<LogSourceAttribute>();
                 attr.Name ??= name;
-                logSources[logSource] = attr;
+                logSources[src] = attr;
             }
             LogSources = logSources;
             

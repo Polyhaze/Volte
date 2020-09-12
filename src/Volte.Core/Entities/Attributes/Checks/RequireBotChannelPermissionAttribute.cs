@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
     public sealed class RequireBotChannelPermissionAttribute : CheckAttribute
     {

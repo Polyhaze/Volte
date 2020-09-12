@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class EnsurePublicVolteAttribute : CheckAttribute

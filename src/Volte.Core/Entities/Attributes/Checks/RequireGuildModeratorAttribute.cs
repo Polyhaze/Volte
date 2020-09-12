@@ -1,17 +1,16 @@
-using System;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
-    public sealed class RequireBotOwnerAttribute : CheckAttribute
+    public sealed class RequireGuildModeratorAttribute : CheckAttribute
     {
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (context.AsVolteContext().Member.IsBotOwner()) 
-                return CheckResult.Successful;
+            var ctx = context.AsVolteContext();
+            if (ctx.Member.IsModerator(ctx)) return CheckResult.Successful;
             
             return CheckResult.Unsuccessful("Insufficient permission.");
         }

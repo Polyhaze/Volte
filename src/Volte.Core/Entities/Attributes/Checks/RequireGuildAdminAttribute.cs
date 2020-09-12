@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
     public sealed class RequireGuildAdminAttribute : CheckAttribute
     {

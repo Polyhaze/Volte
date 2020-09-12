@@ -8,7 +8,6 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Checks;
 using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Entities;

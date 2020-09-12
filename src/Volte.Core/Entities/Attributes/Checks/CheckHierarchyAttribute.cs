@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 using Gommon;
 using Qmmands;
 
-namespace Volte.Commands.Checks
+namespace Volte.Core.Entities
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class CheckHierarchyAttribute : ParameterCheckAttribute

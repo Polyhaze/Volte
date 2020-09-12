@@ -7,14 +7,10 @@ namespace Volte.Core.Entities
     {
         public string ValidFormat { get; }
 
-        public OptionalArgumentAttribute()
-        {
+        public OptionalArgumentAttribute() =>
             ValidFormat = null;
-        }
 
-        public OptionalArgumentAttribute(string argumentFormat)
-        {
+        public OptionalArgumentAttribute(string argumentFormat) =>
             ValidFormat = argumentFormat;
-        }
     }
 }
