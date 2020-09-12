@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
@@ -11,23 +12,24 @@ namespace Volte.Commands
 {
     public abstract class VolteModule : ModuleBase<VolteContext>
     {
+        [NotNull]
         public DatabaseService Db { get; set; }
+        [NotNull]
         public EventService EventService { get; set; }
+        [NotNull]
         public ModLogService ModLogService { get; set; }
+        [NotNull]
         public CommandService CommandService { get; set; }
+        [NotNull]
         public LoggingService Logger { get; set; }
+        [NotNull]
         public CancellationTokenSource Cts { get; set; }
+        [NotNull]
         public new VolteContext Context => base.Context;
 
-        public void ModifyData(Func<GuildData, GuildData> func)
-        {
-            Db.ModifyAndSaveData(Context.Guild.Id, func);
-        }
+        public void ModifyData(Func<GuildData, GuildData> func) => Db.ModifyAndSaveData(Context.Guild.Id, func);
 
-        public Task ModifyDataAsync(Func<GuildData, Task<GuildData>> func)
-        {
-            return Db.ModifyAndSaveDataAsync(Context.Guild.Id, func);
-        }
+        public Task ModifyDataAsync(Func<GuildData, Task<GuildData>> func) => Db.ModifyAndSaveDataAsync(Context.Guild.Id, func);
 
 
         protected ActionResult Ok(

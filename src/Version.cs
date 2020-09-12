@@ -1,6 +1,5 @@
 ﻿using System;
 using DSharpPlus;
-using Microsoft.VisualBasic.CompilerServices;
 using SysVer = System.Version;
 
 namespace Volte

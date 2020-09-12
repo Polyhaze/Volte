@@ -76,7 +76,8 @@ namespace Volte.Commands.Modules
             public Task<ActionResult> WarnsAsync(DiscordMember user)
             {
                 var warns = Context.GuildData.Extras.Warns.Where(x => x.User == user.Id).ToList();
-                if (warns.IsEmpty()) return BadRequest("This user doesn't have any warnings.");
+                if (warns.IsEmpty()) 
+                    return BadRequest("This user doesn't have any warnings.");
                 else
                 {
                     return None(async () =>
@@ -90,7 +91,7 @@ namespace Volte.Commands.Modules
             [Command("Clear", "C")]
             [Description("Clears the warnings for the given user.")]
             [Remarks("warn clear {Member}")]
-            public async Task<ActionResult> ClearWarnsAsync(DiscordMember user)
+            public async Task<ActionResult> ClearWarnsAsync([CheckHierarchy] DiscordMember user)
             {
                 var oldWarnList = Context.GuildData.Extras.Warns;
                 var newWarnList = Context.GuildData.Extras.Warns.Where(x => x.User != user.Id).ToList();
@@ -314,7 +315,7 @@ namespace Volte.Commands.Modules
 
         [Command("ShadowBan", "Shdwb")]
         [Description("Shadowbans the mentioned user, completely skipping sending a message to the modlog.")]
-        [Remarks("shadowban {Member} [Reason]")]
+        [Remarks("shadowban {Member} [String]")]
         [RequireBotGuildPermission(Permissions.BanMembers)]
         public async Task<ActionResult> ShadowBanAsync([CheckHierarchy] DiscordMember member, 
             [Remainder] string reason = "Shadowbanned by a Moderator.")

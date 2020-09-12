@@ -48,7 +48,7 @@ namespace Volte.Core
 
             if (!Config.IsValidDiscordToken())
             {
-                Console.WriteLine($"Token is invalid!", Color.Red);
+                Console.WriteLine("Token is invalid!", Color.Red);
                 return;
             }
 
@@ -66,7 +66,7 @@ namespace Volte.Core
             {
                 PollBehaviour = PollBehaviour.DeleteEmojis,
                 PaginationBehaviour = PaginationBehaviour.WrapAround,
-                PaginationDeletion = PaginationDeletion.KeepEmojis,
+                PaginationDeletion = PaginationDeletion.DeleteEmojis,
                 PaginationEmojis = new PaginationEmojis
                 {
                     Left = EmojiHelper.Back.ToEmoji(),
@@ -108,10 +108,10 @@ namespace Volte.Core
             }
             
             await client.UpdateStatusAsync(userStatus: UserStatus.Invisible);
-            foreach (var (_, aclient) in client.ShardClients)
+            foreach (var (_, shard) in client.ShardClients)
             {
-                await aclient.DisconnectAsync();
-                aclient.Dispose();
+                await shard.DisconnectAsync();
+                shard.Dispose();
             }
             Environment.Exit(0);
         }

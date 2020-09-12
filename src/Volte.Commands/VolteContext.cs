@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -16,7 +17,6 @@ namespace Volte.Commands
         public static VolteContext Create(DiscordMessage msg, IServiceProvider provider) 
             => new VolteContext(msg, provider);
 
-        // ReSharper disable once SuggestBaseTypeForParameter
         private VolteContext(DiscordMessage msg, IServiceProvider provider) : base(provider)
         {
             provider.Get<DatabaseService>(out var db);
@@ -30,13 +30,21 @@ namespace Volte.Commands
             Interactivity = Client.GetInteractivity()[Client.GetShardId(Guild.Id)];
         }
         
+        [NotNull]
         public readonly DiscordShardedClient Client;
+        [NotNull]
         public readonly DiscordGuild Guild;
+        [NotNull]
         public readonly DiscordChannel Channel;
+        [NotNull]
         public readonly DiscordMember Member;
+        [NotNull]
         public readonly DiscordMessage Message;
+        [NotNull]
         public readonly InteractivityExtension Interactivity;
+        [NotNull]
         public readonly GuildData GuildData;
+        [NotNull]
         public readonly DateTimeOffset Now;
 
         public DiscordEmbed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();

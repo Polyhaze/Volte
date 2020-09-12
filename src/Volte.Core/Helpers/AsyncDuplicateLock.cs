@@ -7,9 +7,9 @@ using JetBrains.Annotations;
 namespace Volte.Core.Helpers
 {
     // https://stackoverflow.com/a/31194647
-    public sealed class AsyncDuplicateLock<T>
+    public struct AsyncDuplicateLock<T>
     {
-        private sealed class RefCounted<TR>
+        private struct RefCounted<TR>
         {
             public RefCounted([NotNull] TR value)
             {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
+using JetBrains.Annotations;
 
 namespace Volte.Commands.Results
 {
@@ -26,10 +27,14 @@ namespace Volte.Commands.Results
 
         private readonly bool _runFuncAsync;
 
+        [CanBeNull]
         private readonly string _message;
         private readonly bool _shouldEmbed;
+        [CanBeNull]
         private readonly Func<DiscordMessage, Task> _callback;
+        [CanBeNull]
         private readonly Func<Task> _separateLogic;
+        [CanBeNull]
         private readonly DiscordEmbedBuilder _embed;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)

@@ -19,6 +19,8 @@ namespace Volte.Core.Entities
 
         public static ModActionEventArgs New => new ModActionEventArgs();
 
+        public static ModActionEventArgs FromDefault(VolteContext ctx) => New.WithDefaultsFromContext(ctx);
+
         public ModActionEventArgs WithContext(VolteContext ctx)
         {
             Context = ctx;
@@ -75,13 +77,10 @@ namespace Volte.Core.Entities
 
         public ModActionEventArgs WithDefaultsFromContext(VolteContext ctx)
         {
-            WithContext(ctx)
+            return WithContext(ctx)
                 .WithTime(ctx.Now)
                 .WithGuild(ctx.Guild)
                 .WithModerator(ctx.Member);
-
-
-            return this;
         }
 
         internal string Format(FormatType type)
@@ -101,7 +100,7 @@ namespace Volte.Core.Entities
                     _ => $"**User:** {TargetUser} ({TargetUser.Id})"
                 },
                 FormatType.Time => $"**Time:** {Time.FormatFullTime()}, {Time.FormatDate()}",
-                _ => throw new FormatException("FormatType was invalid.")
+                _ => throw new FormatException($"FormatType was invalid. Received: {type}")
             };
         }
 

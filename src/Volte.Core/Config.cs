@@ -137,7 +137,7 @@ namespace Volte.Core
         public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
         
         // ReSharper disable MemberHidesStaticFromOuterClass
-        private class BotConfig
+        private struct BotConfig
         {
             [JsonPropertyName("tokens")]
             public Tokens Tokens { get; set; }

@@ -16,12 +16,10 @@ namespace Volte.Services
     {
         private readonly DiscordShardedClient _client;
 
-        public QuoteService(DiscordShardedClient client)
-        {
+        public QuoteService(DiscordShardedClient client) =>
             _client = client;
-        }
 
-        private const RegexOptions Options =
+        private const RegexOptions Options = 
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
 
         private static readonly Regex JumpUrlPattern = new Regex(
@@ -33,15 +31,20 @@ namespace Volte.Services
             Options);
 
         public override Task DoAsync(EventArgs args)
-            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>() 
-                                      ?? throw new InvalidOperationException($"Quote was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args?.GetType().Name}"));
+        {
+            return args switch
+            {
+                MessageReceivedEventArgs messageReceived => OnMessageReceivedAsync(messageReceived),
+                _ => Task.CompletedTask
+            };
+        }
 
         private async Task OnMessageReceivedAsync(MessageReceivedEventArgs args)
         {
             if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return;
-            var match = JumpUrlPattern.Match(args.Message.Content);
-            if (!match.Success) return;
-            
+            if (!JumpUrlPattern.IsMatch(args.Message.Content, out var match))
+                return;
+
             if (!ulong.TryParse(match.Groups["GuildId"].Value, out var guildId) ||
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
@@ -65,19 +68,13 @@ namespace Volte.Services
                 .WithFooter($"Quoted by {ctx.Member.AsPrettyString()}", ctx.Member.AvatarUrl);
 
             if (!message.Content.IsNullOrEmpty())
-            {
                 e.WithDescription(message.Content);
-            }
 
             if (message.Content.IsNullOrEmpty() && message.HasAttachments())
-            {
                 e.WithImageUrl(message.Attachments[0].Url);
-            }
 
             if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
-            {
                 e.WithDescription(message.Content).WithImageUrl(message.Attachments[0].Url);
-            }
 
             if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
@@ -85,19 +82,26 @@ namespace Volte.Services
                     .Split("  ", StringSplitOptions.RemoveEmptyEntries);
                 
                 if (strings.Length is 2)
-                    strings = strings.Select(x =>
-                    {
-                        if (x.EndsWith('|') || x.StartsWith('|'))
-                            return x.Replace("|", "");
-                        
-                        return x;
-                    }).ToArray();
+                    strings = strings.Select(FilterComments).Where(x => x is not null).ToArray();
                 e.AddField("Comment", strings.Join(" "), true);
             }
 
             e.AddField("Original Message", $"[Click here]({message.JumpLink})");
 
             return e.Build();
+        }
+
+        private string FilterComments(string input)
+        {
+            if (input is not "")
+            {
+                if (input.EndsWith('|') || input.StartsWith('|'))
+                    return input.Replace("|", "");
+                        
+                return input;
+            }
+
+            return null;
         }
         
     }
