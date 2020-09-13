@@ -30,7 +30,7 @@ namespace Volte.Services
             };
         }
 
-        internal async Task JoinAsync(GuildMemberAddEventArgs args)
+        private async Task JoinAsync(GuildMemberAddEventArgs args)
         {
             var data = _db.GetData(args.Guild);
 
@@ -61,10 +61,10 @@ namespace Volte.Services
                 "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
 
-        internal Task JoinDmAsync(GuildMemberAddEventArgs args)
-            => args.Member.TrySendMessageAsync(_db.GetData(args.Guild).Configuration.Welcome.FormatDmMessage(args.Member));
+        private async Task JoinDmAsync(GuildMemberAddEventArgs args)
+            => _ = await args.Member.TrySendMessageAsync(_db.GetData(args.Guild).Configuration.Welcome.FormatDmMessage(args.Member));
 
-        internal async Task LeaveAsync(GuildMemberRemoveEventArgs args)
+        private async Task LeaveAsync(GuildMemberRemoveEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;

@@ -230,6 +230,7 @@ namespace Gommon
                 if (Config.EnabledFeatures.Welcome) await welcome.DoAsync(args);
                 if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(args);
             };
+
             client.GuildMemberRemoved += async args =>
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.DoAsync(args);
@@ -239,13 +240,8 @@ namespace Gommon
             client.MessageUpdated += async args => await evt.HandleMessageUpdateAsync(args);
             client.MessageCreated += async args =>
             {
-                if (args.Message.ShouldHandle())
-                {
-                    if (args.Channel is DiscordDmChannel)
-                        await args.Channel.SendMessageAsync("I do not support commands via DM.");
-                    else
-                        _ = Task.Run(async () => await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider)));
-                }
+                if (await args.Message.ShouldHandleAsync())
+                    _ = Task.Run(async () => await evt.HandleMessageAsync(new MessageReceivedEventArgs(args.Message, provider)));
             };
 
             client.MessageReactionAdded += async args => await starboard.DoAsync(args);
@@ -294,13 +290,24 @@ namespace Gommon
 
         public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 
-        public static bool ShouldHandle(this DiscordMessage message) => !message.Author.IsBot;
+        public static async Task<bool> ShouldHandleAsync(this DiscordMessage message)
+        {
+            if (message.Channel is DiscordDmChannel)
+            {
+                await message.RespondAsync("I do not support commands via DM.");
+                return false;
+            }
+
+            return !message.Author.IsBot;
+        }
+
+        public static ulong GetOwnerId(this DiscordGuild guild) => DiscordReflectionHelper.GetOwnerId(guild);
 
         public static bool HasAttachments(this DiscordMessage message)
             => !message.Attachments.IsEmpty();
 
         public static bool HasColor(this DiscordRole role)
-            => role.Color.Value != new DiscordColor(0, 0, 0).Value;
+            => role.Color.Value != 0;
         
         public static Permissions GetGuildPermissions(this DiscordMember member)
         {
@@ -318,7 +325,7 @@ namespace Gommon
 
             var guild = member.Guild;
 
-            if (DiscordReflectionHelper.GetOwnerId(guild) == member.Id)
+            if (guild.GetOwnerId() == member.Id)
                 return Permissions.All;
 
             // assign @everyone permissions

@@ -171,7 +171,7 @@ namespace Volte.Commands.Modules
             => Ok(async () =>
             {
                 await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
-                await stream.SendFileToAsync("role.png", Context.Channel, embed: new DiscordEmbedBuilder()
+                await stream.SendFileToAsync("color.png", Context.Channel, embed: new DiscordEmbedBuilder()
                     .WithColor(color)
                     .WithTitle($"Color {color}")
                     .WithDescription(new StringBuilder()
