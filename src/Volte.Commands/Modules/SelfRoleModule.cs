@@ -9,7 +9,8 @@ using Volte.Core.Entities;
 namespace Volte.Commands.Modules
 {
     [Group("SelfRole", "Sr")]
-    public sealed class SelfRoleModule : VolteModule {
+    public sealed class SelfRoleModule : VolteModule 
+    {
         [Command("List", "L")]
         [Description("Gets a list of self roles available for this guild.")]
         [Remarks("selfrole list")]

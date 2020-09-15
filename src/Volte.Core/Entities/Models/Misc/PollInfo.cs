@@ -6,7 +6,7 @@ using Volte.Core.Helpers;
 
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Core.Models.Misc
+namespace Volte.Core.Entities
 {
     public sealed class PollInfo
     {

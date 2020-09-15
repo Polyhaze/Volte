@@ -15,18 +15,14 @@ using Volte.Commands.Results;
 using Volte.Core;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Volte.Core.Models.Misc;
-using Volte.Services;
 
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Volte.Commands.Modules
 {
-    public sealed class UtilityModule : VolteModule 
+    public sealed partial class UtilityModule : VolteModule 
     {
-        public CommandsService CommandsService { get; set; }
-        public HttpService HttpService { get; set; }
-        
+
         [Command("Tree")]
         [Description("Shows all categories in this guild and their children channels.")]
         [Remarks("tree")]
@@ -62,44 +58,6 @@ namespace Volte.Commands.Modules
                 : Ok(res);
         }
 
-        private readonly (char Key, string Value)[] _nato = new List<(char Key, string Value)>
-        {
-            ('a', "Alfa"), ('b', "Bravo"), ('c', "Charlie"), ('d', "Delta"),
-            ('e', "Echo"), ('f', "Foxtrot"), ('g', "Golf"), ('h', "Hotel"),
-            ('i', "India"), ('j', "Juliett"), ('k', "Kilo"), ('l', "Lima"),
-            ('m', "Mike"), ('n', "November"), ('o', "Oscar"), ('p', "Papa"),
-            ('q', "Quebec"), ('r', "Romeo"), ('s', "Sierra"), ('t', "Tango"),
-            ('u', "Uniform"), ('v', "Victor"), ('w', "Whiskey"), ('x', "X-ray"),
-            ('y', "Yankee"), ('z', "Zulu"), ('1', "One"), ('2', "Two"),
-            ('3', "Three"), ('4', "Four"), ('5', "Five"), ('6', "Six"), 
-            ('7', "Seven"), ('8', "Eight"), ('9', "Nine"), ('0', "Zero")
-
-        }.ToArray();
-
-        private string GetNato(char i) => 
-            _nato.First(x => x.Key.ToString().EqualsIgnoreCase(i.ToString())).Value;
-
-        private readonly string _baseWikiUrl = "https://github.com/Ultz/Volte/wiki";
-
-        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
-            DiscordMember user)
-        {
-            var guildPermissions = user.GetGuildPermissions();
-            var propDict = guildPermissions.GetType().GetProperties()
-                .Where(a => a.PropertyType.Inherits<bool>())
-                .Select(a => (a.Name.Humanize(), a.GetValue(guildPermissions).Cast<bool>()))
-                .OrderByDescending(ab => ab.Item2 ? 1 : 0)
-                .ToList(); //holy reflection
-
-            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1), propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
-
-        }
-
-        private bool CanSeeChannel(DiscordMember member, DiscordChannel channel)
-        {
-            return member.PermissionsIn(channel).HasPermission(Permissions.AccessChannels);
-        }
-
         [Command("Wiki", "VolteWiki")]
         [Description("List all wiki pages or get a specific one in this one command.")]
         [Remarks("wiki [String]")]
@@ -109,19 +67,17 @@ namespace Volte.Commands.Modules
             var pages = new Dictionary<string, string>
             { 
                 { "Home", _baseWikiUrl },
-                { "Features", $"{_baseWikiUrl}/Features"},
+                { "Features", $"{_baseWikiUrl}/Features-V4"},
                 { "Contributing", $"{_baseWikiUrl}/Contributing"},
                 { "Setting Volte Up", $"{_baseWikiUrl}/Setting-Volte-Up"},
-                { "Argument Cheatsheet", $"{_baseWikiUrl}/Argument-Cheatsheet"},
+                { "Argument Cheatsheet", $"{_baseWikiUrl}/Argument-Cheatsheet-V4"},
                 { "Developers:Selfhost:Windows", $"{_baseWikiUrl}/Windows"},
                 { "Developers:Selfhost:Linux", $"{_baseWikiUrl}/Linux"},
                 { "Developers:Dependency Injection", $"{_baseWikiUrl}/Dependency-Injection"}
             };
 
             if (page is null)
-            {
                 return Ok(embed.WithDescription(FormatPages()));
-            }
 
             return Ok(embed.WithDescription(pages.ContainsKey(page)
                 ? $"[{pages.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(page))}]({pages.FirstOrDefault(x => x.Key.EqualsIgnoreCase(page)).Value})"
@@ -145,12 +101,6 @@ namespace Volte.Commands.Modules
         [Remarks("uptime")]
         public Task<ActionResult> UptimeAsync() 
             => Ok($"I've been online for **{Process.GetCurrentProcess().CalculateUptime()}**!");
-
-        [Command("Suggest")]
-        [Description("Suggest features for Volte.")]
-        [Remarks("suggest")]
-        public Task<ActionResult> SuggestAsync() 
-            => Ok("You can suggest bot features [here](https://goo.gl/forms/i6pgYTSnDdMMNLZU2).");
 
         [Command("Snowflake")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
@@ -576,12 +526,6 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithAuthor(user)
                 .WithImageUrl(user.GetAvatarUrl(ImageFormat.Auto)));
-        }
-        
-        private PollInfo GetPollBody(IEnumerable<string> choices)
-        {
-            var c = choices as string[] ?? choices.ToArray();
-            return PollInfo.FromDefaultFields(c.Length - 1, c);
         }
     }
 }

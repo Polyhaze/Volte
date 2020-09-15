@@ -18,12 +18,8 @@ using Volte.Services;
 namespace Volte.Commands.Modules
 {
     [RequireBotOwner]
-    public sealed class BotOwnerModule : VolteModule 
+    public sealed partial class BotOwnerModule : VolteModule 
     {
-        public EvalService Eval { get; set; }
-        public HttpClient Http { get; set; }
-        public CacheService Cache { get; set; }
-
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
         [Remarks("shutdown")]
