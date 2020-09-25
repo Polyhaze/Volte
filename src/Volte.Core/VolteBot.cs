@@ -42,15 +42,7 @@ namespace Volte.Core
 
         private async Task LoginAsync()
         {
-            if (!Config.StartupChecks()) return; 
-
-            Config.Load();
-
-            if (!Config.IsValidDiscordToken())
-            {
-                Console.WriteLine("Token is invalid!", Color.Red);
-                return;
-            }
+            if (!Config.Initialize()) return;
 
             _provider = BuildServiceProvider();
             

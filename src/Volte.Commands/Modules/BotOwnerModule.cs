@@ -66,7 +66,7 @@ namespace Volte.Commands.Modules
                 return BadRequest("That URL is malformed or empty.");
             }
 
-            using var sr = await Http.GetAsync(url);
+            using var sr = await Http.Client.GetAsync(url);
 
             if (!sr.IsImage())
             {
@@ -99,10 +99,13 @@ namespace Volte.Commands.Modules
         [Description(
             "Reloads the bot's configuration file. NOTE: This will throw an exception if the config file is invalid JSON!")]
         [Remarks("reload")]
-        public Task<ActionResult> ReloadAsync()
-            => Config.Reload(Context.ServiceProvider)
-                ? Ok("Config reloaded!")
-                : BadRequest("Something bad happened. Check console for more detailed information.");
+        public async Task<ActionResult> ReloadAsync()
+        {
+            var (success, error) = Config.Reload();
+            return success ? 
+                Ok("Config reloaded!") : 
+                BadRequest($"Something bad happened. Further exception information can be found [here]({await Http.PostToGreemPasteAsync(error.StackTrace ?? error.Message)}).");
+        }
 
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]

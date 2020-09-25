@@ -8,6 +8,7 @@ using Gommon;
 using JetBrains.Annotations;
 using Volte.Core.Entities;
 using Volte.Services;
+using Console = Colorful.Console;
 
 namespace Volte.Core
 {
@@ -33,6 +34,21 @@ namespace Volte.Core
                 return true;
             }
             return false;
+        }
+
+        public static bool Initialize()
+        {
+            if (!StartupChecks()) return false;
+
+            Load();
+
+            if (!IsValidDiscordToken())
+            {
+                Console.WriteLine("Token is invalid!", Color.Red);
+                return false;
+            }
+
+            return true;
         }
 
         public static bool StartupChecks()
@@ -92,18 +108,16 @@ namespace Volte.Core
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }
 
-        public static bool Reload([NotNull] IServiceProvider provider)
+        public static (bool Success, JsonException Error) Reload()
         {
-            var logger = provider.Get<LoggingService>();
             try
             {
                 Load();
-                return true;
+                return (true, null);
             }
             catch (JsonException e)
             {
-                logger.Exception(e);
-                return false;
+                return (false, e);
             }
         }
 

@@ -7,21 +7,21 @@ namespace Volte.Services
 {
     public class HttpService : VolteService
     {
-        private readonly HttpClient _http;
-        public HttpService(HttpClient http)
+        public readonly HttpClient Client;
+        public HttpService(HttpClient client)
         {
-            _http = http;
+            Client = client;
         }
         
         /// <summary>
         ///     Posts the specified text to paste.greemdev.net.
-        ///     This will only fail if paste.greemdev.net is offline.
+        ///     This will only fail if paste.greemdev.net is offline; the API never changes.
         /// </summary>
         /// <param name="content">The content to post</param>
         /// <returns>The resulting paste.greemdev.net URL.</returns>
         public async Task<string> PostToGreemPasteAsync(string content)
         {
-            var response = await _http.PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
+            var response = await Client.PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
             var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}.cs";
         }

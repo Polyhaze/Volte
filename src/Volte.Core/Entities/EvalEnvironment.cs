@@ -36,7 +36,6 @@ namespace Volte.Core.Entities
                 Commands = ctx.ServiceProvider.Get<CommandService>(),
                 Database = ctx.ServiceProvider.Get<DatabaseService>()
             };
-            e.Environment = e;
             return e;
 
         }
@@ -165,33 +164,33 @@ namespace Volte.Core.Entities
             {
                 var value = prop switch
                     {
-                    PropertyInfo pinfo => pinfo.GetValue(obj),
+                    PropertyInfo pi => pi.GetValue(obj),
 
-                    FieldInfo finfo => finfo.GetValue(obj),
+                    FieldInfo fi => fi.GetValue(obj),
 
-                    _ => throw new ArgumentException($"{nameof(prop)} must be PropertyInfo or FieldInfo. Any other type cannot be read.", nameof(prop)),
+                    _ => throw new ArgumentException($"{nameof(prop)} must be {typeof(PropertyInfo).AsPrettyString()} or {typeof(FieldInfo).AsPrettyString()}. Any other type cannot be read.", nameof(prop)),
                     };
 
-                if (value is null) return "Null";
-
-                if (value is IEnumerable e && !(value is string))
+                switch (value)
                 {
-                    var enu = e.Cast<object>().ToList();
-                    return $"{enu.Count} [{enu.GetType().AsPrettyString()}]";
+                    case null:
+                        return "Null";
+                    case IEnumerable e when value is not string:
+                    {
+                        var enu = e.Cast<object>().ToList();
+                        return $"{enu.Count} [{enu.GetType().AsPrettyString()}]";
+                    }
+                    default:
+                        return value + $" [{value.GetType().AsPrettyString()}]";
                 }
-                return value + $" [{value.GetType().AsPrettyString()}]";
-
             }
             catch (Exception e)
             {
                 return $"[[{e.GetType().AsPrettyString()} thrown, message: \"{e.Message}\"]]";
             }
         }
-        
-        public void Throw()
-        {
-            throw new Exception("Test exception.");
-        }
+
+        public void Throw() => throw new Exception("Test exception.");
 
     }
 }

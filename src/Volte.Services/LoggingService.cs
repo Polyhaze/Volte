@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Colorful;
 using DSharpPlus;
@@ -13,7 +9,6 @@ using DSharpPlus.Entities;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Qmmands;
 using Volte.Core;
 using Volte.Core.Entities;
 using Color = System.Drawing.Color;
@@ -243,10 +238,7 @@ namespace Volte.Services
             
         }
 
-        public ILogger CreateLogger(string _)
-        {
-            return this;
-        }
+        public ILogger CreateLogger(string _) => this;
 
         public void AddProvider(ILoggerProvider provider)
         {

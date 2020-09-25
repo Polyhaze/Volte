@@ -8,7 +8,7 @@ using DSharpPlus.EventArgs;
 
 namespace Volte.Services
 {
-    public class CacheService : VolteEventService
+    public sealed class CacheService : VolteEventService
     {
         public readonly Dictionary<ulong, DiscordPresence> CachedPresences;
 
