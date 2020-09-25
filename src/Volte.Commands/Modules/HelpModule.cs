@@ -80,8 +80,8 @@ namespace Volte.Commands.Modules
                         var fields = module.Commands.Select(x => (x.Name, x.Description.HardCast<object>()));
                         await Context.SendPaginatedMessageAsync(
                             fields.GeneratePages(12),
-                            $"Commands in Module {module.SanitizeName()}");
-                    }, false);
+                            $"Commands in Module {module.SanitizeName()}", false);
+                    });
                 }
                 else
                 {
@@ -97,10 +97,12 @@ namespace Volte.Commands.Modules
 
         [CanBeNull]
         private Module GetTargetModule(string input)
-            => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
+            => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input) 
+                                                                  && !x.GetType().HasAttribute<HiddenAttribute>());
 
         [CanBeNull]
         private Command GetTargetCommand(string input)
-            => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
+            => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input) 
+                                                                   && x.Attributes.None(a => a is HiddenAttribute));
     }
 }

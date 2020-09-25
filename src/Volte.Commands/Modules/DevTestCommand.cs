@@ -1,10 +1,11 @@
-﻿/*using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Commands.Checks;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {
+    [DoNotAdd, Hidden]
     public sealed class DevTestModule : VolteModule
     {
         [Command("DevTest")]
@@ -12,9 +13,9 @@ namespace Volte.Commands.Modules
         [Remarks("devtest")]
         [Hidden]
         [RequireBotOwner]
-        public async Task<ActionResult> DevTestAsync()
+        public Task<ActionResult> DevTestAsync()
         {
             return None();
         }
     }
-}*/
+}

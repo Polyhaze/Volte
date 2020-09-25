@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
         [Description("Changes the color of a specified role. Accepts a Hex or RGB value.")]
         [Remarks("rolecolor {Role} {Color}")]
         [RequireBotGuildPermission(Permissions.ManageRoles)]
-        public async Task<ActionResult> RoleColorAsync([RequiredArgument] DiscordRole role, [Remainder, RequiredArgument] DiscordColor color)
+        public async Task<ActionResult> RoleColorAsync([RequiredArgument, CheckHierarchy] DiscordRole role, [Remainder, RequiredArgument] DiscordColor color)
         {
             await role.ModifyAsync(x => x.Color = color);
             return Ok($"Successfully changed the color of the role **{role.Name}**.");
@@ -54,10 +54,10 @@ namespace Volte.Commands.Modules
         [Description("Sets the name of the current channel. Replaces all spaces with a -.")]
         [Remarks("channelname {String}")]
         [RequireBotChannelPermission(Permissions.ManageChannels)]
-        public async Task<ActionResult> ChannelNameAsync([Remainder, RequiredArgument] string name)
+        public Task<ActionResult> ChannelNameAsync([Remainder, RequiredArgument] string name)
         {
-            await Context.Channel.ModifyAsync(c => c.Name = name.Replace(" ", "-"));
-            return Ok($"Set this channel's name to **{name}**.");
+            return Ok($"Set this channel's name to **{name}**.", 
+                _ => Context.Channel.ModifyAsync(c => c.Name = name.Replace(" ", "-")));
         }
 
         public async Task<ActionResult> PublishAync([RequiredArgument] ulong messageId)

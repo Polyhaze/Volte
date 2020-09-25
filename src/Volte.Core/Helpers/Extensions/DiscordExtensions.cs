@@ -29,15 +29,12 @@ namespace Gommon
         public static bool IsBotOwner(this DiscordMember user)
             => Config.Owner == user.Id;
 
-        private static bool IsGuildOwner(this DiscordMember user)
-            => user.Guild.Owner == user || IsBotOwner(user);
+        private static bool IsGuildOwner(this DiscordMember member)
+            => member.Guild.GetOwnerId() == member.Id || member.IsBotOwner();
 
-        public static bool IsModerator(this DiscordMember user, VolteContext ctx)
-        {
-            return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
-                   IsAdmin(user, ctx) ||
-                   IsGuildOwner(user);
-        }
+        public static bool IsModerator(this DiscordMember member, VolteContext ctx)
+            => member.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) ||
+                   member.IsAdmin(ctx) || member.IsGuildOwner();
 
         public static string AsPrettyString(this DiscordMember member)
             => $"{member.Username}#{member.Discriminator}";
@@ -45,24 +42,21 @@ namespace Gommon
         private static bool HasRole(this DiscordMember user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this DiscordMember user, VolteContext ctx)
-        {
-            return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
-                   IsGuildOwner(user);
-        }
+        public static bool IsAdmin(this DiscordMember member, VolteContext ctx)
+            => member.HasRole(ctx.GuildData.Configuration.Moderation.AdminRole) ||
+                   member.IsGuildOwner();
 
         [CanBeNull]
         public static DiscordRole GetHighestRole(this DiscordMember member)
-        {
-            return member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
-        }
-        
+            => member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
+
         [CanBeNull]
-        public static DiscordRole GetHighestRoleWithColor(this DiscordMember member) =>
-            member.Roles.Where(x => x.HasColor())
+        public static DiscordRole GetHighestRoleWithColor(this DiscordMember member) 
+            => member.Roles.Where(x => x.HasColor())
                 .OrderByDescending(x => x.Position).FirstOrDefault();
 
-        public static string AsPrettyString(this DiscordUser user) => $"{user.Username}#{user.Discriminator}";
+        public static string AsPrettyString(this DiscordUser user) 
+            => $"{user.Username}#{user.Discriminator}";
 
         [NotNull]
         public static List<Page> GetPages<T>(this IEnumerable<T> current, int entriesPerPage = 1)
@@ -82,10 +76,8 @@ namespace Gommon
         }
 
         public static List<Page> GeneratePages(this IEnumerable<(string Name, object Value)> current,
-            int fieldsPerPage = 1)
-        {
-            return current.Select(x => (x.Name, x.Value, true)).GeneratePages(fieldsPerPage);
-        }
+            int fieldsPerPage = 1) 
+            => current.Select(x => (x.Name, x.Value, true)).GeneratePages(fieldsPerPage);
 
         public static List<Page> GeneratePages(this IEnumerable<(string Name, object Value, bool Inline)> current, 
             int fieldsPerPage = 1)
@@ -104,12 +96,12 @@ namespace Gommon
 
                 pages.Add(new Page(embed: result));
                 temp.RemoveRange(0, temp.Count < fieldsPerPage ? temp.Count : fieldsPerPage);
-            } while (!temp.IsEmpty());
+            } while (temp.Any());
 
             return pages;
         }
 
-        public static async Task SendPaginatedMessageAsync(this VolteContext ctx, List<Page> pages, string embedTitle = null)
+        public static async Task SendPaginatedMessageAsync(this VolteContext ctx, List<Page> pages, string embedTitle = null, bool awaitInteractivity = true)
         {
             var color = ctx.Member.GetHighestRoleWithColor()?.Color;
             var result = new List<Page>();
@@ -123,28 +115,25 @@ namespace Gommon
                     : new DiscordEmbedBuilder().WithDescription(page.Content);
 
                 if (embed.Title == null && embedTitle != null)
-                {
                     embed.WithTitle(embedTitle);
-                }
 
                 if (embed.Footer == null)
-                {
                     embed.WithFooter($"Page {index} / {pages.Count}");
-                }
 
                 if (!embed.Color.HasValue && color.HasValue)
-                {
                     embed.WithColor(color.Value);
-                }
                 else
-                {
                     embed.WithSuccessColor();
-                }
 
                 result.Add(new Page(embed: embed));
             }
 
-            await ctx.Interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, result);
+            var task = ctx.Interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, result);
+
+            if (awaitInteractivity)
+                await task;
+            else
+                _ = Executor.ExecuteAsync(async () => await task);
         }
 
         public static async Task<bool> TrySendMessageAsync(this DiscordMember user, string text = null,
@@ -204,9 +193,11 @@ namespace Gommon
         public static int GetShardId(this DiscordShardedClient client, ulong guildId)
             => (int)(guildId >> 22) % client.ShardClients.Count;
 
+        [NotNull]
         public static DiscordClient GetShardFor(this DiscordShardedClient client, DiscordGuild guild)
             => client.ShardClients[client.GetShardId(guild.Id)];
 
+        [NotNull]
         public static DiscordGuild GetGuild(this DiscordShardedClient client, ulong guildId)
             => client.ShardClients[client.GetShardId(guildId)].Guilds[guildId]; // TODO test
 
@@ -249,19 +240,24 @@ namespace Gommon
             client.MessageReactionsCleared += async args => await starboard.DoAsync(args);
         }
 
+        [NotNull]
         public static Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder e, DiscordChannel c) =>
             c.SendMessageAsync(string.Empty, false, e.Build());
 
+        [NotNull]
         public static Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordChannel c) =>
             c.SendMessageAsync(string.Empty, false, e);
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
+        [NotNull]
         public static async Task<DiscordMessage> SendToAsync(this DiscordEmbedBuilder e, DiscordMember u) =>
             await u.SendMessageAsync(string.Empty, false, e.Build());
 
+        [NotNull]
         public static async Task<DiscordMessage> SendToAsync(this DiscordEmbed e, DiscordMember u) =>
             await u.SendMessageAsync(string.Empty, false, e);
 
+        [NotNull]
         public static async Task<bool> TryDeleteAsync(this DiscordMessage message, string reason = null)
         {
             try
@@ -275,21 +271,29 @@ namespace Gommon
             }
         }
 
+        [NotNull]
         public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, uint color) => e.WithColor(new DiscordColor((int) color));
 
+        [NotNull]
         public static DiscordEmbedBuilder WithColor(this DiscordEmbedBuilder e, long color) => e.WithColor(new DiscordColor((int) color));
 
+        [NotNull]
         public static DiscordEmbedBuilder WithSuccessColor(this DiscordEmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
+        [NotNull]
         public static DiscordEmbedBuilder WithErrorColor(this DiscordEmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
+        [NotNull]
         public static DiscordEmbedBuilder WithCurrentTimestamp(this DiscordEmbedBuilder e) => e.WithTimestamp(DateTimeOffset.Now);
 
+        [NotNull]
         public static DiscordEmbedBuilder WithAuthor(this DiscordEmbedBuilder builder, DiscordUser user) =>
             builder.WithAuthor($"{user.Username}#{user.Discriminator}", iconUrl: user.AvatarUrl);
 
+        [NotNull]
         public static DiscordEmoji ToEmoji(this string str) => DiscordEmoji.FromUnicode(str);
 
+        [NotNull]
         public static async Task<bool> ShouldHandleAsync(this DiscordMessage message)
         {
             if (message.Channel is DiscordDmChannel)
@@ -309,6 +313,7 @@ namespace Gommon
         public static bool HasColor(this DiscordRole role)
             => role.Color.Value != 0;
         
+        [NotNull]
         public static Permissions GetGuildPermissions(this DiscordMember member)
         {
             // future note: might be able to simplify @everyone role checks to just check any role ... but i'm not sure
@@ -358,15 +363,19 @@ namespace Gommon
         public static int GetMeanLatency(this DiscordShardedClient client)
             => (int) Math.Round((double) client.ShardClients.Sum(e => e.Value.Ping) / client.ShardClients.Count);
 
+        [NotNull]
         public static IEnumerable<DiscordChannel> GetCategoryChannels(this DiscordGuild guild)
             => guild.Channels.Where(e => e.Value.IsCategory).Select(e => e.Value);
         
+        [NotNull]
         public static IEnumerable<DiscordChannel> GetVoiceChannels(this DiscordGuild guild)
             => guild.Channels.Where(e => e.Value.Type == ChannelType.Voice).Select(e => e.Value);
         
+        [NotNull]
         public static IEnumerable<DiscordChannel> GetTextChannels(this DiscordGuild guild)
             => guild.Channels.Where(e => e.Value.Type != ChannelType.Voice && !e.Value.IsCategory).Select(e => e.Value);
         
+        [CanBeNull]
         public static DiscordChannel FindFirstChannel(this DiscordShardedClient client, ulong id)
         {
             foreach (var (_, shard) in client.ShardClients)

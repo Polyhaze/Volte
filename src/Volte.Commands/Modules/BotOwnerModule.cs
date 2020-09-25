@@ -13,12 +13,13 @@ using Volte.Core;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Volte.Commands.Modules
 {
     [RequireBotOwner]
-    public sealed partial class BotOwnerModule : VolteModule 
+    public sealed partial class BotOwnerModule : VolteModule
     {
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
@@ -33,27 +34,26 @@ namespace Volte.Commands.Modules
         [Command("SetStream")]
         [Description("Sets the bot's stream via Twitch username and Stream name, respectively.")]
         [Remarks("setstream {String} {String}")]
-        public async Task<ActionResult> SetStreamAsync([RequiredArgument] string stream, [Remainder, RequiredArgument] string game)
+        public Task<ActionResult> SetStreamAsync([RequiredArgument] string stream,
+            [Remainder, RequiredArgument] string game)
         {
-            await Context.Client.UpdateStatusAsync(new DiscordActivity
-            {
-                Name = game,
-                ActivityType = ActivityType.Streaming,
-                StreamUrl = $"https://twitch.tv/{stream}"
-            });
             return Ok(
-                $"Set the bot's game to **{game}**, and the Twitch URL to **[{stream}](https://twitch.tv/{stream})**.");
+                $"Set the bot's game to **{game}**, and the Twitch URL to **[{stream}](https://twitch.tv/{stream})**.",
+                _ => Context.Client.UpdateStatusAsync(new DiscordActivity
+                {
+                    Name = game,
+                    ActivityType = ActivityType.Streaming,
+                    StreamUrl = $"https://twitch.tv/{stream}"
+                }));
         }
 
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
         [Remarks("setstatus {dnd|idle|invisible|online}")]
-        public async Task<ActionResult> SetStatusAsync([Remainder, RequiredArgument] UserStatus status)
+        public Task<ActionResult> SetStatusAsync([Remainder, RequiredArgument] UserStatus status)
         {
-            var currentUserPresence = Cache.GetBotPresence(Context.Client);
-
-            await Context.Client.UpdateStatusAsync(currentUserPresence.Activity, status);
-            return Ok($"Set the my status to `{status}`!");
+            return Ok($"Set my status to `{status}`!", 
+                _ => Context.Client.UpdateStatusAsync(Cache.GetBotPresence(Context.Client).Activity, status));
         }
 
         [Command("SetAvatar")]
@@ -62,17 +62,14 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> SetAvatarAsync([RequiredArgument] string url)
         {
             if (url.IsNullOrWhitespace() || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
                 return BadRequest("That URL is malformed or empty.");
-            }
 
             using var sr = await Http.Client.GetAsync(url);
 
             if (!sr.IsImage())
-            {
                 return BadRequest(
-                    "Provided URL does not lead to an image. Note that I cannot follow redirects; so provide *direct* image URLs please!");
-            }
+                    "Provided URL does not lead to an image. Note that I cannot follow redirects; " +
+                    "so provide *direct* image URLs please! An example of this is an i.imgur.com link.");
 
             await using var img = (await sr.Content.ReadAsByteArrayAsync()).ToStream();
             img.Position = 0;
@@ -83,17 +80,14 @@ namespace Volte.Commands.Modules
         [Command("SetName")]
         [Description("Sets the bot's username.")]
         [Remarks("setname {String}")]
-        public Task<ActionResult> SetNameAsync([Remainder, RequiredArgument] string name) 
+        public Task<ActionResult> SetNameAsync([Remainder, RequiredArgument] string name)
             => Ok($"Set my username to **{name}**.", _ => Context.Client.UpdateCurrentUserAsync(name));
 
         [Command("SetGame")]
         [Description("Sets the bot's game (presence).")]
         [Remarks("setgame {String}")]
-        public async Task<ActionResult> SetGameAsync([Remainder, RequiredArgument] string game)
-        {
-            await Context.Client.UpdateStatusAsync(new DiscordActivity(game, ActivityType.Playing));
-            return Ok($"Set my game to {game}!");
-        }
+        public Task<ActionResult> SetGameAsync([Remainder, RequiredArgument] string game) 
+            => Ok($"Set my game to {game}!", _ => Context.Client.UpdateStatusAsync(new DiscordActivity(game, ActivityType.Playing)));
 
         [Command("Reload", "Rl")]
         [Description(
@@ -102,9 +96,10 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> ReloadAsync()
         {
             var (success, error) = Config.Reload();
-            return success ? 
-                Ok("Config reloaded!") : 
-                BadRequest($"Something bad happened. Further exception information can be found [here]({await Http.PostToGreemPasteAsync(error.StackTrace ?? error.Message)}).");
+            return success
+                ? Ok("Config reloaded!")
+                : BadRequest(
+                    $"Something bad happened. Further exception information can be found [here]({await Http.PostToGreemPasteAsync(error.StackTrace ?? error.Message)}).");
         }
 
         [Command("Eval", "Evaluate")]
@@ -128,16 +123,13 @@ namespace Volte.Commands.Modules
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
         [Remarks("forceleave {Guild}")]
-        public async Task<ActionResult> ForceLeaveAsync([Remainder, RequiredArgument] DiscordGuild guild)
-        {
-            await guild.LeaveAsync();
-            return Ok($"Successfully left **{guild.Name}**.");
-        }
+        public Task<ActionResult> ForceLeaveAsync([Remainder, RequiredArgument] DiscordGuild guild) 
+            => Ok($"Successfully left **{guild.Name}**.", _ => guild.LeaveAsync());
 
         [Command("DevInfo", "Di")]
         [Description("Shows information about the bot and about the system it's hosted on.")]
         [Remarks("devinfo")]
-        public Task<ActionResult> DevInfoAsync() 
+        public Task<ActionResult> DevInfoAsync()
             => Ok(Formatter.BlockCode(new StringBuilder()
                 .AppendLine("== Core ==")
                 .AppendLine($"[{Context.Client.GetGuildCount()}] Guilds")
@@ -167,7 +159,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> CreateConfigAsync([Remainder, OptionalArgument] DiscordGuild guild = null)
         {
             guild ??= Context.Guild;
-            return Ok($"Created a config for {Formatter.Bold(guild.Name)} if it didn't exist.", m =>
+            return Ok($"Created a config for **{guild.Name}** if it didn't exist. It probably did so that was most likely pointless, but I digress.", m =>
             {
                 _ = Db.GetData(guild.Id);
                 return Task.CompletedTask;
