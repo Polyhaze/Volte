@@ -30,5 +30,7 @@ namespace Gommon
         {
             return channel.SendFileAsync(fileName, stream, text, isTts, embed, allowedMentions);
         }
+
+        public static bool None<T>(this IEnumerable<T> current, Func<T, bool> predicate) => !current.Any(predicate);
     }
 }

@@ -11,11 +11,20 @@ namespace Volte.Core.Entities
     {
         public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
         {
-            var u = argument.Cast<DiscordMember>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(DiscordMember)}.");
-
-            return context.AsVolteContext().Member.Hierarchy >= u.Hierarchy
-                ? CheckResult.Successful
-                : CheckResult.Unsuccessful("Cannot ban someone in a higher, or equal, hierarchy position than yourself.");
+            var ctx = context.AsVolteContext();
+            return argument switch
+            {
+                DiscordMember member => ctx.Member.Hierarchy > member.Hierarchy
+                    ? CheckResult.Successful
+                    : CheckResult.Unsuccessful(
+                        "Cannot ban someone in a higher, or equal, hierarchy position than yourself."),
+                DiscordRole role => ctx.Member.Hierarchy > role.Position
+                    ? CheckResult.Successful
+                    : CheckResult.Unsuccessful(
+                        "Cannot ban someone who has a role in a higher position than your highest role."),
+                _ => throw new InvalidOperationException(
+                    $"You may not use the {typeof(CheckHierarchyAttribute).FullName} attribute on a parameter that is not either {typeof(DiscordRole).AsPrettyString()} or {typeof(DiscordMember).AsPrettyString()}.")
+            };
         }
     }
 }
