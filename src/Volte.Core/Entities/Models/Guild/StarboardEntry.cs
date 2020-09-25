@@ -6,37 +6,39 @@ using LiteDB;
 
 namespace Volte.Core.Entities
 {
-    public class StarboardEntry
+    public class StarboardEntryBase
     {
-        public StarboardEntry()
-        {
-            StargazerCollection = new StargazerCollection();
-        }
+        [JsonPropertyName("guild_id")]
+        public ulong GuildId { get; set; }
 
-        [JsonPropertyName("starred_users")]
-        [BsonRef("stargazers")]
-        public StargazerCollection StargazerCollection { get; set; }
-        [JsonPropertyName("starred_message_id")]
-        public ulong MessageId { get; set; }
-        [JsonIgnore]
-        public int StarCount => StargazerCollection.Count;
-        [JsonPropertyName("starboard_message_id")]
-        public ulong StarboardMessageId { get; set; }
+        [JsonPropertyName("key")]
+        public ulong Key { get; set; }
+        
+        [JsonPropertyName("value")]
+        public StarboardEntry2 Value { get; set; }
     }
-
-    public class StargazerCollection
+    
+    public class StarboardEntry2
     {
-        public StargazerCollection()
+        public StarboardEntry2()
         {
             Stargazers = new Dictionary<ulong, StarTarget>();
         }
 
+        [JsonPropertyName("guild_id")]
+        public ulong GuildId { get; set; }
+        
         [JsonPropertyName("starred_message_id")]
-        public ulong MessageId { get; set; }
+        public ulong StarredMessageId { get; set; }
+        
+        [JsonPropertyName("starboard_message_id")]
+        public ulong StarboardMessageId { get; set; }
+        
         [JsonPropertyName("stargazers")]
         public Dictionary<ulong, StarTarget> Stargazers { get; set; }
+        
         [JsonIgnore]
-        public int Count => Stargazers.Count;
+        public int StarCount => Stargazers.Count;
     }
 
     public enum StarTarget : byte

@@ -7,9 +7,9 @@ using JetBrains.Annotations;
 namespace Volte.Core.Helpers
 {
     // https://stackoverflow.com/a/31194647
-    public struct AsyncDuplicateLock<T>
+    public sealed class AsyncDuplicateLock<T>
     {
-        private struct RefCounted<TR>
+        private sealed class RefCounted<TR>
         {
             public RefCounted([NotNull] TR value)
             {
@@ -21,23 +21,23 @@ namespace Volte.Core.Helpers
             public TR Value { get; }
         }
 
-        private static readonly Dictionary<T, RefCounted<SemaphoreSlim>> SemaphoreSlims
+        private readonly Dictionary<T, RefCounted<SemaphoreSlim>> _semaphoreSlims
             = new Dictionary<T, RefCounted<SemaphoreSlim>>();
 
         [NotNull]
-        private static SemaphoreSlim GetOrCreate(T key)
+        private SemaphoreSlim GetOrCreate(T key)
         {
             RefCounted<SemaphoreSlim> item;
-            lock (SemaphoreSlims)
+            lock (_semaphoreSlims)
             {
-                if (SemaphoreSlims.TryGetValue(key, out item))
+                if (_semaphoreSlims.TryGetValue(key, out item))
                 {
                     ++item.RefCount;
                 }
                 else
                 {
                     item = new RefCounted<SemaphoreSlim>(new SemaphoreSlim(1, 1));
-                    SemaphoreSlims[key] = item;
+                    _semaphoreSlims[key] = item;
                 }
             }
 
@@ -47,33 +47,36 @@ namespace Volte.Core.Helpers
         public IDisposable Lock(T key)
         {
             GetOrCreate(key).Wait();
-            return new Releaser(key);
+            return new Releaser(key, _semaphoreSlims);
         }
 
         public async Task<IDisposable> LockAsync(T key)
         {
             await GetOrCreate(key).WaitAsync().ConfigureAwait(false);
-            return new Releaser(key);
+            return new Releaser(key, _semaphoreSlims);
         }
 
         private readonly struct Releaser : IDisposable
         {
+            private readonly Dictionary<T, RefCounted<SemaphoreSlim>> _semaphoreSlims;
+
             public T Key { get; }
 
-            public Releaser(T key)
+            public Releaser(T key, Dictionary<T, RefCounted<SemaphoreSlim>> semaphoreSlims)
             {
+                _semaphoreSlims = semaphoreSlims;
                 Key = key;
             }
 
             public void Dispose()
             {
                 RefCounted<SemaphoreSlim> item;
-                lock (SemaphoreSlims)
+                lock (_semaphoreSlims)
                 {
-                    item = SemaphoreSlims[Key];
+                    item = _semaphoreSlims[Key];
                     --item.RefCount;
                     if (item.RefCount == 0)
-                        SemaphoreSlims.Remove(Key);
+                        _semaphoreSlims.Remove(Key);
                 }
 
                 item.Value.Release();

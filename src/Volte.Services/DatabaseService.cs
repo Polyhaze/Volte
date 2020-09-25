@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Gommon;
+using JetBrains.Annotations;
 using LiteDB;
 using Volte.Core;
 using Volte.Core.Helpers;
@@ -18,7 +20,7 @@ namespace Volte.Services
 
         private readonly DiscordShardedClient _client;
         private readonly ILiteCollection<GuildData> _guildData;
-        private readonly ILiteCollection<StargazerCollection> _stargazerData;
+        private readonly ILiteCollection<StarboardEntryBase> _starboardData;
 
         public DatabaseService(DiscordShardedClient discordShardedClient)
         {
@@ -27,8 +29,8 @@ namespace Volte.Services
             _guildData = Database.GetCollection<GuildData>("guilds");
             _guildData.EnsureIndex(s => s.Id, true);
             
-            _stargazerData = Database.GetCollection<StargazerCollection>("stargazers");
-            _stargazerData.EnsureIndex(s => s.MessageId, true);
+            _starboardData = Database.GetCollection<StarboardEntryBase>("starboard_by_starboard");
+            _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardEntryBase.GuildId)} + '_' + $.{nameof(StarboardEntryBase.GuildId)}");
         }
 
         public void ModifyAndSaveData(ulong id, Func<GuildData, GuildData> func)
@@ -98,16 +100,91 @@ namespace Volte.Services
                 {
                     ModActionCaseNumber = default,
                     SelfRoles = new List<string>(),
-                    StarboardedMessages = new Dictionary<ulong, StarboardEntry>(),
                     Tags = new List<Tag>(),
                     Warns = new List<Warn>()
                 }
             };
-        
-        
-        public void UpdateStargazers(StargazerCollection collection)
+
+        [CanBeNull]
+        private StarboardEntryBase GetStargazersInternal(ulong guildId, ulong messageId)
         {
-            _stargazerData.Insert(collection);
+            return _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId);
+        }
+
+        [CanBeNull]
+        public StarboardEntry2 GetStargazers(ulong guildId, ulong messageId)
+        {
+            return GetStargazersInternal(guildId, messageId)?.Value;
+        }
+
+        public bool TryGetStargazers(ulong guildId, ulong messageId, [NotNullWhen(true)] out StarboardEntry2 entry)
+        {
+            entry = GetStargazersInternal(guildId, messageId)?.Value;
+            return entry != null;
+        }
+
+        public void UpdateStargazers(StarboardEntry2 entry)
+        {
+            var entry1 = GetStargazersInternal(entry.GuildId, entry.StarboardMessageId);
+            var entry2 = GetStargazersInternal(entry.GuildId, entry.StarredMessageId);
+
+            if (entry1 is null && entry2 is null)
+            {
+                _starboardData.Insert(new[]
+                {
+                    new StarboardEntryBase
+                    {
+                        GuildId = entry.GuildId,
+                        Key = entry.StarboardMessageId,
+                        Value = entry
+                    },
+                    new StarboardEntryBase
+                    {
+                        GuildId = entry.GuildId,
+                        Key = entry.StarredMessageId,
+                        Value = entry
+                    }
+                });
+            }
+            else if (entry1 is null)
+            {
+                _starboardData.Insert(new StarboardEntryBase
+                {
+                    GuildId = entry.GuildId,
+                    Key = entry.StarboardMessageId,
+                    Value = entry
+                });
+
+                entry2.Value = entry;
+                _starboardData.Update(entry2);
+            }
+            else if (entry2 is null)
+            {
+                entry1.Value = entry;
+                _starboardData.Update(entry1);
+
+                _starboardData.Insert(new StarboardEntryBase
+                {
+                    GuildId = entry.GuildId,
+                    Key = entry.StarredMessageId,
+                    Value = entry
+                });
+            }
+            else // neither are null
+            {
+                entry1.Value = entry;
+                entry2.Value = entry;
+                _starboardData.Update(new[] {entry1, entry2});
+            }
+        }
+
+        public void RemoveStargazers(StarboardEntry2 entry)
+        {
+            var entry1 = GetStargazersInternal(entry.GuildId, entry.StarboardMessageId);
+            var entry2 = GetStargazersInternal(entry.GuildId, entry.StarredMessageId);
+
+            if (entry1 is not null) _starboardData.Delete(entry.StarboardMessageId);
+            if (entry2 is not null) _starboardData.Delete(entry.StarredMessageId);
         }
 
         public void Dispose() 

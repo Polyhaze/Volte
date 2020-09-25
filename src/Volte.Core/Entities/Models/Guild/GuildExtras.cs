@@ -12,7 +12,6 @@ namespace Volte.Core.Entities
         {
             SelfRoles = new List<string>();
             Tags = new List<Tag>();
-            StarboardedMessages = new Dictionary<ulong, StarboardEntry>();
             Warns = new List<Warn>();
         }
 
@@ -21,9 +20,6 @@ namespace Volte.Core.Entities
 
         [JsonPropertyName("tags")]
         public List<Tag> Tags { get; set; }
-        
-        [JsonPropertyName("starboarded_messages")]
-        public Dictionary<ulong, StarboardEntry> StarboardedMessages { get; set; }
 
         [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }
