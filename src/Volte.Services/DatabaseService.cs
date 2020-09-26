@@ -29,8 +29,8 @@ namespace Volte.Services
             _guildData = Database.GetCollection<GuildData>("guilds");
             _guildData.EnsureIndex(s => s.Id, true);
             
-            _starboardData = Database.GetCollection<StarboardEntryBase>("starboard_by_starboard");
-            _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardEntryBase.GuildId)} + '_' + $.{nameof(StarboardEntryBase.GuildId)}");
+            _starboardData = Database.GetCollection<StarboardEntryBase>("starboard");
+            _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardEntryBase.GuildId)} + '_' + $.{nameof(StarboardEntryBase.Key)}");
         }
 
         public void ModifyAndSaveData(ulong id, Func<GuildData, GuildData> func)
@@ -125,66 +125,25 @@ namespace Volte.Services
 
         public void UpdateStargazers(StarboardEntry2 entry)
         {
-            var entry1 = GetStargazersInternal(entry.GuildId, entry.StarboardMessageId);
-            var entry2 = GetStargazersInternal(entry.GuildId, entry.StarredMessageId);
+            _starboardData.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardEntryBase
+            {
+                GuildId = entry.GuildId,
+                Key = entry.StarboardMessageId,
+                Value = entry
+            });
 
-            if (entry1 is null && entry2 is null)
+            _starboardData.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardEntryBase
             {
-                _starboardData.Insert(new[]
-                {
-                    new StarboardEntryBase
-                    {
-                        GuildId = entry.GuildId,
-                        Key = entry.StarboardMessageId,
-                        Value = entry
-                    },
-                    new StarboardEntryBase
-                    {
-                        GuildId = entry.GuildId,
-                        Key = entry.StarredMessageId,
-                        Value = entry
-                    }
-                });
-            }
-            else if (entry1 is null)
-            {
-                _starboardData.Insert(new StarboardEntryBase
-                {
-                    GuildId = entry.GuildId,
-                    Key = entry.StarboardMessageId,
-                    Value = entry
-                });
-
-                entry2.Value = entry;
-                _starboardData.Update(entry2);
-            }
-            else if (entry2 is null)
-            {
-                entry1.Value = entry;
-                _starboardData.Update(entry1);
-
-                _starboardData.Insert(new StarboardEntryBase
-                {
-                    GuildId = entry.GuildId,
-                    Key = entry.StarredMessageId,
-                    Value = entry
-                });
-            }
-            else // neither are null
-            {
-                entry1.Value = entry;
-                entry2.Value = entry;
-                _starboardData.Update(new[] {entry1, entry2});
-            }
+                GuildId = entry.GuildId,
+                Key = entry.StarredMessageId,
+                Value = entry
+            });
         }
 
         public void RemoveStargazers(StarboardEntry2 entry)
         {
-            var entry1 = GetStargazersInternal(entry.GuildId, entry.StarboardMessageId);
-            var entry2 = GetStargazersInternal(entry.GuildId, entry.StarredMessageId);
-
-            if (entry1 is not null) _starboardData.Delete(entry.StarboardMessageId);
-            if (entry2 is not null) _starboardData.Delete(entry.StarredMessageId);
+            _starboardData.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
+            _starboardData.Delete($"{entry.GuildId}_{entry.StarredMessageId}");
         }
 
         public void Dispose() 

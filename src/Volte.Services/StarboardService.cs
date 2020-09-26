@@ -64,6 +64,8 @@ namespace Volte.Services
                     {
                         // Update message star count
                         await UpdateOrPostToStarboardAsync(starboard, args.Message, entry);
+
+                        _db.UpdateStargazers(entry);
                     }
                     else
                     {
@@ -73,8 +75,6 @@ namespace Volte.Services
                             await args.Message.DeleteReactionAsync(_starEmoji, args.User, "Star reaction is invalid: User has already starred!");
                         }
                     }
-
-                    _db.UpdateStargazers(entry);
                 }
             }
             else if (args.Channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
@@ -123,8 +123,12 @@ namespace Volte.Services
             {
                 using (await _starboardReadWriteLock.LockAsync(entry.StarredMessageId))
                 {
+                    var removedStarTarget = messageId == entry.StarredMessageId
+                        ? StarTarget.OriginalMessage
+                        : StarTarget.StarboardMessage;
+
                     // Remove the star from the database
-                    if (entry.Stargazers.Remove(starrerId))
+                    if (entry.Stargazers.TryGetValue(starrerId, out var starTarget) && starTarget == removedStarTarget && entry.Stargazers.Remove(starrerId))
                     {
                         // Update message star count
                         if (entry.StarCount < starboard.StarsRequiredToPost)
