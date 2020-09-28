@@ -15,12 +15,12 @@ namespace Volte.Core.Entities
         public ulong Key { get; set; }
         
         [JsonPropertyName("value")]
-        public StarboardEntry2 Value { get; set; }
+        public StarboardEntry Value { get; set; }
     }
     
-    public class StarboardEntry2
+    public class StarboardEntry
     {
-        public StarboardEntry2()
+        public StarboardEntry()
         {
             Stargazers = new Dictionary<ulong, StarTarget>();
         }

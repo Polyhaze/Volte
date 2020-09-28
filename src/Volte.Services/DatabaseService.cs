@@ -51,7 +51,7 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            var conf = _guildData.FindOne(g => (ulong)g.Id == (ulong)id);
+            var conf = _guildData.FindOne(g => g.Id == id);
             if (conf is not null) return conf;
             var newConf = CreateData(_client.GetGuild(id));
             _guildData.Insert(newConf);
@@ -112,18 +112,18 @@ namespace Volte.Services
         }
 
         [CanBeNull]
-        public StarboardEntry2 GetStargazers(ulong guildId, ulong messageId)
+        public StarboardEntry GetStargazers(ulong guildId, ulong messageId)
         {
             return GetStargazersInternal(guildId, messageId)?.Value;
         }
 
-        public bool TryGetStargazers(ulong guildId, ulong messageId, [NotNullWhen(true)] out StarboardEntry2 entry)
+        public bool TryGetStargazers(ulong guildId, ulong messageId, [NotNullWhen(true)] out StarboardEntry entry)
         {
             entry = GetStargazersInternal(guildId, messageId)?.Value;
             return entry != null;
         }
 
-        public void UpdateStargazers(StarboardEntry2 entry)
+        public void UpdateStargazers(StarboardEntry entry)
         {
             _starboardData.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardEntryBase
             {
@@ -140,7 +140,7 @@ namespace Volte.Services
             });
         }
 
-        public void RemoveStargazers(StarboardEntry2 entry)
+        public void RemoveStargazers(StarboardEntry entry)
         {
             _starboardData.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
             _starboardData.Delete($"{entry.GuildId}_{entry.StarredMessageId}");

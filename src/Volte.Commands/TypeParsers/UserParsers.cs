@@ -57,7 +57,7 @@ namespace Volte.Commands.TypeParsers
             DiscordUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionHelper.TryParseUser(value, out id))
-                user = await ctx.Client.ShardClients.First().Value.GetUserAsync(id);
+                user = await ctx.Client.ShardClients[ctx.Client.GetShardId(ctx.Guild.Id)].GetUserAsync(id);
 
             return user is null
                 ? TypeParserResult<DiscordUser>.Unsuccessful("User not found.")

@@ -17,7 +17,7 @@ namespace Volte.Commands.TypeParsers
         private static readonly IReadOnlyDictionary<string, string> UnicodeEmojis
             = (IReadOnlyDictionary<string, string>) typeof(DiscordEmoji)
                 .GetProperty("UnicodeEmojis", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
+                ?.GetValue(null);
         
         private static readonly Regex EmojiRegex = new Regex(@"^<(?<isAnimated>a)?:(?<name>\w+):(?<id>\d+)>$", RegexOptions.Compiled);
         

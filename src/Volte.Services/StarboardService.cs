@@ -84,7 +84,7 @@ namespace Volte.Services
                     if (args.Message.Reactions.FirstOrDefault(e => e.Emoji == _starEmoji)?.Count >= starboard.StarsRequiredToPost)
                     {
                         // Create new star message!
-                        entry = new StarboardEntry2
+                        entry = new StarboardEntry
                         {
                             GuildId = guildId,
                             StarredMessageId = messageId,
@@ -198,7 +198,7 @@ namespace Volte.Services
         /// <param name="message">The message to star</param>
         /// <param name="entry"></param>
         /// <returns></returns>
-        private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, DiscordMessage message, StarboardEntry2 entry)
+        private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, DiscordMessage message, StarboardEntry entry)
         {
             var starboardChannel = message.Channel.Guild.GetChannel(starboard.StarboardChannel);
             if (starboardChannel is null)

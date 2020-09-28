@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Gommon;
 using Qmmands;
 
 namespace Volte.Commands.TypeParsers
@@ -8,7 +9,7 @@ namespace Volte.Commands.TypeParsers
     [VolteTypeParser]
     public sealed class TimeSpanParser : TypeParser<TimeSpan>
     {
-        private static readonly Regex _regex = new Regex(
+        private static readonly Regex Regex = new Regex(
             @"(\d+)(w(?:eeks|eek?)?|d(?:ays|ay?)?|h(?:ours|rs|r?)|m(?:inutes|ins|in?)?|s(?:econds|econd|ecs|ec?)?)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         
@@ -17,7 +18,7 @@ namespace Volte.Commands.TypeParsers
             string value, 
             CommandContext context)
         {
-            var matches = _regex.Matches(value);
+            var matches = Regex.Matches(value);
             if (matches.Count <= 0)
             {
                 return TypeParserResult<TimeSpan>.Unsuccessful("The input could not be parsed into a valid TimeSpan.");
@@ -25,9 +26,9 @@ namespace Volte.Commands.TypeParsers
             
             bool weeks = false, days = false, hours = false, minutes = false, seconds = false;
             var result = new TimeSpan();
-            for (var m = 0; m < matches.Count; m++)
+            foreach (var m in matches)
             {
-                var match = matches[m];
+                var match = m.HardCast<Match>();
 
                 if (!uint.TryParse(match.Groups[1].Value, out var amount))
                     continue;
