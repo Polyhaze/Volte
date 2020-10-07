@@ -36,11 +36,18 @@ namespace Gommon
                     LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
                         ? LogSeverity.Debug
                         : LogSeverity.Verbose,
+                    GatewayIntents = GetIntents(),
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
                     MessageCacheSize = 50,
                     TotalShards = shardCount
                 }));
+
+        public static GatewayIntents GetIntents()
+        {
+            return GatewayIntents.Guilds | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers |
+                         GatewayIntents.GuildMessages | GatewayIntents.GuildPresences;
+        }
 
         public static IServiceCollection AddVolteServices(this IServiceCollection coll)
         {

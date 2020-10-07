@@ -79,14 +79,30 @@ namespace Volte.Services
 
             if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
-                var comment = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ");
-                var strings = comment.Split("  ");
-                e.AddField("Comment", strings.IsEmpty() ? comment : strings.Join(" "), true);
+                var strings = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ")
+                    .Split("  ", StringSplitOptions.RemoveEmptyEntries);
+                
+                if (strings.Length is 2)
+                    strings = strings.Select(FilterComments).Where(x => !(x is null)).ToArray();
+                e.AddField("Comment", strings.Join(" "), true);
             }
 
             e.AddField("Original Message", $"[Click here]({message.GetJumpUrl()})");
 
             return e.Build();
+        }
+        
+        private string FilterComments(string input)
+        {
+            if (!(input is ""))
+            {
+                if (input.EndsWith('|') || input.StartsWith('|'))
+                    return input.Replace("|", "");
+                        
+                return input;
+            }
+
+            return null;
         }
         
     }
