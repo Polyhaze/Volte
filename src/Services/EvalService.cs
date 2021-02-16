@@ -76,7 +76,7 @@ namespace Volte.Services
 
         private async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
-            ctx.ServiceProvider.Get<EmojiService>(out var e);
+            ctx.Services.Get<EmojiService>(out var e);
             var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));

@@ -13,7 +13,7 @@ namespace Volte.Core.Attributes
             var ctx = context.Cast<VolteContext>();
             if (ctx.User.IsBotOwner()) return CheckResult.Successful;
             
-            return CheckResult.Unsuccessful("Insufficient permission.");
+            return CheckResult.Failed("Insufficient permission.");
         }
     }
 }

@@ -18,6 +18,6 @@ namespace Volte.Commands.TypeParsers
                 ? TypeParserResult<IEmote>.Successful(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
                     ? TypeParserResult<IEmote>.Successful(new Emoji(value))
-                    : TypeParserResult<IEmote>.Unsuccessful("Emote not found.");
+                    : TypeParserResult<IEmote>.Failed("Emote not found.");
     }
 }

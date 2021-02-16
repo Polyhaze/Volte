@@ -32,7 +32,7 @@ namespace Volte.Core.Attributes
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);
 
-            return CheckResult.Unsuccessful("Bot is missing the required permissions to execute this command.");
+            return CheckResult.Failed("Bot is missing the required permissions to execute this command.");
         }
     }
 }

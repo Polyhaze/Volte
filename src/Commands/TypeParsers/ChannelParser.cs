@@ -28,12 +28,12 @@ namespace Volte.Commands.TypeParsers
                 var match = ctx.Guild.TextChannels.Where(x => x.Name.EqualsIgnoreCase(value))
                     .ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketTextChannel>.Unsuccessful(
+                    return TypeParserResult<SocketTextChannel>.Failed(
                         "Multiple channels found. Try mentioning the channel or using its ID.");
             }
 
             return channel is null
-                ? TypeParserResult<SocketTextChannel>.Unsuccessful("Channel not found.")
+                ? TypeParserResult<SocketTextChannel>.Failed("Channel not found.")
                 : TypeParserResult<SocketTextChannel>.Successful(channel);
         }
     }

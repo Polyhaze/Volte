@@ -34,14 +34,14 @@ namespace Volte.Commands.TypeParsers
                     x.Username.EqualsIgnoreCase(value)
                     || x.Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketGuildUser>.Unsuccessful(
+                    return TypeParserResult<SocketGuildUser>.Failed(
                         "Multiple users found, try mentioning the user or using their ID.");
 
                 user = match.FirstOrDefault();
             }
 
             return user is null
-                ? TypeParserResult<SocketGuildUser>.Unsuccessful("User not found.")
+                ? TypeParserResult<SocketGuildUser>.Failed("User not found.")
                 : TypeParserResult<SocketGuildUser>.Successful(user);
         }
     }
@@ -64,7 +64,7 @@ namespace Volte.Commands.TypeParsers
             
 
             return user is null
-                ? TypeParserResult<RestUser>.Unsuccessful("User not found.")
+                ? TypeParserResult<RestUser>.Failed("User not found.")
                 : TypeParserResult<RestUser>.Successful(user);
         }
     }

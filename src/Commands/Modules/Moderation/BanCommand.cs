@@ -27,14 +27,21 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!");
             }
 
-            await user.BanAsync(7, reason);
-            return Ok($"Successfully banned **{user}** from this guild.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithActionType(ModActionType.Ban)
-                    .WithTarget(user)
-                    .WithReason(reason))
+            try
+            {
+                await user.BanAsync(7, reason);
+                return Ok($"Successfully banned **{user}** from this guild.", _ =>
+                    ModLogService.DoAsync(ModActionEventArgs.New
+                        .WithDefaultsFromContext(Context)
+                        .WithActionType(ModActionType.Ban)
+                        .WithTarget(user)
+                        .WithReason(reason))
                 );
+            }
+            catch
+            {
+                return BadRequest("An error occurred banning that user. Do I have permission; or are they higher than me in the role list?");
+            }
         }
     }
 }

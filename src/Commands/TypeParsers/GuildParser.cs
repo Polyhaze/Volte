@@ -29,14 +29,14 @@ namespace Volte.Commands.TypeParsers
                 var match = guilds.Where(x =>
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketGuild>.Unsuccessful(
+                    return TypeParserResult<SocketGuild>.Failed(
                         "Multiple guilds found with that name, try using its ID.");
 
                 guild = match.FirstOrDefault();
             }
 
             return guild is null
-                ? TypeParserResult<SocketGuild>.Unsuccessful("Guild not found.")
+                ? TypeParserResult<SocketGuild>.Failed("Guild not found.")
                 : TypeParserResult<SocketGuild>.Successful(guild);
         }
     }

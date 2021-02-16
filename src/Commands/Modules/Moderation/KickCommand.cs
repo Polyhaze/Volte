@@ -26,16 +26,22 @@ namespace Volte.Commands.Modules
                 Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!");
             }
-
-            await user.KickAsync(reason);
-
-            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithActionType(ModActionType.Kick)
-                    .WithTarget(user)
-                    .WithReason(reason))
+            
+            try
+            {
+                await user.KickAsync(reason);
+                return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", _ =>
+                    ModLogService.DoAsync(ModActionEventArgs.New
+                        .WithDefaultsFromContext(Context)
+                        .WithActionType(ModActionType.Kick)
+                        .WithTarget(user)
+                        .WithReason(reason))
                 );
+            }
+            catch
+            {
+                return BadRequest("An error occurred kicking that user. Do I have permission; or are they higher than me in the role list?");
+            }
         }
     }
 }

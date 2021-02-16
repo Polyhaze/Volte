@@ -26,14 +26,14 @@ namespace Volte.Commands.TypeParsers
             {
                 var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketRole>.Unsuccessful(
+                    return TypeParserResult<SocketRole>.Failed(
                         "Multiple roles found. Try mentioning the role or using its ID.");
 
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }
 
             return role is null
-                ? TypeParserResult<SocketRole>.Unsuccessful($"Role `{value}` not found.")
+                ? TypeParserResult<SocketRole>.Failed($"Role `{value}` not found.")
                 : TypeParserResult<SocketRole>.Successful(role);
         }
     }

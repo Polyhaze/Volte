@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         [Remarks("reload")]
         [RequireBotOwner]
         public Task<ActionResult> ReloadAsync()
-            => Config.Reload(Context.ServiceProvider)
+            => Config.Reload(Context.Services)
                 ? Ok("Config reloaded!")
                 : BadRequest("Something bad happened. Check console for more detailed information.");
     }

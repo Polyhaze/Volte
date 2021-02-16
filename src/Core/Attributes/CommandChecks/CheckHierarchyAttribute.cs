@@ -17,7 +17,7 @@ namespace Volte.Core.Attributes
 
             return ctx.User.Hierarchy >= u.Hierarchy
                 ? CheckResult.Successful
-                : CheckResult.Unsuccessful("Cannot ban someone in a higher, or equal, hierarchy position than yourself.");
+                : CheckResult.Failed("Cannot ban someone in a higher, or equal, hierarchy position than yourself.");
         }
     }
 }

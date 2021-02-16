@@ -32,7 +32,7 @@ namespace Volte.Core.Models
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
         public EmojiService Emoji { get; set; }
-        public EvalEnvironment Environment { get; set; }
+        public EvalEnvironment Environment { get;}
 
         public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
         public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
@@ -50,7 +50,7 @@ namespace Volte.Core.Models
         }
         
         public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
-        public T GetFromProvider<T>() => Context.ServiceProvider.GetRequiredService<T>();
+        public T GetFromProvider<T>() => Context.Services.GetRequiredService<T>();
 
         public SocketUserMessage Message(string id)
         {

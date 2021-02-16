@@ -28,7 +28,6 @@ namespace Gommon
 
         public static bool IsModerator(this SocketGuildUser user, VolteContext ctx)
         {
-            ctx.ServiceProvider.Get<DatabaseService>(out var db);
             return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
                    IsAdmin(user, ctx) ||
                    IsGuildOwner(user);
@@ -39,7 +38,7 @@ namespace Gommon
 
         public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
         {
-            var db = ctx.ServiceProvider.GetRequiredService<DatabaseService>();
+            var db = ctx.Services.GetRequiredService<DatabaseService>();
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
         }

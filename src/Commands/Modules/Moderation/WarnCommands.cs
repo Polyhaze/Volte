@@ -42,7 +42,7 @@ namespace Volte.Commands.Modules
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10);
             return Ok(new StringBuilder()
                 .AppendLine(
-                    "Showing the last 10 warnings, or less if the user doesn't have 10 yet, or none if the user's record is clean.")
+                    "Showing the last 10 warnings; less if the user doesn't have 10 yet, or none if the user's record is clean.")
                 .AppendLine()
                 .AppendLine($"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}")
                 .ToString());

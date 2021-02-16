@@ -20,7 +20,7 @@ namespace Volte.Commands.TypeParsers
             var tag = ctx.GuildData.Extras.Tags.FirstOrDefault(x => x.Name.EqualsIgnoreCase(value));
 
             return tag is null 
-                ? TypeParserResult<Tag>.Unsuccessful($"The tag **{value}** doesn't exist in this guild. " +
+                ? TypeParserResult<Tag>.Failed($"The tag **{value}** doesn't exist in this guild. " +
                                                      $"Try using the `{ctx.GuildData.Configuration.CommandPrefix}tags` command to see all tags in this guild.") 
                 : TypeParserResult<Tag>.Successful(tag);
 

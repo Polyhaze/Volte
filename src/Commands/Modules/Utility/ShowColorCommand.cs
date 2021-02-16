@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.IO;
+using Discord;
 using System.Threading.Tasks;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
@@ -18,7 +19,7 @@ namespace Volte.Commands.Modules
             => Ok(async () =>
             {
                 await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
-                await stream.SendFileToAsync(Context.Channel, "role.png", false, new EmbedBuilder()
+                await stream.SendFileToAsync(Context.Channel, "role.png", "", false, new EmbedBuilder()
                     .WithColor(color)
                     .WithTitle($"Color {color}")
                     .WithDescription(new StringBuilder()

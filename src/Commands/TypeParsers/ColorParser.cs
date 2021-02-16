@@ -17,7 +17,7 @@ namespace Volte.Commands.TypeParsers
         {
             Color? c = null;
 
-            if (uint.TryParse(value.StartsWith("#") ? value.Substring(1) : value, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
+            if (uint.TryParse(value.StartsWith("#") ? value[1..] : value, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var colorInt))
                 c = new Color(colorInt);
 
             if (c is null)
@@ -31,7 +31,7 @@ namespace Volte.Commands.TypeParsers
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return TypeParserResult<Color>.Unsuccessful(
+                        return TypeParserResult<Color>.Failed(
                             "A value in an RGB sequence may not be over the value of 255.");
                     }
 
@@ -44,7 +44,7 @@ namespace Volte.Commands.TypeParsers
             }
 
             return c is null
-                ? TypeParserResult<Color>.Unsuccessful("A color could not be determined from your input text. Try using a hex value.")
+                ? TypeParserResult<Color>.Failed("A color could not be determined from your input text. Try using a hex value.")
                 : TypeParserResult<Color>.Successful(c.Value);
         }
     }

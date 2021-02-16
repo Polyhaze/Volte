@@ -31,7 +31,7 @@ namespace Volte.Core.Attributes
                 .WithAuthor(ctx.User)
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);
-            return CheckResult.Unsuccessful("Insufficient permission.");
+            return CheckResult.Failed("Insufficient permission.");
         }
     }
 }

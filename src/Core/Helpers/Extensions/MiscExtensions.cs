@@ -49,7 +49,7 @@ namespace Gommon
         
         public static async Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
         {
-            await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, ctx.ServiceProvider.GetRequiredService<DatabaseService>(), ctx.ServiceProvider.GetRequiredService<LoggingService>(), reason);
+            await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, ctx.Services.GetRequiredService<DatabaseService>(), ctx.Services.GetRequiredService<LoggingService>(), reason);
         }
         
     }

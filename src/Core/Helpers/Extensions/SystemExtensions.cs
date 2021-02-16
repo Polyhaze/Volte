@@ -23,18 +23,10 @@ namespace Gommon
             => (DateTime.Now - process.StartTime).Humanize(3);
 
         public static Task<IUserMessage> SendFileToAsync(this MemoryStream stream, 
-            ITextChannel channel, string text = null, bool isTts = false, Embed embed = null, RequestOptions options = null,
+            ITextChannel channel, string filename, string text = null, bool isTts = false, Embed embed = null, RequestOptions options = null,
             bool isSpoiler = false, AllowedMentions allowedMentions = null)
         {
-            return channel.SendFileAsync(stream, "", text, isTts, embed, options, isSpoiler, allowedMentions);
+            return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions);
         }
-
-        public static bool IsMatch(this Regex regex, string str, out Match match)
-        {
-            match = regex.Match(str);
-            return match.Success;
-        }
-
-        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
     }
 }

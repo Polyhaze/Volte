@@ -27,15 +27,22 @@ namespace Volte.Commands.Modules
                     $"encountered a 403 when trying to message {user}!");
             }
 
-            await user.BanAsync(daysToDelete == 0 ? 7 : daysToDelete, reason);
-            await Context.Guild.RemoveBanAsync(user);
+            try
+            {
+                await user.BanAsync(daysToDelete == 0 ? 7 : daysToDelete, reason);
+                await Context.Guild.RemoveBanAsync(user);
 
-            return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
-                    .WithDefaultsFromContext(Context)
-                    .WithTarget(user)
-                    .WithReason(reason))
+                return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
+                    ModLogService.DoAsync(ModActionEventArgs.New
+                        .WithDefaultsFromContext(Context)
+                        .WithTarget(user)
+                        .WithReason(reason))
                 );
+            }
+            catch
+            {
+                return BadRequest("An error occurred softbanning that user. Do I have permission; or are they higher than me in the role list?");
+            }
         }
     }
 }
