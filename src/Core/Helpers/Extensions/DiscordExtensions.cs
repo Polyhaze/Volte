@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -51,7 +52,7 @@ namespace Gommon
                 await user.SendMessageAsync(text, isTts, embed, options);
                 return true;
             }
-            catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden)
+            catch (HttpException)
             {
                 return false;
             }
@@ -65,7 +66,7 @@ namespace Gommon
                 await channel.SendMessageAsync(text, isTts, embed, options);
                 return true;
             }
-            catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden)
+            catch (HttpException)
             {
                 return false;
             }
@@ -174,5 +175,10 @@ namespace Gommon
 
         public static bool HasColor(this IRole role)
             => !(role.Color.RawValue is 0);
+
+
+        public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb) 
+            => e.WithDescription(sb.ToString());
+
     }
 }

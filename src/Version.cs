@@ -8,7 +8,7 @@ namespace Volte
         private static int Major => 3;
         private static int Minor => 3;
         private static int Patch => 0;
-        private static int Hotfix => 0;
+        private static int Hotfix => 2;
         public static DevelopmentStage ReleaseType => DevelopmentStage.Release;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;

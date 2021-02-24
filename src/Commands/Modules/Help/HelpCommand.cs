@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
         [Remarks("help")]
-        public Task<ActionResult> HelpAsync(string moduleOrCommand = null)
+        public async Task<ActionResult> HelpAsync(string moduleOrCommand = null)
         {
             if (moduleOrCommand is null)
             {
@@ -40,19 +40,28 @@ namespace Volte.Commands.Modules
 
             if (module != null && command is null)
             {
-                var commands = $"`{module.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
-                return Ok(Context.CreateEmbedBuilder().WithDescription(commands)
-                    .WithTitle($"Commands for {module.SanitizeName()}"));
+                if (await module.RunChecksAsync(Context) is SuccessfulResult)
+                {
+                    var commands = $"`{module.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
+                    return Ok(Context.CreateEmbedBuilder().WithDescription(commands)
+                        .WithTitle($"Commands for {module.SanitizeName()}"));
+                }
+                return BadRequest($"You do not have access to the **{module.SanitizeName()}** module.");
             }
 
             if (module is null && command != null)
             {
-                return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
-                    .AppendLine($"**Command**: {command.Name}")
-                    .AppendLine($"**Module**: {command.Module.SanitizeName()}")
-                    .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
-                    .AppendLine($"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet): {command.GetUsage(Context)}")
-                    .ToString()));
+                if (await command.RunChecksAsync(Context) is SuccessfulResult)
+                {
+                    return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
+                        .AppendLine($"**Command**: {command.Name}")
+                        .AppendLine($"**Module**: {command.Module.SanitizeName()}")
+                        .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
+                        .AppendLine($"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet): {command.GetUsage(Context)}")));
+                }
+
+                return BadRequest($"You do not have access to the **{command.Aliases.First()}** command.");
+
             }
 
             if (module != null && command != null)

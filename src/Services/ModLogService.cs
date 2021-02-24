@@ -52,8 +52,7 @@ namespace Volte.Services
                             .AppendLine(Moderator(args))
                             .AppendLine(Count(args))
                             .AppendLine(Channel(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Purge)}");
                     break;
@@ -66,8 +65,7 @@ namespace Volte.Services
                             .AppendLine(Moderator(args))
                             .AppendLine(TargetUser(args, true, false))
                             .AppendLine(Channel(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Delete)}");
                     break;
@@ -82,8 +80,7 @@ namespace Volte.Services
                             .AppendLine(Case(args))
                             .AppendLine(TargetUser(args, false, false))
                             .AppendLine(Reason(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Kick)}");
                     break;
@@ -98,8 +95,7 @@ namespace Volte.Services
                             .AppendLine(Case(args))
                             .AppendLine(TargetUser(args, false, false))
                             .AppendLine(Reason(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                     break;
@@ -111,8 +107,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(TargetUser(args, false, false))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
                     break;
@@ -127,8 +122,7 @@ namespace Volte.Services
                             .AppendLine(Case(args))
                             .AppendLine(TargetUser(args, false, false))
                             .AppendLine(Reason(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
                     break;
@@ -143,8 +137,7 @@ namespace Volte.Services
                             .AppendLine(Case(args))
                             .AppendLine(TargetUser(args, false, false))
                             .AppendLine(Reason(args))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
                     break;
@@ -158,8 +151,7 @@ namespace Volte.Services
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
                             .AppendLine(TargetUser(args, false, true))
-                            .AppendLine(Time(args))
-                            .ToString())
+                            .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                     break;
@@ -190,7 +182,7 @@ namespace Volte.Services
             ? $"**Message Deleted:** {args.TargetId}"
             : isOnIdBan
                 ? $"**User:** {args.TargetId}"
-                : $"**User:** {args.TargetUser} ({args.TargetId})";
+                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
         private string Time(ModActionEventArgs args) =>
             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";

@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
+using Volte.Core.Attributes;
 using Volte.Core.Models;
 using Volte.Core.Models.Guild;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
+    [RequireGuildModerator]
     public sealed partial class ModerationModule : VolteModule
     {
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member, DatabaseService db, LoggingService logger, string reason)
