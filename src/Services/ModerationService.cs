@@ -40,7 +40,7 @@ namespace Volte.Services
                     .AddField("Account Created",
                         $"{args.User.CreatedAt.FormatDate()}, {args.User.CreatedAt.FormatFullTime()}")
                     .WithFooter($"Account Created {time} {unit} ago.")
-                    .WithThumbnailUrl("https://www.clipartmax.com/png/middle/22-226530_warning-signs-danger-png.png")
+                    .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .SendToAsync(c);
             }
         }
