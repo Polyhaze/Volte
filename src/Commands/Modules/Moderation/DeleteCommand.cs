@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
                     await m.DeleteAsync();
                 });
 
-                await ModLogService.DoAsync(ModActionEventArgs.New
+                await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Delete)
                     .WithTarget(messageId)

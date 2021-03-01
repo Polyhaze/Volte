@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class AdminUtilityModule
     {
-        [Command("MentionRole", "Menro", "Mr")]
+        [Command("MentionRole", "Menro")]
         [Description(
             "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [Remarks("mentionrole {Role}")]

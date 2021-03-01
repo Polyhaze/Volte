@@ -26,6 +26,9 @@ namespace Volte.Core.Models.Guild
 
         [JsonPropertyName("admin_role")]
         public ulong AdminRole { get; set; }
+        
+        [JsonPropertyName("check_account_age_on_join")]
+        public bool CheckAccountAge { get; set; }
 
         [JsonPropertyName("blacklist")]
         public List<string> Blacklist { get; set; }

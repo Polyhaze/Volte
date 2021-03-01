@@ -25,7 +25,7 @@ namespace Volte.Commands.Modules
             await WarnAsync(Context.User, Context.GuildData, user, Db, Logger, reason);
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
-                _ => ModLogService.DoAsync(ModActionEventArgs.New
+                _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Warn)
                     .WithTarget(user)
@@ -69,7 +69,7 @@ namespace Volte.Commands.Modules
             }
 
             return Ok($"Cleared **{warnCount}** warnings for **{user}**.", _ =>
-                ModLogService.DoAsync(ModActionEventArgs.New
+                ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.ClearWarns)
                     .WithTarget(user))

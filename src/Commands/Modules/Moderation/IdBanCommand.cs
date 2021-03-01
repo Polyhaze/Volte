@@ -20,7 +20,7 @@ namespace Volte.Commands.Modules
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
             return Ok("Successfully banned that user from this guild.", async _ => 
-                await ModLogService.DoAsync(ModActionEventArgs.New
+                await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.IdBan)
                     .WithTarget(user)

@@ -1,8 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
+using Humanizer;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Models;
@@ -10,22 +11,41 @@ using Volte.Core.Models.EventArgs;
 
 namespace Volte.Services
 {
-    public sealed class ModLogService : VolteEventService
+    public class ModerationService : VolteService
     {
         private readonly DatabaseService _db;
         private readonly LoggingService _logger;
 
-        public ModLogService(DatabaseService databaseService,
+        public ModerationService(DatabaseService databaseService,
             LoggingService loggingService)
         {
             _db = databaseService;
             _logger = loggingService;
         }
 
-        public override Task DoAsync(EventArgs args)
-            => OnModActionCompleteAsync(args.Cast<ModActionEventArgs>() ?? throw new InvalidOperationException($"ModLog was triggered with a null event. Expected: {nameof(ModActionEventArgs)}, Received: {args.GetType().Name}"));
+        public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
+        {
+            var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation.ModActionLogChannel);
+            if (c is null) return;
+            var now = DateTimeOffset.Now;
+            var difference = now - args.User.CreatedAt;
+            if (difference.Days <= 30)
+            {
+                var unit = difference.Days > 0 ? "days" : difference.Hours > 0 ? "hours" : "minutes";
+                var time = difference.Days > 0 ? difference.Days : difference.Hours > 0 ? difference.Hours : difference.Minutes;
+                await new EmbedBuilder()
+                    .WithColor(Color.Red)
+                    .WithTitle("Possible Malicious User")
+                    .AddField("User", args.User.ToString(), true)
+                    .AddField("Account Created",
+                        $"{args.User.CreatedAt.FormatDate()}, {args.User.CreatedAt.FormatFullTime()}")
+                    .WithFooter($"Account Created {time} {unit} ago.")
+                    .WithThumbnailUrl("https://www.clipartmax.com/png/middle/22-226530_warning-signs-danger-png.png")
+                    .SendToAsync(c);
+            }
+        }
 
-        private async Task OnModActionCompleteAsync(ModActionEventArgs args)
+        public async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
             if (!Config.EnabledFeatures.ModLog)
                 return;

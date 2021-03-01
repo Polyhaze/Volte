@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -90,6 +91,7 @@ namespace Gommon
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var logger = provider.Get<LoggingService>();
+            var mod = provider.Get<ModerationService>();
             client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
             client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
             client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
@@ -98,6 +100,8 @@ namespace Gommon
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
                 if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(new UserJoinedEventArgs(user));
+                if (provider.Get<DatabaseService>().GetData(user.Guild).Configuration.Moderation.CheckAccountAge && Config.EnabledFeatures.ModLog) 
+                    await mod.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
             };
             client.UserLeft += async user =>
             {

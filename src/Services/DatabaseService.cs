@@ -55,7 +55,8 @@ namespace Volte.Services
                         Blacklist = new List<string>(),
                         MassPingChecks = default,
                         ModActionLogChannel = default,
-                        ModRole = default
+                        ModRole = default,
+                        CheckAccountAge = false
                     },
                     Welcome = new WelcomeOptions
                     {

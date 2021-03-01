@@ -15,17 +15,22 @@ namespace Volte.Commands.Modules
         [Remarks("bigemoji {Emote}")]
         public Task<ActionResult> BigEmojiAsync(IEmote emoteIn)
         {
-            string url;
+            string url = null;
             try
             {
                 url = $"https://i.kuro.mu/emoji/512x512/{emoteIn.Cast<Emoji>()?.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
             }
-            catch (ArgumentNullException)
+            catch
             {
-                url = emoteIn.Cast<Emote>().Url;
+                // ignored
             }
 
-            return Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url));
+            return emoteIn switch
+            {
+                Emote emote => Ok(Context.CreateEmbedBuilder(emote.Url).WithImageUrl(emote.Url)),
+                Emoji _ => Ok(Context.CreateEmbedBuilder(url).WithImageUrl(url)),
+                _ => None() //should never be reached
+            };
         }
     }
 }

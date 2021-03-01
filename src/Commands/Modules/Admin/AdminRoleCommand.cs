@@ -10,13 +10,17 @@ namespace Volte.Commands.Modules
     {
         [Command("AdminRole")]
         [Description("Sets the role able to use Admin commands for the current guild.")]
-        [Remarks("adminrole {Role}")]
+        [Remarks("adminrole [Role]")]
         [RequireGuildAdmin]
-        public Task<ActionResult> AdminRoleAsync([Remainder] SocketRole role)
+        public Task<ActionResult> AdminRoleAsync([Remainder] SocketRole role = null)
         {
+            if (role is null)
+            {
+                return Ok($"The current Admin role in this guild is <@{Context.GuildData.Configuration.Moderation.AdminRole}>.");
+            }
             Context.GuildData.Configuration.Moderation.AdminRole = role.Id;
             Db.UpdateData(Context.GuildData);
-            return Ok($"Set **{role.Name}** as the Admin role for this guild.");
+            return Ok($"Set {role.Mention} as the Admin role for this guild.");
         }
     }
 }

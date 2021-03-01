@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
                 await Context.Guild.RemoveBanAsync(user);
 
                 return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
-                    ModLogService.DoAsync(ModActionEventArgs.New
+                    ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                         .WithDefaultsFromContext(Context)
                         .WithTarget(user)
                         .WithReason(reason))
