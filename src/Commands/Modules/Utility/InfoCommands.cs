@@ -38,12 +38,12 @@ namespace Volte.Commands.Modules
             user ??= Context.User;
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithThumbnailUrl(user.GetAvatarUrl())
-                .WithTitle("User Info")
-                .AddField("User ID", user.Id, true)
-                .AddField("Game", user.Activity?.Name ?? "Nothing", true)
+                .WithTitle(user.ToString())
+                .AddField("ID", user.Id, true)
+                .AddField("Activity", user.Activity?.Name ?? "Nothing", true)
                 .AddField("Status", user.Status, true)
-                .AddField("Is Bot", user.IsBot, true)
+                .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
+                .AddField("Hierarchy", user.Hierarchy, true)
                 .AddField("Account Created",
                     $"{user.CreatedAt.FormatDate()}, {user.CreatedAt.FormatFullTime()}")
                 .AddField("Joined This Guild",
@@ -60,10 +60,9 @@ namespace Volte.Commands.Modules
             var cAt = Context.Guild.CreatedAt;
 
             return Ok(Context.CreateEmbedBuilder()
-                .WithTitle("Guild Info")
-                .WithThumbnailUrl(Context.Guild.IconUrl)
-                .AddField("Name", Context.Guild.Name)
+                .WithTitle(Context.Guild.Name)
                 .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")
+                .AddField("Owner", Context.Guild.Owner)
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", Context.Guild.Users.Count, true)
                 .AddField("Roles", Context.Guild.Roles.Count, true)

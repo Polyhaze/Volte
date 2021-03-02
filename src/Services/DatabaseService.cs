@@ -56,7 +56,9 @@ namespace Volte.Services
                         MassPingChecks = default,
                         ModActionLogChannel = default,
                         ModRole = default,
-                        CheckAccountAge = false
+                        CheckAccountAge = false,
+                        VerifiedRole = default,
+                        UnverifiedRole = default
                     },
                     Welcome = new WelcomeOptions
                     {

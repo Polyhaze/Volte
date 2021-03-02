@@ -27,8 +27,7 @@ namespace Volte.Services
         {
             var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
-            var now = DateTimeOffset.Now;
-            var difference = now - args.User.CreatedAt;
+            var difference = DateTimeOffset.Now - args.User.CreatedAt;
             if (difference.Days <= 30)
             {
                 var unit = difference.Days > 0 ? "days" : difference.Hours > 0 ? "hours" : "minutes";
@@ -177,6 +176,15 @@ namespace Volte.Services
                     break;
                 }
 
+                case ModActionType.Verify:
+                    await e.WithDescription(sb
+                            .AppendLine(Action(args))
+                            .AppendLine(Moderator(args))
+                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Time(args)))
+                        .SendToAsync(c);
+                    _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Verify)}");
+                    break;
                 default:
                     throw new InvalidOperationException();
             }

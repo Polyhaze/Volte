@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Gommon;
-using Humanizer;
-using Volte.Core;
-using Volte.Core.Models.Misc;
+using Volte.Core.Models;
 using Volte.Services;
 
 namespace Volte.Core.Helpers
@@ -21,32 +17,19 @@ namespace Volte.Core.Helpers
             return PollInfo.FromDefaultFields(c.Length - 1, e, c);
         }
 
-        public static async Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService e)
+        public static Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService e)
         {
             var (one, two, three, four, five) = e.GetPollEmojis();
 
-            switch (amount)
+            return amount switch
             {
-                case 1:
-                    await One();
-                    break;
-
-                case 2:
-                    await Two();
-                    break;
-
-                case 3:
-                    await Three();
-                    break;
-
-                case 4:
-                    await Four();
-                    break;
-
-                case 5:
-                    await Five();
-                    break;
-            }
+                1 => One(),
+                2 => Two(),
+                3 => Three(),
+                4 => Four(),
+                5 => Five(),
+                _ => Task.CompletedTask
+            };
 
             async Task One()
             {

@@ -35,12 +35,11 @@ namespace Gommon
                    IsGuildOwner(user);
         }
 
-        private static bool HasRole(this SocketGuildUser user, ulong roleId)
+        public static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
         public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
         {
-            var db = ctx.Services.GetRequiredService<DatabaseService>();
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
         }

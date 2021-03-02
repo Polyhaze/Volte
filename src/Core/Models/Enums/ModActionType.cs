@@ -14,25 +14,30 @@ namespace Volte.Core.Models
         ///     Indicates that the moderator action in question is from a successful ClearWarns command invocation.
         /// </summary>
         ClearWarns = 3,
+        
+        /// <summary>
+        ///     Indicates that the moderator action in question is from a successful Verify command invocation.
+        /// </summary>
+        Verify = 4,
         /// <summary>
         ///     Indicates that the moderator action in question is from a successful Delete command invocation.
         /// </summary>
-        Delete = 4,
+        Delete = 5,
         /// <summary>
         ///     Indicates that the moderator action in question is from a successful Kick command invocation.
         /// </summary>
-        Kick = 5,
+        Kick = 6,
         /// <summary>
         ///     Indicates that the moderator action in question is from a successful Softban command invocation.
         /// </summary>
-        Softban = 6,
+        Softban = 7,
         /// <summary>
         ///     Indicates that the moderator action in question is from a successful IdBan command invocation.
         /// </summary>
-        IdBan = 7,
+        IdBan = 8,
         /// <summary>
         ///     Indicates that the moderator action in question is from a successful Ban command invocation.
         /// </summary>
-        Ban = 8
+        Ban = 9
     }
 }

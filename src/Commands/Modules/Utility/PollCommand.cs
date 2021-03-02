@@ -26,9 +26,7 @@ namespace Volte.Commands.Modules
                 .WithTitle(Format.Bold(content[0]));
 
             foreach (var (key, value) in pollInfo.Fields)
-            {
                 embed.AddField(key, value, true);
-            }
 
             return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
             {
