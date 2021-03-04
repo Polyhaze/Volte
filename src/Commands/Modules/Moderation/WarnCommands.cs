@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
         {
-            await WarnAsync(Context.User, Context.GuildData, user, Db, Logger, reason);
+            await user.WarnAsync(Context, reason);
 
             return Ok($"Successfully warned **{user}** for **{reason}**.",
                 _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
@@ -39,10 +39,10 @@ namespace Volte.Commands.Modules
         [RequireGuildModerator]
         public Task<ActionResult> WarnsAsync(SocketGuildUser user)
         {
-            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(10);
+            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(15);
             return Ok(new StringBuilder()
                 .AppendLine(
-                    "Showing the last 10 warnings; less if the user doesn't have 10 yet, or none if the user's record is clean.")
+                    "Showing the last 15 warnings; less if the user doesn't have 15 yet, or none if the user's record is clean.")
                 .AppendLine()
                 .AppendLine($"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}")
                 .ToString());

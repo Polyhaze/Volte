@@ -9,6 +9,8 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Volte.Commands;
 using Volte.Commands.Modules;
+using Volte.Core.Models;
+using Volte.Core.Models.EventArgs;
 using Volte.Core.Models.Guild;
 using Volte.Services;
 
@@ -27,18 +29,18 @@ namespace Gommon
             return @out;
         }
 
-        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
+        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word, ModerationService mod)
         {
             switch (action)
             {
                 case BlacklistAction.Warn:
-                    await member.WarnAsync(ctx, $"Used blacklisted word \"{word}\".");
+                    await member.WarnAsync(ctx, $"Said blacklisted word \"{word}\"");
                     break;
                 case BlacklistAction.Kick:
-                    await member.KickAsync($"Used blacklisted word \"{word}\".");
+                    await member.KickAsync($"Said blacklisted word \"{word}\"");
                     break;
                 case BlacklistAction.Ban:
-                    await member.BanAsync(7, $"Used blacklisted word \"{word}\".");
+                    await member.BanAsync(7, $"Said blacklisted word \"{word}\"");
                     break;
                 case BlacklistAction.Nothing:
                     break;

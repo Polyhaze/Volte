@@ -24,9 +24,6 @@ namespace Volte.Commands.Modules
                     .AppendLine()
                     .AppendLine(
                         $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`")
-                    .AppendLine()
-                    .AppendLine(
-                        $"Available Commands: `{CommandService.GetAllCommands().Select(x => x.Name).Join("`, `")}`")
                     .ToString());
             }
 

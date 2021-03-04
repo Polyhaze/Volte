@@ -74,13 +74,10 @@ namespace Volte.Core.Models.EventArgs
 
         public ModActionEventArgs WithDefaultsFromContext(VolteContext ctx)
         {
-            WithContext(ctx)
+            return WithContext(ctx)
                 .WithTime(ctx.Now)
                 .WithGuild(ctx.Guild)
                 .WithModerator(ctx.User);
-
-
-            return this;
         }
     }
 }

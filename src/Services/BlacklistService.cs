@@ -17,15 +17,12 @@ namespace Volte.Services
     public sealed class BlacklistService : VolteEventService
     {
         private readonly LoggingService _logger;
-        private readonly DatabaseService _db;
-        private readonly IServiceProvider _provider;
+        private readonly ModerationService _mod;
 
-        public BlacklistService(LoggingService loggingService, DatabaseService databaseService,
-            IServiceProvider provider)
+        public BlacklistService(LoggingService loggingService, ModerationService moderationService)
         {
             _logger = loggingService;
-            _db = databaseService;
-            _provider = provider;
+            _mod = moderationService;
         }
 
         public override Task DoAsync(EventArgs args)
@@ -45,9 +42,7 @@ namespace Volte.Services
             {
                 await args.Message.TryDeleteAsync();
                 _logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
-                var action = args.Data.Configuration.Moderation.BlacklistAction;
-                if (action is BlacklistAction.Nothing) return;
-                await action.PerformAsync(args.Context, args.Message.Author.Cast<SocketGuildUser>(), word);
+                await args.Data.Configuration.Moderation.BlacklistAction.PerformAsync(args.Context, args.Context.User, word, _mod);
             }
         }
     }

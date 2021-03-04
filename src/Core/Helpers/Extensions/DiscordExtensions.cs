@@ -74,8 +74,8 @@ namespace Gommon
 
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
-                ? $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
-                : $"https://discordapp.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
+                ? $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
+                : $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
 
         public static SocketUser GetOwner(this BaseSocketClient client)
             => client.GetUser(Config.Owner);
@@ -91,6 +91,7 @@ namespace Gommon
             var autorole = provider.Get<AutoroleService>();
             var logger = provider.Get<LoggingService>();
             var mod = provider.Get<ModerationService>();
+            
             client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
             client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
             client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));

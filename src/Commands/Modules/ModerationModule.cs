@@ -23,11 +23,10 @@ namespace Volte.Commands.Modules
                 Date = DateTimeOffset.Now
             });
             db.UpdateData(data);
-            var embed = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
-                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for **{reason}**.").Build();
 
             if (!await member.TrySendMessageAsync(
-                embed: embed))
+                embed: new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
+                    .WithDescription($"You've been warned in **{issuer.Guild.Name}** for `{reason}`.").Build()))
             {
                 logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {member}!");

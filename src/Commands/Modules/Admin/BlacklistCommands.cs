@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 using Volte.Core.Attributes;
@@ -57,6 +58,19 @@ namespace Volte.Commands.Modules
             Context.GuildData.Configuration.Moderation.BlacklistAction = BlacklistActions.DetermineAction(input);
             Db.UpdateData(Context.GuildData);
             return Ok($"Set {input} as the action performed when a member uses a blacklisted word/phrase.");
+        }
+
+        [Command("BlacklistList", "BlL")]
+        [Description("Lists every single word/phrase inside of the blacklist.")]
+        [Remarks("blacklistlist")]
+        public Task<ActionResult> BlacklistListAsync()
+        {
+            return Ok(Context.CreateEmbedBuilder()
+                .WithTitle($"Blacklist for {Context.Guild.Name}")
+                .WithDescription(Context.GuildData.Configuration.Moderation.Blacklist.IsEmpty() 
+                    ? "This guild has no words/phrases blacklisted." 
+                    : $"`{Context.GuildData.Configuration.Moderation.Blacklist.Join("`, `")}`")
+            );
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
 
@@ -16,7 +17,7 @@ namespace Volte.Commands.Modules
         {
             var users = await Context.Guild.GetUsersAsync().FlattenAsync();
             var usersInRole = users.Where(x => x.RoleIds.Contains(role.Id)).ToArray();
-            var result = $"There are {usersInRole.Length} members in the role {role.Mention}";
+            var result = $"There are {"member".ToQuantity(usersInRole.Length)} in the role {role.Mention}";
 
             if (usersInRole.Any(x => x.Id == Context.User.Id))
             {
