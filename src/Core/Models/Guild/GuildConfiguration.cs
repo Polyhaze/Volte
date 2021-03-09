@@ -23,11 +23,8 @@ namespace Volte.Core.Models.Guild
         [JsonPropertyName("moderation_options")]
         public ModerationOptions Moderation { get; set; }
 
-        [JsonPropertyName("delete_message_on_command")]
-        public bool DeleteMessageOnCommand { get; set; }
-
-        [JsonPropertyName("delete_message_on_tag_command_invocation")]
-        public bool DeleteMessageOnTagCommandInvocation { get; set; }
+        [JsonPropertyName("reply_inline")]
+        public bool ReplyInline { get; set; }
 
         [JsonPropertyName("embed_tags_and_show_its_author")]
         public bool EmbedTagsAndShowAuthor { get; set; }

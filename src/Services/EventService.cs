@@ -77,10 +77,6 @@ namespace Volte.Services
 
                 sw.Stop();
                 await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
-
-                if (args.Data.Configuration.DeleteMessageOnCommand)
-                    if (!await args.Message.TryDeleteAsync())
-                        _logger.Warn(LogSource.Service, $"Could not act upon the DeleteMessageOnCommand setting for {args.Context.Guild.Name} as the bot is missing the required permission, or another error occured.");
             }
             else
             {

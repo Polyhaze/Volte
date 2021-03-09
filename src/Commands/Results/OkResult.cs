@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Volte.Services;
 
 namespace Volte.Commands.Results
 {
@@ -45,14 +46,27 @@ namespace Volte.Commands.Results
                 return new ResultCompletionData();
             }
 
+            var data = ctx.Services.Get<DatabaseService>().GetData(ctx.Guild);
+
             IUserMessage message;
             if (_embed is null)
             {
                 if (_shouldEmbed)
-                    message = await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel);
+                    if (data.Configuration.ReplyInline)
+                        message = await ctx.Channel.SendMessageAsync(embed: ctx.CreateEmbed(_message),
+                            messageReference: new MessageReference(ctx.Message.Id));
+                    else
+                        message = await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel);
                 else
-                    message = await ctx.Channel.SendMessageAsync(_message);
+                    if (data.Configuration.ReplyInline)
+                        message = await ctx.Channel.SendMessageAsync(_message,
+                        messageReference: new MessageReference(ctx.Message.Id));
+                    else
+                        message = await ctx.Channel.SendMessageAsync(_message);
             }
+            else if (ctx.GuildData.Configuration.ReplyInline)
+                message = await ctx.Channel.SendMessageAsync(embed: _embed.Build(),
+                    messageReference: new MessageReference(ctx.Message.Id));
             else
                 message = await _embed.SendToAsync(ctx.Channel);
 

@@ -47,7 +47,6 @@ namespace Volte.Services
                 {
                     Autorole = default,
                     CommandPrefix = Config.CommandPrefix,
-                    DeleteMessageOnCommand = default,
                     Moderation = new ModerationOptions
                     {
                         AdminRole = default,

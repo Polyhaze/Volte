@@ -21,22 +21,10 @@ namespace Volte.Commands.Modules
 
             if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
             {
-                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null).WithFooter($"Requested by {Context.User}."), async message =>
-                {
-                    if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
-                    {
-                        await Context.Message.TryDeleteAsync();
-                    }
-                });
+                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null).WithFooter($"Requested by {Context.User}."));
             }
 
-            return Ok(tag.FormatContent(Context), async message =>
-            {
-                if (Context.GuildData.Configuration.DeleteMessageOnTagCommandInvocation)
-                {
-                    await Context.Message.TryDeleteAsync();
-                }
-            }, false);
+            return Ok(tag.FormatContent(Context), shouldEmbed: false);
 
         }
 
