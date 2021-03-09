@@ -123,10 +123,17 @@ namespace Gommon
         }
 
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
-            c.SendMessageAsync(string.Empty, false, e.Build());
+            c.SendMessageAsync(embed: e.Build());
 
         public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
-            c.SendMessageAsync(string.Empty, false, e);
+            c.SendMessageAsync(embed: e);
+
+        public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) => 
+            msg.ReplyAsync(embed: e.Build());
+
+        public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) => 
+            msg.ReplyAsync(embed: e);
+        
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
         public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>

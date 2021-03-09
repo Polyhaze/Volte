@@ -20,9 +20,9 @@ namespace Gommon
 
         public static Task<IUserMessage> SendFileToAsync(this MemoryStream stream, 
             ITextChannel channel, string filename, string text = null, bool isTts = false, Embed embed = null, RequestOptions options = null,
-            bool isSpoiler = false, AllowedMentions allowedMentions = null)
+            bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference reference = null)
         {
-            return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions);
+            return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions, reference);
         }
     }
 }

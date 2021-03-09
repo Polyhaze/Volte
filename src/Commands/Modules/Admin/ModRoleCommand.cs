@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         {
             if (role is null)
             {
-                return Ok($"The current Moderator role in this guild is <@{Context.GuildData.Configuration.Moderation.ModRole}>.");
+                return Ok($"The current Moderator role in this guild is <@&{Context.GuildData.Configuration.Moderation.ModRole}>.");
             }
             Context.GuildData.Configuration.Moderation.ModRole = role.Id;
             Db.UpdateData(Context.GuildData);

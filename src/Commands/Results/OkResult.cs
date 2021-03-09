@@ -53,20 +53,17 @@ namespace Volte.Commands.Results
             {
                 if (_shouldEmbed)
                     if (data.Configuration.ReplyInline)
-                        message = await ctx.Channel.SendMessageAsync(embed: ctx.CreateEmbed(_message),
-                            messageReference: new MessageReference(ctx.Message.Id));
+                        message = await ctx.CreateEmbed(_message).ReplyToAsync(ctx.Message);
                     else
                         message = await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel);
                 else
                     if (data.Configuration.ReplyInline)
-                        message = await ctx.Channel.SendMessageAsync(_message,
-                        messageReference: new MessageReference(ctx.Message.Id));
+                        message = await ctx.Message.ReplyAsync(_message);
                     else
                         message = await ctx.Channel.SendMessageAsync(_message);
             }
             else if (ctx.GuildData.Configuration.ReplyInline)
-                message = await ctx.Channel.SendMessageAsync(embed: _embed.Build(),
-                    messageReference: new MessageReference(ctx.Message.Id));
+                message = await _embed.ReplyToAsync(ctx.Message);
             else
                 message = await _embed.SendToAsync(ctx.Channel);
 
