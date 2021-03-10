@@ -47,16 +47,15 @@ namespace Volte.Commands.Modules
                 ? "Not sending a test message as you do not have a welcome channel set." +
                   "Set a welcome channel to fully complete the setup!"
                 : $"Sending a test message to {welcomeChannel.Mention}.";
-            if (welcomeChannel is null) return Ok(new StringBuilder()
-                .AppendLine($"Set this guild's welcome message to {Format.Code(message)}")
-                .AppendLine()
-                .AppendLine($"{sendingTest}").ToString());
 
             return Ok(new StringBuilder()
                 .AppendLine($"Set this guild's welcome message to {Format.Code(message)}")
                 .AppendLine()
                 .AppendLine($"{sendingTest}").ToString(),
-                _ => WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User)));
+                async _ => {
+                    if (!(welcomeChannel is null))
+                        await WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User));
+                });
         }
 
         [Command("WelcomeColor", "WelcomeColour", "Wcl")]
@@ -76,7 +75,6 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {
-
             if (message is null)
             {
                 return Ok(new StringBuilder()
@@ -87,23 +85,22 @@ namespace Volte.Commands.Modules
             }
 
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
-                Db.UpdateData(Context.GuildData);
-                var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
-                var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
-                    ? "Not sending a test message, as you do not have a welcome channel set. " +
-                      "Set a welcome channel to fully complete the setup!"
-                    : $"Sending a test message to {welcomeChannel.Mention}.";
-                if (welcomeChannel is null)
-                    return Ok(new StringBuilder()
-                        .AppendLine($"Set this server's leaving message to {Format.Code(message)}")
-                        .AppendLine()
-                        .AppendLine($"{sendingTest}").ToString());
+            Db.UpdateData(Context.GuildData);
+            var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
+            var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
+                ? "Not sending a test message, as you do not have a welcome channel set. " +
+                  "Set a welcome channel to fully complete the setup!"
+                : $"Sending a test message to {welcomeChannel.Mention}.";
 
             return Ok(new StringBuilder()
                     .AppendLine($"Set this server's leaving message to {Format.Code(message)}")
                     .AppendLine()
                     .AppendLine($"{sendingTest}").ToString(),
-                _ => WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User)));
+                async _ =>
+                {
+                    if (!(welcomeChannel is null))
+                        await WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User));
+                });
         }
 
         [Command("WelcomeDmMessage", "Wdmm")]
@@ -113,10 +110,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
         {
             if (message is null)
-            {
-                return Ok(
-                    $"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
-            }
+                return Ok($"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
 
             Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
             Db.UpdateData(Context.GuildData);

@@ -27,14 +27,13 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {
-            if (Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
-            {
-                Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
-                Db.UpdateData(Context.GuildData);
-                return Ok($"Removed **{phrase}** from the word blacklist.");
-            }
+            if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
+                return BadRequest($"**{phrase}** doesn't exist in the blacklist.");
+            
+            Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Removed **{phrase}** from the word blacklist.");
 
-            return BadRequest($"**{phrase}** doesn't exist in the blacklist.");
         }
 
         [Command("BlacklistClear", "BlCl")]

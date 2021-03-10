@@ -24,14 +24,12 @@ namespace Volte.Commands.Modules
 
             var embed = Context.CreateEmbedBuilder()
                 .WithTitle(Format.Bold(content[0]));
-
-            foreach (var (key, value) in pollInfo.Fields)
-                embed.AddField(key, value, true);
-
-            return Ok(embed.WithFooter(pollInfo.Footer), async msg =>
+            
+            return None(async () =>
             {
+                var m = await PollHelpers.ApplyPollInfo(embed, pollInfo).SendToAsync(Context.Channel);
                 _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
-                await PollHelpers.AddPollReactionsAsync(content.Length - 1, msg, EmojiService);
+                await PollHelpers.AddPollReactionsAsync(pollInfo.Fields.Count, m, EmojiService);
             });
         }
     }

@@ -21,9 +21,9 @@ namespace Volte.Commands.Modules
                     if (role is null)
                     {
                         role = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.VerifiedRole);
-                        if (role is null)
-                            return BadRequest("This guild does not have a Verified role set.");
-                        return Ok($"The Verified role for this guild is {role.Mention}.");
+                        return role is null 
+                            ? BadRequest("This guild does not have a Verified role set.") 
+                            : Ok($"The Verified role for this guild is {role.Mention}.");
                     }
 
                     Context.GuildData.Configuration.Moderation.VerifiedRole = role.Id;
@@ -35,9 +35,9 @@ namespace Volte.Commands.Modules
                     if (role is null)
                     {
                         role = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.UnverifiedRole);
-                        if (role is null)
-                            return BadRequest("This guild does not have an Unverified role set.");
-                        return Ok($"The Unverified role for this guild is {role.Mention}.");
+                        return role is null 
+                            ? BadRequest("This guild does not have an Unverified role set.") 
+                            : Ok($"The Unverified role for this guild is {role.Mention}.");
                     }
 
                     Context.GuildData.Configuration.Moderation.UnverifiedRole = role.Id;

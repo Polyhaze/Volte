@@ -21,13 +21,11 @@ namespace Volte.Commands.Modules
 
 
             if (user.Id == Context.Guild.OwnerId)
-            {
                 return Ok("User is owner of this guild, and has all permissions.");
-            }
+
             if (user.GuildPermissions.Administrator)
-            {
                 return Ok("User has Administrator permission, and has all permissions.");
-            }
+
 
 
             var (allowed, disallowed) = GetPermissions(user);

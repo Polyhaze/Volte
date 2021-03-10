@@ -13,6 +13,6 @@ namespace Volte.Commands.Modules
         [Remarks("eval {String}")]
         [RequireBotOwner]
         public Task<ActionResult> EvalAsync([Remainder] string code)
-            => None(() => Eval.EvaluateAsync(Context, code), false);
+            => Ok(() => Eval.EvaluateAsync(Context, code), false);
     }
 }

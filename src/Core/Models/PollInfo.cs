@@ -39,7 +39,7 @@ namespace Volte.Core.Models
                     ($"{e.Five.ToEmoji()}", collection[5])),
 
                 _ => FromValid(false)
-                
+
             };
         }
 
@@ -48,7 +48,7 @@ namespace Volte.Core.Models
 
         public Dictionary<string, string> Fields { get; }
         public bool IsValid { get; set; }
-        public string Footer { get; } = "Click one of the numbers above to vote. Note: you can vote for more than one.";
+        public string Footer { get; } = "Click one of the numbers below to vote.";
 
         public PollInfo()
         {
@@ -58,10 +58,10 @@ namespace Volte.Core.Models
 
         public PollInfo AddFields(params (string Name, string Value)[] fields)
         {
-            foreach (var field in fields)
+            foreach (var (name, value) in fields)
             {
-                if (field.Name.IsNullOrEmpty() || field.Value.IsNullOrEmpty()) continue;
-                Fields.Add(field.Name, field.Value);
+                if (name.IsNullOrEmpty() || value.IsNullOrEmpty()) continue;
+                Fields.Add(name, value);
             }
 
             return this;

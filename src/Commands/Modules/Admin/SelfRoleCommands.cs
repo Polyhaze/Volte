@@ -17,15 +17,14 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> SelfRoleAddAsync([Remainder] SocketRole role)
         {
             var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
-            if (target is null)
-            {
-                Context.GuildData.Extras.SelfRoles.Add(role.Name);
-                Db.UpdateData(Context.GuildData);
-                return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
-            }
+            if (target is { })
+                return BadRequest(
+                    $"A role with the name **{role.Name}** is already in the Self Roles list for this guild!");
+            
+            Context.GuildData.Extras.SelfRoles.Add(role.Name);
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
 
-            return BadRequest(
-                $"A role with the name **{role.Name}** is already in the Self Roles list for this guild!");
         }
 
         [Command("SelfRoleRemove", "SrR", "SrRem")]
@@ -34,15 +33,13 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleRemoveAsync([Remainder] SocketRole role)
         {
+            if (!Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
+                return BadRequest($"The Self Roles list for this guild doesn't contain **{role.Name}**.");
+            
+            Context.GuildData.Extras.SelfRoles.Remove(role.Name);
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
 
-            if (Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
-            {
-                Context.GuildData.Extras.SelfRoles.Remove(role.Name);
-                Db.UpdateData(Context.GuildData);
-                return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
-            }
-
-            return BadRequest($"The Self Roles list for this guild doesn't contain **{role.Name}**.");
         }
 
         [Command("SelfRoleClear", "SrC", "SrClear", "SelfroleC")]

@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
                     .AppendLine($"Current Managed Thread ID: [{Environment.CurrentManagedThreadId}]")
                     .AppendLine($"Machine Name: [{Environment.MachineName}]")
                     .AppendLine($".NET Core Version: [{Environment.Version}]")
-                    .AppendLine($"UICulture: [{CultureInfo.InstalledUICulture.EnglishName}]")
+                    .AppendLine($"UICulture: [{CultureInfo.CurrentUICulture.EnglishName}]")
                     .AppendLine($"System Directory: [{Environment.SystemDirectory}]")
                     .ToString(), "ini"));
 

@@ -17,14 +17,11 @@ namespace Volte.Commands.Modules
         {
             var users = await Context.Guild.GetUsersAsync().FlattenAsync();
             var usersInRole = users.Where(x => x.RoleIds.Contains(role.Id)).ToArray();
-            var result = $"There are {"member".ToQuantity(usersInRole.Length)} in the role {role.Mention}";
+            var result = $"There {"is".ToQuantity(usersInRole.Length).Split(" ")[1]} {"member".ToQuantity(usersInRole.Length)} in the role {role.Mention}";
 
-            if (usersInRole.Any(x => x.Id == Context.User.Id))
-            {
-                return Ok($"{result}; including you.");
-            }
-
-            return Ok($"{result}.");
+            return Ok(usersInRole.Any(x => x.Id == Context.User.Id) 
+                ? $"{result}; including you." 
+                : $"{result}.");
         }
     }
 }

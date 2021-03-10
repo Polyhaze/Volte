@@ -17,6 +17,16 @@ namespace Volte.Core.Helpers
             return PollInfo.FromDefaultFields(c.Length - 1, e, c);
         }
 
+        public static EmbedBuilder ApplyPollInfo(EmbedBuilder embedBuilder, PollInfo pollInfo)
+        {
+            foreach (var (key, value) in pollInfo.Fields)
+                embedBuilder.AddField(key, value, true);
+
+            embedBuilder.WithFooter(pollInfo.Footer);
+
+            return embedBuilder;
+        }
+
         public static Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService e)
         {
             var (one, two, three, four, five) = e.GetPollEmojis();

@@ -80,6 +80,16 @@ namespace Volte.Services
             }
             else
             {
+                if (args.Message.Content.Equals($"<@{args.Context.Client.CurrentUser.Id}>")
+                    || args.Message.Content.Equals($"<@!{args.Context.Client.CurrentUser.Id}>"))
+                {
+                    await new EmbedBuilder().WithColor(Config.SuccessColor).WithDescription(
+                            $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                            $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
+                        .ReplyToAsync(args.Message);
+                    return;
+                }
+
                 await _quoteService.DoAsync(args);
             }
         }
@@ -125,8 +135,7 @@ namespace Volte.Services
                             $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
                         await guild.LeaveAsync();
                     }
-
-                    _ = _db.GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
+                    else _db.GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
                 }
             });
 

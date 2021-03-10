@@ -15,9 +15,8 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> ModRoleAsync([Remainder] SocketRole role = null)
         {
             if (role is null)
-            {
                 return Ok($"The current Moderator role in this guild is <@&{Context.GuildData.Configuration.Moderation.ModRole}>.");
-            }
+            
             Context.GuildData.Configuration.Moderation.ModRole = role.Id;
             Db.UpdateData(Context.GuildData);
             return Ok($"Set {role.Mention} as the Moderator role for this guild.");
