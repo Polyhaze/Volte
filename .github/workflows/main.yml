@@ -22,10 +22,10 @@ jobs:
     - name: Upload Linux binary
       uses: actions/upload-artifact@main
       with:
-        name: Volte-Linux
+        name: Volte Linux
         path: src/bin/Release/netcoreapp3.1/linux-x64/publish/Volte
     - name: Upload Windows binary
       uses: actions/upload-artifact@main
       with:
-        name: Volte-Windows
+        name: Volte Windows
         path: src/bin/Release/netcoreapp3.1/win10-x64/publish/Volte.exe
