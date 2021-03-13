@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Volte.Commands;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     /// <summary>
     ///     The base class for all Command-related Volte EventArgs.

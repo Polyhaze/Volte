@@ -6,12 +6,12 @@ using Discord.WebSocket;
 using Discord;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
     //thanks discord-csharp/MODiX for the idea and some of the code (definitely the regex lol)
-    public class QuoteService : VolteEventService
+    public class QuoteService : VolteService
     {
         private readonly DiscordShardedClient _client;
 
@@ -31,10 +31,7 @@ namespace Volte.Services
             @"https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(\d+)/(\d+)/(\d+)?",
             Options);
 
-        public override Task DoAsync(EventArgs args)
-            => OnMessageReceivedAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"Quote was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args?.GetType().Name}"));
-
-        private async Task OnMessageReceivedAsync(MessageReceivedEventArgs args)
+        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return;
             var match = JumpUrlPattern.Match(args.Message.Content);

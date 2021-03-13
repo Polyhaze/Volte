@@ -5,7 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Attributes
+namespace Volte.Core.Entities
 {
     public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
     {

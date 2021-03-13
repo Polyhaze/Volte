@@ -11,8 +11,7 @@ using Humanizer;
 using Qmmands;
 using Qommon.Collections;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
@@ -55,11 +54,11 @@ namespace Volte.Services
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
             if (Config.EnabledFeatures.Blacklist)
-                await _blacklist.DoAsync(args);
+                await _blacklist.CheckMessageAsync(args);
             if (Config.EnabledFeatures.Antilink)
-                await _antilink.DoAsync(args);
+                await _antilink.CheckMessageAsync(args);
             if (Config.EnabledFeatures.PingChecks)
-                await _pingchecks.DoAsync(args);
+                await _pingchecks.CheckMessageAsync(args);
 
             var prefixes = new List<string>
             {
@@ -90,7 +89,7 @@ namespace Volte.Services
                     return;
                 }
 
-                await _quoteService.DoAsync(args);
+                await _quoteService.CheckMessageAsync(args);
             }
         }
 

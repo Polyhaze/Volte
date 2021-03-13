@@ -10,14 +10,13 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 using Color = System.Drawing.Color;
 using Console = Colorful.Console;
 
 namespace Volte.Services
 {
-    public sealed class LoggingService : VolteEventService
+    public sealed class LoggingService : VolteService
     {
         private readonly DiscordShardedClient _client;
         private readonly HttpClient _http;
@@ -31,13 +30,7 @@ namespace Volte.Services
             _http = httpClient;
         }
 
-        public override Task DoAsync(EventArgs args)
-        {
-            Log(args.Cast<LogEventArgs>() ?? throw new InvalidOperationException($"Logger was triggered with a null event. Expected: {nameof(LogEventArgs)}, Received: {args.GetType().Name}"));
-            return Task.CompletedTask;
-        }
-
-        private void Log(LogEventArgs args) =>
+        public void HandleLogEvent(LogEventArgs args) =>
             Log(args.LogMessage.Internal.Severity, args.LogMessage.Internal.Source,
                 args.LogMessage.Internal.Message, args.LogMessage.Internal.Exception);
 

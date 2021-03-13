@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 using Module = Qmmands.Module;
 
 namespace Gommon

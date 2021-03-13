@@ -2,7 +2,7 @@ using System;
 using Discord.WebSocket;
 using Volte.Commands;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public class ModActionEventArgs : System.EventArgs
     {

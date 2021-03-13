@@ -6,7 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.TypeParsers
 {

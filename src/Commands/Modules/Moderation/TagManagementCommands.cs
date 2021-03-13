@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Attributes;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules

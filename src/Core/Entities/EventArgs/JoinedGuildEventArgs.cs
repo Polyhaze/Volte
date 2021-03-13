@@ -2,7 +2,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class JoinedGuildEventArgs : System.EventArgs
     {

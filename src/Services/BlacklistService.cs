@@ -8,13 +8,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qmmands;
 using Volte.Commands;
 using Volte.Commands.Modules;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class BlacklistService : VolteEventService
+    public sealed class BlacklistService : VolteService
     {
         private readonly LoggingService _logger;
         private readonly ModerationService _mod;
@@ -25,10 +23,7 @@ namespace Volte.Services
             _mod = moderationService;
         }
 
-        public override Task DoAsync(EventArgs args)
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"AutoRole was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args.GetType().Name}"));
-
-        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Blacklist.Any()) return;
             _logger.Debug(LogSource.Volte, "Checking a message for blacklisted words.");

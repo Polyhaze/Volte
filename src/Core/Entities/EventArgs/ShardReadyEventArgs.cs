@@ -1,6 +1,6 @@
 using Discord.WebSocket;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class ShardReadyEventArgs : System.EventArgs
     {

@@ -1,7 +1,7 @@
 using Discord.WebSocket;
 using System.Text.Json.Serialization;
 
-namespace Volte.Core.Models.BotConfig
+namespace Volte.Core.Entities
 {
     public sealed class GuildLogging
     {

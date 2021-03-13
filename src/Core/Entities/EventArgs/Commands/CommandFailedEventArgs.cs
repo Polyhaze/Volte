@@ -2,7 +2,7 @@
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class CommandFailedEventArgs : CommandEventArgs
     {

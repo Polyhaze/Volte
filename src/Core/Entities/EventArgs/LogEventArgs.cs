@@ -1,6 +1,6 @@
 using Discord;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class LogEventArgs : System.EventArgs
     {
@@ -14,7 +14,7 @@ namespace Volte.Core.Models.EventArgs
             Message = message.Message;
             Source = message.Source;
             Severity = message.Severity;
-            LogMessage = (Models.LogMessage.FromDiscordLogMessage(message), message);
+            LogMessage = (Entities.LogMessage.FromDiscordLogMessage(message), message);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Core.Helpers

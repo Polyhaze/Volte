@@ -5,7 +5,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.TypeParsers
 {
@@ -30,6 +30,7 @@ namespace Volte.Commands.TypeParsers
                 if (match.Count > 1)
                     return TypeParserResult<SocketTextChannel>.Failed(
                         "Multiple channels found. Try mentioning the channel or using its ID.");
+                channel = match.First();
             }
 
             return channel is null

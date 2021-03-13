@@ -5,7 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands;
 
-namespace Volte.Core.Attributes
+namespace Volte.Core.Entities
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class CheckHierarchyAttribute : ParameterCheckAttribute

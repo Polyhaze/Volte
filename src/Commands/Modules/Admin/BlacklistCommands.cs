@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 using Volte.Commands.Results;
-using Volte.Core.Models.Guild;
 
 namespace Volte.Commands.Modules
 {

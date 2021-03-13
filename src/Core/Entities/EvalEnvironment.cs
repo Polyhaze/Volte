@@ -11,11 +11,11 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Core.Models
+namespace Volte.Core.Entities
 {
     public sealed class EvalEnvironment
     {
@@ -32,7 +32,7 @@ namespace Volte.Core.Models
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
         public EmojiService Emoji { get; set; }
-        public EvalEnvironment Environment { get;}
+        public EvalEnvironment Environment { get; }
 
         public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
         public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a => a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));

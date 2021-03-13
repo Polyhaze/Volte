@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.TypeParsers
 {

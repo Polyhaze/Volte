@@ -4,7 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using LiteDB;
 using Volte.Core;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

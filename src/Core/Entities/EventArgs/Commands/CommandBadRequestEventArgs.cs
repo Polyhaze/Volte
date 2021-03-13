@@ -2,7 +2,7 @@
 using Volte.Commands;
 using Volte.Commands.Results;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class CommandBadRequestEventArgs : CommandEventArgs
     {

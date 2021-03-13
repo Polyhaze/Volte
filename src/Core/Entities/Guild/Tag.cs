@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Volte.Commands;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class Tag
     {

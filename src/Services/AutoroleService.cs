@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Gommon;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class AutoroleService : VolteEventService
+    public sealed class AutoroleService : VolteService
     {
         private readonly LoggingService _logger;
         private readonly DatabaseService _db;
@@ -18,10 +17,7 @@ namespace Volte.Services
             _db = databaseService;
         }
 
-        public override Task DoAsync(EventArgs args)
-            => ApplyRoleAsync(args.Cast<UserJoinedEventArgs>() ?? throw new InvalidOperationException($"AutoRole was triggered with a null event. Expected: {nameof(UserJoinedEventArgs)}, Received: {args.GetType().Name}"));
-
-        private async Task ApplyRoleAsync(UserJoinedEventArgs args)
+        public async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             var targetRole = args.Guild.GetRole(data.Configuration.Autorole);

@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
-using Volte.Core.Attributes;
-using Volte.Core.Models;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Commands.Modules

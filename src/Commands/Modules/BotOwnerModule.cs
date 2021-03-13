@@ -1,6 +1,6 @@
 using System.Net.Http;
 using System.Threading;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 using Volte.Services;
 // ReSharper disable MemberCanBePrivate.Global
 

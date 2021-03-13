@@ -4,12 +4,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class AntilinkService : VolteEventService
+    public sealed class AntilinkService : VolteService
     {
         private readonly Regex _invitePattern =
             new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
@@ -19,10 +18,7 @@ namespace Volte.Services
         public AntilinkService(LoggingService loggingService)
             => _logger = loggingService;
 
-        public override Task DoAsync(EventArgs args) 
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"AntiLink was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args.GetType().Name}"));
-        
-        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Antilink ||
                 args.Context.User.IsAdmin(args.Context)) return;

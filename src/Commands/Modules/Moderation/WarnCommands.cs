@@ -7,9 +7,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Attributes;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules

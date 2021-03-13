@@ -9,8 +9,7 @@ using Qmmands;
 using SixLabors.ImageSharp;
 using Volte.Commands.Results;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {

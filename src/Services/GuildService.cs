@@ -7,13 +7,12 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 using Gommon;
 
 namespace Volte.Services
 {
-    public sealed class GuildService : VolteEventService
+    public sealed class GuildService : VolteService
     {
         private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;
@@ -25,17 +24,8 @@ namespace Volte.Services
             _client = discordShardedClient;
         }
 
-        public override Task DoAsync(EventArgs args)
-        {
-            if (args is JoinedGuildEventArgs joinedArgs)
-                return OnJoinAsync(joinedArgs);
-            if (args is LeftGuildEventArgs leftArgs)
-                return OnLeaveAsync(leftArgs);
-            return Task.CompletedTask;
-        }
-        
 
-        private async Task OnJoinAsync(JoinedGuildEventArgs args)
+        public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Joined a guild.");
             if (Config.BlacklistedOwners.Contains(args.Guild.Owner.Id))
@@ -95,7 +85,7 @@ namespace Volte.Services
                 .AddField("Users", users.Count(), true)
                 .AddField("Bots", bots.Count(), true);
 
-            if (bots.Count() > users.Count())
+            if (bots.Count > users.Count)
                 await channel.SendMessageAsync(
                     $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", false,
                     e.WithSuccessColor().Build());
@@ -103,7 +93,7 @@ namespace Volte.Services
                 await e.WithSuccessColor().SendToAsync(channel);
         }
 
-        private async Task OnLeaveAsync(LeftGuildEventArgs args)
+        public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             _logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))

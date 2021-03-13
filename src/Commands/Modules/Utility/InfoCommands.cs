@@ -6,7 +6,6 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
@@ -43,7 +42,7 @@ namespace Volte.Commands.Modules
                 .AddField("Activity", user.Activity?.Name ?? "Nothing", true)
                 .AddField("Status", user.Status, true)
                 .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
-                .AddField("Hierarchy", user.Hierarchy, true)
+                .AddField("Role Hierarchy", user.Hierarchy, true)
                 .AddField("Account Created",
                     $"{user.CreatedAt.FormatDate()}, {user.CreatedAt.FormatFullTime()}")
                 .AddField("Joined This Guild",

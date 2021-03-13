@@ -1,22 +1,18 @@
 using System;
 using System.Threading.Tasks;
 using Gommon;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class PingChecksService : VolteEventService
+    public sealed class PingChecksService : VolteService
     {
         private readonly LoggingService _logger;
 
         public PingChecksService(LoggingService loggingService) 
             => _logger = loggingService;
 
-        public override Task DoAsync(EventArgs args)
-            => CheckMessageAsync(args.Cast<MessageReceivedEventArgs>() ?? throw new InvalidOperationException($"PingChecks was triggered with a null event. Expected: {nameof(MessageReceivedEventArgs)}, Received: {args.GetType().Name}"));
-
-        private async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (args.Data.Configuration.Moderation.MassPingChecks &&
                 !args.Context.User.IsAdmin(args.Context))

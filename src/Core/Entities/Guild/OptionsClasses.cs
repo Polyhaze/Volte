@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 using Discord.WebSocket;
 using Gommon;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class ModerationOptions
     {

@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
@@ -107,7 +107,7 @@ namespace Volte.Services
                     await msg.ModifyAsync(m =>
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                            .AddField("Return Type", state.ReturnValue.GetType(), true)
+                            .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                             .WithDescription(Format.Code(res, "ini")).Build());
                 }
             }
@@ -126,9 +126,9 @@ namespace Volte.Services
         private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(
             new List<string>
             {
-                "System", "System.Collections.Generic", "System.Linq", "System.Text",
-                "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Volte.Core.Models.EventArgs",
-                "System.Threading", "Gommon", "Volte.Core.Models", "Humanizer", "System.Globalization",
+                "System", "System.Collections.Generic", "System.Linq", "System.Text", "Volte.Commands.TypeParsers",
+                "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Humanizer", 
+                "System.Threading", "Gommon", "Volte.Core.Entities", "System.Globalization",
                 "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
             }));
     }

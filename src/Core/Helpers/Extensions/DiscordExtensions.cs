@@ -10,7 +10,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Core;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Gommon
@@ -92,14 +92,18 @@ namespace Gommon
             var logger = provider.Get<LoggingService>();
             var mod = provider.Get<ModerationService>();
             
-            client.Log += async m => await logger.DoAsync(new LogEventArgs(m));
-            client.JoinedGuild += async g => await guild.DoAsync(new JoinedGuildEventArgs(g));
-            client.LeftGuild += async g => await guild.DoAsync(new LeftGuildEventArgs(g));
+            client.Log += m =>
+            {
+                logger.HandleLogEvent(new LogEventArgs(m));
+                return Task.CompletedTask;
+            };
+            client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
+            client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
 
             client.UserJoined += async user =>
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
-                if (Config.EnabledFeatures.Autorole) await autorole.DoAsync(new UserJoinedEventArgs(user));
+                if (Config.EnabledFeatures.Autorole) await autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
                 if (provider.Get<DatabaseService>().GetData(user.Guild).Configuration.Moderation.CheckAccountAge && Config.EnabledFeatures.ModLog) 
                     await mod.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
             };

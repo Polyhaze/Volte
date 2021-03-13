@@ -9,7 +9,7 @@ using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
-using Volte.Core.Models;
+using Volte.Core.Entities;
 using Volte.Services;
 using Console = Colorful.Console;
 

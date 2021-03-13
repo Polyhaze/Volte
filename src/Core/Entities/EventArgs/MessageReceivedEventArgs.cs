@@ -2,10 +2,10 @@ using System;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class MessageReceivedEventArgs : System.EventArgs
     {

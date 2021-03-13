@@ -3,7 +3,7 @@ using Gommon;
 using Qmmands;
 using System.Threading.Tasks;
 using Volte.Commands.Results;
-using Volte.Core.Attributes;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {

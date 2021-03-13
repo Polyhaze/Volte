@@ -9,7 +9,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule
     {
-        [Command("Snowflake")]
+        [Command("Snowflake", "Id")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
         [Remarks("snowflake {Ulong}")]
         public Task<ActionResult> SnowflakeAsync(ulong id)

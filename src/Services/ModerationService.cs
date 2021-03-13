@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -6,8 +7,7 @@ using Gommon;
 using Humanizer;
 using Volte.Commands;
 using Volte.Core;
-using Volte.Core.Models;
-using Volte.Core.Models.EventArgs;
+using Volte.Core.Entities;
 
 namespace Volte.Services
 {
@@ -25,29 +25,34 @@ namespace Volte.Services
 
         public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
         {
+            if (args.User.IsBot) return;
+            
+            _logger.Debug(LogSource.Volte, "Attempting to post a VerifyAge message.");
+            
             var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
+            _logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
             var difference = DateTimeOffset.Now - args.User.CreatedAt;
             if (difference.Days <= 30)
             {
-                var unit = difference.Days > 0 ? "days" : difference.Hours > 0 ? "hours" : "minutes";
+                _logger.Debug(LogSource.Volte, "Account younger than 30 days; posting message.");
+                var unit = difference.Days > 0 ? "day" : difference.Hours > 0 ? "hour" : "minute";
                 var time = difference.Days > 0 ? difference.Days : difference.Hours > 0 ? difference.Hours : difference.Minutes;
                 await new EmbedBuilder()
                     .WithColor(Color.Red)
                     .WithTitle("Possible Malicious User")
+                    .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
                     .AddField("Account Created",
-                        $"{args.User.CreatedAt.FormatDate()}, {args.User.CreatedAt.FormatFullTime()}")
-                    .WithFooter($"Account Created {time} {unit} ago.")
-                    .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
+                        $"{args.User.CreatedAt.FormatDate()}, at {args.User.CreatedAt.FormatFullTime()}")
+                    .WithFooter($"Account Created {unit.ToQuantity(time)} ago.")
                     .SendToAsync(c);
             }
         }
 
         public async Task OnModActionCompleteAsync(ModActionEventArgs args)
         {
-            if (!Config.EnabledFeatures.ModLog)
-                return;
+            if (!Config.EnabledFeatures.ModLog) return;
 
             _logger.Debug(LogSource.Volte, "Attempting to post a modlog message.");
 
@@ -82,7 +87,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(TargetUser(args, true, false))
+                            .AppendLine(Target(args, true))
                             .AppendLine(Channel(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -97,7 +102,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -112,7 +117,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -125,7 +130,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
@@ -139,7 +144,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -154,7 +159,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Reason(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -169,7 +174,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(args))
-                            .AppendLine(TargetUser(args, false, true))
+                            .AppendLine(await TargetRestUser(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
@@ -180,7 +185,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(TargetUser(args, false, false))
+                            .AppendLine(Target(args, false))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
                     _logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Verify)}");
@@ -206,11 +211,16 @@ namespace Volte.Services
         private string Case(ModActionEventArgs args) => $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
         private string Count(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
 
-        private string TargetUser(ModActionEventArgs args, bool isOnMessageDelete, bool isOnIdBan) => isOnMessageDelete
-            ? $"**Message Deleted:** {args.TargetId}"
-            : isOnIdBan
+        private async Task<string> TargetRestUser(ModActionEventArgs args)
+        {
+            var u = await args.Context.Client.Shards.First().Rest.GetUserAsync(args.TargetId ?? 0);
+            return u is null
                 ? $"**User:** {args.TargetId}"
-                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
+                : $"**User:** {u} ({args.TargetId})";
+        }
+        private string Target(ModActionEventArgs args, bool isOnMessageDelete) => isOnMessageDelete
+            ? $"**Message Deleted:** {args.TargetId}"
+            : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
         private string Time(ModActionEventArgs args) =>
             $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";

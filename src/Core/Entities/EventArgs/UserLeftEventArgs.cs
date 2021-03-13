@@ -1,10 +1,10 @@
 using Discord;
 using Discord.WebSocket;
 using Volte.Core;
-using Volte.Core.Models.Guild;
+using Volte.Core.Entities;
 using Volte.Services;
 
-namespace Volte.Core.Models.EventArgs
+namespace Volte.Core.Entities
 {
     public sealed class UserLeftEventArgs : System.EventArgs
     {

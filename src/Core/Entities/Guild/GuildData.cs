@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Discord.WebSocket;
 
-namespace Volte.Core.Models.Guild
+namespace Volte.Core.Entities
 {
     public sealed class GuildData
     {
