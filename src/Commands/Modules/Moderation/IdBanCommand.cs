@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
@@ -18,8 +17,7 @@ namespace Volte.Commands.Modules
             [Remainder] string reason = "Banned by a Moderator.")
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
-            var target = await Context.Client.Shards.First().Rest.GetUserAsync(user);
-            return Ok($"Successfully banned **{target}** from this guild.", async _ => 
+            return Ok($"Successfully banned **{await Context.Client.Rest.GetUserAsync(user)}** from this guild.", async _ => 
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.IdBan)

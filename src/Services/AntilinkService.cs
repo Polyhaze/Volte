@@ -11,7 +11,7 @@ namespace Volte.Services
     public sealed class AntilinkService : VolteService
     {
         private readonly Regex _invitePattern =
-            new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
+            new(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
 
         private readonly LoggingService _logger;
 

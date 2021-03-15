@@ -1,13 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using Gommon;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Qmmands;
-using Volte.Commands;
-using Volte.Commands.Modules;
 using Volte.Core.Entities;
 
 namespace Volte.Services

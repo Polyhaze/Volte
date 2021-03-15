@@ -8,12 +8,8 @@ namespace Volte.Core.Entities
     {
         public BadRequestResult Result { get; }
         public ResultCompletionData ResultCompletionData { get; }
-        public override VolteContext Context { get; }
-        public override string Arguments { get; }
-        public override string Command { get; }
-        public override Stopwatch Stopwatch { get; }
 
-        public CommandBadRequestEventArgs(BadRequestResult res, ResultCompletionData data, CommandCalledEventArgs args)
+        public CommandBadRequestEventArgs(BadRequestResult res, ResultCompletionData data, CommandEventArgs args)
         {
             Result = res;
             ResultCompletionData = data;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
@@ -189,7 +190,7 @@ namespace Gommon
             => !message.Attachments.IsEmpty();
 
         public static bool HasColor(this IRole role)
-            => !(role.Color.RawValue is 0);
+            => role.Color.RawValue is not 0;
 
 
         public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb) 

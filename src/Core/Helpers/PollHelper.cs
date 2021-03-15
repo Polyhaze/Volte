@@ -3,18 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Volte.Core.Entities;
-using Volte.Services;
 
 namespace Volte.Core.Helpers
 {
-    public static class PollHelpers
+    public static class PollHelper
     {
-        
-
-        public static PollInfo GetPollBody(IEnumerable<string> choices, EmojiService e)
+        public static PollInfo GetPollBody(IEnumerable<string> choices)
         {
             var c = choices as string[] ?? choices.ToArray();
-            return PollInfo.FromDefaultFields(c.Length - 1, e, c);
+            return PollInfo.FromDefaultFields(c.Length - 1, c);
         }
 
         public static EmbedBuilder ApplyPollInfo(EmbedBuilder embedBuilder, PollInfo pollInfo)
@@ -22,14 +19,14 @@ namespace Volte.Core.Helpers
             foreach (var (key, value) in pollInfo.Fields)
                 embedBuilder.AddField(key, value, true);
 
-            embedBuilder.WithFooter(pollInfo.Footer);
+            embedBuilder.WithFooter(PollInfo.Footer);
 
             return embedBuilder;
         }
 
-        public static Task AddPollReactionsAsync(int amount, IUserMessage msg, EmojiService e)
+        public static Task AddPollReactionsAsync(int amount, IUserMessage msg)
         {
-            var (one, two, three, four, five) = e.GetPollEmojis();
+            var (one, two, three, four, five) = EmojiHelper.GetPollEmojis();
 
             return amount switch
             {

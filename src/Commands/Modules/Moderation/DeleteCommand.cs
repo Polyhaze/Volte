@@ -6,6 +6,7 @@ using Gommon;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -24,7 +25,7 @@ namespace Volte.Commands.Modules
 
             await target.TryDeleteAsync($"Message deleted by Moderator {Context.User}.");
 
-            return Ok($"{EmojiService.BallotBoxWithCheck} Deleted that message.", async m =>
+            return Ok($"{EmojiHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
                 {

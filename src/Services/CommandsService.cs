@@ -79,7 +79,7 @@ namespace Volte.Services
                 .AppendLine(TimeIssued(args))
                 .AppendLine(args.ExecutedLogMessage())
                 .AppendLine(After(args));
-            if (data != null)
+            if (data is not null)
             {
                 sb.AppendLine(ResultMessage(data));
             }
@@ -92,7 +92,7 @@ namespace Volte.Services
             var reason = args.Result switch
             {
                 CommandNotFoundResult _ => "Unknown command.",
-                ChecksFailedResult cfr => cfr.FailureReason,
+                ChecksFailedResult cfr => $"One or more checks failed for command **{cfr.Command.Name}**: ```css\n{cfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n')}```",
                 ParameterChecksFailedResult pcfr => $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n')}```",
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
                 TypeParseFailedResult tpfr => tpfr.FailureReason,
@@ -149,7 +149,7 @@ namespace Volte.Services
                 .AppendLine(args.ExecutedLogMessage())
                 .AppendLine(After(args));
             
-            if (args.ResultCompletionData != null)
+            if (args.ResultCompletionData is not null)
             {
                 sb.AppendLine(ResultMessage(args.ResultCompletionData));
             }

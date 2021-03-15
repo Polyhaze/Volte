@@ -25,7 +25,7 @@ namespace Volte.Commands.Modules
             var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync()).ToList();
             try
             {
-                if (!(targetAuthor is null))
+                if (targetAuthor is not null)
                     await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id));
                 else
                     await Context.Channel.DeleteMessagesAsync(messages);

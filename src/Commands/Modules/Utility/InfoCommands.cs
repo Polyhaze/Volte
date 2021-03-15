@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
                 .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
                 .AddField("Guilds", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
-                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).Where(x => !(x is SocketCategoryChannel)).DistinctBy(x => x.Id).Count(),
+                .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).Where(x => x is not SocketCategoryChannel).DistinctBy(x => x.Id).Count(),
                     true)
                 .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
                 .AddField("Uptime", Process.GetCurrentProcess().CalculateUptime(), true)

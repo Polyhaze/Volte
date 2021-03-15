@@ -20,7 +20,7 @@ namespace Volte.Services
     {
         private readonly DiscordShardedClient _client;
         private readonly HttpClient _http;
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
         private const string LogFile = "data/Volte.log";
 
         public LoggingService(DiscordShardedClient discordShardedClient,

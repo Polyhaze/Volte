@@ -7,9 +7,8 @@ using Volte.Services;
 
 namespace Volte.Core.Entities
 {
-    public sealed class MessageReceivedEventArgs : System.EventArgs
+    public sealed class MessageReceivedEventArgs : EventArgs
     {
-        private readonly DatabaseService _db;
         public SocketUserMessage Message { get; }
         public VolteContext Context { get; }
         public GuildData Data { get; }
@@ -17,9 +16,9 @@ namespace Volte.Core.Entities
         public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
         {
             Message = s.Cast<SocketUserMessage>() ?? throw new ArgumentException($"{nameof(s)} is not a SocketUserMessage; aborting event handler call.");
-            provider.Get(out _db);
+            provider.Get(out DatabaseService db);
             Context = VolteContext.Create(s, provider);
-            Data = _db.GetData(Context.Guild);
+            Data = db.GetData(Context.Guild);
         }
     }
 }

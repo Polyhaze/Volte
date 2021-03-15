@@ -43,14 +43,13 @@ namespace Volte.Services
 
             var g = _client.GetGuild(guildId);
             var c = g?.GetTextChannel(channelId);
-                if (c is null) return;
+            if (c is null) return;
 
-                var m = await c.GetMessageAsync(messageId);
-                if (m is null) return;
+            var m = await c.GetMessageAsync(messageId);
+            if (m is null) return;
 
-                await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel);
-
-                _ = await args.Message.TryDeleteAsync();
+            await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel)
+                .ContinueWith(async _ => await args.Message.TryDeleteAsync());
         }
 
         private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx, Match match)
@@ -60,19 +59,13 @@ namespace Volte.Services
                 .WithFooter($"Quoted by {ctx.User}", ctx.User.GetAvatarUrl());
 
             if (!message.Content.IsNullOrEmpty())
-            {
                 e.WithDescription(message.Content);
-            }
 
             if (message.Content.IsNullOrEmpty() && message.HasAttachments())
-            {
                 e.WithImageUrl(message.Attachments.First().Url);
-            }
 
             if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
-            {
                 e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
-            }
 
             if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
             {
@@ -80,7 +73,7 @@ namespace Volte.Services
                     .Split("  ", StringSplitOptions.RemoveEmptyEntries);
                 
                 if (strings.Length is 2)
-                    strings = strings.Select(FilterComments).Where(x => !(x is null)).ToArray();
+                    strings = strings.Select(FilterComments).Where(x => x is not null).ToArray();
                 e.AddField("Comment", strings.Join(" "), true);
             }
 
@@ -91,7 +84,7 @@ namespace Volte.Services
         
         private string FilterComments(string input)
         {
-            if (!(input is ""))
+            if (input is not "")
             {
                 if (input.EndsWith('|') || input.StartsWith('|'))
                     return input.Replace("|", "");

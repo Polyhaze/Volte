@@ -8,7 +8,6 @@ namespace Volte.Core.Entities
     {
         public SocketGuild Guild { get; }
 
-        public LeftGuildEventArgs(SocketGuild guild) 
-            => Guild = guild;
+        public LeftGuildEventArgs(SocketGuild guild) => Guild = guild;
     }
 }

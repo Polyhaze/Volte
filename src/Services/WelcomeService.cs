@@ -17,7 +17,7 @@ namespace Volte.Services
             _logger = loggingService;
         }
 
-        internal async Task JoinAsync(UserJoinedEventArgs args)
+        public async Task JoinAsync(UserJoinedEventArgs args)
         {
             var data = _db.GetData(args.Guild);
 
@@ -31,12 +31,12 @@ namespace Volte.Services
             var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
-            if (!(c is null))
+            if (c is not null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl())
+                    .WithThumbnailUrl(args.User.GetAvatarUrl() ?? args.User.GetDefaultAvatarUrl())
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 
@@ -48,7 +48,7 @@ namespace Volte.Services
                 "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
 
-        internal async Task LeaveAsync(UserLeftEventArgs args)
+        public async Task LeaveAsync(UserLeftEventArgs args)
         {
             var data = _db.GetData(args.Guild);
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
@@ -56,12 +56,12 @@ namespace Volte.Services
                 "User left a guild, let's check to see if we should send a leaving embed.");
             var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
-            if (!(c is null))
+            if (c is not null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(leavingMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl())
+                    .WithThumbnailUrl(args.User.GetAvatarUrl() ?? args.User.GetDefaultAvatarUrl())
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
                 _logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");

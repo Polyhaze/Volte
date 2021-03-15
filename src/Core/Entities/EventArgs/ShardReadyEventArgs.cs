@@ -1,8 +1,9 @@
 using Discord.WebSocket;
+using System;
 
 namespace Volte.Core.Entities
 {
-    public sealed class ShardReadyEventArgs : System.EventArgs
+    public sealed class ShardReadyEventArgs : EventArgs
     {
         public DiscordSocketClient Shard { get; }
         public DiscordShardedClient Client { get; }

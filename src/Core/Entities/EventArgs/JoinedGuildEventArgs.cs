@@ -1,10 +1,10 @@
 using Discord;
 using Discord.WebSocket;
-using Gommon;
+using System;
 
 namespace Volte.Core.Entities
 {
-    public sealed class JoinedGuildEventArgs : System.EventArgs
+    public sealed class JoinedGuildEventArgs : EventArgs
     {
         public SocketGuild Guild { get; }
 

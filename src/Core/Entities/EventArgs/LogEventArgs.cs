@@ -1,8 +1,9 @@
 using Discord;
+using System;
 
 namespace Volte.Core.Entities
 {
-    public sealed class LogEventArgs : System.EventArgs
+    public sealed class LogEventArgs : EventArgs
     {
         public string Message { get; }
         public string Source { get; }

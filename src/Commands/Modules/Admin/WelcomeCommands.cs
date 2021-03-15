@@ -52,7 +52,7 @@ namespace Volte.Commands.Modules
                 .AppendLine()
                 .AppendLine($"{sendingTest}").ToString(),
                 async _ => {
-                    if (!(welcomeChannel is null))
+                    if (welcomeChannel is not null)
                         await WelcomeService.JoinAsync(new UserJoinedEventArgs(Context.User));
                 });
         }
@@ -97,7 +97,7 @@ namespace Volte.Commands.Modules
                     .AppendLine($"{sendingTest}").ToString(),
                 async _ =>
                 {
-                    if (!(welcomeChannel is null))
+                    if (welcomeChannel is not null)
                         await WelcomeService.LeaveAsync(new UserLeftEventArgs(Context.User));
                 });
         }

@@ -59,7 +59,7 @@ namespace Volte.Commands.TypeParsers
             RestUser user = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
-                user = await ctx.Client.Shards.First().Rest.GetUserAsync(id);
+                user = await ctx.Client.Rest.GetUserAsync(id);
 
             
 

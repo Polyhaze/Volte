@@ -38,14 +38,15 @@ namespace Volte.Services
 
             var embed = new EmbedBuilder()
                 .WithTitle("Hey there!")
-                .WithAuthor(args.Guild.Owner)
+                .WithAuthor(await _client.Rest.GetUserAsync(Config.Owner))
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
-                .AddField("Set your admin role", "$adminrole {roleName}", true)
-                .AddField("Set your moderator role", "$modrole {roleName}", true)
+                .AddField("Set your admin role", "$adminrole {Role}", true)
+                .AddField("Set your moderator role", "$modrole {Role}", true)
                 .AddField("Permissions", new StringBuilder()
-                    .AppendLine("It is recommended to give me admin permission, to avoid any permission errors that may happen.")
-                    .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin.")
+                    .AppendLine("It is recommended to give me the Administrator permission to avoid any permission errors that may happen.")
+                    .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin; however")
+                    .AppendLine("if you're wondering why you're getting permission errors, that's *probably* why.")
                     .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
@@ -57,12 +58,12 @@ namespace Volte.Services
                 _logger.Error(LogSource.Volte,
                     "Sent the guild owner the introduction message.");
             }
-            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.Forbidden)
+            catch (Exception)
             {
                 var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
                 _logger.Error(LogSource.Volte,
                     "Could not DM the guild owner; sending to the upper-most channel instead.");
-                if (c != null) await embed.SendToAsync(c);
+                if (c is not null) await embed.SendToAsync(c);
             }
 
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))

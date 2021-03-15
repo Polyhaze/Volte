@@ -1,17 +1,18 @@
 ﻿using System.Diagnostics;
 using Volte.Commands;
+using System;
 
 namespace Volte.Core.Entities
 {
     /// <summary>
     ///     The base class for all Command-related Volte EventArgs.
     /// </summary>
-    public abstract class CommandEventArgs : System.EventArgs
+    public abstract class CommandEventArgs : EventArgs
     {
-        public abstract string Arguments { get; }
-        public abstract string Command { get; }
+        public string Arguments { get; set; }
+        public string Command { get; set; }
         
-        public abstract Stopwatch Stopwatch { get; }
-        public abstract VolteContext Context { get; }
+        public Stopwatch Stopwatch { get; set; }
+        public VolteContext Context { get; set; }
     }
 }

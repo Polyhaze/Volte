@@ -40,7 +40,7 @@ namespace Volte.Core.Entities
                 return false;
             }
 
-            return !(channel is null);
+            return channel is not null;
         }
 
     }

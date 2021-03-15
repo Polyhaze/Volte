@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -18,7 +19,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag != null)
+            if (tag is not null)
             {
                 var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(
@@ -40,8 +41,22 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
                 .AddField("Name", tag.Name)
-                .AddField("Response", tag.Response)
+                .AddField("Response", tag.Response.Length > EmbedFieldBuilder.MaxFieldValueLength ? "<Cannot display; too large.>" : tag.Response)
                 .AddField("Creator", Context.User.Mention));
+        }
+
+        [Command("TagEdit", "TagEd", "TagE")]
+        [Priority(1)]
+        [Description("Edit a tag's content if it exists.")]
+        [Remarks("tagedit {Tag} {String}")]
+        [RequireGuildModerator]
+        public Task<ActionResult> TagEditAsync(Tag tag, [Remainder] string response)
+        {
+            Context.GuildData.Extras.Tags.Remove(tag);
+            tag.Response = response;
+            Context.GuildData.Extras.Tags.Add(tag);
+            Db.UpdateData(Context.GuildData);
+            return Ok($"Successfully modified the content of tag **{tag.Name}**.");
         }
 
         [Command("TagDelete", "TagDel", "TagRem")]
@@ -54,7 +69,7 @@ namespace Volte.Commands.Modules
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.UpdateData(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
-                      $"**{await Context.Client.Shards.First().Rest.GetUserAsync(tag.CreatorId)}**, with " +
+                      $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");
         }
     }

@@ -5,6 +5,7 @@ using Qmmands;
 using Volte.Commands.Results;
 using Gommon;
 using Humanizer;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -24,8 +25,8 @@ namespace Volte.Commands.Modules
                 await msg.ModifyAsync(x =>
                 {
                     e.WithDescription(new StringBuilder()
-                        .AppendLine($"{EmojiService.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
-                        .AppendLine($"{EmojiService.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
+                        .AppendLine($"{EmojiHelper.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
+                        .AppendLine($"{EmojiHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
                         .ToString());
                     x.Embed = e.Build();
                 });

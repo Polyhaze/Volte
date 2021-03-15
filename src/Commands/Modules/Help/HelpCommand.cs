@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -32,10 +33,10 @@ namespace Volte.Commands.Modules
 
             if (module is null && command is null)
             {
-                return BadRequest($"{EmojiService.X} No matching Module/Command was found.");
+                return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
             }
 
-            if (module != null && command is null)
+            if (module is not null && command is null)
             {
                 if (await module.RunChecksAsync(Context) is SuccessfulResult)
                 {
@@ -46,7 +47,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"You do not have access to the **{module.SanitizeName()}** module.");
             }
 
-            if (module is null && command != null)
+            if (module is null && command is not null)
             {
                 if (await command.RunChecksAsync(Context) is SuccessfulResult)
                 {
@@ -61,10 +62,10 @@ namespace Volte.Commands.Modules
 
             }
 
-            if (module != null && command != null)
+            if (module is not null && command is not null)
             {
                 return BadRequest(new StringBuilder()
-                    .AppendLine($"{EmojiService.X} Found more than one Module or Command. Results:")
+                    .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")
                     .AppendLine($"**{module.SanitizeName()}**")
                     .AppendLine($"**{command.Name}**")
                     .ToString());
