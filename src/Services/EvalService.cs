@@ -119,13 +119,12 @@ namespace Volte.Services
             }
         }
 
-        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new ReadOnlyList<string>(
-            new List<string>
+        private readonly ReadOnlyList<string> _imports = new(new List<string>
             {
                 "System", "System.Collections.Generic", "System.Linq", "System.Text", "Volte.Commands.TypeParsers",
                 "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Humanizer", 
                 "System.Threading", "Gommon", "Volte.Core.Entities", "System.Globalization",
-                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands"
-            }));
+                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Volte.Core.Helpers"
+            });
     }
 }
