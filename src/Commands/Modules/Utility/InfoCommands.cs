@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
@@ -36,10 +37,25 @@ namespace Volte.Commands.Modules
         {
             user ??= Context.User;
 
+            string GetRelevantActivity()
+            {
+                if (user.Activity is CustomStatusGame csg)
+                {
+                    if (csg.Emote is Emoji) //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive embed field value
+                    {
+                        return $"{csg.Emote} {csg.State}";
+                    }
+                    return $"{csg.State}";
+                }
+                if (user.Activity is SpotifyGame)
+                    return "Listening to Spotify";
+                
+                return user.Activity?.Name;
+            }
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle(user.ToString())
                 .AddField("ID", user.Id, true)
-                .AddField("Activity", user.Activity?.Name ?? "Nothing", true)
+                .AddField("Activity", GetRelevantActivity() ?? "Nothing", true)
                 .AddField("Status", user.Status, true)
                 .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
                 .AddField("Role Hierarchy", user.Hierarchy, true)
@@ -60,7 +76,7 @@ namespace Volte.Commands.Modules
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle(Context.Guild.Name)
-                .AddField("Created", $"{cAt.Month}.{cAt.Day}.{cAt.Year} ({cAt.Humanize()})")
+                .AddField("Created", $"{cAt.FormatDate()} ({cAt.Humanize()})")
                 .AddField("Owner", Context.Guild.Owner)
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", Context.Guild.Users.Count, true)

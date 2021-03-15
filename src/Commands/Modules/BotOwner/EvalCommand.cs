@@ -7,7 +7,6 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class BotOwnerModule
     {
-
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
         [Remarks("eval {String}")]

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -17,9 +18,9 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
         {
             target ??= Context.User;
-            if (target.Activity is SpotifyGame spotify)
+            var spotify = Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
+            if (spotify != null)
             {
-
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(target)
                     .WithDescription(new StringBuilder()
