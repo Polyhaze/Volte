@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -25,6 +26,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
+        private readonly AddonService _addonService;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -39,7 +41,8 @@ namespace Volte.Services
             PingChecksService pingChecksService,
             CommandService commandService,
             CommandsService commandsService,
-            QuoteService quoteService)
+            QuoteService quoteService,
+            AddonService addonService)
         {
             _logger = loggingService;
             _antilink = antilinkService;
@@ -49,6 +52,7 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
+            _addonService = addonService;
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
@@ -147,6 +151,8 @@ namespace Volte.Services
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
                     .SendToAsync(channel);
             }
+
+            new Thread(async () => await _addonService.InitAsync()).Start();
         }
     }
 }

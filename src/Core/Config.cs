@@ -21,7 +21,8 @@ namespace Volte.Core
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = true,
             PropertyNameCaseInsensitive = true,
-            IgnoreNullValues = false
+            IgnoreNullValues = false,
+            AllowTrailingCommas = true
         };
 
         private static bool IsValidConfig()
