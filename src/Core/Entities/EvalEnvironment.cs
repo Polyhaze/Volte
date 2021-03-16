@@ -36,7 +36,7 @@ namespace Volte.Core.Entities
         public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
 
         public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a =>
-            a.Username.EqualsIgnoreCase(username) || (a.Nickname is not null && a.Nickname.EqualsIgnoreCase(username)));
+            a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
 
         public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
 
@@ -77,7 +77,7 @@ namespace Volte.Core.Entities
             var baseTypes = new List<Type> {type};
             var latestType = type.BaseType;
 
-            while (latestType is not null)
+            while (latestType != null)
             {
                 baseTypes.Add(latestType);
                 latestType = latestType.BaseType;
@@ -89,7 +89,7 @@ namespace Volte.Core.Entities
             {
                 sb.Append($"[{baseType.AsPrettyString()}]");
                 var inheritors = baseType.GetInterfaces().ToList();
-                if (baseType.BaseType is not null)
+                if (baseType.BaseType != null)
                 {
                     inheritors = inheritors.ToList();
                     inheritors.Add(baseType.BaseType);
@@ -117,11 +117,9 @@ namespace Volte.Core.Entities
 
             var fields = type.GetFields().OrderBy(a => a.Name).ToList();
 
-            if (props.Count is not 0)
+            if (props.Count != 0)
             {
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                // literally what?????? it never gave me this with !=??????? im baffled
-                if (fields.Count is not 0) inspection.AppendLine("<< Properties >>");
+                if (fields.Count != 0) inspection.AppendLine("<< Properties >>");
 
                 var columnWidth = props.Max(a => a.Name.Length) + 5;
                 foreach (var prop in props)
@@ -135,11 +133,11 @@ namespace Volte.Core.Entities
                 }
             }
 
-            if (fields.Count is not 0)
+            if (fields.Count != 0)
             {
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 // same here wtf
-                if (props.Count is not 0)
+                if (props.Count != 0)
                 {
                     inspection.AppendLine();
                     inspection.AppendLine("<< Fields >>");
@@ -187,7 +185,7 @@ namespace Volte.Core.Entities
 
                 if (value is null) return "Null";
 
-                if (value is IEnumerable e and not string)
+                if (value is IEnumerable e && !(value is string))
                 {
                     var enu = e.Cast<object>().ToList();
                     return $"{enu.Count} [{enu.GetType().Name}]";

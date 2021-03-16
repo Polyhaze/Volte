@@ -47,7 +47,7 @@ namespace Volte.Core.Entities
         }
 
         public static PollInfo FromValid(bool isValid)
-            => new() { IsValid = isValid };
+            => new PollInfo { IsValid = isValid };
 
         public Dictionary<string, string> Fields { get; }
         public bool IsValid { get; set; }

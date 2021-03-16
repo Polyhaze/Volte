@@ -190,7 +190,7 @@ namespace Gommon
             => !message.Attachments.IsEmpty();
 
         public static bool HasColor(this IRole role)
-            => role.Color.RawValue is not 0;
+            => role.Color.RawValue != 0;
 
 
         public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb) 

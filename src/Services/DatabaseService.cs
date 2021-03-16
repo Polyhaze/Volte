@@ -10,7 +10,7 @@ namespace Volte.Services
 {
     public sealed class DatabaseService : VolteService, IDisposable
     {
-        public static readonly LiteDatabase Database = new($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
+        public static readonly LiteDatabase Database = new LiteDatabase($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
 
         private readonly DiscordShardedClient _client;
 
@@ -25,7 +25,7 @@ namespace Volte.Services
         {
             var coll = Database.GetCollection<GuildData>("guilds");
             var conf = coll.FindOne(g => g.Id == id);
-            if (conf is not null) return conf;
+            if (conf != null) return conf;
             var newConf = Create(_client.GetGuild(id));
             coll.Insert(newConf);
             return newConf;

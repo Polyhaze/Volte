@@ -36,7 +36,7 @@ namespace Volte.Commands.Results
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
-            if (_separateLogic is not null)
+            if (_separateLogic != null)
             {
                 if (_runFuncAsync)
                     await _separateLogic();
@@ -68,7 +68,7 @@ namespace Volte.Commands.Results
                 message = await _embed.SendToAsync(ctx.Channel);
 
 
-            if (_callback is not null)
+            if (_callback != null)
             {
                 if (_runFuncAsync)
                     await _callback(message);

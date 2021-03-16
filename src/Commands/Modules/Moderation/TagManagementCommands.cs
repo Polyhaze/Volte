@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> TagCreateAsync(string name, [Remainder] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag is not null)
+            if (tag != null)
             {
                 var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(

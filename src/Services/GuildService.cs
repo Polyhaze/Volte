@@ -63,7 +63,7 @@ namespace Volte.Services
                 var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
                 _logger.Error(LogSource.Volte,
                     "Could not DM the guild owner; sending to the upper-most channel instead.");
-                if (c is not null) await embed.SendToAsync(c);
+                if (c != null) await embed.SendToAsync(c);
             }
 
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))

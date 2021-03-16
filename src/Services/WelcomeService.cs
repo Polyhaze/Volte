@@ -31,7 +31,7 @@ namespace Volte.Services
             var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
-            if (c is not null)
+            if (c != null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
@@ -56,7 +56,7 @@ namespace Volte.Services
                 "User left a guild, let's check to see if we should send a leaving embed.");
             var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
-            if (c is not null)
+            if (c != null)
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)

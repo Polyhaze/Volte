@@ -36,7 +36,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
             }
 
-            if (module is not null && command is null)
+            if (module != null && command is null)
             {
                 if (await module.RunChecksAsync(Context) is SuccessfulResult)
                 {
@@ -47,7 +47,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"You do not have access to the **{module.SanitizeName()}** module.");
             }
 
-            if (module is null && command is not null)
+            if (module is null && command != null)
             {
                 if (await command.RunChecksAsync(Context) is SuccessfulResult)
                 {
@@ -62,7 +62,7 @@ namespace Volte.Commands.Modules
 
             }
 
-            if (module is not null && command is not null)
+            if (module != null && command != null)
             {
                 return BadRequest(new StringBuilder()
                     .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")

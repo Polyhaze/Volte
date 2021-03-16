@@ -12,6 +12,6 @@ namespace Volte.Commands.Modules
         [Remarks("eval {String}")]
         [RequireBotOwner]
         public Task<ActionResult> EvalAsync([Remainder] string code)
-            => Ok(() => Eval.EvaluateAsync(Context, code), false);
+            => Ok(async () => await Eval.EvaluateAsync(Context, code), false);
     }
 }

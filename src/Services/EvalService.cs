@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
@@ -13,6 +14,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
+using Volte.Core;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 
@@ -73,9 +75,8 @@ namespace Volte.Services
 
         private async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
-            var sopts = ScriptOptions.Default.WithImports(_imports).WithReferences(
-                AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+            var sopts = ScriptOptions.Default.WithImports(_imports)
+                .WithReferences(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             var embed = ctx.CreateEmbedBuilder();
             var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
@@ -119,7 +120,7 @@ namespace Volte.Services
             }
         }
 
-        private readonly ReadOnlyList<string> _imports = new(new List<string>
+        private readonly ReadOnlyList<string> _imports = new ReadOnlyList<string>(new List<string>
             {
                 "System", "System.Collections.Generic", "System.Linq", "System.Text", "Volte.Commands.TypeParsers",
                 "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Humanizer", 

@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         {
             target ??= Context.User;
             var spotify = Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
-            if (spotify is not null)
+            if (spotify != null)
             {
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(target)

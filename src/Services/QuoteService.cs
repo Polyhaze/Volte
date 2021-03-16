@@ -73,7 +73,7 @@ namespace Volte.Services
                     .Split("  ", StringSplitOptions.RemoveEmptyEntries);
                 
                 if (strings.Length is 2)
-                    strings = strings.Select(FilterComments).Where(x => x is not null).ToArray();
+                    strings = strings.Select(FilterComments).Where(x => x != null).ToArray();
                 e.AddField("Comment", strings.Join(" "), true);
             }
 
@@ -84,7 +84,7 @@ namespace Volte.Services
         
         private string FilterComments(string input)
         {
-            if (input is not "")
+            if (input != "")
             {
                 if (input.EndsWith('|') || input.StartsWith('|'))
                     return input.Replace("|", "");
