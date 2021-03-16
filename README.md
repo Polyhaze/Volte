@@ -1,7 +1,7 @@
 <table>
     <tr>
         <td align="center" width="25%">
-            <img src="https://i.greemdev.net/volte_default.png"></img>
+            <img src="https://img.greemdev.net/YmdTzPoEYx/volte_whiteorangepurple.png"></img>
         </td>
         <td align="center" width="75%">
             
