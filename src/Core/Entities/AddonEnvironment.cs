@@ -22,5 +22,11 @@ namespace Volte.Core.Entities
             Commands = provider.Get<CommandService>();
             Database = provider.Get<DatabaseService>();
         }
+
+        public bool IsCommand(SocketUserMessage message, string[] prefixes)
+        {
+            return CommandUtilities.HasAnyPrefix(message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out _);
+        }
+        
     }
 }
