@@ -38,10 +38,12 @@ namespace Volte.Commands.Modules
             }
 
             //-1 to show that the correct amount of messages were deleted.
-            return Ok($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**", m =>
+            return None(async () =>
             {
+                var m = await Context.Channel.SendMessageAsync(embed:
+                    Context.CreateEmbed($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**"));
                 _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () => await m.TryDeleteAsync());
-                return ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
+                await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Purge)
                     .WithCount(count));

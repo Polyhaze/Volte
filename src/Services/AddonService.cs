@@ -34,7 +34,15 @@ namespace Volte.Services
         public async Task InitAsync()
         {
             var sw = Stopwatch.StartNew();
-            foreach (var folder in Directory.GetDirectories("addons"))
+            if (!Directory.Exists("addons")) return; //don't auto-create a directory; if someone wants to use addons they need to make it themselves.
+            var addonFolders = Directory.GetDirectories("addons");
+            if (addonFolders.IsEmpty())
+            {
+                _logger.Info(LogSource.Service, "No addons are in the addons directory; skipping initialization.");
+                return;
+            }
+            
+            foreach (var folder in addonFolders)
             {
                 VolteAddonInfo meta = null;
                 string code = null;
