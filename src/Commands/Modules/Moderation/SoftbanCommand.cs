@@ -15,11 +15,15 @@ namespace Volte.Commands.Modules
         [Remarks("softban {User} [Int] [String]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers | GuildPermission.BanMembers)]
         [RequireGuildModerator]
-        public async Task<ActionResult> SoftBanAsync([CheckHierarchy] SocketGuildUser user, int daysToDelete = 0,
+        public async Task<ActionResult> SoftBanAsync([CheckHierarchy, EnsureNotSelf] SocketGuildUser user, int daysToDelete = 0,
             [Remainder] string reason = "Softbanned by a Moderator.")
         {
+            var e = Context.CreateEmbedBuilder($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.");
+            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
+                e.WithAuthor(author: null);
+            
             if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")))
+                embed: e.Build()))
             {
                 Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!");

@@ -17,7 +17,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> TagAsync([Remainder] Tag tag)
         {
             tag.Uses += 1;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
 
             if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
             {

@@ -31,7 +31,7 @@ namespace Volte.Services
             return newConf;
         }
 
-        public void UpdateData(GuildData newConfig)
+        public void Save(GuildData newConfig)
         {
             var collection = Database.GetCollection<GuildData>("guilds");
             collection.EnsureIndex(s => s.Id, true);
@@ -57,7 +57,9 @@ namespace Volte.Services
                         ModRole = default,
                         CheckAccountAge = false,
                         VerifiedRole = default,
-                        UnverifiedRole = default
+                        UnverifiedRole = default,
+                        BlacklistAction = BlacklistAction.Nothing,
+                        ShowResponsibleModerator = true
                     },
                     Welcome = new WelcomeOptions
                     {

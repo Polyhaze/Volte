@@ -201,7 +201,7 @@ namespace Volte.Services
         private void IncrementAndSave(VolteContext ctx)
         {
             ctx.GuildData.Extras.ModActionCaseNumber += 1;
-            _db.UpdateData(ctx.GuildData);
+            _db.Save(ctx.GuildData);
         }
 
         private string Reason(ModActionEventArgs args) => $"**Reason:** {args.Reason}";

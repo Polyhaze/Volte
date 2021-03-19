@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> ShowRequesterAndEmbedTagsAsync(bool enabled)
         {
             Context.GuildData.Configuration.EmbedTagsAndShowAuthor = enabled;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok(enabled
                 ? "Tags will now show their requester and be displayed in an embed!"
                 : "Tags will **NO LONGER** show their requester and be displayed in an embed!");

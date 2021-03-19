@@ -87,7 +87,7 @@ namespace Volte.Services
                 if (state.ReturnValue is null)
                 {
                     await msg.DeleteAsync();
-                    await ctx.Message.AddReactionAsync(EmojiHelper.BallotBoxWithCheck.ToEmoji());
+                    await ctx.Message.AddReactionAsync(DiscordHelper.BallotBoxWithCheck.ToEmoji());
                 }
                 else
                 {

@@ -13,8 +13,17 @@ namespace Volte.Commands.Modules
         [Description("Verifies a member.")]
         [Remarks("verify {Member}")]
         [RequireGuildModerator]
-        public async Task<ActionResult> VerifyAsync(SocketGuildUser member)
+        public async Task<ActionResult> VerifyAsync([EnsureNotSelf] SocketGuildUser member)
         {
+            var e = Context.CreateEmbedBuilder($"You've been verified in **{Context.Guild.Name}**.");
+            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
+                e.WithAuthor(author: null);
+            if (!await member.TrySendMessageAsync(embed: e.Build()))
+            {
+                Logger.Warn(LogSource.Volte,
+                    $"encountered a 403 when trying to message {member}!");
+            }
+            
             var uRole = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.UnverifiedRole);
             var vRole = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.VerifiedRole);
             if (uRole is null)

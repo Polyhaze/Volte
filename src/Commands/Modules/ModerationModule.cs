@@ -20,11 +20,15 @@ namespace Volte.Commands.Modules
                 Issuer = issuer.Id,
                 Date = DateTimeOffset.Now
             });
-            db.UpdateData(data);
+            db.Save(data);
+
+            var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
+                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for `{reason}`.");
+            if (!data.Configuration.Moderation.ShowResponsibleModerator)
+                e.WithAuthor(author: null);
 
             if (!await member.TrySendMessageAsync(
-                embed: new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
-                    .WithDescription($"You've been warned in **{issuer.Guild.Name}** for `{reason}`.").Build()))
+                embed: e.Build()))
             {
                 logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {member}!");

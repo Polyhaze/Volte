@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> VerifyAgeAutomaticallyAsync(bool enabled)
         {
             Context.GuildData.Configuration.Moderation.CheckAccountAge = enabled;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok(enabled ? "Account age detection has been enabled." : "Account age detection has been disabled.");
         }
     }

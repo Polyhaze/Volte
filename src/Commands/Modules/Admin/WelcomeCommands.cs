@@ -19,7 +19,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WelcomeChannelAsync([Remainder] SocketTextChannel channel)
         {
             Context.GuildData.Configuration.Welcome.WelcomeChannel = channel.Id;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Set this guild's welcome channel to {channel.Mention}.");
         }
 
@@ -40,7 +40,7 @@ namespace Volte.Commands.Modules
             }
 
             Context.GuildData.Configuration.Welcome.WelcomeMessage = message;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
             var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel is 0 || welcomeChannel is null
                 ? "Not sending a test message as you do not have a welcome channel set." +
@@ -64,7 +64,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
         {
             Context.GuildData.Configuration.Welcome.WelcomeColor = color.RawValue;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok("Successfully set this guild's welcome message embed color!");
         }
 
@@ -84,7 +84,7 @@ namespace Volte.Commands.Modules
             }
 
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
             var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
                 ? "Not sending a test message, as you do not have a welcome channel set. " +
@@ -112,7 +112,7 @@ namespace Volte.Commands.Modules
                 return Ok($"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");
 
             Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Set the WelcomeDmMessage to: {Format.Code(message)}");
         }
     }

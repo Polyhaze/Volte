@@ -35,6 +35,9 @@ namespace Volte.Core.Entities
         
         [JsonPropertyName("verified_role")]
         public ulong VerifiedRole { get; set; }
+        
+        [JsonPropertyName("show_moderator")]
+        public bool ShowResponsibleModerator { get; set; }
 
         [JsonPropertyName("blacklist")]
         public List<string> Blacklist { get; set; }

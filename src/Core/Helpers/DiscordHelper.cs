@@ -1,9 +1,10 @@
+using System;
 using Discord;
 using Gommon;
 
 namespace Volte.Core.Helpers
 {
-    public static class EmojiHelper
+    public static class DiscordHelper
     {
         public static string Wave => "\uD83D\uDC4B";
         public static string X => "\u274C";
@@ -21,5 +22,12 @@ namespace Volte.Core.Helpers
 
         public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis() 
             => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
+
+        public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer)
+        {
+            var opts = RequestOptions.Default;
+            initializer(opts);
+            return opts;
+        }
     }
 }

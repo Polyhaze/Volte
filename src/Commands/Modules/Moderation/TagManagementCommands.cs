@@ -36,7 +36,7 @@ namespace Volte.Commands.Modules
             };
 
             Context.GuildData.Extras.Tags.Add(tag);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
@@ -55,7 +55,7 @@ namespace Volte.Commands.Modules
             Context.GuildData.Extras.Tags.Remove(tag);
             tag.Response = response;
             Context.GuildData.Extras.Tags.Add(tag);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Successfully modified the content of tag **{tag.Name}**.");
         }
 
@@ -67,7 +67,7 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> TagDeleteAsync([Remainder]Tag tag)
         {
             Context.GuildData.Extras.Tags.Remove(tag);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
                       $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +
                       $"**{"use".ToQuantity(tag.Uses)}**.");

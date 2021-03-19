@@ -15,11 +15,15 @@ namespace Volte.Commands.Modules
         [Remarks("kick {User} [String]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers)]
         [RequireGuildModerator]
-        public async Task<ActionResult> KickAsync([CheckHierarchy] SocketGuildUser user,
+        public async Task<ActionResult> KickAsync([CheckHierarchy, EnsureNotSelf] SocketGuildUser user,
             [Remainder] string reason = "Kicked by a Moderator.")
         {
+            var e = Context.CreateEmbedBuilder($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.");
+            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
+                e.WithAuthor(author: null);
+            
             if (!await user.TrySendMessageAsync(
-                embed: Context.CreateEmbed($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.")))
+                embed: e.Build()))
             {
                 Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {user}!");

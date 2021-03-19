@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
 
             if (module is null && command is null)
             {
-                return BadRequest($"{EmojiHelper.X} No matching Module/Command was found.");
+                return BadRequest($"{DiscordHelper.X} No matching Module/Command was found.");
             }
 
             if (module != null && command is null)
@@ -65,7 +65,7 @@ namespace Volte.Commands.Modules
             if (module != null && command != null)
             {
                 return BadRequest(new StringBuilder()
-                    .AppendLine($"{EmojiHelper.X} Found more than one Module or Command. Results:")
+                    .AppendLine($"{DiscordHelper.X} Found more than one Module or Command. Results:")
                     .AppendLine($"**{module.SanitizeName()}**")
                     .AppendLine($"**{command.Name}**")
                     .ToString());

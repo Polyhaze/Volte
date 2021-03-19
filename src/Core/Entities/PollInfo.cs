@@ -17,7 +17,7 @@ namespace Volte.Core.Entities
 
         public static PollInfo FromDefaultFields(int count, IEnumerable<string> choices)
         {
-            var (one, two, three, four, five) = EmojiHelper.GetPollEmojis();
+            var (one, two, three, four, five) = DiscordHelper.GetPollEmojis();
             var collection = choices as string[] ?? choices.ToArray();
             return count switch
             {

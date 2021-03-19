@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 namespace Gommon
@@ -180,7 +181,7 @@ namespace Gommon
 
         public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
         {
-            return deletable.TryDeleteAsync(new RequestOptions {AuditLogReason = reason});
+            return deletable.TryDeleteAsync(DiscordHelper.CreateRequestOptions(opts => opts.AuditLogReason = reason));
         }
 
         public static string GetEffectiveUsername(this SocketGuildUser user) =>

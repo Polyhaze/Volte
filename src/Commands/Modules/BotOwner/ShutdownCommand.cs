@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
         [Remarks("shutdown")]
         [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
-            => Ok($"Goodbye! {EmojiHelper.Wave}", _ =>
+            => Ok($"Goodbye! {DiscordHelper.Wave}", _ =>
             {
                 Cts.Cancel();
                 return Task.CompletedTask;

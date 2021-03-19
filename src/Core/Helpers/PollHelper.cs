@@ -26,7 +26,7 @@ namespace Volte.Core.Helpers
 
         public static Task AddPollReactionsAsync(int amount, IUserMessage msg)
         {
-            var (one, two, three, four, five) = EmojiHelper.GetPollEmojis();
+            var (one, two, three, four, five) = DiscordHelper.GetPollEmojis();
 
             return amount switch
             {

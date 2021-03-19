@@ -14,7 +14,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> ReplyInlineAsync(bool enabled)
         {
             Context.GuildData.Configuration.ReplyInline = enabled;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok(enabled
                 ? "Enabled ReplyInline in this guild."
                 : "Disabled ReplyInline in this guild.");

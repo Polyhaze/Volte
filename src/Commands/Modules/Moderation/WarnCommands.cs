@@ -50,10 +50,10 @@ namespace Volte.Commands.Modules
         [Description("Clears the warnings for the given user.")]
         [Remarks("clearwarns {User}")]
         [RequireGuildModerator]
-        public async Task<ActionResult> ClearWarnsAsync(SocketGuildUser user)
+        public async Task<ActionResult> ClearWarnsAsync([EnsureNotSelf] SocketGuildUser user)
         {
             var warnCount = Context.GuildData.Extras.Warns.RemoveAll(x => x.User == user.Id);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
 
             try
             {

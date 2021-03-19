@@ -25,8 +25,8 @@ namespace Volte.Commands.Modules
                 await msg.ModifyAsync(x =>
                 {
                     e.WithDescription(new StringBuilder()
-                        .AppendLine($"{EmojiHelper.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
-                        .AppendLine($"{EmojiHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
+                        .AppendLine($"{DiscordHelper.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
+                        .AppendLine($"{DiscordHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
                         .ToString());
                     x.Embed = e.Build();
                 });

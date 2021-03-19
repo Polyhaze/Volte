@@ -25,7 +25,7 @@ namespace Volte.Commands.Modules
 
             await target.TryDeleteAsync($"Message deleted by Moderator {Context.User}.");
 
-            return Ok($"{EmojiHelper.BallotBoxWithCheck} Deleted that message.", async m =>
+            return Ok($"{DiscordHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
                 _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
                 {

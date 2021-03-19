@@ -8,6 +8,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -25,10 +26,12 @@ namespace Volte.Commands.Modules
             var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync()).ToList();
             try
             {
-                if (targetAuthor != null)
-                    await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id));
-                else
-                    await Context.Channel.DeleteMessagesAsync(messages);
+                var reqOpts = DiscordHelper.CreateRequestOptions(opts =>
+                    opts.AuditLogReason = $"Messages purged by {Context.User}.");
+                if (targetAuthor != null) 
+                    await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id), reqOpts);
+                else 
+                    await Context.Channel.DeleteMessagesAsync(messages, reqOpts);
 
             }
             catch (ArgumentOutOfRangeException)

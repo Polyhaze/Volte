@@ -16,7 +16,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
             Context.GuildData.Configuration.Moderation.Blacklist.Add(phrase);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Added **{phrase}** to the blacklist.");
         }
 
@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"**{phrase}** doesn't exist in the blacklist.");
             
             Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Removed **{phrase}** from the word blacklist.");
 
         }
@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
         {
             var count = Context.GuildData.Configuration.Moderation.Blacklist.Count;
             Context.GuildData.Configuration.Moderation.Blacklist.Clear();
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok(
                 $"Cleared the this guild's blacklist, containing **{count}** words.");
         }
@@ -54,7 +54,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> BlacklistActionAsync(string input)
         {
             Context.GuildData.Configuration.Moderation.BlacklistAction = BlacklistActions.DetermineAction(input);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Set {input} as the action performed when a member uses a blacklisted word/phrase.");
         }
 

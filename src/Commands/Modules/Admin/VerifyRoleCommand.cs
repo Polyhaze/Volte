@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
                     }
 
                     Context.GuildData.Configuration.Moderation.VerifiedRole = role.Id;
-                    Db.UpdateData(Context.GuildData);
+                    Db.Save(Context.GuildData);
                     return Ok($"Set the Verified role in this guild to {role.Mention}.");
                 }
                 case "u":
@@ -41,7 +41,7 @@ namespace Volte.Commands.Modules
                     }
 
                     Context.GuildData.Configuration.Moderation.UnverifiedRole = role.Id;
-                    Db.UpdateData(Context.GuildData);
+                    Db.Save(Context.GuildData);
                     return Ok($"Set the Unverified role in this guild to {role.Mention}.");
                 }
                 default:

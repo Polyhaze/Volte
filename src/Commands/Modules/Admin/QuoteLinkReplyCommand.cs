@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> QuoteLinkReplyCommandAsync(bool enabled)
         {
             Context.GuildData.Extras.AutoParseQuoteUrls = enabled;
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok(enabled ? "Enabled QuoteLinkReply for this guild." : "Disabled QuoteLinkReply for this guild.");
         }   
     }

@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
                     $"A role with the name **{role.Name}** is already in the Self Roles list for this guild!");
             
             Context.GuildData.Extras.SelfRoles.Add(role.Name);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
 
         }
@@ -37,7 +37,7 @@ namespace Volte.Commands.Modules
                 return BadRequest($"The Self Roles list for this guild doesn't contain **{role.Name}**.");
             
             Context.GuildData.Extras.SelfRoles.Remove(role.Name);
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
 
         }
@@ -49,7 +49,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> SelfRoleClearAsync()
         {
             Context.GuildData.Extras.SelfRoles.Clear();
-            Db.UpdateData(Context.GuildData);
+            Db.Save(Context.GuildData);
             return Ok("Successfully cleared all Self Roles for this guild.");
         }
     }
