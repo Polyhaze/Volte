@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,29 +14,16 @@ using Qmmands;
 using Qommon.Collections;
 using Volte.Commands;
 using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Services;
 
-namespace Volte.Services
+namespace Volte.Core.Helpers
 {
-    public sealed class EvalService : VolteService
+    public static class EvalHelper
     {
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-        private readonly DatabaseService _db;
-        private readonly LoggingService _logger;
-        private readonly CommandService _commands;
-
-        public EvalService(DatabaseService databaseService,
-            LoggingService loggingService,
-            CommandService commandService)
-        {
-            _db = databaseService;
-            _logger = loggingService;
-            _commands = commandService;
-        }
-
-        public Task EvaluateAsync(VolteContext ctx, string code)
+        public static Task EvaluateAsync(VolteContext ctx, string code)
         {
             try
             {
@@ -49,7 +36,7 @@ namespace Volte.Services
             }
             catch (Exception e)
             {
-                _logger.Error(LogSource.Module, string.Empty, e);
+                ctx.Services.Get<LoggingService>().Error(LogSource.Module, string.Empty, e);
             }
             finally
             {
@@ -60,18 +47,18 @@ namespace Volte.Services
             return Task.CompletedTask;
         }
 
-        private EvalEnvironment CreateEvalEnvironment(VolteContext ctx) =>
+        private static EvalEnvironment CreateEvalEnvironment(VolteContext ctx) =>
             new EvalEnvironment
             {
                 Context = ctx,
+                Database = ctx.Services.Get<DatabaseService>(),
                 Client = ctx.Client.GetShardFor(ctx.Guild),
-                Data = _db.GetData(ctx.Guild),
-                Logger = _logger,
-                Commands = _commands,
-                Database = _db
+                Data = ctx.Services.Get<DatabaseService>().GetData(ctx.Guild),
+                Logger = ctx.Services.Get<LoggingService>(),
+                Commands = ctx.Services.Get<CommandService>(),
             };
 
-        private async Task ExecuteScriptAsync(string code, VolteContext ctx)
+        private static async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
             var sopts = ScriptOptions.Default.WithImports(Imports)
                 .WithReferences(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
@@ -94,7 +81,7 @@ namespace Volte.Services
                     var res = state.ReturnValue switch
                     {
                         string str => str,
-                        IEnumerable enumerable => enumerable.Cast<object>().Select(x => $"{x}").Join(", "),
+                        IEnumerable enumerable => enumerable.Cast<object>().ToReadableString(),
                         IUser user => $"{user} ({user.Id})",
                         ITextChannel channel => $"#{channel.Name} ({channel.Id})",
                         _ => state.ReturnValue.ToString()
@@ -110,7 +97,7 @@ namespace Volte.Services
             {
                 await msg.ModifyAsync(m =>
                     m.Embed = embed
-                        .AddField("Exception Type", ex.GetType(), true)
+                        .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
                         .AddField("Message", ex.Message, true)
                         .WithTitle("Error")
                         .Build()
@@ -118,7 +105,7 @@ namespace Volte.Services
             }
         }
 
-        public readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
+        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
             {
                 "System", "System.Collections.Generic", "System.Linq", "System.Text", "Volte.Commands.TypeParsers",
                 "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Humanizer", 

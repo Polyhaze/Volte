@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Commands.Results;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -12,6 +13,6 @@ namespace Volte.Commands.Modules
         [Remarks("eval {String}")]
         [RequireBotOwner]
         public Task<ActionResult> EvalAsync([Remainder] string code)
-            => Ok(async () => await Eval.EvaluateAsync(Context, code), false);
+            => Ok(async () => await EvalHelper.EvaluateAsync(Context, code), false);
     }
 }

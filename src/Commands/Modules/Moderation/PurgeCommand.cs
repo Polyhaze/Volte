@@ -28,10 +28,10 @@ namespace Volte.Commands.Modules
             {
                 var reqOpts = DiscordHelper.CreateRequestOptions(opts =>
                     opts.AuditLogReason = $"Messages purged by {Context.User}.");
-                if (targetAuthor != null) 
-                    await Context.Channel.DeleteMessagesAsync(messages.Where(x => x.Author.Id == targetAuthor.Id), reqOpts);
-                else 
-                    await Context.Channel.DeleteMessagesAsync(messages, reqOpts);
+
+                await Context.Channel.DeleteMessagesAsync(
+                    messages.Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id), 
+                    reqOpts);
 
             }
             catch (ArgumentOutOfRangeException)

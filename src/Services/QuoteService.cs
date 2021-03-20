@@ -26,10 +26,6 @@ namespace Volte.Services
         private static readonly Regex JumpUrlPattern = new Regex(
             @"(?<Prelink>\S+\s+\S*)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<Postlink>\S*\s+\S+)?",
             Options);
-        
-        private static readonly Regex JumpUrlRemover = new Regex(
-            @"https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(\d+)/(\d+)/(\d+)?",
-            Options);
 
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
@@ -48,11 +44,15 @@ namespace Volte.Services
             var m = await c.GetMessageAsync(messageId);
             if (m is null) return;
 
-            await GenerateQuoteEmbed(m, args.Context, match).SendToAsync(args.Context.Channel)
-                .ContinueWith(async _ => await args.Message.TryDeleteAsync());
+            await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
+                .ContinueWith(async _ =>
+                {
+                    if (match.Groups["Prelink"].Value.IsNullOrEmpty() && match.Groups["Postlink"].Value.IsNullOrEmpty())
+                        await args.Message.TryDeleteAsync();
+                });
         }
 
-        private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx, Match match)
+        private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx)
         {
             var e = ctx.CreateEmbedBuilder()
                 .WithAuthor(message.Author)
@@ -67,33 +67,9 @@ namespace Volte.Services
             if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
                 e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
 
-            if (!match.Groups["Prelink"].Value.IsNullOrEmpty() || !match.Groups["Postlink"].Value.IsNullOrEmpty())
-            {
-                var strings = Regex.Replace(ctx.Message.Content, JumpUrlRemover.ToString(), " | ")
-                    .Split("  ", StringSplitOptions.RemoveEmptyEntries);
-                
-                if (strings.Length is 2)
-                    strings = strings.Select(FilterComments).Where(x => x != null).ToArray();
-                e.AddField("Comment", strings.Join(" "), true);
-            }
-
             e.AddField("Original Message", $"[Click here]({message.GetJumpUrl()})");
 
             return e.Build();
         }
-        
-        private string FilterComments(string input)
-        {
-            if (input != "")
-            {
-                if (input.EndsWith('|') || input.StartsWith('|'))
-                    return input.Replace("|", "");
-                        
-                return input;
-            }
-
-            return null;
-        }
-        
     }
 }

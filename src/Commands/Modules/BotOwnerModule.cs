@@ -9,7 +9,6 @@ namespace Volte.Commands.Modules
     [RequireBotOwner]
     public sealed partial class BotOwnerModule : VolteModule
     {
-        public EvalService Eval { get; set; }
         public HttpClient Http { get; set; }
         public CancellationTokenSource Cts { get; set; }
         public AddonService Addon { get; set; }

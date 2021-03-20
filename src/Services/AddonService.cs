@@ -11,21 +11,19 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
     public class AddonService : VolteService
     {
-        private readonly EvalService _eval;
         private readonly LoggingService _logger;
         private readonly IServiceProvider _provider;
         public Dictionary<VolteAddonInfo, string> LoadedAddons { get; }
 
-        public AddonService(EvalService evalService,
-            LoggingService loggingService,
+        public AddonService(LoggingService loggingService,
             IServiceProvider serviceProvider)
         {
-            _eval = evalService;
             _logger = loggingService;
             _provider = serviceProvider;
             LoadedAddons = new Dictionary<VolteAddonInfo, string>();
@@ -84,7 +82,7 @@ namespace Volte.Services
 
             }
             
-            var sopts = ScriptOptions.Default.WithImports(_eval.Imports)
+            var sopts = ScriptOptions.Default.WithImports(EvalHelper.Imports)
                 .WithReferences(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             foreach (var (meta, code) in LoadedAddons)
