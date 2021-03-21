@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -10,6 +11,8 @@ namespace Volte.Core.Entities
     public sealed class RequireBotChannelPermissionAttribute : CheckAttribute
     {
         private readonly ChannelPermission[] _permissions;
+
+        public List<ChannelPermission> Permissions => _permissions.ToList();
 
         public RequireBotChannelPermissionAttribute(params ChannelPermission[] permissions) => _permissions = permissions;
 
@@ -27,7 +30,6 @@ namespace Volte.Core.Entities
             await new EmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
                 .AddField("Error Reason", $"I am missing the following channel-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
-                .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
                 .WithAuthor(ctx.User)
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);

@@ -1,16 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Entities;
 using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class SettingsModule
     {
         [Command("Antilink", "Al")]
         [Description("Enable/Disable Antilink for the current guild.")]
-        [Remarks("antilink {Boolean}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> AntilinkAsync(bool enabled)
         {
             Context.GuildData.Configuration.Moderation.Antilink = enabled;

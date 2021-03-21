@@ -118,7 +118,6 @@ namespace Volte.Services
                 await args.Context.CreateEmbedBuilder()
                     .AddField("Error in Command", args.Context.Command.Name)
                     .AddField("Error Reason", reason)
-                    .AddField("Correct Usage", args.Context.Command.GetUsage(args.Context))
                     .WithErrorColor()
                     .SendToAsync(args.Context.Channel);
 

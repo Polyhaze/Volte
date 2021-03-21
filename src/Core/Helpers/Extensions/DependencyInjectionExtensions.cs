@@ -28,7 +28,7 @@ namespace Gommon
                     StringComparison = StringComparison.OrdinalIgnoreCase,
                     DefaultRunMode = RunMode.Sequential,
                     SeparatorRequirement = SeparatorRequirement.SeparatorOrWhitespace,
-                    Separator = "irrelevant",
+                    Separator = " ",
                     NullableNouns = null
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig

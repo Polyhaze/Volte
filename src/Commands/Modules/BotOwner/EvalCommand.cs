@@ -10,9 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Eval", "Evaluate")]
         [Description("Evaluates C# code.")]
-        [Remarks("eval {String}")]
-        [RequireBotOwner]
-        public Task<ActionResult> EvalAsync([Remainder] string code)
+        public Task<ActionResult> EvalAsync([Remainder, Description("The C# code to execute. Can be in a codeblock with C# highlighting if you want.")] string code)
             => Ok(async () => await EvalHelper.EvaluateAsync(Context, code), false);
     }
 }

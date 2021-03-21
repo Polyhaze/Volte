@@ -1,9 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
 using Volte.Commands.Results;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -12,72 +14,44 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Shows the commands used for module listing, command listing, and command info.")]
-        [Remarks("help")]
-        public async Task<ActionResult> HelpAsync(string moduleOrCommand = null)
+        public async Task<ActionResult> HelpAsync([Remainder] string query = null)
         {
-            if (moduleOrCommand is null)
+            if (query != null)
             {
-                return Ok(new StringBuilder()
-                    .AppendLine("Hey, I'm Volte! Here's a list of my modules and commands designed to help you out.")
-                    .AppendLine(
-                        $"Use `{Context.GuildData.Configuration.CommandPrefix}help {{moduleName}}` to list all commands in a module, " +
-                        $"and `{Context.GuildData.Configuration.CommandPrefix}help {{commandName}}` to show information about a command.")
-                    .AppendLine()
-                    .AppendLine(
-                        $"Available Modules: `{CommandService.GetAllModules().Select(x => x.SanitizeName()).Join("`, `")}`")
-                    .ToString());
-            }
-
-            var module = GetTargetModule(moduleOrCommand);
-            var command = GetTargetCommand(moduleOrCommand);
-
-            if (module is null && command is null)
-            {
-                return BadRequest($"{DiscordHelper.X} No matching Module/Command was found.");
-            }
-
-            if (module != null && command is null)
-            {
-                if (await module.RunChecksAsync(Context) is SuccessfulResult)
+                var search = CommandService.FindCommands(query).ToList();
+                if (search.IsEmpty())
                 {
-                    var commands = $"`{module.Commands.Select(x => x.FullAliases.First()).Join("`, `")}`";
-                    return Ok(Context.CreateEmbedBuilder().WithDescription(commands)
-                        .WithTitle($"Commands for {module.SanitizeName()}"));
-                }
-                return BadRequest($"You do not have access to the **{module.SanitizeName()}** module.");
-            }
-
-            if (module is null && command != null)
-            {
-                if (await command.RunChecksAsync(Context) is SuccessfulResult)
-                {
-                    return Ok(Context.CreateEmbedBuilder().WithDescription(new StringBuilder()
-                        .AppendLine($"**Command**: {command.Name}")
-                        .AppendLine($"**Module**: {command.Module.SanitizeName()}")
-                        .AppendLine($"**Description**: {command.Description ?? "No summary provided."}")
-                        .AppendLine($"[**Usage**](https://github.com/Ultz/Volte/wiki/Argument-Cheatsheet): {command.GetUsage(Context)}")));
+                    return BadRequest($"No command or group found for `{query}`.");
                 }
 
-                return BadRequest($"You do not have access to the **{command.Aliases.First()}** command.");
-
+                return Ok(await CommandHelper.CreateCommandEmbedAsync(search.First().Command, Context));
             }
 
-            if (module != null && command != null)
+            var e = Context.CreateEmbedBuilder()
+                .WithTitle("Commands")
+                .WithDescription(
+                    $"You can use `{Context.GuildData.Configuration.CommandPrefix}help {{command/group}}` for more details on a command or group.");
+
+            var commands = new List<string>();
+            foreach (var cmd in CommandService.GetAllCommands())
             {
-                return BadRequest(new StringBuilder()
-                    .AppendLine($"{DiscordHelper.X} Found more than one Module or Command. Results:")
-                    .AppendLine($"**{module.SanitizeName()}**")
-                    .AppendLine($"**{command.Name}**")
-                    .ToString());
+                if (!await CommandHelper.CanShowCommandAsync(Context, cmd)) continue;
+                var fmt = CommandHelper.FormatCommandShort(cmd);
+                if (fmt != null && !commands.Contains(fmt)) commands.Add(fmt);
             }
 
-            return None();
+            try
+            {
+                if (!commands.IsEmpty())
+                    e.AddField("Commands", commands.Join(", "));
+
+            }
+            catch (ArgumentException)
+            {
+                e.WithDescription($"{e.Description}\n\n{commands.Join(", ")}");
+            }
+
+            return Ok(e);
         }
-
-        private Module GetTargetModule(string input)
-            => CommandService.GetAllModules().FirstOrDefault(x => x.SanitizeName().EqualsIgnoreCase(input));
-
-        private Command GetTargetCommand(string input)
-            => CommandService.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(input));
     }
 }

@@ -14,8 +14,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Spotify")]
         [Description("Shows what you're listening to on Spotify, if you're listening to something.")]
-        [Remarks("spotify [User]")]
-        public Task<ActionResult> SpotifyAsync(SocketGuildUser target = null)
+        public Task<ActionResult> SpotifyAsync([Remainder, Description("The member whose Spotify you want to see.")] SocketGuildUser target = null)
         {
             target ??= Context.User;
             var spotify = Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();

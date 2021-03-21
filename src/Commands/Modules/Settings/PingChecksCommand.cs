@@ -5,12 +5,10 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class SettingsModule
     {
         [Command("PingChecks")]
         [Description("Enable/Disable checking for @everyone and @here for this guild.")]
-        [Remarks("pingchecks {Boolean}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> PingChecksAsync(bool enabled)
         {
             Context.GuildData.Configuration.Moderation.MassPingChecks = enabled;

@@ -4,11 +4,10 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule
+    public partial class SettingsModule
     {
         [Command("TagShow", "TagSh")]
         [Description("Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]
-        [Remarks("tagshow {Boolean}")]   
         public Task<ActionResult> ShowRequesterAndEmbedTagsAsync(bool enabled)
         {
             Context.GuildData.Configuration.EmbedTagsAndShowAuthor = enabled;

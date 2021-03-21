@@ -15,7 +15,6 @@ namespace Volte.Commands.Modules
     {
         [Command("DevTest")]
         [Description("Command for developmental testing. This command in its entirety will be commented out for Releases.")]
-        [Remarks("devtest")]
         [RequireGuildAdmin]
         public async Task<ActionResult> DevTestAsync() 
         {

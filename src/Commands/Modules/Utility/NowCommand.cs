@@ -11,7 +11,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Now")]
         [Description("Shows the current date and time, in UTC.")]
-        [Remarks("now")]
         public Task<ActionResult> NowAsync()
             => Ok(new EmbedBuilder().WithDescription(new StringBuilder()
                 .AppendLine($"**Date**: {Context.Now.FormatDate()} UTC")

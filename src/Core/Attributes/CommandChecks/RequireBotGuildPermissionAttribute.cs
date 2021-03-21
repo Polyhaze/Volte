@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -10,6 +11,8 @@ namespace Volte.Core.Entities
     public sealed class RequireBotGuildPermissionAttribute : CheckAttribute
     {
         private readonly GuildPermission[] _permissions;
+        
+        public List<GuildPermission> Permissions => _permissions.ToList();
 
         public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
 
@@ -27,7 +30,6 @@ namespace Volte.Core.Entities
             await new EmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
                 .AddField("Error Reason", $"I am missing the following guild-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
-                .AddField("Correct Usage", ctx.Command.GetUsage(ctx))
                 .WithAuthor(ctx.User)
                 .WithErrorColor()
                 .SendToAsync(ctx.Channel);

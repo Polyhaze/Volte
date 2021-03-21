@@ -1,18 +1,20 @@
-﻿using System.Linq;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Core.Entities;
 using Volte.Commands.Results;
+using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    [Group("Blacklist", "Bl")]
+    [RequireGuildAdmin]
+    public class BlacklistModule : VolteModule
     {
-        [Command("BlacklistAdd", "BlAdd")]
+        [Command, DummyCommand, Description("Command group for modifying this guild's phrase Blacklist.")]
+        public Task<ActionResult> BaseAsync() => None();
+        
+        [Command("Add", "A")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
-        [Remarks("blacklistadd {String}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
         {
             Context.GuildData.Configuration.Moderation.Blacklist.Add(phrase);
@@ -20,10 +22,8 @@ namespace Volte.Commands.Modules
             return Ok($"Added **{phrase}** to the blacklist.");
         }
 
-        [Command("BlacklistRemove", "BlRem")]
+        [Command("Remove", "Rem")]
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
-        [Remarks("blacklistremove {String}")]
-        [RequireGuildAdmin]
         public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
         {
             if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
@@ -35,10 +35,8 @@ namespace Volte.Commands.Modules
 
         }
 
-        [Command("BlacklistClear", "BlCl")]
+        [Command("Clear", "Cl")]
         [Description("Clears the blacklist for this guild.")]
-        [Remarks("blacklistclear")]
-        [RequireGuildAdmin]
         public Task<ActionResult> BlacklistClearAsync()
         {
             var count = Context.GuildData.Configuration.Moderation.Blacklist.Count;
@@ -48,9 +46,8 @@ namespace Volte.Commands.Modules
                 $"Cleared the this guild's blacklist, containing **{count}** words.");
         }
 
-        [Command("BlacklistAction", "BlA")]
+        [Command("Action")]
         [Description("Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
-        [Remarks("blacklistaction {nothing/warn/kick/ban}")]
         public Task<ActionResult> BlacklistActionAsync(string input)
         {
             Context.GuildData.Configuration.Moderation.BlacklistAction = BlacklistActions.DetermineAction(input);
@@ -58,9 +55,8 @@ namespace Volte.Commands.Modules
             return Ok($"Set {input} as the action performed when a member uses a blacklisted word/phrase.");
         }
 
-        [Command("BlacklistList", "BlL")]
+        [Command("List", "L")]
         [Description("Lists every single word/phrase inside of the blacklist.")]
-        [Remarks("blacklistlist")]
         public Task<ActionResult> BlacklistListAsync()
         {
             return Ok(Context.CreateEmbedBuilder()

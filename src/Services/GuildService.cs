@@ -68,7 +68,8 @@ namespace Volte.Services
 
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
-                _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                if (Config.GuildLogging.Enabled)
+                    _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 

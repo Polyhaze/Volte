@@ -9,8 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Feedback", "Fb")]
         [Description("Submit feedback directly to the Volte guild.")]
-        [Remarks("feedback {String}")]
-        public Task<ActionResult> FeedbackAsync([Remainder] string feedback)
+        public Task<ActionResult> FeedbackAsync([Remainder, Description("The feedback you want to submit for me. Please make it constructive.")] string feedback)
             => Ok($"Feedback sent! Message: ```{feedback}```", _ =>
                 Context.CreateEmbedBuilder($"```{feedback}```")
                     .WithTitle($"Feedback from {Context.User}")

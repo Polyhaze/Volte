@@ -6,13 +6,11 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class AdminUtilityModule
     {
         [Command("RemRole", "Rr")]
         [Description("Remove a role from the mentioned user.")]
-        [Remarks("remrole {User} {Role}")]
-        [RequireGuildAdmin]
-        public async Task<ActionResult> RemRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        public async Task<ActionResult> RemRoleAsync([Description("The user to remove the role from.")] SocketGuildUser user, [Remainder, Description("The role to remove.")] SocketRole role)
         {
             if (role.Position > Context.Guild.CurrentUser.Hierarchy)
             {

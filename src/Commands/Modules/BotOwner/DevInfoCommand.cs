@@ -15,8 +15,6 @@ namespace Volte.Commands.Modules
     {
         [Command("DevInfo", "Di")]
         [Description("Shows information about the bot and about the system it's hosted on.")]
-        [Remarks("devinfo")]
-        [RequireBotOwner]
         public Task<ActionResult> DevInfoAsync() 
             => Ok(Format.Code(new StringBuilder()
                     .AppendLine("== Core ==")

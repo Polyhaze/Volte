@@ -11,9 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetStatus")]
         [Description("Sets the bot's status.")]
-        [Remarks("setstatus {dnd|idle|invisible|online}")]
-        [RequireBotOwner]
-        public Task<ActionResult> SetStatusAsync([Remainder] string status) 
+        public Task<ActionResult> SetStatusAsync([Remainder, Description("The status to set. Either `dnd`, `idle`, `invisible`, or `online`.")] string status) 
             => status.ToLower() switch
             {
             "dnd" => Ok("Set the status to Do Not Disturb.",

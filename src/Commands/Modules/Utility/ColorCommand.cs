@@ -13,8 +13,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Color", "Colour")]
         [Description("Shows the Hex and RGB representation for a given role in the current guild; or just a color.")]
-        [Remarks("color {Color/Role}")]
-        public async Task<ActionResult> RoleColorAsync([Remainder] string colorOrRole)
+        public async Task<ActionResult> RoleColorAsync([Remainder, Description("The color you want to see, in #hex or RGB, or a role whose color you want to be shown.")] string colorOrRole)
         {
             var roleTypeParse = await new RoleParser().ParseAsync(null, colorOrRole, Context);
             if (roleTypeParse.IsSuccessful)

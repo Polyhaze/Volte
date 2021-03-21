@@ -10,8 +10,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
-        [Remarks("shutdown")]
-        [RequireBotOwner]
         public Task<ActionResult> ShutdownAsync()
             => Ok($"Goodbye! {DiscordHelper.Wave}", _ =>
             {

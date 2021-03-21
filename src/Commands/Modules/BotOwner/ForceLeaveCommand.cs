@@ -10,9 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("ForceLeave")]
         [Description("Forcefully leaves the guild with the given name.")]
-        [Remarks("forceleave {Guild}")]
-        [RequireBotOwner]
-        public async Task<ActionResult> ForceLeaveAsync([Remainder]SocketGuild guild)
+        public async Task<ActionResult> ForceLeaveAsync([Remainder, Description("The guild to leave.")] SocketGuild guild)
         {
             await guild.LeaveAsync();
             return Ok($"Successfully left **{guild.Name}**.");

@@ -9,9 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("SetName")]
         [Description("Sets the bot's username.")]
-        [Remarks("setname {String}")]
-        [RequireBotOwner]
-        public Task<ActionResult> SetNameAsync([Remainder] string name) 
+        public Task<ActionResult> SetNameAsync([Remainder, Description("The username to use.")] string name) 
             => Ok($"Set my username to **{name}**.", _ => Context.Client.CurrentUser.ModifyAsync(u => u.Username = name));
     }
 }

@@ -14,10 +14,10 @@ namespace Volte.Commands.Modules
     {
         [Command("Quote"), Priority(0)]
         [Description("Quotes a user from a given message's ID.")]
-        [Remarks("quote {Ulong}")]
-        public async Task<ActionResult> QuoteAsync(ulong messageId)
+        public async Task<ActionResult> QuoteAsync([Description("The ID of the message to quote.")] ulong messageId, [Description("The channel to get the message from. Defaults to the current channel.")] SocketTextChannel channel = null)
         {
-            var m = await Context.Channel.GetMessageAsync(messageId);
+            var c = channel ?? Context.Channel;
+            var m = await c.GetMessageAsync(messageId);
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in this channel.");
 
@@ -26,31 +26,6 @@ namespace Volte.Commands.Modules
                 .AppendLine()
                 .AppendLine($"[Jump!]({m.GetJumpUrl()})")
                 .ToString())
-                .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
-                    m.Author.GetAvatarUrl())
-                .WithFooter(m.Timestamp.Humanize());
-            if (!m.Attachments.IsEmpty())
-            {
-                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
-            }
-
-            return Ok(e);
-        }
-
-        [Command("Quote"), Priority(1)]
-        [Description("Quotes a user in a different chanel from a given message's ID.")]
-        [Remarks("quote {messageId}")]
-        public async Task<ActionResult> QuoteAsync(SocketTextChannel channel, ulong messageId)
-        {
-            var m = await channel.GetMessageAsync(messageId);
-            if (m is null)
-                return BadRequest("A message with that ID doesn't exist in the given channel.");
-
-            var e = Context.CreateEmbedBuilder(new StringBuilder()
-                    .AppendLine($"{m.Content}")
-                    .AppendLine()
-                    .AppendLine($"[Jump!]({m.GetJumpUrl()})")
-                    .ToString())
                 .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
                     m.Author.GetAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());

@@ -11,8 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Snowflake", "Id")]
         [Description("Shows when the object with the given Snowflake ID was created, in UTC.")]
-        [Remarks("snowflake {Ulong}")]
-        public Task<ActionResult> SnowflakeAsync(ulong id)
+        public Task<ActionResult> SnowflakeAsync([Description("The Discord snowflake you want to see.")] ulong id)
         {
             var date = SnowflakeUtils.FromSnowflake(id);
             return Ok(new StringBuilder()

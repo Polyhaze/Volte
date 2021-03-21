@@ -5,13 +5,11 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class SettingsModule
     {
-        [Command("ServerPrefix", "Sp", "GuildPrefix", "Gp")]
+        [Command("Prefix")]
         [Description("Sets the command prefix for this guild.")]
-        [Remarks("serverprefix {String}")]
-        [RequireGuildAdmin]
-        public Task<ActionResult> ServerPrefixAsync([Remainder] string newPrefix)
+        public Task<ActionResult> PrefixAsync([Remainder] string newPrefix)
         {
             Context.GuildData.Configuration.CommandPrefix = newPrefix;
             Db.Save(Context.GuildData);

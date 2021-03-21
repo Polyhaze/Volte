@@ -16,9 +16,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Warn", "W")]
         [Description("Warns the target user for the given reason.")]
-        [Remarks("warn {User} {String}")]
-        [RequireGuildModerator]
-        public async Task<ActionResult> WarnAsync([CheckHierarchy] SocketGuildUser user, [Remainder] string reason)
+        public async Task<ActionResult> WarnAsync([CheckHierarchy, EnsureNotSelf, Description("The member to warn.")] SocketGuildUser user, [Remainder, Description("The reason for the warn.")] string reason)
         {
             await user.WarnAsync(Context, reason);
 
@@ -33,9 +31,7 @@ namespace Volte.Commands.Modules
 
         [Command("Warns", "Ws")]
         [Description("Shows all the warns for the given user.")]
-        [Remarks("warns {User}")]
-        [RequireGuildModerator]
-        public Task<ActionResult> WarnsAsync(SocketGuildUser user)
+        public Task<ActionResult> WarnsAsync([Remainder, Description("The member to list warns for.")] SocketGuildUser user)
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == user.Id).Take(15);
             return Ok(new StringBuilder()
@@ -48,9 +44,7 @@ namespace Volte.Commands.Modules
 
         [Command("ClearWarns", "Cw")]
         [Description("Clears the warnings for the given user.")]
-        [Remarks("clearwarns {User}")]
-        [RequireGuildModerator]
-        public async Task<ActionResult> ClearWarnsAsync([EnsureNotSelf] SocketGuildUser user)
+        public async Task<ActionResult> ClearWarnsAsync([Remainder, EnsureNotSelf, Description("The user who you want to clear warns for.")] SocketGuildUser user)
         {
             var warnCount = Context.GuildData.Extras.Warns.RemoveAll(x => x.User == user.Id);
             Db.Save(Context.GuildData);

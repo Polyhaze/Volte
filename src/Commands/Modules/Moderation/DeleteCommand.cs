@@ -14,10 +14,8 @@ namespace Volte.Commands.Modules
     {
         [Command("Delete")]
         [Description("Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
-        [Remarks("delete {Ulong}")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> DeleteAsync(ulong messageId)
+        public async Task<ActionResult> DeleteAsync([Description("The ID of the message to delete. Must be in the current channel.")] ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
             if (target is null)

@@ -21,7 +21,7 @@ namespace Volte.Core.Helpers
         {
             var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
             var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}.cs";
+            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}";
         }
     }
 }

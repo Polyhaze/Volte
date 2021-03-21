@@ -10,11 +10,9 @@ namespace Volte.Commands.Modules
     {
         [Command("IdBan")]
         [Description("Bans a user based on their ID.")]
-        [Remarks("idban {Ulong} [String]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> IdBanAsync(ulong user,
-            [Remainder] string reason = "Banned by a Moderator.")
+        public async Task<ActionResult> IdBanAsync([Description("The ID of the user to ban.")] ulong user,
+            [Remainder, Description("The reason for the ban. Defaults to 'Banned by a Moderator.'")] string reason = "Banned by a Moderator.")
         {
             await Context.Guild.AddBanAsync(user, 0, reason);
             return Ok($"Successfully banned **{await Context.Client.Rest.GetUserAsync(user)}** from this guild.", async _ => 

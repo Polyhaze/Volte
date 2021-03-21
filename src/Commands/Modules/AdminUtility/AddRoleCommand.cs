@@ -7,13 +7,12 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class AdminUtilityModule
     {
         [Command("AddRole", "Ar")]
         [Description("Grants a role to the mentioned user.")]
-        [Remarks("addrole {User} {Role}")]
-        [RequireGuildAdmin, RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public async Task<ActionResult> AddRoleAsync(SocketGuildUser user, [Remainder] SocketRole role)
+        [RequireBotGuildPermission(GuildPermission.ManageRoles)]
+        public async Task<ActionResult> AddRoleAsync([Description("The user to add the role to.")] SocketGuildUser user, [Remainder, Description("The role to give the user.")] SocketRole role)
         {
             if (role.Position > Context.Guild.CurrentUser.Hierarchy)
                 return BadRequest("Role position is too high for me to be able to grant it to anyone.");

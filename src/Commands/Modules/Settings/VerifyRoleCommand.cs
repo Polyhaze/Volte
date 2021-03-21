@@ -2,17 +2,16 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands.Results;
-using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule
+    public partial class SettingsModule
     {
         [Command("VerifyRole", "Vr")]
-        [Description("Sets or shows the Verified or Unverified roles in this guild. v/u is the role type, v is for Verified and u is for Unverified.")]
-        [Remarks("verifyrole {v/u} [Role]")]
-        [RequireGuildAdmin]
-        public Task<ActionResult> VerifyRoleCommandAsync(string type, [Remainder] SocketRole role = null)
+        [Description("Sets or shows the Verified or Unverified roles in this guild.")]
+        public Task<ActionResult> VerifyRoleCommandAsync(
+            [Description("Valid values are `u` and `v`, for unverified role and verified role respectively.")] string type, 
+            [Remainder, Description("The role to be used.")] SocketRole role = null)
         {
             switch (type.ToLower())
             {

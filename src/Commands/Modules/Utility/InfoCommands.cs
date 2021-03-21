@@ -14,7 +14,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Info")]
         [Description("Provides basic information about this instance of Volte.")]
-        [Remarks("info")]
         public async Task<ActionResult> InfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
@@ -24,7 +23,7 @@ namespace Volte.Commands.Modules
                 .AddField("Shards", Context.Client.Shards.Count, true)
                 .AddField("Channels", Context.Client.Guilds.SelectMany(x => x.Channels).Where(x => !(x is SocketCategoryChannel)).DistinctBy(x => x.Id).Count(),
                     true)
-                .AddField("Invite Me", $"`{CommandService.GetCommand("Invite").GetUsage(Context)}`", true)
+                .AddField("Invite Me", $"`{Context.GuildData.Configuration.CommandPrefix}invite`", true)
                 .AddField("Uptime", Process.GetCurrentProcess().CalculateUptime(), true)
                 .AddField("Successful Commands", CommandsService.SuccessfulCommandCalls, true)
                 .AddField("Failed Commands", CommandsService.FailedCommandCalls, true)
@@ -32,25 +31,20 @@ namespace Volte.Commands.Modules
 
         [Command("UserInfo", "Ui")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
-        [Remarks("userinfo [user]")]
-        public Task<ActionResult> UserInfoAsync(SocketGuildUser user = null)
+        public Task<ActionResult> UserInfoAsync([Remainder, Description("The user whose info you want to see. Defaults to yourself.")] SocketGuildUser user = null)
         {
             user ??= Context.User;
 
             string GetRelevantActivity()
             {
-                if (user.Activity is CustomStatusGame csg)
+                return user.Activity switch
                 {
-                    if (csg.Emote is Emoji) //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive embed field value
-                    {
-                        return $"{csg.Emote} {csg.State}";
-                    }
-                    return $"{csg.State}";
-                }
-                if (user.Activity is SpotifyGame)
-                    return "Listening to Spotify";
-                
-                return user.Activity?.Name;
+                    //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive (and ugly) embed field value
+                    CustomStatusGame {Emote: Emoji _} csg => $"{csg.Emote} {csg.State}",
+                    CustomStatusGame csg => $"{csg.State}",
+                    SpotifyGame _ => "Listening to Spotify",
+                    _ => user.Activity?.Name
+                };
             }
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle(user.ToString())
@@ -69,7 +63,6 @@ namespace Volte.Commands.Modules
 
         [Command("GuildInfo", "Gi")]
         [Description("Shows some info about the current guild.")]
-        [Remarks("guildinfo")]
         public Task<ActionResult> GuildInfoAsync()
         {
             var cAt = Context.Guild.CreatedAt;

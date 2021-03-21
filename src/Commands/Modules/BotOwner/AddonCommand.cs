@@ -12,9 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Addon")]
         [Description("Get an addon or list all addons currently initialized in this instance of Volte.")]
-        [Remarks("addon {list/AddonName}")]
-        [RequireBotOwner]
-        public Task<ActionResult> AddonAsync([Remainder] string listOrAddon)
+        public Task<ActionResult> AddonAsync([Remainder, Description("An addon's name, or just 'list' to list them all.")] string listOrAddon)
         {
             if (listOrAddon.EqualsIgnoreCase("list"))
             {

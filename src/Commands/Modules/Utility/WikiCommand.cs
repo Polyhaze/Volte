@@ -14,8 +14,7 @@ namespace Volte.Commands.Modules
 
         [Command("Wiki", "VolteWiki")]
         [Description("List all wiki pages or get a specific one in this one command.")]
-        [Remarks("wiki [String]")]
-        public Task<ActionResult> WikiAsync([Remainder] string page = null)
+        public Task<ActionResult> WikiAsync([Remainder, Description("The wiki page you want to see. If none is provided, it will display a list of all pages.")] string page = null)
         {
             var embed = Context.CreateEmbedBuilder().WithThumbnailUrl("https://i.greemdev.net/volte_whitepinkyellow.png");
             var pages = new Dictionary<string, string>

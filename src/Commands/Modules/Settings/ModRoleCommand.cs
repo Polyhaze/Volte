@@ -6,13 +6,11 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public sealed partial class AdminModule
+    public sealed partial class SettingsModule
     {
         [Command("ModRole")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
-        [Remarks("modrole [Role]")]
-        [RequireGuildAdmin]
-        public Task<ActionResult> ModRoleAsync([Remainder] SocketRole role = null)
+        public Task<ActionResult> ModRoleAsync([Remainder, Description("The role to be set as the Moderator role; or none if you want to see the current one.")] SocketRole role = null)
         {
             if (role is null)
                 return Ok($"The current Moderator role in this guild is <@&{Context.GuildData.Configuration.Moderation.ModRole}>.");

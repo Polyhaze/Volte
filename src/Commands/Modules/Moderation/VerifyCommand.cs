@@ -11,9 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Verify", "V")]
         [Description("Verifies a member.")]
-        [Remarks("verify {Member}")]
-        [RequireGuildModerator]
-        public async Task<ActionResult> VerifyAsync([EnsureNotSelf] SocketGuildUser member)
+        public async Task<ActionResult> VerifyAsync([Remainder, EnsureNotSelf, Description("The user to verify; by removing the Unverified role and granting the Verified role.")] SocketGuildUser member)
         {
             var e = Context.CreateEmbedBuilder($"You've been verified in **{Context.Guild.Name}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)

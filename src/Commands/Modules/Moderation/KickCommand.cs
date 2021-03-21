@@ -12,11 +12,9 @@ namespace Volte.Commands.Modules
     {
         [Command("Kick")]
         [Description("Kicks the given user.")]
-        [Remarks("kick {User} [String]")]
         [RequireBotGuildPermission(GuildPermission.KickMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> KickAsync([CheckHierarchy, EnsureNotSelf] SocketGuildUser user,
-            [Remainder] string reason = "Kicked by a Moderator.")
+        public async Task<ActionResult> KickAsync([CheckHierarchy, EnsureNotSelf, Description("The member to kick.")] SocketGuildUser user,
+            [Remainder, Description("The reason for the kick. Defaults to 'Kicked by a Moderator.'")] string reason = "Kicked by a Moderator.")
         {
             var e = Context.CreateEmbedBuilder($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)

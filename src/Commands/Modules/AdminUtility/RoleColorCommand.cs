@@ -11,10 +11,8 @@ namespace Volte.Commands.Modules
     {
         [Command("RoleColor", "RoleClr", "Rcl")]
         [Description("Changes the color of a specified role. Accepts a Hex or RGB value.")]
-        [Remarks("rolecolor {Role} {Color}")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        [RequireGuildAdmin]
-        public async Task<ActionResult> RoleColorAsync(SocketRole role, [Remainder] Color color)
+        public async Task<ActionResult> RoleColorAsync([Description("The role to modify.")] SocketRole role, [Remainder, Description("The color to change the role to. Accepts #hex and RGB.")] Color color)
         {
             await role.ModifyAsync(x => x.Color = color);
             return Ok($"Successfully changed the color of the role **{role.Name}**.");

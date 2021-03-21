@@ -12,8 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("BigEmoji", "HugeEmoji", "BigEmote", "HugeEmote")]
         [Description("Shows the image URL for a given emoji.")]
-        [Remarks("bigemoji {Emote}")]
-        public Task<ActionResult> BigEmojiAsync(IEmote emoteIn)
+        public Task<ActionResult> BigEmojiAsync([Description("The emote/emoji you want to see large. Can be a custom emoji or a standard Discord emoji.")] IEmote emoteIn)
         {
             string url = null;
             try

@@ -10,8 +10,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
-        [Remarks("avatar [User]")]
-        public Task<ActionResult> AvatarAsync(SocketGuildUser user = null)
+        public Task<ActionResult> AvatarAsync([Remainder, Description("The user whose avatar you want to get. Defaults to yourself.")] SocketGuildUser user = null)
         {
             user ??= Context.User;
             return Ok(Context.CreateEmbedBuilder()

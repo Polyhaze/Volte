@@ -19,11 +19,6 @@ namespace Gommon
         public static string SanitizeParserName(this Type type)
             => type.Name.Replace("Parser", string.Empty);
 
-        public static string GetUsage(this Command c, VolteContext ctx)
-            => (c.Remarks ?? "No usage provided")
-                .Replace(c.Name.ToLower(), c.AsPrettyString().ToLower())
-                .Insert(0, ctx.GuildData.Configuration.CommandPrefix);
-
         private static string AsPrettyString(this Command c)
             => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
 

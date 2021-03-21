@@ -11,8 +11,7 @@ namespace Volte.Commands.Modules
     {
         [Command("IamNot")]
         [Description("Take a role from yourself, if it is in the current guild's self role list.")]
-        [Remarks("iamnot {String}")]
-        public async Task<ActionResult> IamNotAsync([Remainder]SocketRole role)
+        public async Task<ActionResult> IamNotAsync([Remainder, Description("The SelfRole you want to remove from yourself.")] SocketRole role)
         {
             if (!Context.GuildData.Extras.SelfRoles.Any(x => x.EqualsIgnoreCase(role.Name)))
                 return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");

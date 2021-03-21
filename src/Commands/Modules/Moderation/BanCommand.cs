@@ -12,11 +12,9 @@ namespace Volte.Commands.Modules
     {
         [Command("Ban")]
         [Description("Bans the mentioned user.")]
-        [Remarks("ban {User} [String]")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
-        public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf] SocketGuildUser user,
-            [Remainder] string reason = "Banned by a Moderator.")
+        public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to ban.")] SocketGuildUser user,
+            [Remainder, Description("The reason for the ban. Defaults to 'Banned by a Moderator.'")] string reason = "Banned by a Moderator.")
         {
             var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **{reason}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)

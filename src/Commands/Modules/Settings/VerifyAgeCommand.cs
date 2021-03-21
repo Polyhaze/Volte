@@ -4,11 +4,10 @@ using Volte.Commands.Results;
 
 namespace Volte.Commands.Modules
 {
-    public partial class AdminModule
+    public partial class SettingsModule
     {
         [Command("VerifyAge", "Va")]
         [Description("Enables or disables the automatic account age warnings when a user who joins has a very young account (30 days or less).")]
-        [Remarks("verifyage {Boolean}")]
         public Task<ActionResult> VerifyAgeAutomaticallyAsync(bool enabled)
         {
             Context.GuildData.Configuration.Moderation.CheckAccountAge = enabled;

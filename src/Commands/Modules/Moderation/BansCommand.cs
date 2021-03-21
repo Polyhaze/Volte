@@ -12,9 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Bans")]
         [Description("Shows all bans in this guild.")]
-        [Remarks("bans")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        [RequireGuildModerator]
         public async Task<ActionResult> BansAsync()
         {
             var banList = await Context.Guild.GetBansAsync();

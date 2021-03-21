@@ -14,7 +14,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Tree")]
         [Description("Shows all categories in this guild and their children channels.")]
-        [Remarks("tree")]
         public Task<ActionResult> TreeAsync()
         {
             var uncategorized = new StringBuilder();
