@@ -19,14 +19,14 @@ namespace Volte.Services
     {
         private readonly LoggingService _logger;
         private readonly IServiceProvider _provider;
-        public Dictionary<VolteAddonInfo, string> LoadedAddons { get; }
+        public Dictionary<VolteAddonMeta, string> LoadedAddons { get; }
 
         public AddonService(LoggingService loggingService,
             IServiceProvider serviceProvider)
         {
             _logger = loggingService;
             _provider = serviceProvider;
-            LoadedAddons = new Dictionary<VolteAddonInfo, string>();
+            LoadedAddons = new Dictionary<VolteAddonMeta, string>();
         }
 
         public async Task InitAsync()
@@ -42,7 +42,7 @@ namespace Volte.Services
             
             foreach (var folder in addonFolders)
             {
-                VolteAddonInfo meta = null;
+                VolteAddonMeta meta = null;
                 string code = null;
                 foreach (var file in Directory.GetFiles(folder))
                 {
@@ -50,9 +50,9 @@ namespace Volte.Services
                     {
                         try
                         {
-                            meta = JsonSerializer.Deserialize<VolteAddonInfo>(await File.ReadAllTextAsync(file),
+                            meta = JsonSerializer.Deserialize<VolteAddonMeta>(await File.ReadAllTextAsync(file),
                                 Config.JsonOptions);
-                            if (meta.Name.ToLower() is "list")
+                            if (meta.Name.EqualsIgnoreCase("list"))
                             {
                                 throw new InvalidOperationException(
                                     $"Addon with name {meta.Name} is being ignored because it is using a reserved name. Please change the name or remove it.");
@@ -74,23 +74,20 @@ namespace Volte.Services
                         code = await File.ReadAllTextAsync(file);
                 }
 
-                if (meta != null && code == null)
-                    _logger.Error(LogSource.Service, $"Attempted to load addon {meta.Name} but there were no .cs files in its directory.");
+                if (meta != null && code is null)
+                    _logger.Error(LogSource.Service, $"Attempted to load addon {meta.Name} but there were no .cs files in its directory. These are necessary as an addon with no logic does nothing.");
 
                 if (meta != null && code != null)
                     LoadedAddons.Add(meta, code);
 
             }
-            
-            var sopts = ScriptOptions.Default.WithImports(EvalHelper.Imports)
-                .WithReferences(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
             foreach (var (meta, code) in LoadedAddons)
             {
                 try
                 {
-                    if ((await CSharpScript.RunAsync(code, sopts, new AddonEnvironment(_provider))).ReturnValue != null)
-                        _logger.Info(LogSource.Service, "Addon's logic resulted in a value; ignoring.");
+                    if ((await CSharpScript.RunAsync(code, EvalHelper.Options, new AddonEnvironment(_provider))).ReturnValue != null)
+                        _logger.Info(LogSource.Service, "Addon's logic resulted in a value; ignoring. This could lead to garbage collection issues, be wary!");
                 }
                 catch (Exception e)
                 {

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Volte.Commands.Results
+namespace Volte.Commands
 {
     public class NoResult : ActionResult
     {

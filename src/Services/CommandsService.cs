@@ -7,7 +7,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using SixLabors.ImageSharp;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
 

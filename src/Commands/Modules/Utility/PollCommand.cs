@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules

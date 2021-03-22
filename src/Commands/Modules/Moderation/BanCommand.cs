@@ -3,7 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Gommon;
 
 namespace Volte.Commands.Modules
@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule
     {
         [Command("Ban")]
-        [Description("Bans the mentioned user.")]
+        [Description("Bans a user.")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
         public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to ban.")] SocketGuildUser user,
             [Remainder, Description("The reason for the ban. Defaults to 'Banned by a Moderator.'")] string reason = "Banned by a Moderator.")

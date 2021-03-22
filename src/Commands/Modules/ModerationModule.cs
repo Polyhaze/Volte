@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
+using Humanizer;
 using Volte.Core.Entities;
 using Volte.Services;
 
@@ -13,12 +14,12 @@ namespace Volte.Commands.Modules
     {
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member, DatabaseService db, LoggingService logger, string reason)
         {
-            data.Extras.Warns.Add(new Warn
+            data.Extras.AddWarn(w =>
             {
-                User = member.Id,
-                Reason = reason,
-                Issuer = issuer.Id,
-                Date = DateTimeOffset.Now
+                w.User = member.Id;
+                w.Reason = reason;
+                w.Issuer = issuer.Id;
+                w.Date = DateTimeOffset.Now;
             });
             db.Save(data);
 

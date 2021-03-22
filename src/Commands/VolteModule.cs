@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Services;
 
 namespace Volte.Commands

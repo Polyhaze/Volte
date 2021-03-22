@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
@@ -16,10 +16,12 @@ namespace Volte.Commands.Modules
         {
             if (listOrAddon.EqualsIgnoreCase("list"))
             {
-                if (Addon.LoadedAddons.IsEmpty()) return Ok("You have no addons!");
+                if (Addon.LoadedAddons.IsEmpty()) return Ok("You have no addons!\n" +
+                                                            "Addons can be made via making an `addons` directory in my installation folder, " +
+                                                            "and making subfolders with a JSON file with information and a C# file for the addon's logic.");
                 return Ok(Context.CreateEmbedBuilder(
                     Addon.LoadedAddons.Select(kvp => $"**{kvp.Key.Name}**: {kvp.Key.Description}").Join("\n")
-                ).WithTitle("All LoadedAddons"));
+                ).WithTitle("All Loaded Addons").WithFooter($"To see a specific addon's code, run '{Context.GuildData.Configuration.CommandPrefix}addon {{addonName}}'."));
             }
 
             if (Addon.LoadedAddons.Any(x => x.Key.Name.EqualsIgnoreCase(listOrAddon)))

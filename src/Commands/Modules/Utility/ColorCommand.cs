@@ -4,14 +4,13 @@ using Discord;
 using Gommon;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
-using Volte.Commands.Results;
-using Volte.Commands.TypeParsers;
+using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule
     {
-        [Command("Color", "Colour")]
+        [Command("Color", "Colour", "C")]
         [Description("Shows the Hex and RGB representation for a given role in the current guild; or just a color.")]
         public async Task<ActionResult> RoleColorAsync([Remainder, Description("The color you want to see, in #hex or RGB, or a role whose color you want to be shown.")] string colorOrRole)
         {

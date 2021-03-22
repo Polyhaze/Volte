@@ -5,7 +5,7 @@ using Discord;
 using Qmmands;
 using Volte.Core.Entities;
 
-namespace Volte.Commands.TypeParsers
+namespace Volte.Commands
 {
     [VolteTypeParser]
     public sealed class EmoteParser : TypeParser<IEmote>

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

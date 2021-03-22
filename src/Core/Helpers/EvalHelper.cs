@@ -23,6 +23,22 @@ namespace Volte.Core.Helpers
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
+        {
+            "System", "System.IO", "System.Linq", "System.Text", "System.Threading", "System.Threading.Tasks",
+            "System.Collections.Generic", "System.Diagnostics", "System.Globalization",
+
+            "Volte.Core", "Volte.Core.Helpers", "Volte.Core.Entities", "Volte.Commands",
+
+            "Discord", "Discord.WebSocket",
+
+            "Humanizer", "Gommon", "Qmmands"
+        });
+        
+        public static readonly ScriptOptions Options = ScriptOptions.Default.WithImports(Imports)
+            .WithReferences(AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+
         public static Task EvaluateAsync(VolteContext ctx, string code)
         {
             try
@@ -60,16 +76,13 @@ namespace Volte.Core.Helpers
 
         private static async Task ExecuteScriptAsync(string code, VolteContext ctx)
         {
-            var sopts = ScriptOptions.Default.WithImports(Imports)
-                .WithReferences(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
-
             var embed = ctx.CreateEmbedBuilder();
             var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
                 .SendToAsync(ctx.Channel);
             try
             {
                 var sw = Stopwatch.StartNew();
-                var state = await CSharpScript.RunAsync(code, sopts, CreateEvalEnvironment(ctx));
+                var state = await CSharpScript.RunAsync(code, Options, CreateEvalEnvironment(ctx));
                 sw.Stop();
                 if (state.ReturnValue is null)
                 {
@@ -90,7 +103,7 @@ namespace Volte.Core.Helpers
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                             .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                            .WithDescription(Format.Code(res, "ini")).Build());
+                            .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? "" : "ini")).Build());
                 }
             }
             catch (Exception ex)
@@ -104,13 +117,5 @@ namespace Volte.Core.Helpers
                 );
             }
         }
-
-        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
-            {
-                "System", "System.Collections.Generic", "System.Linq", "System.Text", "Volte.Commands.TypeParsers",
-                "System.Diagnostics", "Discord", "Discord.WebSocket", "System.IO", "Humanizer", 
-                "System.Threading", "Gommon", "Volte.Core.Entities", "System.Globalization",
-                "Volte.Core", "Volte.Services", "System.Threading.Tasks", "Qmmands", "Volte.Core.Helpers"
-            });
     }
 }

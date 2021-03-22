@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Volte.Core.Entities;
 
 namespace Volte.Services
@@ -38,7 +37,7 @@ namespace Volte.Services
             var m = await args.Context.CreateEmbed($"{args.Message.Author.Mention}, Don't send invites here.").SendToAsync(args.Context.Channel);
             _logger.Debug(LogSource.Volte,
                 $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
-            _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), () => m.TryDeleteAsync());
+            _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), () => m.TryDeleteAsync());
         }
     }
 }

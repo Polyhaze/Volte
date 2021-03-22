@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core.Entities;
 using Volte.Services;
 

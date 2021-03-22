@@ -7,7 +7,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
             {
                 var m = await Context.Channel.SendMessageAsync(embed:
                     Context.CreateEmbed($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**"));
-                _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () => await m.TryDeleteAsync());
+                _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), async () => await m.TryDeleteAsync());
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Purge)

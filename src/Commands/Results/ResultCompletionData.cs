@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 
-namespace Volte.Commands.Results
+namespace Volte.Commands
 {
     public class ResultCompletionData
     {

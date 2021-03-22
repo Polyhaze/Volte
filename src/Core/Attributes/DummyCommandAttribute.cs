@@ -2,8 +2,9 @@ using System;
 
 namespace Volte.Core.Entities
 {
-    public class DummyCommandAttribute : Attribute
-    {
-        
-    }
+    /// <summary>
+    ///     Used on a base command of a command group; for Help command usage.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class DummyCommandAttribute : Attribute { }
 }

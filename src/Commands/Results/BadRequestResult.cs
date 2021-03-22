@@ -4,7 +4,7 @@ using Discord;
 using Gommon;
 using Volte.Core;
 
-namespace Volte.Commands.Results
+namespace Volte.Commands
 {
     public class BadRequestResult : ActionResult
     {

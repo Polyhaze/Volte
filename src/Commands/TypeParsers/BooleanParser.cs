@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
 using Volte.Core.Entities;
 
-namespace Volte.Commands.TypeParsers
+namespace Volte.Commands
 {
     [VolteTypeParser(true)]
     public sealed class BooleanParser : TypeParser<bool>

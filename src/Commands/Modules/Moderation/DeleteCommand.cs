@@ -1,11 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands.Results;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -25,7 +23,7 @@ namespace Volte.Commands.Modules
 
             return Ok($"{DiscordHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
-                _ = Executor.ExecuteAfterDelayAsync(TimeSpan.FromSeconds(3), async () =>
+                _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), async () =>
                 {
                     await Context.Message.TryDeleteAsync();
                     await m.DeleteAsync();

@@ -2,7 +2,7 @@
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Core;
-using Volte.Commands.Results;
+using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

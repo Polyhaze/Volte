@@ -8,7 +8,7 @@ using Gommon;
 using Qmmands;
 using Volte.Core.Entities;
 
-namespace Volte.Commands.TypeParsers
+namespace Volte.Commands
 {
     [VolteTypeParser]
     public sealed class SocketGuildUserParser : TypeParser<SocketGuildUser>

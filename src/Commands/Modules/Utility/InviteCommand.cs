@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Gommon;
 
 namespace Volte.Commands.Modules

@@ -41,13 +41,13 @@ namespace Volte.Core.Entities
                     ($"{four}", collection[4]),
                     ($"{five}", collection[5])),
 
-                _ => FromValid(false)
+                _ => FromInvalid()
 
             };
         }
 
-        public static PollInfo FromValid(bool isValid)
-            => new PollInfo { IsValid = isValid };
+        public static PollInfo FromInvalid()
+            => new PollInfo { IsValid = false };
 
         public Dictionary<string, string> Fields { get; }
         public bool IsValid { get; set; }

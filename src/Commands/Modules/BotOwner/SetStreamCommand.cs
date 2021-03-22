@@ -2,9 +2,7 @@
 using Gommon;
 using Qmmands;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Volte.Commands.Results;
-using Volte.Core.Entities;
+using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

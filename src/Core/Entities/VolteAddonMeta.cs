@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Volte.Core.Entities
 {
-    public class VolteAddonInfo
+    public class VolteAddonMeta
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }

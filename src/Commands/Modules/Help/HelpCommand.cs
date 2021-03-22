@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
-using Volte.Commands.Results;
+using Volte.Commands;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 

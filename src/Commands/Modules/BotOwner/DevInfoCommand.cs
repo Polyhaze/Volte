@@ -7,7 +7,7 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands.Results;
+using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {
