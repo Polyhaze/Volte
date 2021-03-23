@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
     public sealed partial class BotOwnerModule
     {
         [Command("CreateConfig")]
-        [Description("Create a config for the guild with the given ID, if one doesn't exist.")]
+        [Description("Create a config for the guild, if one doesn't exist.")]
         public Task<ActionResult> CreateConfigAsync([Remainder, Description("The guild to create the config for.")] SocketGuild guild = null)
         {
             guild ??= Context.Guild;

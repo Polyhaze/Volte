@@ -42,9 +42,8 @@ namespace Volte.Core.Helpers
         public static async Task<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
         {
             var embed = ctx.CreateEmbedBuilder()
-                .WithTitle("Command information")
-                .WithDescription(
-                    $"{Format.Code(command.FullAliases.First())}: {command.Description ?? "No description provided."}");
+                .WithTitle(command.Name)
+                .WithDescription($"{command.Description ?? "No description provided."}");
 
             if (command.Attributes.Any(x => x is DummyCommandAttribute))
             {
@@ -55,18 +54,17 @@ namespace Volte.Core.Helpers
             }
             else
             {
-                if (command.Remarks != null) embed.Description += " " + command.Remarks;
+                if (command.Remarks != null) 
+                    embed.Description += " " + command.Remarks;
 
                 if (command.FullAliases.Count > 1)
-                    embed.AddField("Aliases", command.FullAliases.Skip(1).Join(", "), true);
+                    embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).Join(", "), true);
 
                 if (!command.Parameters.IsEmpty())
                     embed.AddField("Parameters", command.Parameters.Select(FormatParameter).Join("\n"));
 
                 if (command.CustomArgumentParserType is null)
-                {
                     embed.AddField("Usage", FormatUsage(ctx, command));
-                }
             }
 
             var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
@@ -96,35 +94,37 @@ namespace Volte.Core.Helpers
         private static async Task<string> FormatCheckAsync(CheckAttribute cba, VolteContext context)
         {
             var result = await cba.CheckAsync(context);
-            var message = await GetCheckFriendlyMessage(context, cba);
-            return $"- {(result.IsSuccessful ? ":white_check_mark:" : ":red_circle:")} {message}";
+            var message = GetCheckFriendlyMessage(context, cba);
+            return $"- {(result.IsSuccessful ? DiscordHelper.BallotBoxWithCheck : DiscordHelper.X)} {message}";
         }
 
-        private static async Task<string> GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba)
+        private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba)
         {
             return cba switch
             {
                 RequireBotChannelPermissionAttribute rbcp =>
-                    $"I require the guild permission(s) {rbcp.Permissions.Humanize()}.",
+                    $"I require the channel permission(s) {rbcp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
                 RequireBotGuildPermissionAttribute rbgp =>
-                    $"I require the channel permission {rbgp.Permissions.Humanize()}.",
-                RequireGuildAdminAttribute _ => "You need the to have the Admin role for this guild.",
-                RequireGuildModeratorAttribute _ => "You need the to have the Moderator role for this guild.",
+                    $"I require the guild permission(s) {rbgp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
+                RequireGuildAdminAttribute _ => "You need the to have the Admin role.",
+                RequireGuildModeratorAttribute _ => "You need the to have the Moderator role.",
                 RequireBotOwnerAttribute _ =>
-                    $"Only usable by **{await ctx.Client.Rest.GetUserAsync(Config.Owner)}** (bot owner).",
+                    $"Only usable by **{ctx.Client.GetOwner()}** (bot owner).",
                 _ => $"Unimplemented check: {cba.GetType().AsPrettyString()}. Please report this to my developers :)"
             };
         }
 
         private static string FormatParameter(Parameter param)
         {
-            var sb = new StringBuilder($"`{param.Name}`");
+            var sb = new StringBuilder(Format.Code(param.Name));
             if (!param.Description.IsNullOrWhitespace())
-                sb.Append($": {param.Description}");
-            if (param.Attributes.Any(x => x is EnsureNotSelfAttribute))
-                sb.AppendLine("  - Cannot be yourself.");
+                sb.Append($": {param.Description} ");
+            if (param.Checks.Any(x => x is EnsureNotSelfAttribute))
+                sb.Append("Cannot be yourself.");
+            if (param.DefaultValue != null)
+                sb.Append($"Defaults to: `{param.DefaultValue}`");
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
     }
 }

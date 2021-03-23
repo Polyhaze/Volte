@@ -151,9 +151,8 @@ namespace Volte.Services
                 .AppendLine(After(args));
             
             if (args.ResultCompletionData != null)
-            {
                 sb.AppendLine(ResultMessage(args.ResultCompletionData));
-            }
+            
             sb.Append(_separator);
             _logger.Error(LogSource.Module, sb.ToString());
         }
@@ -161,7 +160,7 @@ namespace Volte.Services
         private readonly string _separator                        = "                    -------------------------------------------------";
         private string CommandFrom(CommandEventArgs args)                           => $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})"; //yes, the spaces in front of each string are indeed intentional on all lines after this
         private string CommandIssued(CommandEventArgs args)     => $"                    |     -Command Issued: {args.Context.Command.Name}";
-        private string FullMessage(CommandEventArgs args)        => $"                    |       -Full Message: {args.Context.Message.Content}";
+        private string FullMessage(CommandEventArgs args)       => $"                    |       -Full Message: {args.Context.Message.Content}";
         private string InGuild(CommandEventArgs args)           => $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
         private string InChannel(CommandEventArgs args)         => $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";
         private string TimeIssued(CommandEventArgs args)        => $"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}";

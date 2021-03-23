@@ -7,7 +7,7 @@ namespace Volte.Commands.Modules
     public partial class SettingsModule
     {
         [Command("VerifyAge", "Va")]
-        [Description("Enables or disables the automatic account age warnings when a user who joins has a very young account (30 days or less).")]
+        [Description("Enables or disables the automatic account age warnings when a user who joins has a very young account (created within the last month).")]
         public Task<ActionResult> VerifyAgeAutomaticallyAsync(bool enabled)
         {
             Context.GuildData.Configuration.Moderation.CheckAccountAge = enabled;

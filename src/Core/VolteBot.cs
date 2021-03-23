@@ -58,9 +58,10 @@ namespace Volte.Core
             _provider.Get<LoggingService>(out var logger);
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
-            await _client.StartAsync().ContinueWith(_ => _client.SetStatusAsync(UserStatus.Online));
+            await _client.StartAsync();
 
             await InitializeAsync(_provider);
+            new Thread(async () => await _provider.Get<AddonService>().InitAsync()).Start();
 
             try
             {
@@ -83,15 +84,13 @@ namespace Volte.Core
                     .WithErrorColor()
                     .WithAuthor(client.GetOwner())
                     .WithDescription(
-                        $"Volte {Version.FullVersion} is shutting down at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
+                        $"Volte {Version.FullVersion} is shutting down {DateTimeOffset.Now.FormatPrettyString()}. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);
             }
             
             foreach (var disposable in provider.GetServices<IDisposable>())
-            {
                 disposable?.Dispose();
-            }
-            
+
             await client.SetStatusAsync(UserStatus.Invisible);
             await client.LogoutAsync();
             await client.StopAsync();

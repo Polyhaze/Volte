@@ -151,8 +151,6 @@ namespace Volte.Services
                         $"Volte {Version.FullVersion} is starting at **{DateTimeOffset.UtcNow.FormatFullTime()}, on {DateTimeOffset.UtcNow.FormatDate()}**!")
                     .SendToAsync(channel);
             }
-
-            new Thread(async () => await _addonService.InitAsync()).Start();
         }
     }
 }

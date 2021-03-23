@@ -14,7 +14,7 @@ namespace Volte.Core.Helpers
         ///     This method will throw if there is no <see cref="HttpClient"/> in the <paramref name="provider"/> given.
         /// </summary>
         /// <param name="content">The content to send.</param>
-        /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>></param>
+        /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>>.</param>
         /// <returns>The URL of the successful paste.</returns>
         /// <exception cref="InvalidOperationException">If <paramref name="provider"/> doesn't have an <see cref="HttpClient"/> in it.</exception>
         public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider)

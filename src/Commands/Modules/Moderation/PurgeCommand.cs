@@ -14,10 +14,10 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class ModerationModule : VolteModule
     {
-        [Command("Purge", "clear", "clean")]
+        [Command("Purge", "Clear", "Clean")]
         [Description("Purges the last x messages, or the last x messages by a given user.")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        public async Task<ActionResult> PurgeAsync([Description("The amount of messages to purge.")] int count, [Description("If provided, will only delete messages by this user within `count`.")] RestUser targetAuthor = null)
+        public async Task<ActionResult> PurgeAsync([Description("The amount of messages to purge.")] int count, [Description("If provided, will only delete messages by this user within `count` messages.")] RestUser targetAuthor = null)
         {
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
             //lets you theoretically use 0 to delete only the invocation message, for testing or something.

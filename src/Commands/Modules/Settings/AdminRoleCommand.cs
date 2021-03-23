@@ -8,7 +8,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class SettingsModule
     {
-        [Command("AdminRole")]
+        [Command("AdminRole", "Admin")]
         [Description("Sets the role able to use Admin commands for the current guild.")]
         public Task<ActionResult> AdminRoleAsync([Remainder, Description("The role to be set as the Admin role; or none if you want to see the current one.")] SocketRole role = null)
         {

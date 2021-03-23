@@ -14,6 +14,9 @@ namespace Volte.Commands.Modules
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
         public async Task<ActionResult> RoleColorAsync([Description("The role to modify.")] SocketRole role, [Remainder, Description("The color to change the role to. Accepts #hex and RGB.")] Color color)
         {
+            if (role.Position > Context.Guild.CurrentUser.Hierarchy)
+                return BadRequest("Role position is too high for me to be able to do anything with it.");
+            
             await role.ModifyAsync(x => x.Color = color);
             return Ok($"Successfully changed the color of the role **{role.Name}**.");
         }

@@ -14,16 +14,14 @@ namespace Volte.Commands.Modules
     public sealed class HelpModule : VolteModule
     {
         [Command("Help", "H")]
-        [Description("Shows the commands used for module listing, command listing, and command info.")]
+        [Description("Get help for Volte's many commands.")]
         public async Task<ActionResult> HelpAsync([Remainder] string query = null)
         {
             if (query != null)
             {
                 var search = CommandService.FindCommands(query).ToList();
                 if (search.IsEmpty())
-                {
                     return BadRequest($"No command or group found for `{query}`.");
-                }
 
                 return Ok(await CommandHelper.CreateCommandEmbedAsync(search.First().Command, Context));
             }

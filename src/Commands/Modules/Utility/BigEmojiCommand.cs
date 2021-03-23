@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

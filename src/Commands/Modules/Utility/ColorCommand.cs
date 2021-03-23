@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
@@ -14,7 +15,7 @@ namespace Volte.Commands.Modules
         [Description("Shows the Hex and RGB representation for a given role in the current guild; or just a color.")]
         public async Task<ActionResult> RoleColorAsync([Remainder, Description("The color you want to see, in #hex or RGB, or a role whose color you want to be shown.")] string colorOrRole)
         {
-            var roleTypeParse = await new RoleParser().ParseAsync(null, colorOrRole, Context);
+            var roleTypeParse = await CommandService.GetSpecificTypeParser<SocketRole, RoleParser>().ParseAsync(null, colorOrRole, Context);
             if (roleTypeParse.IsSuccessful)
             {
                 var role = roleTypeParse.Value;
@@ -37,7 +38,7 @@ namespace Volte.Commands.Modules
                 });
             }
 
-            var colorTypeParse = await new ColorParser().ParseAsync(null, colorOrRole, Context);
+            var colorTypeParse = await CommandService.GetSpecificTypeParser<Color, ColorParser>().ParseAsync(null, colorOrRole, Context);
             // ReSharper disable once InvertIf
             if (colorTypeParse.IsSuccessful)
             {

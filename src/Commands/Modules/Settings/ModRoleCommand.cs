@@ -8,7 +8,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class SettingsModule
     {
-        [Command("ModRole")]
+        [Command("ModRole", "Mod")]
         [Description("Sets the role able to use Moderation commands for the current guild.")]
         public Task<ActionResult> ModRoleAsync([Remainder, Description("The role to be set as the Moderator role; or none if you want to see the current one.")] SocketRole role = null)
         {

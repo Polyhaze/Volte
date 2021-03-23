@@ -6,7 +6,7 @@ namespace Volte.Commands.Modules
 {
     public partial class SettingsModule
     {
-        [Command("ShowResponsibleModerator", "ShowMod", "Srm")]
+        [Command("ShowMod", "Srm")]
         [Description("Enables/Disables showing the moderator responsible for punishing users.")]
         public Task<ActionResult> ShowModeratorAsync(bool enabled)
         {

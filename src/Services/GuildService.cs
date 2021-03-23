@@ -9,6 +9,8 @@ using Discord.WebSocket;
 using Volte.Core;
 using Volte.Core.Entities;
 using Gommon;
+using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
@@ -41,8 +43,8 @@ namespace Volte.Services
                 .WithAuthor(await _client.Rest.GetUserAsync(Config.Owner))
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
-                .AddField("Set your admin role", "$adminrole {Role}", true)
-                .AddField("Set your moderator role", "$modrole {Role}", true)
+                .AddField("Set your admin role", "$settings admin {Role}", true)
+                .AddField("Set your moderator role", "$settings mod {Role}", true)
                 .AddField("Permissions", new StringBuilder()
                     .AppendLine("It is recommended to give me the Administrator permission to avoid any permission errors that may happen.")
                     .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin; however")
@@ -84,8 +86,8 @@ namespace Volte.Services
                 .AddField("ID", args.Guild.Id, true)
                 .WithThumbnailUrl(args.Guild.IconUrl)
                 .WithCurrentTimestamp()
-                .AddField("Users", users.Count(), true)
-                .AddField("Bots", bots.Count(), true);
+                .AddField("Users", users.Count, true)
+                .AddField("Bots", bots.Count, true);
 
             if (bots.Count > users.Count)
                 await channel.SendMessageAsync(
@@ -100,7 +102,8 @@ namespace Volte.Services
             _logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
-                _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                if (Config.GuildLogging.Enabled)
+                    _logger.Warn(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 
