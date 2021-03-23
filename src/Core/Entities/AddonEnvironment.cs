@@ -23,10 +23,10 @@ namespace Volte.Core.Entities
             Database = provider.Get<DatabaseService>();
         }
 
-        public bool IsCommand(SocketUserMessage message, string[] prefixes)
-        {
-            return CommandUtilities.HasAnyPrefix(message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _, out _);
-        }
-        
+        public bool IsCommand(SocketUserMessage message, ulong guildId) 
+            => CommandUtilities.HasAnyPrefix(message.Content, 
+                new[] { Database.GetData(guildId).Configuration.CommandPrefix, $"<@{Client.CurrentUser.Id}> ", $"<@!{Client.CurrentUser.Id}> " }, 
+                StringComparison.OrdinalIgnoreCase, out _, out _);
+
     }
 }

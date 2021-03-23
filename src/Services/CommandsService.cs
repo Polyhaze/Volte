@@ -10,6 +10,7 @@ using SixLabors.ImageSharp;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
@@ -73,7 +74,7 @@ namespace Volte.Services
             var sb = new StringBuilder()
                 .AppendLine(CommandFrom(args))
                 .AppendLine(CommandIssued(args))
-                .AppendLine(ArgsPassed(args))
+                .AppendLine(FullMessage(args))
                 .AppendLine(InGuild(args))
                 .AppendLine(InChannel(args))
                 .AppendLine(TimeIssued(args))
@@ -118,6 +119,7 @@ namespace Volte.Services
                 await args.Context.CreateEmbedBuilder()
                     .AddField("Error in Command", args.Context.Command.Name)
                     .AddField("Error Reason", reason)
+                    .AddField("Usage", CommandHelper.FormatUsage(args.Context, args.Context.Command))
                     .WithErrorColor()
                     .SendToAsync(args.Context.Channel);
 
@@ -126,7 +128,7 @@ namespace Volte.Services
                 _logger.Error(LogSource.Module, new StringBuilder()
                     .AppendLine(CommandFrom(args))
                     .AppendLine(CommandIssued(args))
-                    .AppendLine(ArgsPassed(args))
+                    .AppendLine(FullMessage(args))
                     .AppendLine(InGuild(args))
                     .AppendLine(InChannel(args))
                     .AppendLine(TimeIssued(args))
@@ -141,7 +143,7 @@ namespace Volte.Services
             var sb = new StringBuilder()
                 .AppendLine(CommandFrom(args))
                 .AppendLine(CommandIssued(args))
-                .AppendLine(ArgsPassed(args))
+                .AppendLine(FullMessage(args))
                 .AppendLine(InGuild(args))
                 .AppendLine(InChannel(args))
                 .AppendLine(TimeIssued(args))
@@ -159,7 +161,7 @@ namespace Volte.Services
         private readonly string _separator                        = "                    -------------------------------------------------";
         private string CommandFrom(CommandEventArgs args)                           => $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})"; //yes, the spaces in front of each string are indeed intentional on all lines after this
         private string CommandIssued(CommandEventArgs args)     => $"                    |     -Command Issued: {args.Context.Command.Name}";
-        private string ArgsPassed(CommandEventArgs args)        => $"                    |        -Args Passed: {args.Arguments.Trim()}";
+        private string FullMessage(CommandEventArgs args)        => $"                    |       -Full Message: {args.Context.Message.Content}";
         private string InGuild(CommandEventArgs args)           => $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
         private string InChannel(CommandEventArgs args)         => $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";
         private string TimeIssued(CommandEventArgs args)        => $"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}";

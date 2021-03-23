@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Qmmands;
 using Gommon;
@@ -33,22 +34,50 @@ namespace Volte.Commands.Modules
                     $"You can use `{Context.GuildData.Configuration.CommandPrefix}help {{command/group}}` for more details on a command or group.");
 
             var commands = new List<string>();
-            foreach (var cmd in CommandService.GetAllCommands())
+            var groupCommands = new List<string>();
+
+            //module with aliases: command group; without: regular module
+            foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.IsEmpty()))
             {
-                if (!await CommandHelper.CanShowCommandAsync(Context, cmd)) continue;
-                var fmt = CommandHelper.FormatCommandShort(cmd);
-                if (fmt != null && !commands.Contains(fmt)) commands.Add(fmt);
+                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
+
+                foreach (var cmd in mdl.Commands)
+                {
+                    var fmt = CommandHelper.FormatCommandShort(cmd);
+                    if (fmt != null && !commands.Contains(fmt)) commands.Add(fmt);
+                }
+            }
+
+            foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.IsEmpty()))
+            {
+                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
+
+                var fmt = CommandHelper.FormatModuleShort(mdl);
+                if (fmt != null && !groupCommands.Contains(fmt)) groupCommands.Add(fmt);
             }
 
             try
             {
                 if (!commands.IsEmpty())
                     e.AddField("Commands", commands.Join(", "));
-
             }
             catch (ArgumentException)
             {
-                e.WithDescription($"{e.Description}\n\n{commands.Join(", ")}");
+                e.WithDescription(new StringBuilder(e.Description).AppendLine().AppendLine()
+                    .AppendLine(commands.Join(", "))
+                    .ToString());
+            }
+
+            try
+            {
+                if (!groupCommands.IsEmpty())
+                    e.AddField("Group Commands", groupCommands.Join(", "));
+            }
+            catch (ArgumentException)
+            {
+                e.WithDescription(new StringBuilder(e.Description).AppendLine().AppendLine()
+                    .AppendLine(groupCommands.Join(", "))
+                    .ToString());
             }
 
             return Ok(e);
