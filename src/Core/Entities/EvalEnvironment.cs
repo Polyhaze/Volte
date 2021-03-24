@@ -28,7 +28,6 @@ namespace Volte.Core.Entities
         public VolteContext Context { get; set; }
         public DiscordSocketClient Client { get; set; }
         public GuildData Data { get; set; }
-        public LoggingService Logger { get; set; }
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
         public EvalEnvironment Environment { get; }

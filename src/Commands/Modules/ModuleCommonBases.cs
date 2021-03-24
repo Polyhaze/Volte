@@ -9,6 +9,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
@@ -47,7 +48,7 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member,
-            DatabaseService db, LoggingService logger, string reason)
+            DatabaseService db, string reason)
         {
             data.Extras.AddWarn(w =>
             {
@@ -66,19 +67,20 @@ namespace Volte.Commands.Modules
             if (!await member.TrySendMessageAsync(
                 embed: e.Build()))
             {
-                logger.Warn(LogSource.Volte,
+                Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {member}!");
             }
         }
     }
     
     [Group("Settings", "Setting", "Options", "Option")]
+    [Description("The set of commands used to modify how Volte functions in your guild.")]
     [RequireGuildAdmin]
     public partial class SettingsModule : VolteModule
     {
         public WelcomeService WelcomeService { get; set; }
 
-        [Command, DummyCommand]
+        [Command, DummyCommand, Description("The set of commands used to modify how Volte functions in your guild.")]
         public Task<ActionResult> BaseAsync() => None();
     }
 }

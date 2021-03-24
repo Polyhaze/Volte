@@ -4,6 +4,7 @@ using Discord;
 using Gommon;
 using Humanizer;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
@@ -12,30 +13,24 @@ namespace Volte.Services
         private readonly Regex _invitePattern =
             new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);
 
-        private readonly LoggingService _logger;
-
-        public AntilinkService(LoggingService loggingService)
-            => _logger = loggingService;
-
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Antilink ||
                 args.Context.User.IsAdmin(args.Context)) return;
 
-            _logger.Debug(LogSource.Volte,
+            Logger.Debug(LogSource.Volte,
                 $"Checking a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for Discord invite URLs.");
-
-            var matches = _invitePattern.Matches(args.Message.Content);
-            if (matches.IsEmpty())
+            
+            if (!_invitePattern.IsMatch(args.Message.Content, out _))
             {
-                _logger.Debug(LogSource.Volte,
+                Logger.Debug(LogSource.Volte,
                     $"Message checked in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) did not contain any detectable invites; aborted.");
                 return;
             }
 
             _ = await args.Message.TryDeleteAsync("Deleted as it contained an invite link.");
-            var m = await args.Context.CreateEmbed($"{args.Message.Author.Mention}, Don't send invites here.").SendToAsync(args.Context.Channel);
-            _logger.Debug(LogSource.Volte,
+            var m = await args.Context.CreateEmbed($"{args.Message.Author.Mention}, don't send invites here.").SendToAsync(args.Context.Channel);
+            Logger.Debug(LogSource.Volte,
                 $"Deleted a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for containing a Discord invite URL.");
             _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), () => m.TryDeleteAsync());
         }

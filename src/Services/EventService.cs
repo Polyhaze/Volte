@@ -13,12 +13,12 @@ using Qmmands;
 using Qommon.Collections;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
     public sealed class EventService : VolteService
     {
-        private readonly LoggingService _logger;
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;
         private readonly BlacklistService _blacklist;
@@ -34,8 +34,7 @@ namespace Volte.Services
         private readonly bool _shouldSetGame =
             !Config.Game.IsNullOrWhitespace();
 
-        public EventService(LoggingService loggingService,
-            DatabaseService databaseService,
+        public EventService(DatabaseService databaseService,
             AntilinkService antilinkService,
             BlacklistService blacklistService,
             PingChecksService pingChecksService,
@@ -44,7 +43,6 @@ namespace Volte.Services
             QuoteService quoteService,
             AddonService addonService)
         {
-            _logger = loggingService;
             _antilink = antilinkService;
             _db = databaseService;
             _blacklist = blacklistService;
@@ -103,28 +101,28 @@ namespace Volte.Services
             var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
-            _logger.PrintVersion();
-            _logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
-            _logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
-            _logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");
-            _logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
-            _logger.Info(LogSource.Volte, "Connected to:");
-            _logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
-            _logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
-            _logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
+            Logger.PrintVersion();
+            Logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
+            Logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
+            Logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");
+            Logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
+            Logger.Info(LogSource.Volte, "Connected to:");
+            Logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
+            Logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
+            Logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
 
             if (!_shouldStream)
             {
                 if (_shouldSetGame)
                 {
                     await args.Shard.SetGameAsync(Config.Game);
-                    _logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                    Logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
                 }
             }
             else
             {
                 await args.Shard.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
-                _logger.Info(LogSource.Volte,
+                Logger.Info(LogSource.Volte,
                     $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
 
@@ -134,7 +132,7 @@ namespace Volte.Services
                 {
                     if (Config.BlacklistedOwners.Contains(guild.OwnerId))
                     {
-                        _logger.Warn(LogSource.Volte,
+                        Logger.Warn(LogSource.Volte,
                             $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
                         await guild.LeaveAsync();
                     }

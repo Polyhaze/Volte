@@ -16,23 +16,20 @@ namespace Volte.Services
 {
     public sealed class GuildService : VolteService
     {
-        private readonly LoggingService _logger;
         private readonly DiscordShardedClient _client;
 
-        public GuildService(LoggingService loggingService,
-            DiscordShardedClient discordShardedClient)
+        public GuildService(DiscordShardedClient discordShardedClient)
         {
-            _logger = loggingService;
             _client = discordShardedClient;
         }
 
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
-            _logger.Debug(LogSource.Volte, "Joined a guild.");
+            Logger.Debug(LogSource.Volte, "Joined a guild.");
             if (Config.BlacklistedOwners.Contains(args.Guild.Owner.Id))
             {
-                _logger.Warn(LogSource.Volte,
+                Logger.Warn(LogSource.Volte,
                     $"Left guild \"{args.Guild.Name}\" owned by blacklisted owner {args.Guild.Owner}.");
                 await args.Guild.LeaveAsync();
                 return;
@@ -52,18 +49,18 @@ namespace Volte.Services
                     .ToString())
                 .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
 
-            _logger.Debug(LogSource.Volte,
+            Logger.Debug(LogSource.Volte,
                 "Attempting to send the guild owner the introduction message.");
             try
             {
                 await embed.SendToAsync(args.Guild.Owner);
-                _logger.Error(LogSource.Volte,
+                Logger.Error(LogSource.Volte,
                     "Sent the guild owner the introduction message.");
             }
             catch (Exception)
             {
                 var c = args.Guild.TextChannels.OrderByDescending(x => x.Position).FirstOrDefault();
-                _logger.Error(LogSource.Volte,
+                Logger.Error(LogSource.Volte,
                     "Could not DM the guild owner; sending to the upper-most channel instead.");
                 if (c != null) await embed.SendToAsync(c);
             }
@@ -71,7 +68,7 @@ namespace Volte.Services
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
                 if (Config.GuildLogging.Enabled)
-                    _logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                    Logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 
@@ -99,11 +96,11 @@ namespace Volte.Services
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
-            _logger.Debug(LogSource.Volte, "Left a guild.");
+            Logger.Debug(LogSource.Volte, "Left a guild.");
             if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
             {
                 if (Config.GuildLogging.Enabled)
-                    _logger.Warn(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
+                    Logger.Warn(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
                 return;
             }
 

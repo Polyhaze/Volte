@@ -91,12 +91,11 @@ namespace Gommon
             var guild = provider.Get<GuildService>();
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
-            var logger = provider.Get<LoggingService>();
             var mod = provider.Get<ModerationService>();
             
             client.Log += m =>
             {
-                logger.HandleLogEvent(new LogEventArgs(m));
+                Logger.HandleLogEvent(new LogEventArgs(m));
                 return Task.CompletedTask;
             };
             client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));

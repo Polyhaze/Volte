@@ -52,7 +52,7 @@ namespace Volte.Core.Helpers
             }
             catch (Exception e)
             {
-                ctx.Services.Get<LoggingService>().Error(LogSource.Module, string.Empty, e);
+                Logger.Error(LogSource.Module, string.Empty, e);
             }
             finally
             {
@@ -70,8 +70,7 @@ namespace Volte.Core.Helpers
                 Database = ctx.Services.Get<DatabaseService>(),
                 Client = ctx.Client.GetShardFor(ctx.Guild),
                 Data = ctx.Services.Get<DatabaseService>().GetData(ctx.Guild),
-                Logger = ctx.Services.Get<LoggingService>(),
-                Commands = ctx.Services.Get<CommandService>(),
+                Commands = ctx.Services.Get<CommandService>()
             };
 
         private static async Task ExecuteScriptAsync(string code, VolteContext ctx)

@@ -34,7 +34,7 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage)}")
+                    .AppendLine($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, "")}")
                     .ToString());
             }
 
@@ -47,7 +47,7 @@ namespace Volte.Commands.Modules
                 : $"Sending a test message to {welcomeChannel.Mention}.";
 
             return Ok(new StringBuilder()
-                .AppendLine($"Set this guild's welcome message to {Format.Code(message)}")
+                .AppendLine($"Set this guild's welcome message to: {Format.Code(message, "")}")
                 .AppendLine()
                 .AppendLine($"{sendingTest}").ToString(),
                 async _ => {
@@ -72,7 +72,7 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine($"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage)}")
+                    .AppendLine($"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, "")}")
                     .ToString());
             }
 
@@ -85,7 +85,7 @@ namespace Volte.Commands.Modules
                 : $"Sending a test message to {welcomeChannel.Mention}.";
 
             return Ok(new StringBuilder()
-                    .AppendLine($"Set this server's leaving message to {Format.Code(message)}")
+                    .AppendLine($"Set this server's leaving message to: {Format.Code(message, "")}")
                     .AppendLine()
                     .AppendLine($"{sendingTest}").ToString(),
                 async _ =>
@@ -97,6 +97,7 @@ namespace Volte.Commands.Modules
 
         [Command("Dm")]
         [Description("Sets or disables the message to be (attempted to) sent to members upon joining.")]
+        [Remarks("Using this command without any arguments will __reset__ the DM message.")]
         public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
         {
             if (message is null)
@@ -104,7 +105,7 @@ namespace Volte.Commands.Modules
 
             Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
             Db.Save(Context.GuildData);
-            return Ok($"Set the WelcomeDmMessage to: {Format.Code(message)}");
+            return Ok($"Set the WelcomeDmMessage to: {Format.Code(message, "")}");
         }
     }
 }

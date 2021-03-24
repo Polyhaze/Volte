@@ -29,6 +29,13 @@ namespace Volte.Core.Entities
         [JsonPropertyName("auto_parse_quote_urls")]
         public bool AutoParseQuoteUrls { get; set; }
 
+        public void AddTag(Action<Tag> initializer)
+        {
+            var t = new Tag();
+            initializer(t);
+            Tags.Add(t);
+        }
+
         public void AddWarn(Action<Warn> initializer)
         {
             var w = new Warn();

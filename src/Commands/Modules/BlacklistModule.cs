@@ -1,5 +1,8 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
@@ -42,17 +45,20 @@ namespace Volte.Commands.Modules
             var count = Context.GuildData.Configuration.Moderation.Blacklist.Count;
             Context.GuildData.Configuration.Moderation.Blacklist.Clear();
             Db.Save(Context.GuildData);
-            return Ok(
-                $"Cleared the this guild's blacklist, containing **{count}** words.");
+            return Ok($"Cleared the this guild's blacklist, containing {"word".ToQuantity(count)}.");
         }
 
         [Command("Action")]
         [Description("Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
-        public Task<ActionResult> BlacklistActionAsync(string input)
+        [Remarks("Valid actions are `Nothing`, `Warn`, `Kick`, and `Ban`.")]
+        public Task<ActionResult> BlacklistActionAsync(BlacklistAction action)
         {
-            Context.GuildData.Configuration.Moderation.BlacklistAction = BlacklistActions.DetermineAction(input);
+            Context.GuildData.Configuration.Moderation.BlacklistAction = action;
             Db.Save(Context.GuildData);
-            return Ok($"Set {input} as the action performed when a member uses a blacklisted word/phrase.");
+            return action is BlacklistAction.Nothing 
+                ? Ok("Disabled punishing users for blacklist infractions.")
+                    : Ok($"Set {action} as the action performed when a member uses a blacklisted word/phrase.");
+            
         }
 
         [Command("List", "L")]
@@ -63,7 +69,7 @@ namespace Volte.Commands.Modules
                 .WithTitle($"Blacklist for {Context.Guild.Name}")
                 .WithDescription(Context.GuildData.Configuration.Moderation.Blacklist.IsEmpty() 
                     ? "This guild has no words/phrases blacklisted." 
-                    : $"`{Context.GuildData.Configuration.Moderation.Blacklist.Join("`, `")}`")
+                    : Context.GuildData.Configuration.Moderation.Blacklist.Select(x => Format.Code(x)).Join(", "))
             );
         }
     }

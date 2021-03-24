@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Gommon;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 namespace Volte.Core
@@ -25,15 +26,8 @@ namespace Volte.Core
             AllowTrailingCommas = true
         };
 
-        private static bool IsValidConfig()
-        {
-            if (File.Exists(ConfigFilePath))
-            {
-                if (File.ReadAllText(ConfigFilePath).IsNullOrEmpty()) return false;
-                return true;
-            }
-            return false;
-        }
+        private static bool IsValidConfig() 
+            => File.Exists(ConfigFilePath) && !File.ReadAllText(ConfigFilePath).IsNullOrEmpty();
 
         public static bool StartupChecks()
         {
@@ -92,9 +86,8 @@ namespace Volte.Core
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
         }
 
-        public static bool Reload(IServiceProvider provider)
+        public static bool Reload()
         {
-            provider.Get<LoggingService>(out var logger);
             try
             {
                 _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath));
@@ -102,7 +95,7 @@ namespace Volte.Core
             }
             catch (JsonException e)
             {
-                logger.Exception(e);
+                Logger.Exception(e);
                 return false;
             }
         }

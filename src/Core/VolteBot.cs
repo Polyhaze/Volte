@@ -10,6 +10,7 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 using Console = Colorful.Console;
 
@@ -55,7 +56,6 @@ namespace Volte.Core
 
             _provider.Get(out _client);
             _provider.Get(out _cts);
-            _provider.Get<LoggingService>(out var logger);
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
@@ -69,7 +69,7 @@ namespace Volte.Core
             }
             catch (TaskCanceledException) //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
             {
-                logger.Critical(LogSource.Volte,
+                Logger.Critical(LogSource.Volte,
                     "Bot shutdown requested; shutting down and cleaning up.");
                 await ShutdownAsync(_client, _provider);
             }
@@ -100,16 +100,15 @@ namespace Volte.Core
         public async Task InitializeAsync(IServiceProvider provider)
         {
             var commandService = provider.Get<CommandService>();
-            var logger = provider.Get<LoggingService>();
-            
+
             var sw = Stopwatch.StartNew();
             var l = await commandService.AddTypeParsersAsync();
             sw.Stop();
-            logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
+            Logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
             var loaded = commandService.AddModules(GetType().Assembly);
             sw.Stop();
-            logger.Info(LogSource.Volte,
+            Logger.Info(LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
             _client.RegisterVolteEventHandlers(provider);
         }

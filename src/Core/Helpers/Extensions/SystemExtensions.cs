@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -23,6 +24,28 @@ namespace Gommon
             bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference reference = null)
         {
             return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions, reference);
+        }
+    }
+}
+
+namespace System.Linq
+{
+    public static class Extensions
+    {
+        public static bool AnyGet<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate,
+            out TSource value)
+        {
+            source = source.ToArray();
+            if (source.Any(predicate))
+            {
+                value = source.FirstOrDefault(predicate);
+                return true;
+            }
+            else
+            {
+                value = default;
+                return false;
+            }
         }
     }
 }
