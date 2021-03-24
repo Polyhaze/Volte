@@ -21,11 +21,9 @@ namespace Volte.Commands.Modules
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
                 e.WithAuthor(author: null);
             
-            if (!await member.TrySendMessageAsync(
-                embed: e.Build()))
+            if (!await member.TrySendMessageAsync(embed: e.Build()))
             {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {member}!");
+                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
             }
 
             try

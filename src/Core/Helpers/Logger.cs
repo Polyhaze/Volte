@@ -34,10 +34,8 @@ namespace Volte.Core.Helpers
         {
             lock (Lock)
             {
-                if (s is LogSeverity.Debug)
-                {
-                    if (!Config.EnableDebugLogging) return;
-                }
+                if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
+                    return;
 
                 Execute(s, from, message, e);
             }

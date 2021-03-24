@@ -43,6 +43,7 @@ namespace Volte.Services
 
             var m = await c.GetMessageAsync(messageId);
             if (m is null) return;
+            if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return;
 
             await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
                 .ContinueWith(async _ =>

@@ -45,6 +45,9 @@ namespace Volte.Core.Entities
 
             };
         }
+        
+        public EmbedBuilder Apply(EmbedBuilder embedBuilder) 
+            => PollHelper.ApplyPollInfo(embedBuilder, this);
 
         public static PollInfo FromInvalid()
             => new PollInfo { IsValid = false };

@@ -17,7 +17,9 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> SpotifyAsync([Remainder, Description("The member whose Spotify you want to see.")] SocketGuildUser target = null)
         {
             target ??= Context.User;
-            var spotify = Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
+            // i-
+            var spotify = Context.User.Activity?.Cast<SpotifyGame>() ??
+                          Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
             if (spotify != null)
             {
                 return Ok(Context.CreateEmbedBuilder()

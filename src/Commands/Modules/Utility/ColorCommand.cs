@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
 
                 return Ok(async () =>
                 {
-                    await using var stream = new Rgba32(role.Color.R, role.Color.G, role.Color.B).CreateColorImage();
+                    await using var stream = role.Color.ToRgba32().CreateColorImage();
                     await stream.SendFileToAsync(Context.Channel, "role.png", "", false, new EmbedBuilder()
                             .WithColor(role.Color)
                             .WithTitle($"{role.Name}'s Color")
@@ -45,7 +45,7 @@ namespace Volte.Commands.Modules
                 var color = colorTypeParse.Value;
                 return Ok(async () =>
                 {
-                    await using var stream = new Rgba32(color.R, color.G, color.B).CreateColorImage();
+                    await using var stream = color.ToRgba32().CreateColorImage();
                     await stream.SendFileToAsync(Context.Channel, "role.png", "", false, new EmbedBuilder()
                             .WithColor(color)
                             .WithDescription(new StringBuilder()

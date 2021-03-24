@@ -33,14 +33,14 @@ namespace Volte.Commands.Modules
         [Description("Lists all available tags in the current guild.")]
         public Task<ActionResult> TagsAsync()
             => Ok(Context.CreateEmbedBuilder(
-                Context.GuildData.Extras.Tags.Count == 0
+                Context.GuildData.Extras.Tags.IsEmpty()
                     ? "None"
-                    : $"`{Context.GuildData.Extras.Tags.Select(x => x.Name).Join("`, `")}`"
+                    : Context.GuildData.Extras.Tags.Select(x => Format.Code(x.Name)).Join(", ")
             ).WithTitle($"Available Tags for {Context.Guild.Name}"));
         
         [Command("Create", "Add", "New")]
         [Description("Creates a tag with the specified name and response (in that order).")]
-        public async Task<ActionResult> TagCreateAsync([Description("The name of the tag you want to make.")] string name, [Remainder, Description("What you want the tag to reply with.")] string response)
+        public async Task<ActionResult> TagCreateAsync([Description("The name of the tag you want to make. If you want spaces in the name, make sure to surround it in \".")] string name, [Remainder, Description("What you want the tag to reply with.")] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)

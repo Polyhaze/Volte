@@ -19,8 +19,7 @@ namespace Volte.Commands.Modules
                 e.WithAuthor(author: null);
             if (!await member.TrySendMessageAsync(embed: e.Build()))
             {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {member}!");
+                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
             }
             
             var uRole = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.UnverifiedRole);

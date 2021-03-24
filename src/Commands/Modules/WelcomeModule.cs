@@ -79,7 +79,7 @@ namespace Volte.Commands.Modules
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
             Db.Save(Context.GuildData);
             var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
-            var sendingTest = Context.GuildData.Configuration.Welcome.WelcomeChannel == 0 || welcomeChannel is null
+            var sendingTest = welcomeChannel is null
                 ? "Not sending a test message, as you do not have a welcome channel set. " +
                   "Set a welcome channel to fully complete the setup!"
                 : $"Sending a test message to {welcomeChannel.Mention}.";
@@ -98,7 +98,7 @@ namespace Volte.Commands.Modules
         [Command("Dm")]
         [Description("Sets or disables the message to be (attempted to) sent to members upon joining.")]
         [Remarks("Using this command without any arguments will __reset__ the DM message.")]
-        public Task<ActionResult> WelcomeDmMessageAsync(string message = null)
+        public Task<ActionResult> WelcomeDmMessageAsync([Remainder, Description("The message you want to be DM'd to users when they join.")] string message = null)
         {
             if (message is null)
                 return Ok($"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage)}");

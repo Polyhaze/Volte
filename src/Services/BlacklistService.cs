@@ -9,13 +9,6 @@ namespace Volte.Services
 {
     public sealed class BlacklistService : VolteService
     {
-        private readonly ModerationService _mod;
-
-        public BlacklistService(ModerationService moderationService)
-        {
-            _mod = moderationService;
-        }
-
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (args.Data.Configuration.Moderation.Blacklist.IsEmpty()) return;
@@ -30,7 +23,7 @@ namespace Volte.Services
             {
                 await args.Message.TryDeleteAsync();
                 Logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
-                await args.Data.Configuration.Moderation.BlacklistAction.PerformAsync(args.Context, args.Context.User, word, _mod);
+                await args.Data.Configuration.Moderation.BlacklistAction.PerformAsync(args.Context, args.Context.User, word);
             }
             
             /*foreach (var word in args.Data.Configuration.Moderation.Blacklist.Where(word => args.Message.Content.ContainsIgnoreCase(word)))

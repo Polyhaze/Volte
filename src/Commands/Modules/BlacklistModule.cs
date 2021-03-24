@@ -15,10 +15,11 @@ namespace Volte.Commands.Modules
     {
         [Command, DummyCommand, Description("Command group for modifying this guild's phrase Blacklist.")]
         public Task<ActionResult> BaseAsync() => None();
-        
+
         [Command("Add", "A")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
-        public Task<ActionResult> BlacklistAddAsync([Remainder] string phrase)
+        public Task<ActionResult> BlacklistAddAsync([Remainder, Description("The phrase to add to the blacklist.")]
+            string phrase)
         {
             Context.GuildData.Configuration.Moderation.Blacklist.Add(phrase);
             Db.Save(Context.GuildData);
@@ -27,15 +28,16 @@ namespace Volte.Commands.Modules
 
         [Command("Remove", "Rem")]
         [Description("Removes a given word/phrase from the blacklist for this guild.")]
-        public Task<ActionResult> BlacklistRemoveAsync([Remainder] string phrase)
+        public Task<ActionResult> BlacklistRemoveAsync(
+            [Remainder, Description("The phrase to remove from the blacklist.")]
+            string phrase)
         {
             if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 return BadRequest($"**{phrase}** doesn't exist in the blacklist.");
-            
+
             Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
             Db.Save(Context.GuildData);
             return Ok($"Removed **{phrase}** from the word blacklist.");
-
         }
 
         [Command("Clear", "Cl")]
@@ -51,14 +53,15 @@ namespace Volte.Commands.Modules
         [Command("Action")]
         [Description("Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
         [Remarks("Valid actions are `Nothing`, `Warn`, `Kick`, and `Ban`.")]
-        public Task<ActionResult> BlacklistActionAsync(BlacklistAction action)
+        public Task<ActionResult> BlacklistActionAsync(
+            [Description("The action to be performed upon triggering the blacklist.")]
+            BlacklistAction action)
         {
             Context.GuildData.Configuration.Moderation.BlacklistAction = action;
             Db.Save(Context.GuildData);
-            return action is BlacklistAction.Nothing 
+            return action is BlacklistAction.Nothing
                 ? Ok("Disabled punishing users for blacklist infractions.")
-                    : Ok($"Set {action} as the action performed when a member uses a blacklisted word/phrase.");
-            
+                : Ok($"Set {action} as the action performed when a member uses a blacklisted word/phrase.");
         }
 
         [Command("List", "L")]
@@ -67,8 +70,8 @@ namespace Volte.Commands.Modules
         {
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle($"Blacklist for {Context.Guild.Name}")
-                .WithDescription(Context.GuildData.Configuration.Moderation.Blacklist.IsEmpty() 
-                    ? "This guild has no words/phrases blacklisted." 
+                .WithDescription(Context.GuildData.Configuration.Moderation.Blacklist.IsEmpty()
+                    ? "This guild has no words/phrases blacklisted."
                     : Context.GuildData.Configuration.Moderation.Blacklist.Select(x => Format.Code(x)).Join(", "))
             );
         }

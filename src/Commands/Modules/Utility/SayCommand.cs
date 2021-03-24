@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
             => None(async () =>
             {
                 await Context.CreateEmbed(msg).SendToAsync(Context.Channel);
-                await Context.Message.DeleteAsync();
+                _ = await Context.Message.TryDeleteAsync();
             });
 
         [Command("SilentSay", "SSay")]
@@ -27,7 +27,14 @@ namespace Volte.Commands.Modules
                     .WithColor(Config.SuccessColor)
                     .WithDescription(msg)
                     .SendToAsync(Context.Channel);
-                await Context.Message.DeleteAsync();
+                _ = await Context.Message.TryDeleteAsync();
+            });
+
+
+        public Task<ActionResult> SayPlainAsync([Remainder, Description("What to say.")] string msg)
+            => None(async () =>
+            {
+                await Context.Channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.None);
             });
     }
 }

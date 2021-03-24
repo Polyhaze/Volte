@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -26,7 +25,7 @@ namespace Volte.Commands.Modules
             
             return None(async () =>
             {
-                var m = await PollHelper.ApplyPollInfo(embed, pollInfo).SendToAsync(Context.Channel);
+                var m = await pollInfo.Apply(embed).SendToAsync(Context.Channel);
                 _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
                 await PollHelper.AddPollReactionsAsync(pollInfo.Fields.Count, m);
             });

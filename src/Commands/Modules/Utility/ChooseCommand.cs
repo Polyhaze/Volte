@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Get help for Volte's many commands.")]
-        public async Task<ActionResult> HelpAsync([Remainder] string query = null)
+        public async Task<ActionResult> HelpAsync([Remainder, Description("The command or command group to search for.")] string query = null)
         {
             if (query != null)
             {
@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
             }
 
             var e = Context.CreateEmbedBuilder()
-                .WithTitle("Commands")
+                .WithTitle("Command Help")
                 .WithDescription(
                     $"You can use `{Context.GuildData.Configuration.CommandPrefix}help {{command/group}}` for more details on a command or group.");
 
@@ -38,12 +38,12 @@ namespace Volte.Commands.Modules
             foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.IsEmpty()))
             {
                 if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
-
-                foreach (var cmd in mdl.Commands)
+                
+                mdl.Commands.ForEach(cmd =>
                 {
                     var fmt = CommandHelper.FormatCommandShort(cmd);
                     if (fmt != null && !commands.Contains(fmt)) commands.Add(fmt);
-                }
+                });
             }
 
             foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.IsEmpty()))
@@ -57,7 +57,7 @@ namespace Volte.Commands.Modules
             try
             {
                 if (!commands.IsEmpty())
-                    e.AddField("Commands", commands.Join(", "));
+                    e.AddField("Regular Commands", commands.Join(", "));
             }
             catch (ArgumentException)
             {

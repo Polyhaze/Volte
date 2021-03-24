@@ -14,13 +14,13 @@ using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
-    
     public sealed partial class UtilityModule : VolteModule
     {
         public CommandsService CommandsService { get; set; }
-        
-        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)> Disallowed) GetPermissions(
-            SocketGuildUser user)
+
+        private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
+            Disallowed) GetPermissions(
+                IGuildUser user)
         {
             var propDict = user.GuildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.Inherits<bool>())
@@ -28,11 +28,11 @@ namespace Volte.Commands.Modules
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
                 .ToList(); //holy reflection
 
-            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1), propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
-
+            return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1),
+                propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item2));
         }
     }
-    
+
     [RequireGuildAdmin]
     public sealed partial class AdminUtilityModule : VolteModule { }
 
@@ -64,15 +64,14 @@ namespace Volte.Commands.Modules
             if (!data.Configuration.Moderation.ShowResponsibleModerator)
                 e.WithAuthor(author: null);
 
-            if (!await member.TrySendMessageAsync(
-                embed: e.Build()))
+            if (!await member.TrySendMessageAsync(embed: e.Build()))
             {
                 Logger.Warn(LogSource.Volte,
                     $"encountered a 403 when trying to message {member}!");
             }
         }
     }
-    
+
     [Group("Settings", "Setting", "Options", "Option")]
     [Description("The set of commands used to modify how Volte functions in your guild.")]
     [RequireGuildAdmin]

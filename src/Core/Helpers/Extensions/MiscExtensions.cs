@@ -11,6 +11,7 @@ using Volte.Commands;
 using Volte.Commands.Modules;
 using Volte.Core.Entities;
 using Volte.Services;
+using Color = Discord.Color;
 
 namespace Gommon
 {
@@ -27,7 +28,9 @@ namespace Gommon
             return @out;
         }
 
-        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word, ModerationService mod)
+        public static Rgba32 ToRgba32(this Color color) => new Rgba32(color.R, color.G, color.B);
+
+        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
         {
             switch (action)
             {
