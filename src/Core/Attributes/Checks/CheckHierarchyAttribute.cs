@@ -17,7 +17,7 @@ namespace Volte.Core.Entities
             var ctx = context.Cast<VolteContext>();
 
             if (u.IsAdmin(ctx)) return CheckResult.Failed("Cannot ban someone with the configured Admin role.");
-
+            
             return u.IsAdmin(ctx)
                 ? CheckResult.Failed("Cannot ban someone with the configured Admin role.")
                 : ctx.User.Hierarchy >= u.Hierarchy

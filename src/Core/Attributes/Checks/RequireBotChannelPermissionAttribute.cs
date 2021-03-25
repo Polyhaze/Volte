@@ -12,7 +12,7 @@ namespace Volte.Core.Entities
     {
         private readonly ChannelPermission[] _permissions;
 
-        public List<ChannelPermission> Permissions => _permissions.ToList();
+        public IEnumerable<ChannelPermission> Permissions => _permissions.ToList();
 
         public RequireBotChannelPermissionAttribute(params ChannelPermission[] permissions) => _permissions = permissions;
 

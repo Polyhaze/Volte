@@ -13,6 +13,12 @@ namespace Volte.Core.Entities
             Tags = new List<Tag>();
             Warns = new List<Warn>();
         }
+        
+        [JsonPropertyName("mod_log_case_number")]
+        public ulong ModActionCaseNumber { get; set; }
+        
+        [JsonPropertyName("auto_parse_quote_urls")]
+        public bool AutoParseQuoteUrls { get; set; }
 
         [JsonPropertyName("self_roles")]
         public List<string> SelfRoles { get; set; }
@@ -22,12 +28,6 @@ namespace Volte.Core.Entities
 
         [JsonPropertyName("warns")]
         public List<Warn> Warns { get; set; }
-
-        [JsonPropertyName("mod_log_case_number")]
-        public ulong ModActionCaseNumber { get; set; }
-        
-        [JsonPropertyName("auto_parse_quote_urls")]
-        public bool AutoParseQuoteUrls { get; set; }
 
         public void AddTag(Action<Tag> initializer)
         {

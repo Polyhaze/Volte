@@ -51,6 +51,18 @@ namespace Volte.Core.Entities
 
     public sealed class WelcomeOptions
     {
+
+        public static Dictionary<string, string> ValidPlaceholders => new Dictionary<string, string>
+        {
+            {"GuildName", "The name of the guild."},
+            {"UserName", "The user's name."},
+            {"UserMention", "The user's full @."}, 
+            {"OwnerMention", "The guild owner's full @."},
+            {"UserTag", "The user's discriminator (the numbers after their #)."},
+            {"MemberCount", "The amount of people in the guild."},
+            {"UserString", "A user's full username#discriminator; i.e. Greem#1337."}
+        };
+        
         [JsonPropertyName("welcome_channel")]
         public ulong WelcomeChannel { get; set; }
 

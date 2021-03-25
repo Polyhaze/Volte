@@ -10,7 +10,7 @@ namespace Volte.Commands.Modules
 {
     public partial class BotOwnerModule
     {
-        [Command("Addon")]
+        [Command("Addons", "Addon")]
         [Description("Get an addon or list all addons currently initialized in this instance of Volte.")]
         public Task<ActionResult> AddonAsync([Remainder, Description("An addon's name.")]
             string listOrAddon = "list")
@@ -20,7 +20,7 @@ namespace Volte.Commands.Modules
                 if (Addon.LoadedAddons.IsEmpty())
                     return Ok("You have no addons!\n" +
                               "Addons can be made via making an `addons` directory in my installation folder, " +
-                              "and making subfolders with a JSON file with information and a C# file for the addon's logic.");
+                              $"and {Format.Url("following this", "https://github.com/GreemDev/ExampleVolteAddon")}.");
                 return Ok(Context.CreateEmbedBuilder(
                         Addon.LoadedAddons.Select(kvp => $"**{kvp.Key.Name}**: {kvp.Key.Description}").Join("\n")
                     ).WithTitle("All Loaded Addons")

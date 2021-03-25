@@ -54,7 +54,7 @@ namespace Volte.Core.Helpers
             }
             else
             {
-                if (command.Remarks != null) 
+                if (command.Remarks != null)
                     embed.Description += " " + command.Remarks;
 
                 if (command.FullAliases.Count > 1)
@@ -65,6 +65,12 @@ namespace Volte.Core.Helpers
 
                 if (command.CustomArgumentParserType is null)
                     embed.AddField("Usage", FormatUsage(ctx, command));
+
+                if (command.Attributes.Any(x => x is ShowPlaceholdersInHelpAttribute))
+                    embed.AddField("Placeholders",
+                        WelcomeOptions.ValidPlaceholders
+                            .Select(x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
+                            .Join("\n"));
             }
 
             var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
@@ -78,13 +84,10 @@ namespace Volte.Core.Helpers
         public static string FormatUsage(VolteContext ctx, Command cmd)
         {
             static string FormatUsageParameter(Parameter param)
-            {
-                return new StringBuilder(param.IsOptional ? "[" : "{")
+                => new StringBuilder(param.IsOptional ? "[" : "{")
                     .Append(param.Name)
                     .Append(param.IsOptional ? "]" : "}")
                     .ToString();
-
-            }
 
             return new StringBuilder($"{ctx.GuildData.Configuration.CommandPrefix}{cmd.FullAliases.First().ToLower()} ")
                 .Append(cmd.Parameters.Select(FormatUsageParameter).Join(" "))
@@ -98,9 +101,8 @@ namespace Volte.Core.Helpers
             return $"- {(result.IsSuccessful ? DiscordHelper.BallotBoxWithCheck : DiscordHelper.X)} {message}";
         }
 
-        private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba)
-        {
-            return cba switch
+        private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba) 
+            => cba switch
             {
                 RequireBotChannelPermissionAttribute rbcp =>
                     $"I require the channel permission(s) {rbcp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
@@ -112,7 +114,6 @@ namespace Volte.Core.Helpers
                     $"Only usable by **{ctx.Client.GetOwner()}** (bot owner).",
                 _ => $"Unimplemented check: {cba.GetType().AsPrettyString()}. Please report this to my developers :)"
             };
-        }
 
         private static string FormatParameter(Parameter param)
         {

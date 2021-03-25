@@ -1,14 +1,20 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Volte.Commands;
 
 namespace Volte.Core.Entities
 {
     public sealed class Tag
     {
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+        [JsonPropertyName("content")]
         public string Response { get; set; }
+        [JsonPropertyName("creator")]
         public ulong CreatorId { get; set; }
+        [JsonPropertyName("guild")]
         public ulong GuildId { get; set; }
+        [JsonPropertyName("uses")]
         public long Uses { get; set; }
 
         public string SanitizeContent() 

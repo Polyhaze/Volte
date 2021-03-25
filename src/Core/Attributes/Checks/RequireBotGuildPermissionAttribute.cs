@@ -12,7 +12,7 @@ namespace Volte.Core.Entities
     {
         private readonly GuildPermission[] _permissions;
         
-        public List<GuildPermission> Permissions => _permissions.ToList();
+        public IEnumerable<GuildPermission> Permissions => _permissions.ToList();
 
         public RequireBotGuildPermissionAttribute(params GuildPermission[] perms) => _permissions = perms;
 

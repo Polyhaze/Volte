@@ -29,6 +29,7 @@ namespace Volte.Commands.Modules
 
         [Command("Join")]
         [Description("Sets or shows the welcome message used to welcome new users for this guild.")]
+        [ShowPlaceholdersInHelp]
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
             if (message is null)
@@ -67,6 +68,7 @@ namespace Volte.Commands.Modules
 
         [Command("Left")]
         [Description("Sets or shows the leaving message used to say bye for this guild.")]
+        [ShowPlaceholdersInHelp]
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {
             if (message is null)
@@ -98,6 +100,7 @@ namespace Volte.Commands.Modules
         [Command("Dm")]
         [Description("Sets or disables the message to be (attempted to) sent to members upon joining.")]
         [Remarks("Using this command without any arguments will __reset__ the DM message.")]
+        [ShowPlaceholdersInHelp]
         public Task<ActionResult> WelcomeDmMessageAsync([Remainder, Description("The message you want to be DM'd to users when they join.")] string message = null)
         {
             if (message is null)
