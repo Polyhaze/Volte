@@ -11,6 +11,8 @@ namespace Volte.Services
     public sealed class DatabaseService : VolteService, IDisposable
     {
         public static readonly LiteDatabase Database = new LiteDatabase($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
+        private const string GuildsCollection = "guilds";
+        private const string RemindersCollection = "reminders";
 
         private readonly DiscordShardedClient _client;
 
@@ -23,7 +25,7 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            var coll = Database.GetCollection<GuildData>("guilds");
+            var coll = Database.GetCollection<GuildData>(GuildsCollection);
             var conf = coll.FindOne(g => g.Id == id);
             if (conf != null) return conf;
             var newConf = Create(_client.GetGuild(id));
@@ -31,9 +33,27 @@ namespace Volte.Services
             return newConf;
         }
 
+        public IEnumerable<Reminder> GetReminders(IUser user) => GetReminders(user.Id);
+
+        public IEnumerable<Reminder> GetReminders(ulong id)
+        {
+            var coll = Database.GetCollection<Reminder>(RemindersCollection);
+            foreach (var reminder in coll.Find(r => r.CreatorId == id))
+                yield return reminder;
+        }
+
+        public bool TryDeleteReminder(Reminder reminder) 
+            => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
+
+        public IEnumerable<Reminder> GetAllReminders() 
+            => Database.GetCollection<Reminder>(RemindersCollection).FindAll();
+
+
+        public void CreateReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Insert(reminder);
+
         public void Save(GuildData newConfig)
         {
-            var collection = Database.GetCollection<GuildData>("guilds");
+            var collection = Database.GetCollection<GuildData>(GuildsCollection);
             collection.EnsureIndex(s => s.Id, true);
             collection.Update(newConfig);
         }

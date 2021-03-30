@@ -61,7 +61,8 @@ namespace Volte.Core
             await _client.StartAsync();
 
             await InitializeAsync(_provider);
-            new Thread(async () => await _provider.Get<AddonService>().InitAsync()).Start();
+            Executor.Execute(async () => await _provider.Get<AddonService>().InitAsync());
+            _provider.Get<ReminderService>().Initialize();
 
             try
             {
