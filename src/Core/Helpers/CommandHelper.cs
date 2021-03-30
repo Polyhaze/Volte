@@ -71,6 +71,10 @@ namespace Volte.Core.Helpers
                         WelcomeOptions.ValidPlaceholders
                             .Select(x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
                             .Join("\n"));
+
+                if (command.Attributes.Any(x => x is ShowTimeFormatInHelpAttribute))
+                    embed.AddField("Example Valid Time",
+                        $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
             }
 
             var checks = CommandUtilities.EnumerateAllChecks(command).ToList();

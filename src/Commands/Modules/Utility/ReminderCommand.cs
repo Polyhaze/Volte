@@ -9,6 +9,8 @@ namespace Volte.Commands.Modules
     public partial class UtilityModule
     {
         [Command("Remind", "RemindMe", "Reminder")]
+        [Description("Creates a reminder.")]
+        [ShowTimeFormatInHelp]
         public Task<ActionResult> ReminderAsync(
             [Description("The time, from now, to set the reminder for.")] TimeSpan time, 
             [Description("What you wanted to be reminded of."), Remainder] string reminder)
