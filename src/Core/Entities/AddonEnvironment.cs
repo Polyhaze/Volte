@@ -2,7 +2,6 @@ using System;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 using Volte.Services;
 
 namespace Volte.Core.Entities
@@ -16,7 +15,6 @@ namespace Volte.Core.Entities
 
         public AddonEnvironment(IServiceProvider provider)
         {
-            //Commands.GetTypeParser<TimeSpan>().ParseAsync()
             Services = provider;
             Client = provider.Get<DiscordShardedClient>();
             Commands = provider.Get<CommandService>();
