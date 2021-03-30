@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
+using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -26,7 +27,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
-        private readonly AddonService _addonService;
+        private readonly DiscordShardedClient _client;
 
         private readonly bool _shouldStream =
             !Config.Streamer.IsNullOrWhitespace();
@@ -41,7 +42,7 @@ namespace Volte.Services
             CommandService commandService,
             CommandsService commandsService,
             QuoteService quoteService,
-            AddonService addonService)
+            DiscordShardedClient client)
         {
             _antilink = antilinkService;
             _db = databaseService;
@@ -50,7 +51,7 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
-            _addonService = addonService;
+            _client = client;
         }
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
@@ -75,7 +76,7 @@ namespace Volte.Services
                 var result = await _commandService.ExecuteAsync(cmd, args.Context);
 
                 if (result is CommandNotFoundResult) return;
-
+                
                 sw.Stop();
                 await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
             }
@@ -84,9 +85,8 @@ namespace Volte.Services
                 if (args.Message.Content.Equals($"<@{args.Context.Client.CurrentUser.Id}>")
                     || args.Message.Content.Equals($"<@!{args.Context.Client.CurrentUser.Id}>"))
                 {
-                    await new EmbedBuilder().WithColor(Config.SuccessColor).WithDescription(
-                            $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
-                            $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
+                    await args.Context.CreateEmbedBuilder($"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                                                          $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                         .ReplyToAsync(args.Message);
                     return;
                 }

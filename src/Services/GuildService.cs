@@ -77,7 +77,7 @@ namespace Volte.Services
             var bots = all.Where(u => u.IsBot).ToList();
 
             var e = new EmbedBuilder()
-                .WithAuthor(args.Guild.Owner)
+                .WithAuthor(await _client.Rest.GetUserAsync(args.Guild.OwnerId))
                 .WithTitle("Joined Guild")
                 .AddField("Name", args.Guild.Name, true)
                 .AddField("ID", args.Guild.Id, true)
@@ -105,7 +105,7 @@ namespace Volte.Services
             }
 
             await new EmbedBuilder()
-                .WithAuthor(args.Guild.Owner)
+                .WithAuthor(await _client.Rest.GetUserAsync(args.Guild.OwnerId))
                 .WithTitle("Left Guild")
                 .AddField("Name", args.Guild.Name, true)
                 .AddField("ID", args.Guild.Id, true)

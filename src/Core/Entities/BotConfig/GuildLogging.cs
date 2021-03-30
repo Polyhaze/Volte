@@ -42,6 +42,5 @@ namespace Volte.Core.Entities
 
             return channel != null;
         }
-
     }
 }

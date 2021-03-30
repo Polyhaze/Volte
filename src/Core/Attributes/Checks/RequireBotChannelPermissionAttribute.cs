@@ -27,11 +27,9 @@ namespace Volte.Core.Entities
                     return CheckResult.Successful;
             }
 
-            await new EmbedBuilder()
+            await ctx.CreateEmbedBuilder()
                 .AddField("Error in Command", ctx.Command.Name)
                 .AddField("Error Reason", $"I am missing the following channel-level permissions required to execute this command: `{ _permissions.Select(x => x.ToString()).Join(", ")}`")
-                .WithAuthor(ctx.User)
-                .WithErrorColor()
                 .SendToAsync(ctx.Channel);
 
             return CheckResult.Failed("Bot is missing the required permissions to execute this command.");

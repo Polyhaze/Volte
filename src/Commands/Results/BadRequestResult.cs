@@ -21,7 +21,6 @@ namespace Volte.Commands
             var e = ctx.CreateEmbedBuilder()
                 .WithTitle("No can do, partner.")
                 .WithDescription(Reason)
-                .WithColor(new Color(Config.ErrorColor))
                 .WithTimestamp(DateTimeOffset.Now);
             IUserMessage message;
             if (shouldReply)

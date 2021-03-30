@@ -121,7 +121,6 @@ namespace Volte.Services
                     .AddField("Error in Command", args.Context.Command.Name)
                     .AddField("Error Reason", reason)
                     .AddField("Usage", CommandHelper.FormatUsage(args.Context, args.Context.Command))
-                    .WithErrorColor()
                     .SendToAsync(args.Context.Channel);
 
                 if (!Config.LogAllCommands) return;

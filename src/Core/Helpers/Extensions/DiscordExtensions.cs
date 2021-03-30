@@ -59,6 +59,13 @@ namespace Gommon
                 return false;
             }
         }
+        
+        public static SocketRole GetHighestRole(this SocketGuildUser member)
+            => member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
+        
+        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member) 
+            => member.Roles.Where(x => x.HasColor())
+                .OrderByDescending(x => x.Position).FirstOrDefault();
 
         public static async Task<bool> TrySendMessageAsync(this SocketTextChannel channel, string text = null,
             bool isTts = false, Embed embed = null, RequestOptions options = null)
@@ -150,6 +157,9 @@ namespace Gommon
         public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
         public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
+
+        public static EmbedBuilder WithRelevantColor(this EmbedBuilder e, SocketGuildUser user) =>
+            e.WithColor(user.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor));
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
 

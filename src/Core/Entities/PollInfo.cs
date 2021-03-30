@@ -2,9 +2,7 @@
 using System.Linq;
 using Discord;
 using Gommon;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Volte.Core.Helpers;
-using Volte.Services;
 
 // ReSharper disable MemberCanBePrivate.Global
 
