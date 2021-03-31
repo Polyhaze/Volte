@@ -15,17 +15,17 @@ namespace Volte.Commands.Modules
             [Description("The time, from now, to set the reminder for.")] TimeSpan time, 
             [Description("What you wanted to be reminded of."), Remainder] string reminder)
         {
-            var end = DateTime.Now.Add(time);
+            var end = Context.Now.Add(time);
             Db.CreateReminder(new Reminder
             {
                 TargetTime = end,
-                CreationTime = DateTime.Now,
+                CreationTime = Context.Now,
                 CreatorId = Context.User.Id,
                 GuildId = Context.Guild.Id,
                 ChannelId = Context.Channel.Id,
                 Value = reminder
             });
-            return Ok($"I'll remind you in {end.Humanize(dateToCompareAgainst: DateTime.Now)}.");
+            return Ok($"I'll remind you in {end.Humanize(dateToCompareAgainst: Context.Now)}.");
         }
     }
 }

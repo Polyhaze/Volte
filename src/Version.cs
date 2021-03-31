@@ -7,9 +7,9 @@ namespace Volte
         public static SysVer AsDotNetVersion() => new SysVer(Major, Minor, Patch, Hotfix);
         private static int Major => 3;
         private static int Minor => 6;
-        private static int Patch => 0;
+        private static int Patch => 1;
         private static int Hotfix => 0;
-        public static DevelopmentStage ReleaseType => DevelopmentStage.Development;
+        public static DevelopmentStage ReleaseType => DevelopmentStage.Release;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;
         public enum DevelopmentStage

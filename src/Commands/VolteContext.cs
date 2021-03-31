@@ -25,7 +25,7 @@ namespace Volte.Commands
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
             GuildData = db.GetData(Guild);
-            Now = DateTimeOffset.UtcNow;
+            Now = DateTime.Now;
         }
         
         
@@ -36,7 +36,7 @@ namespace Volte.Commands
         public readonly SocketGuildUser User;
         public readonly SocketUserMessage Message;
         public readonly GuildData GuildData;
-        public readonly DateTimeOffset Now;
+        public readonly DateTime Now;
 
         public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
