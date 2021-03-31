@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Gommon;
 using Volte.Core.Helpers;
@@ -17,7 +18,7 @@ namespace Volte.Commands.Modules
         {
             if (query != null)
             {
-                var search = CommandService.FindCommands(query).ToList();
+                var search = CommandService.FindCommands(query);
                 if (search.IsEmpty())
                     return BadRequest($"No command or group found for `{query}`.");
 
@@ -27,56 +28,64 @@ namespace Volte.Commands.Modules
             var e = Context.CreateEmbedBuilder()
                 .WithTitle("Command Help")
                 .WithDescription(
-                    $"You can use `{Context.GuildData.Configuration.CommandPrefix}help {{command/group}}` for more details on a command or group.");
+                    $"You can use `{CommandHelper.FormatUsage(Context, CommandService.GetCommand("Help"))}` for more details on a command or group.");
 
-            var commands = new List<string>();
-            var groupCommands = new List<string>();
-
-            //module with aliases: command group; without: regular module
-            foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.IsEmpty()))
-            {
-                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
-                
-                mdl.Commands.ForEach(cmd =>
-                {
-                    var fmt = CommandHelper.FormatCommandShort(cmd);
-                    if (fmt != null && !commands.Contains(fmt)) commands.Add(fmt);
-                });
-            }
-
-            foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.IsEmpty()))
-            {
-                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
-
-                var fmt = CommandHelper.FormatModuleShort(mdl);
-                if (fmt != null && !groupCommands.Contains(fmt)) groupCommands.Add(fmt);
-            }
+            var cmds = await GetAllRegularCommandsAsync().ToListAsync();
+            var groupCmds = await GetAllGroupCommandsAsync().ToListAsync();
 
             try
             {
-                if (!commands.IsEmpty())
-                    e.AddField("Regular Commands", commands.Join(", "));
+                if (!cmds.IsEmpty())
+                    e.AddField("Regular Commands", cmds.Join(", "));
             }
             catch (ArgumentException)
             {
-                e.WithDescription(new StringBuilder(e.Description).AppendLine().AppendLine()
-                    .AppendLine(commands.Join(", "))
+                e.WithDescription(new StringBuilder(e.Description)
+                    .AppendLine().AppendLine().AppendLine(cmds.Join(", "))
                     .ToString());
             }
 
             try
             {
-                if (!groupCommands.IsEmpty())
-                    e.AddField("Group Commands", groupCommands.Join(", "));
+                if (!groupCmds.IsEmpty())
+                    e.AddField("Group Commands", groupCmds.Join(", "));
             }
             catch (ArgumentException)
             {
-                e.WithDescription(new StringBuilder(e.Description).AppendLine().AppendLine()
-                    .AppendLine(groupCommands.Join(", "))
+                e.WithDescription(new StringBuilder(e.Description)
+                    .AppendLine().AppendLine().AppendLine(groupCmds.Join(", "))
                     .ToString());
             }
 
             return Ok(e);
         }
+        
+        //module with aliases: command group; without: regular module
+
+        private async IAsyncEnumerable<string> GetAllRegularCommandsAsync()
+        {
+            foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.IsEmpty()))
+            {
+                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
+
+                foreach (var cmd in mdl.Commands)
+                {
+                    var fmt = CommandHelper.FormatCommandShort(cmd);
+                    if (fmt != null) yield return fmt;
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<string> GetAllGroupCommandsAsync()
+        {
+            foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.IsEmpty()))
+            {
+                if (!await CommandHelper.CanShowModuleAsync(Context, mdl)) continue;
+
+                var fmt = CommandHelper.FormatModuleShort(mdl);
+                if (fmt != null) yield return fmt;
+            }
+        }
+        
     }
 }

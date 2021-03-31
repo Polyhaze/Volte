@@ -25,11 +25,6 @@ namespace Volte.Services
                 Logger.Debug(LogSource.Volte, $"Deleted a message for containing {word}.");
                 await args.Data.Configuration.Moderation.BlacklistAction.PerformAsync(args.Context, args.Context.User, word);
             }
-            
-            /*foreach (var word in args.Data.Configuration.Moderation.Blacklist.Where(word => args.Message.Content.ContainsIgnoreCase(word)))
-            {
-
-            }*/
         }
     }
 }

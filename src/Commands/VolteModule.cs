@@ -10,11 +10,9 @@ namespace Volte.Commands
     public abstract class VolteModule : ModuleBase<VolteContext>
     {
         public DatabaseService Db { get; set; }
-        public EventService EventService { get; set; }
         public ModerationService ModerationService { get; set; }
         public CommandService CommandService { get; set; }
-
-
+        
         protected ActionResult Ok(
             string text, 
             Func<IUserMessage, Task> afterCompletion = null,

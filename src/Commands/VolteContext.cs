@@ -19,7 +19,7 @@ namespace Volte.Commands
         private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
         {
             provider.Get<DatabaseService>(out var db);
-            provider.Get(out Client);
+            Client = provider.Get<DiscordShardedClient>();
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
@@ -30,13 +30,13 @@ namespace Volte.Commands
         
         
 
-        public readonly DiscordShardedClient Client;
-        public readonly SocketGuild Guild;
-        public readonly SocketTextChannel Channel;
-        public readonly SocketGuildUser User;
-        public readonly SocketUserMessage Message;
-        public readonly GuildData GuildData;
-        public readonly DateTime Now;
+        public DiscordShardedClient Client { get; }
+        public SocketGuild Guild { get; }
+        public SocketTextChannel Channel { get; }
+        public SocketGuildUser User { get; }
+        public SocketUserMessage Message { get; }
+        public GuildData GuildData { get; }
+        public DateTime Now { get; }
 
         public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 

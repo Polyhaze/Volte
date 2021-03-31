@@ -78,11 +78,16 @@ namespace Volte.Services
                 return;
             }
 
+            var message = await channel.GetMessageAsync(reminder.MessageId);
+            var timestamp = message != null 
+                ? Format.Url(reminder.CreationTime.Humanize(false), message.GetJumpUrl()) 
+                : reminder.CreationTime.Humanize(false);
+
             var e = new EmbedBuilder()
                 .WithTitle("Reminder")
                 .WithRelevantColor(author)
                 .WithDescription(
-                    $"You asked me {reminder.CreationTime.Humanize(false)} to remind you about: {Format.Code(reminder.Value, "")}");
+                    $"You asked me {timestamp} to remind you about: {Format.Code(reminder.Value, "")}");
             await channel.SendMessageAsync(author.Mention, embed: e.Build());
             _db.TryDeleteReminder(reminder);
         }

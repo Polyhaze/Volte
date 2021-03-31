@@ -27,25 +27,3 @@ namespace Gommon
         }
     }
 }
-
-namespace System.Linq
-{
-    public static class Extensions
-    {
-        public static bool AnyGet<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate,
-            out TSource value)
-        {
-            source = source.ToArray();
-            if (source.Any(predicate))
-            {
-                value = source.FirstOrDefault(predicate);
-                return true;
-            }
-            else
-            {
-                value = default;
-                return false;
-            }
-        }
-    }
-}

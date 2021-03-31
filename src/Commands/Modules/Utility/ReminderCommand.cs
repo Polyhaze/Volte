@@ -16,15 +16,7 @@ namespace Volte.Commands.Modules
             [Description("What you wanted to be reminded of."), Remainder] string reminder)
         {
             var end = Context.Now.Add(time);
-            Db.CreateReminder(new Reminder
-            {
-                TargetTime = end,
-                CreationTime = Context.Now,
-                CreatorId = Context.User.Id,
-                GuildId = Context.Guild.Id,
-                ChannelId = Context.Channel.Id,
-                Value = reminder
-            });
+            Db.CreateReminder(Reminder.FromContext(Context, end, reminder));
             return Ok($"I'll remind you in {end.Humanize(dateToCompareAgainst: Context.Now)}.");
         }
     }
