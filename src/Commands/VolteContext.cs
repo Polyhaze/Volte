@@ -42,7 +42,7 @@ namespace Volte.Commands
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
             .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor))
-            .WithAuthor(User)
+            .WithAuthor(User.ToString(), User.GetAvatarUrl() ?? User.GetDefaultAvatarUrl())
             .WithDescription(content ?? string.Empty);
 
         public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);

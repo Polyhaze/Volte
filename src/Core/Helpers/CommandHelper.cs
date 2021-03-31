@@ -49,6 +49,7 @@ namespace Volte.Core.Helpers
             {
                 embed.AddField("Subcommands", command.Module.Commands
                     .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute))
+                    .Where(x => x.RunChecksAsync(ctx).Result.IsSuccessful) //yes; i know .Result is bad, however linq's Where() doesn't let you use async as its an invalid return type.
                     .Select(x => FormatCommandShort(x, false))
                     .Join(", "));
             }
