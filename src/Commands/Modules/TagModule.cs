@@ -10,7 +10,6 @@ using Volte.Core.Entities;
 namespace Volte.Commands.Modules
 {
     [Group("Tags")]
-    [RequireGuildModerator]
     public class TagModule : VolteModule
     {
         [Command, DummyCommand, Description("The command group for modifying and creating tags.")]
@@ -40,6 +39,7 @@ namespace Volte.Commands.Modules
         
         [Command("Create", "Add", "New")]
         [Description("Creates a tag with the specified name and response (in that order).")]
+        [RequireGuildModerator]
         public async Task<ActionResult> TagCreateAsync([Description("The name of the tag you want to make. If you want spaces in the name, make sure to surround it in \".")] string name, [Remainder, Description("What you want the tag to reply with.")] string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
@@ -71,6 +71,7 @@ namespace Volte.Commands.Modules
 
         [Command("Edit", "Ed", "E")]
         [Description("Edit a tag's content if it exists.")]
+        [RequireGuildModerator]
         public Task<ActionResult> TagEditAsync([Description("The tag whose content you want to modify.")] Tag tag, [Remainder, Description("The new content of the tag.")] string response)
         {
             Context.GuildData.Extras.Tags.Remove(tag);
@@ -82,6 +83,7 @@ namespace Volte.Commands.Modules
 
         [Command("Delete", "Del", "Rem")]
         [Description("Deletes a tag if it exists.")]
+        [RequireGuildModerator]
         public async Task<ActionResult> TagDeleteAsync([Remainder, Description("The tag to delete.")] Tag tag)
         {
             Context.GuildData.Extras.Tags.Remove(tag);

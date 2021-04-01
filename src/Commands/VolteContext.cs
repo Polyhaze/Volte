@@ -27,8 +27,7 @@ namespace Volte.Commands
             GuildData = db.GetData(Guild);
             Now = DateTime.Now;
         }
-        
-        
+
 
         public DiscordShardedClient Client { get; }
         public SocketGuild Guild { get; }
@@ -44,13 +43,5 @@ namespace Volte.Commands
             .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor))
             .WithAuthor(User.ToString(), User.GetAvatarUrl() ?? User.GetDefaultAvatarUrl())
             .WithDescription(content ?? string.Empty);
-
-        public Task ReplyAsync(string content) => Channel.SendMessageAsync(content);
-
-        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Channel);
-
-        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Channel);
-
-        public Task ReactAsync(string unicode) => Message.AddReactionAsync(new Emoji(unicode));
     }
 }

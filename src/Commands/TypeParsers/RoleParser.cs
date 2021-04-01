@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -12,9 +11,7 @@ namespace Volte.Commands
     [VolteTypeParser]
     public sealed class RoleParser : TypeParser<SocketRole>
     {
-        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(
-            Parameter param,
-            string value,
+        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(Parameter _, string value,
             CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();

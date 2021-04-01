@@ -67,6 +67,14 @@ namespace Volte.Core.Entities
 
             throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
         }
+        
+        public Task ReplyAsync(string content) => Context.Channel.SendMessageAsync(content);
+
+        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Context.Channel);
+
+        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Context.Channel);
+
+        public Task ReactAsync(string unicode) => Context.Message.AddReactionAsync(new Emoji(unicode));
 
         public string Inheritance<T>() => Inheritance(typeof(T));
         public string Inheritance(object obj) => Inheritance(obj.GetType());

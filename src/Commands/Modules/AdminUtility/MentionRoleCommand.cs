@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
             return Ok(async () =>
             {
                 await role.ModifyAsync(x => x.Mentionable = true);
-                await Context.ReplyAsync(role.Mention);
+                await Context.Channel.SendMessageAsync(role.Mention);
                 await role.ModifyAsync(x => x.Mentionable = false);
             });
         }

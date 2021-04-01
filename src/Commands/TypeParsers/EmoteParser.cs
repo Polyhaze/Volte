@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
@@ -10,10 +9,7 @@ namespace Volte.Commands
     [VolteTypeParser]
     public sealed class EmoteParser : TypeParser<IEmote>
     {
-        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(
-            Parameter param,
-            string value,
-            CommandContext context) 
+        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(Parameter _, string value, CommandContext __)
             => Emote.TryParse(value, out var emote)
                 ? TypeParserResult<IEmote>.Successful(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
