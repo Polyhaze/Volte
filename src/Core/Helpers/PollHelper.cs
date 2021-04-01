@@ -8,12 +8,9 @@ namespace Volte.Core.Helpers
 {
     public static class PollHelper
     {
-        public static PollInfo GetPollBody(IEnumerable<string> choices)
-        {
-            var c = choices as string[] ?? choices.ToArray();
-            return PollInfo.FromDefaultFields(c.Length - 1, c);
-        }
-
+        public static PollInfo GetPollBody(IEnumerable<string> choices) 
+            => PollInfo.FromDefaultFields(choices as string[] ?? choices.ToArray());
+        
         public static EmbedBuilder ApplyPollInfo(EmbedBuilder embedBuilder, PollInfo pollInfo)
         {
             foreach (var (key, value) in pollInfo.Fields)
@@ -38,38 +35,29 @@ namespace Volte.Core.Helpers
                 _ => Task.CompletedTask
             };
 
-            async Task One()
-            {
-                await msg.AddReactionAsync(one);
-            }
-
+            Task One() => msg.AddReactionAsync(one);
+            
             async Task Two()
             {
-                await msg.AddReactionAsync(one);
+                await One();
                 await msg.AddReactionAsync(two);
             }
             
             async Task Three()
             {
-                await msg.AddReactionAsync(one);
-                await msg.AddReactionAsync(two);
+                await Two();
                 await msg.AddReactionAsync(three);
             }
             
             async Task Four()
             {
-                await msg.AddReactionAsync(one);
-                await msg.AddReactionAsync(two);
-                await msg.AddReactionAsync(three);
+                await Three();
                 await msg.AddReactionAsync(four);
             }
             
             async Task Five()
             {
-                await msg.AddReactionAsync(one);
-                await msg.AddReactionAsync(two);
-                await msg.AddReactionAsync(three);
-                await msg.AddReactionAsync(four);
+                await Four();
                 await msg.AddReactionAsync(five);
             }
             

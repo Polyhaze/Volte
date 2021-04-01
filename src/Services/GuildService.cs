@@ -73,8 +73,8 @@ namespace Volte.Services
             }
 
             var all = args.Guild.Users;
-            var users = all.Where(u => !u.IsBot).ToList();
-            var bots = all.Where(u => u.IsBot).ToList();
+            var users = all.Where(u => !u.IsBot).ToArray();
+            var bots = all.Where(u => u.IsBot).ToArray();
 
             var e = new EmbedBuilder()
                 .WithAuthor(await _client.Rest.GetUserAsync(args.Guild.OwnerId))
@@ -83,10 +83,10 @@ namespace Volte.Services
                 .AddField("ID", args.Guild.Id, true)
                 .WithThumbnailUrl(args.Guild.IconUrl)
                 .WithCurrentTimestamp()
-                .AddField("Users", users.Count, true)
-                .AddField("Bots", bots.Count, true);
+                .AddField("Users", users.Length, true)
+                .AddField("Bots", bots.Length, true);
 
-            if (bots.Count > users.Count)
+            if (bots.Length > users.Length)
                 await channel.SendMessageAsync(
                     $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", false,
                     e.WithSuccessColor().Build());

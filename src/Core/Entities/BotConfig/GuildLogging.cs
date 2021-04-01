@@ -11,6 +11,7 @@ namespace Volte.Core.Entities
             GuildId = ulong.MinValue;
             ChannelId = ulong.MinValue;
         }
+        
         [JsonPropertyName("enabled")]
         public bool Enabled { get; set; }
         [JsonPropertyName("guild_id")]

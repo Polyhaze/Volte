@@ -60,7 +60,7 @@ namespace Volte.Core
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
 
-            await InitializeAsync(_provider);
+            Initialize(_provider);
             Executor.Execute(async () => await _provider.Get<AddonService>().InitAsync());
             _provider.Get<ReminderService>().Initialize();
 
@@ -70,8 +70,6 @@ namespace Volte.Core
             }
             catch (TaskCanceledException) //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
             {
-                Logger.Critical(LogSource.Volte,
-                    "Bot shutdown requested; shutting down and cleaning up.");
                 await ShutdownAsync(_client, _provider);
             }
         }
@@ -79,6 +77,9 @@ namespace Volte.Core
         // ReSharper disable SuggestBaseTypeForParameter
         public static async Task ShutdownAsync(DiscordShardedClient client, IServiceProvider provider)
         {
+            Logger.Critical(LogSource.Volte,
+                "Bot shutdown requested; shutting down and cleaning up.");
+            
             if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
             {
                 await new EmbedBuilder()
@@ -98,12 +99,12 @@ namespace Volte.Core
             Environment.Exit(0);
         }
         
-        public async Task InitializeAsync(IServiceProvider provider)
+        public void Initialize(IServiceProvider provider)
         {
             var commandService = provider.Get<CommandService>();
 
             var sw = Stopwatch.StartNew();
-            var l = await commandService.AddTypeParsersAsync();
+            var l = commandService.AddTypeParsers();
             sw.Stop();
             Logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();

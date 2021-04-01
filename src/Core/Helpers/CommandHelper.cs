@@ -113,10 +113,9 @@ namespace Volte.Core.Helpers
                     $"I require the channel permission(s) {rbcp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
                 RequireBotGuildPermissionAttribute rbgp =>
                     $"I require the guild permission(s) {rbgp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
-                RequireGuildAdminAttribute _ => "You need the to have the Admin role.",
-                RequireGuildModeratorAttribute _ => "You need the to have the Moderator role.",
-                RequireBotOwnerAttribute _ =>
-                    $"Only usable by **{ctx.Client.GetOwner()}** (bot owner).",
+                RequireGuildAdminAttribute _ => "You need to have the Admin role.",
+                RequireGuildModeratorAttribute _ => "You need to have the Moderator role.",
+                RequireBotOwnerAttribute _ => $"Only usable by **{ctx.Client.GetOwner()}** (bot owner).",
                 _ => $"Unimplemented check: {cba.GetType().AsPrettyString()}. Please report this to my developers :)"
             };
 

@@ -10,14 +10,13 @@ namespace Volte.Core.Entities
 {
     public sealed class PollInfo
     {
-        public static PollInfo FromFields(params (string Name, string Value)[] fields) 
-            => new PollInfo().AddFields(fields);
+        public static PollInfo FromFields(params (string Name, string Value)[] fields) => new PollInfo().AddFields(fields);
 
-        public static PollInfo FromDefaultFields(int count, IEnumerable<string> choices)
+        public static PollInfo FromDefaultFields(IEnumerable<string> choices)
         {
             var (one, two, three, four, five) = DiscordHelper.GetPollEmojis();
             var collection = choices as string[] ?? choices.ToArray();
-            return count switch
+            return (collection.Length - 1) switch
             {
                 1 => FromFields(($"{one}", collection[1])),
 

@@ -16,9 +16,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> MentionRoleAsync([Remainder, Description("The role to mention.")] SocketRole role)
         {
             if (role.IsMentionable)
-            {
                 return Ok(role.Mention, shouldEmbed: false);
-            }
 
             return Ok(async () =>
             {

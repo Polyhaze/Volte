@@ -20,8 +20,7 @@ namespace Volte.Commands.Modules
             => EvalAsync($"Inspect({obj})");
 
         [Command("Inheritance", "Inh")]
-        [Description(
-            "Shows the inheritance tree of a .NET type. This just runs an eval using the Inheritance<T>() function.")]
+        [Description("Shows the inheritance tree of a .NET type. This just runs an eval using the Inheritance<T>() function.")]
         public Task<ActionResult> InheritanceAsync(
             [Remainder, Description("The .NET type to show inheritance of; aka the value of T.")]
             string type)

@@ -19,28 +19,22 @@ namespace Gommon
         public static string SanitizeParserName(this Type type)
             => type.Name.Replace("Parser", string.Empty);
 
-        private static string AsPrettyString(this Command c)
-            => c.FullAliases.Count > 1 ? $"({c.FullAliases.Join('|')})" : c.Name;
-
-        internal static Task<List<Type>> AddTypeParsersAsync(this CommandService service)
+        internal static IEnumerable<Type> AddTypeParsers(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;
             var meth = typeof(CommandService).GetMethod("AddTypeParser");
             var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>()).ToList();
-
-            var loadedTypes = new List<Type>();
-            parsers.ForEach(parserType =>
+            
+            foreach (var parser in parsers)
             {
-                var attr = parserType.GetCustomAttribute<VolteTypeParserAttribute>();
-                var parser = parserType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
+                var attr = parser.GetCustomAttribute<VolteTypeParserAttribute>();
+                var parserObj = parser.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
                 var method = meth?.MakeGenericMethod(
-                    parserType.BaseType?.GenericTypeArguments[0]
+                    parser.BaseType?.GenericTypeArguments[0]
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
-                method?.Invoke(service, new[] {parser, attr?.OverridePrimitive});
-                loadedTypes.Add(parserType);
-            });
-
-            return Task.FromResult(loadedTypes);
+                method?.Invoke(service, new[] {parserObj, attr?.OverridePrimitive});
+                yield return parser;
+            }
         }
 
         public static Command GetCommand(this CommandService service, string name)
