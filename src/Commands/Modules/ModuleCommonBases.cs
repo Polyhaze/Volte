@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
@@ -18,13 +19,20 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule : VolteModule
     {
         public CommandsService CommandsService { get; set; }
-        public HttpClient HttpClient { get; set; }
+        public HttpClient Http { get; set; }
         
+        /// <summary>
+        ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
+        /// </summary>
+        /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
+        /// <returns><see cref="UrbanApiResponse"/> if the request was successful; <see langword="null"/> otherwise.</returns>
         public async Task<UrbanApiResponse> GetDefinitionAsync(string word)
         {
-            var get = await HttpClient.GetAsync($"https://api.urbandictionary.com/v0/define?term={word}", HttpCompletionOption.ResponseContentRead);
-            get.EnsureSuccessStatusCode();
-            return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync());
+            var get = await Http.GetAsync($"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}", HttpCompletionOption.ResponseContentRead);
+
+            return get.IsSuccessStatusCode
+                ? JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync())
+                : null;
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
