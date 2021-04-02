@@ -21,7 +21,7 @@ namespace Volte.Commands
             var e = ctx.CreateEmbedBuilder()
                 .WithTitle("No can do, partner.")
                 .WithDescription(Reason)
-                .WithTimestamp(DateTimeOffset.Now);
+                .WithCurrentTimestamp();
             IUserMessage message;
             if (shouldReply)
                 message = await e.ReplyToAsync(ctx.Message);

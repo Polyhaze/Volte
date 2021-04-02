@@ -41,8 +41,7 @@ namespace Volte.Services
                     .WithTitle("Possible Malicious User")
                     .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
-                    .AddField("Account Created",
-                        $"{args.User.CreatedAt.FormatDate()}, at {args.User.CreatedAt.FormatFullTime()}")
+                    .AddField("Account Created", $"{args.User.CreatedAt.FormatPrettyString()}")
                     .WithFooter($"Account Created {unit.ToQuantity(time)} ago.")
                     .SendToAsync(c);
             }
