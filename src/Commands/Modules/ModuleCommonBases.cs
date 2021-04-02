@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -17,6 +18,14 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule : VolteModule
     {
         public CommandsService CommandsService { get; set; }
+        public HttpClient HttpClient { get; set; }
+        
+        public async Task<UrbanApiResponse> GetDefinitionAsync(string word)
+        {
+            var get = await HttpClient.GetAsync($"https://api.urbandictionary.com/v0/define?term={word}", HttpCompletionOption.ResponseContentRead);
+            get.EnsureSuccessStatusCode();
+            return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync());
+        }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
             Disallowed) GetPermissions(
