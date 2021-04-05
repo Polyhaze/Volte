@@ -7,6 +7,7 @@ using Discord;
 using Qmmands;
 using Gommon;
 using Volte.Core.Helpers;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -18,9 +19,17 @@ namespace Volte.Commands.Modules
         {
             if (query != null)
             {
+                if (query.EqualsIgnoreCase("pages") || query.EqualsIgnoreCase("pager"))
+                {
+                    return Ok(PaginatedMessageBuilder.New
+                        .WithDefaults(Context)
+                        .WithPages(await GetPagesAsync(CommandService.GetAllCommands()).ToListAsync()));
+
+                }
+                
                 var search = CommandService.FindCommands(query);
                 if (search.IsEmpty())
-                    return BadRequest($"No command or group found for `{query}`.");
+                    return BadRequest($"No command or group found for {Format.Code(query)}.");
 
                 return Ok(await CommandHelper.CreateCommandEmbedAsync(search.First().Command, Context));
             }
@@ -28,7 +37,7 @@ namespace Volte.Commands.Modules
             var e = Context.CreateEmbedBuilder()
                 .WithTitle("Command Help")
                 .WithDescription(
-                    $"You can use `{CommandHelper.FormatUsage(Context, CommandService.GetCommand("Help"))}` for more details on a command or group.");
+                    $"You can use {Format.Code(CommandHelper.FormatUsage(Context, CommandService.GetCommand("Help")))} for more details on a command or group.");
 
             var cmds = await GetAllRegularCommandsAsync().ToListAsync();
             var groupCmds = await GetAllGroupCommandsAsync().ToListAsync();
@@ -40,9 +49,8 @@ namespace Volte.Commands.Modules
             }
             catch (ArgumentException)
             {
-                e.WithDescription(new StringBuilder(e.Description)
-                    .AppendLine().AppendLine().AppendLine(cmds.Join(", "))
-                    .ToString());
+                e.AppendDescriptionLine()
+                    .AppendDescriptionLine(cmds.Join(", "));
             }
 
             try
@@ -52,9 +60,8 @@ namespace Volte.Commands.Modules
             }
             catch (ArgumentException)
             {
-                e.WithDescription(new StringBuilder(e.Description)
-                    .AppendLine().AppendLine().AppendLine(groupCmds.Join(", "))
-                    .ToString());
+                e.AppendDescriptionLine()
+                    .AppendDescriptionLine(groupCmds.Join(", "));
             }
 
             return Ok(e);
@@ -84,6 +91,15 @@ namespace Volte.Commands.Modules
 
                 var fmt = CommandHelper.FormatModuleShort(mdl);
                 if (fmt != null) yield return fmt;
+            }
+        }
+        
+        private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync(IEnumerable<Command> commands)
+        {
+            foreach (var cmd in commands)
+            {
+                if (!await CommandHelper.CanShowCommandAsync(Context, cmd)) continue;
+                yield return await CommandHelper.CreateCommandEmbedAsync(cmd, Context);
             }
         }
         

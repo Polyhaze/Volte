@@ -149,10 +149,10 @@ namespace Gommon
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
         public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e.Build());
+            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(embed: e.Build());
 
         public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(string.Empty, false, e);
+            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(embed: e);
 
         public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
@@ -160,6 +160,12 @@ namespace Gommon
 
         public static EmbedBuilder WithRelevantColor(this EmbedBuilder e, SocketGuildUser user) =>
             e.WithColor(user.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor));
+
+        public static EmbedBuilder AppendDescription(this EmbedBuilder e, string toAppend) =>
+            e.WithDescription((e.Description ?? "") + toAppend);
+
+        public static EmbedBuilder AppendDescriptionLine(this EmbedBuilder e, string toAppend = "") =>
+            e.AppendDescription($"{toAppend}\n");
 
         public static Emoji ToEmoji(this string str) => new Emoji(str);
 
@@ -171,7 +177,7 @@ namespace Gommon
                 return true;
             }
             userMessage = null;
-                return false;
+            return false;
         }
 
         public static async Task<bool> TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)

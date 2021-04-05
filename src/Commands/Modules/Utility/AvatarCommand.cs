@@ -13,14 +13,14 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> AvatarAsync([Remainder, Description("The user whose avatar you want to get. Defaults to yourself.")] SocketGuildUser user = null)
         {
             user ??= Context.User;
-            var url1024 = user.GetAvatarUrl(size: 1024);
+            if (user.GetAvatarUrl() is null) return BadRequest("User has a default avatar.");
             return Ok(Context.CreateEmbedBuilder()
                 .WithDescription($"{Format.Url("128", user.GetAvatarUrl(size: 128))} " +
                                  $"| {Format.Url("256", user.GetAvatarUrl(size: 256))} " +
                                  $"| {Format.Url("512", user.GetAvatarUrl(size: 512))} " +
-                                 $"| {Format.Url("1024", url1024)}")
+                                 $"| {Format.Url("1024", user.GetAvatarUrl(size: 1024))}")
                 .WithAuthor(user)
-                .WithImageUrl(url1024));
+                .WithImageUrl(user.GetAvatarUrl()));
         }
     }
 }

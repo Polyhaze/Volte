@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,11 +25,11 @@ namespace Volte.Core.Helpers
             var firstAlias = command.FullAliases.FirstOrDefault();
             if (firstAlias is null) return null;
 
-            if (!firstAlias.Contains(command.Service.Separator)) return $"`{firstAlias}`";
+            if (!firstAlias.Contains(command.Service.Separator)) return Format.Code(firstAlias);
 
             return includeGroup
-                ? Format.Bold($"`{firstAlias}`")
-                : Format.Bold($"`{firstAlias.Split(command.Service.Separator)[1]}`");
+                ? Format.Bold(Format.Code(firstAlias))
+                : Format.Bold(Format.Code(firstAlias.Split(command.Service.Separator)[1]));
         }
 
         public static string FormatModuleShort(Module module)
@@ -36,27 +37,35 @@ namespace Volte.Core.Helpers
             var firstAlias = module.FullAliases.FirstOrDefault();
             if (firstAlias is null) return null;
 
-            return Format.Bold($"`{firstAlias}`");
+            return Format.Bold(Format.Code(firstAlias));
+        }
+
+        private static async IAsyncEnumerable<Command> WhereAccessibleAsync(IEnumerable<Command> commands,
+            VolteContext ctx)
+        {
+            foreach (var cmd in commands)
+            {
+                if (await CanShowCommandAsync(ctx, cmd)) yield return cmd;
+            }
         }
 
         public static async Task<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
         {
             var embed = ctx.CreateEmbedBuilder()
                 .WithTitle(command.Name)
-                .WithDescription($"{command.Description ?? "No description provided."}");
+                .WithDescription(command.Description ?? "No description provided.");
 
             if (command.Attributes.Any(x => x is DummyCommandAttribute))
             {
-                embed.AddField("Subcommands", command.Module.Commands
-                    .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute))
-                    .Where(x => x.RunChecksAsync(ctx).Result.IsSuccessful) //yes; i know .Result is bad, however linq's Where() doesn't let you use async as its an invalid return type.
+                embed.AddField("Subcommands", (await WhereAccessibleAsync(command.Module.Commands
+                        .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute)), ctx).ToListAsync())
                     .Select(x => FormatCommandShort(x, false))
                     .Join(", "));
             }
             else
             {
                 if (command.Remarks != null)
-                    embed.Description += " " + command.Remarks;
+                    embed.AppendDescription($" {command.Remarks}");
 
                 if (command.FullAliases.Count > 1)
                     embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).Join(", "), true);
@@ -106,7 +115,7 @@ namespace Volte.Core.Helpers
             return $"- {(result.IsSuccessful ? DiscordHelper.BallotBoxWithCheck : DiscordHelper.X)} {message}";
         }
 
-        private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba) 
+        private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba)
             => cba switch
             {
                 RequireBotChannelPermissionAttribute rbcp =>
@@ -127,7 +136,7 @@ namespace Volte.Core.Helpers
             if (param.Checks.Any(x => x is EnsureNotSelfAttribute))
                 sb.Append("Cannot be yourself.");
             if (param.DefaultValue != null)
-                sb.Append($"Defaults to: `{param.DefaultValue}`");
+                sb.Append($"Defaults to: {Format.Code(param.DefaultValue.ToString())}");
 
             return sb.ToString().Trim();
         }

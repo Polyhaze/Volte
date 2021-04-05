@@ -145,14 +145,19 @@ namespace Volte.Interactive
 
         private Embed BuildEmbed()
         {
-            var initialEmbed = _pager.Pages.ElementAt(_currentPageIndex - 1).Cast<EmbedBuilder>() ?? new EmbedBuilder();
-            var builder = initialEmbed.WithAuthor(_pager.Author)
+            if (_pager.Pages is IEnumerable<EmbedBuilder> embeds)
+            {
+                var e = embeds.ElementAt(_currentPageIndex - 1);
+                if (!_pager.Title.IsNullOrWhitespace()) e.WithTitle(_pager.Title);
+                return e.WithFooter(string.Format(_pager.Options.FooterFormat, _currentPageIndex, _pageCount)).Build();
+            }
+            
+            var builder = Context.CreateEmbedBuilder()
+                .WithTitle(_pager.Title)
                 .WithRelevantColor(Context.User)
                 .WithFooter(string.Format(_pager.Options.FooterFormat, _currentPageIndex, _pageCount));
             switch (_pager.Pages)
             {
-                case IEnumerable<EmbedBuilder> _:
-                    return builder.Build();
                 case IEnumerable<EmbedFieldBuilder> efb:
                     builder.Fields = efb.Skip((_currentPageIndex - 1) * _pager.Options.FieldsPerPage).Take(_pager.Options.FieldsPerPage).ToList();
                     builder.Description = _pager.AlternateDescription;
@@ -165,9 +170,7 @@ namespace Volte.Interactive
             return builder.Build();
         }
 
-        private async Task RenderAsync()
-        {
-            await Message.ModifyAsync(m => m.Embed = BuildEmbed()).ConfigureAwait(false);
-        }
+        private Task RenderAsync() => Message.ModifyAsync(m => m.Embed = BuildEmbed());
+
     }
 }

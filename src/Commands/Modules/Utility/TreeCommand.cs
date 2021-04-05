@@ -30,7 +30,8 @@ namespace Volte.Commands.Modules
             {
                 foreach (var c in toIterate)
                 {
-                    uncategorized.WithDescription(uncategorized.Description + $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()?.Mention)}\n");
+                    uncategorized.AppendDescriptionLine(
+                        $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()?.Mention)}");
                 }
             }
 
@@ -43,8 +44,7 @@ namespace Volte.Commands.Modules
                     .Select(x => x.Cast<ITextChannel>()).ToArray();
                 foreach (var child in textChannels)
                 {
-                    embedBuilder.WithDescription((embedBuilder.Description ?? "") + $"- {child.Mention}\n");
-                    //categoryBuilder.AppendLine($"- {child.Mention}");
+                    embedBuilder.AppendDescriptionLine($"- {child.Mention}");
                 }
 
                 var voiceChannels = category.Channels.Where(c => c is IVoiceChannel)
@@ -53,18 +53,15 @@ namespace Volte.Commands.Modules
                 
                 foreach (var channel in voiceChannels)
                 {
-                    embedBuilder.WithDescription((embedBuilder.Description ?? "") + $"- {channel.Name}\n");
-                    //categoryBuilder.AppendLine($"- {channel.Name}");
+                    embedBuilder.AppendDescriptionLine($"- {channel.Name}");
                 }
                 categories.Add(embedBuilder);
-                //categories.AppendLine(categoryBuilder.ToString());
             }
-
-            //var res = uncategorized.AppendLine(categories.ToString()).ToString();
+            
             var res = new List<EmbedBuilder>();
             if (uncategorized != null)
             {
-                res.Add(uncategorized);   
+                res.Add(uncategorized.WithTitle("Uncategorized"));   
             }
 
             if (!categories.IsEmpty())
@@ -73,8 +70,6 @@ namespace Volte.Commands.Modules
             }
 
             return res.Count is 1 ? Ok(res[0]) : Ok(res);
-
-            //return res.Length >= 2048 ? BadRequest("This guild is too large; I cannot show the tree of channels here.") : Ok(res);
         }
     }
 }

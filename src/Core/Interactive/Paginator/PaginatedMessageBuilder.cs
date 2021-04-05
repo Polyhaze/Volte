@@ -12,7 +12,7 @@ namespace Volte.Interactive
         public IEnumerable<object> Pages { get; private set; }
         public string Content { get; private set; } = "";
         public IGuildUser Author { get; private set; }
-        public Color Color { get; private set; } = Color.Default;
+        public Color Color { get; private set; } = new Color(Config.SuccessColor);
         public string Title { get; private set; }
         public string AlternateDescription { get; private set; } = "";
         public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.Default;
