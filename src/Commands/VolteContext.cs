@@ -5,6 +5,7 @@ using Qmmands;
 using Gommon;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -17,19 +18,20 @@ namespace Volte.Commands
         // ReSharper disable once SuggestBaseTypeForParameter
         private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
         {
-            provider.Get<DatabaseService>(out var db);
             Client = provider.Get<DiscordShardedClient>();
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
+            Interactive = provider.Get<InteractiveService>();
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
-            GuildData = db.GetData(Guild);
+            GuildData = provider.Get<DatabaseService>().GetData(Guild);
             Now = DateTime.Now;
         }
 
 
         public DiscordShardedClient Client { get; }
         public SocketGuild Guild { get; }
+        public InteractiveService Interactive { get; }
         public SocketTextChannel Channel { get; }
         public SocketGuildUser User { get; }
         public SocketUserMessage Message { get; }

@@ -15,21 +15,24 @@ namespace Volte.Commands.Modules
         {
             var res = await GetDefinitionAsync(word);
 
-            var relevant = res?.Entries?.FirstOrDefault();
+            var pages = res?.Entries?.Select(entry => Context.CreateEmbedBuilder()
+                    .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
+                    .AddField("Word", Format.Bold(entry.Word), true)
+                    .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
+                    .AddField("Definition", entry.Definition)
+                    .AddField("Example", entry.Example)
+                    .AddField("Author", entry.Author, true)
+                    .AddField("URL", entry.Permalink, true)
+                    .WithFooter($"Created {entry.CreatedAt.FormatPrettyString()}"))
+                ?.ToList();
 
-            return res is null
-                ? BadRequest("Something went wrong. Try again later.")
-                : relevant is null
-                    ? BadRequest("That word didn't have a definition on urban dictionary.")
-                    : Ok(Context.CreateEmbedBuilder()
-                        .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
-                        .AddField("Word", Format.Bold(relevant.Word), true)
-                        .AddField("Thumbs Up/Down", $"{relevant.Upvotes}/{relevant.Downvotes}", true)
-                        .AddField("Definition", relevant.Definition)
-                        .AddField("Example", relevant.Example)
-                        .AddField("Author", relevant.Author, true)
-                        .AddField("URL", relevant.Permalink, true)
-                        .WithFooter($"Created {relevant.CreatedAt.FormatPrettyString()}"));
+            if (pages is null || pages.IsEmpty())
+                return BadRequest("That word didn't have a definition of Urban Dictionary.");
+
+            if (pages.Count is 1)
+                return Ok(pages[0]);
+            
+            return Ok(pages);
         }
     }
 }

@@ -30,9 +30,20 @@ namespace Volte.Commands.Modules
         {
             var get = await Http.GetAsync($"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}", HttpCompletionOption.ResponseContentRead);
 
-            return get.IsSuccessStatusCode
+
+            var toReturn = get.IsSuccessStatusCode
                 ? JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync())
                 : null;
+
+            if (toReturn != null)
+                toReturn.Entries = toReturn.Entries.Select(x =>
+                {
+                    x.Definition = x.Definition.Replace("]", "").Replace("[", "");
+                    x.Example = x.Example.Replace("]", "").Replace("[", "");
+                    return x;
+                }).ToList();
+
+            return toReturn;
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
@@ -41,7 +52,7 @@ namespace Volte.Commands.Modules
         {
             var propDict = user.GuildPermissions.GetType().GetProperties()
                 .Where(a => a.PropertyType.Inherits<bool>())
-                .Select(a => (a.Name.Humanize(), a.GetValue(user.GuildPermissions).Cast<bool>()))
+                .Select(a => (a.Name.Humanize(LetterCasing.Title), a.GetValue(user.GuildPermissions).Cast<bool>()))
                 .OrderByDescending(ab => ab.Item2 ? 1 : 0)
                 .ToList(); //holy reflection
 

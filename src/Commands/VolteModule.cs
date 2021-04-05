@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands;
+using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -23,6 +25,9 @@ namespace Volte.Commands
             Func<Task> logic, 
             bool awaitLogic = true) 
             => new OkResult(logic, awaitLogic);
+
+        protected ActionResult Ok(PaginatedMessageBuilder pager) => new OkResult(pager);
+        protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds);
 
 
         protected ActionResult Ok(

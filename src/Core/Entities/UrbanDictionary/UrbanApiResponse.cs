@@ -7,7 +7,7 @@ namespace Volte.Core.Entities
     public class UrbanApiResponse
     {
         [JsonPropertyName("list")]
-        public IReadOnlyList<UrbanEntry> Entries { get; set; }
+        public List<UrbanEntry> Entries { get; set; }
     }
 
     public class UrbanEntry

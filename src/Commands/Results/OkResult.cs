@@ -1,7 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Qommon.Collections;
+using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -13,10 +18,18 @@ namespace Volte.Commands
         {
             _message = text;
             _shouldEmbed = shouldEmbed;
-            _embed = embed;
             _callback = func;
+            _embed = embed;
             _runFuncAsync = awaitCallback;
         }
+
+        public OkResult(IEnumerable<EmbedBuilder> pages)
+        {
+            _pager = PaginatedMessageBuilder.New
+                .WithPages(pages);
+        }
+
+        public OkResult(PaginatedMessageBuilder pager) => _pager = pager;
 
         public OkResult(Func<Task> logic, bool awaitFunc = true)
         {
@@ -28,6 +41,7 @@ namespace Volte.Commands
 
         private readonly string _message;
         private readonly bool _shouldEmbed;
+        private readonly PaginatedMessageBuilder _pager;
         private readonly Func<IUserMessage, Task> _callback;
         private readonly Func<Task> _separateLogic;
         private readonly EmbedBuilder _embed;
@@ -35,6 +49,12 @@ namespace Volte.Commands
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
+
+            if (_pager != null)
+            {
+                _ = Executor.ExecuteAsync(async () => await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
+                return new ResultCompletionData();
+            }
 
             if (_separateLogic != null)
             {

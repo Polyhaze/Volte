@@ -16,6 +16,13 @@ namespace Volte.Core.Helpers
         public static string Three => "\u0033\u20E3";
         public static string Four => "\u0034\u20E3";
         public static string Five => "\u0035\u20E3";
+        public static string First => "⏮";
+        public static string Left => "◀";
+        public static string Right => "▶";
+        public static string Last => "⏭";
+        public static string Stop => "⏹";
+        public static string E1234 => "🔢";
+        public static string Question => "\u2753";
 
         public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollEmojis()
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
