@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Web;
 using Discord;
 using Discord.WebSocket;
@@ -12,6 +13,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
+using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
@@ -25,25 +27,22 @@ namespace Volte.Commands.Modules
         ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
         /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
-        /// <returns><see cref="UrbanApiResponse"/> if the request was successful; <see langword="null"/> otherwise.</returns>
-        public async Task<UrbanApiResponse> GetDefinitionAsync(string word)
+        /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
+        public async Task<UrbanEntry[]> RequestUrbanDefinitionsAsync(string word)
         {
-            var get = await Http.GetAsync($"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}", HttpCompletionOption.ResponseContentRead);
+            var get = await Http.GetAsync($"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(), HttpCompletionOption.ResponseContentRead);
 
 
-            var toReturn = get.IsSuccessStatusCode
+            var apiResp = get.IsSuccessStatusCode
                 ? JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync())
                 : null;
 
-            if (toReturn != null)
-                toReturn.Entries = toReturn.Entries.Select(x =>
-                {
-                    x.Definition = x.Definition.Replace("]", "").Replace("[", "");
-                    x.Example = x.Example.Replace("]", "").Replace("[", "");
-                    return x;
-                }).ToList();
-
-            return toReturn;
+            return apiResp != null ? apiResp.Entries.Select(x =>
+            {
+                x.Definition = x.Definition.Replace("]", "").Replace("[", "");
+                x.Example = x.Example.Replace("]", "").Replace("[", "");
+                return x;
+            }).ToArray() : Array.Empty<UrbanEntry>();
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
@@ -75,6 +74,8 @@ namespace Volte.Commands.Modules
     [RequireGuildModerator]
     public sealed partial class ModerationModule : VolteModule
     {
+        public InteractiveService Interactive { get; set; }
+        
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member,
             DatabaseService db, string reason)
         {

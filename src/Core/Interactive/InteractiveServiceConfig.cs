@@ -1,9 +1,10 @@
 ﻿using System;
+using Humanizer;
 
 namespace Volte.Interactive
 {
     public class InteractiveServiceConfig
     {
-        public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(15);
+        public TimeSpan DefaultTimeout { get; set; } = 15.Seconds();
     }
 }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Commands;
 using Volte.Services;
@@ -85,8 +86,7 @@ namespace Volte.Interactive
         {
             timeout ??= _defaultTimeout;
             var message = await context.Channel.SendMessageAsync(content, isTts, embed, options);
-            _ = Task.Delay(timeout.Value)
-                .ContinueWith(_ => message.DeleteAsync());
+            _ = Executor.ExecuteAfterDelayAsync(timeout.Value, async () => await message.DeleteAsync());
             return message;
         }
 
@@ -119,7 +119,7 @@ namespace Volte.Interactive
             switch (callback.RunMode)
             {
                 case RunMode.Parallel:
-                    _ = Task.Run(async () =>
+                    _ = Executor.ExecuteAsync(async () =>
                     {
                         if (await callback.HandleCallbackAsync(reaction))
                             RemoveReactionCallback(message.Id);

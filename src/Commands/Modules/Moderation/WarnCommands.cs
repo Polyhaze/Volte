@@ -10,6 +10,7 @@ using Qmmands;
 using Volte.Core.Entities;
 using Volte.Commands;
 using Volte.Core.Helpers;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -34,13 +35,13 @@ namespace Volte.Commands.Modules
         [Description("Shows all the warns for the given member.")]
         public Task<ActionResult> WarnsAsync([Remainder, Description("The member to list warns for.")] SocketGuildUser member)
         {
-            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id).Take(15);
-            return Ok(new StringBuilder()
-                .AppendLine(
-                    "Showing the last 15 warnings; less if the member doesn't have 15 yet, or none if the member's record is clean.")
-                .AppendLine()
-                .AppendLine($"{warns.Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**").Join("\n")}")
-                .ToString());
+            var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id)
+                .Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**");
+            return Ok(PaginatedMessageBuilder.New
+                .WithPages(warns)
+                .WithTitle($"Warns for {member}")
+                .SplitPages(8)
+                .WithDefaults(Context));
         }
 
         [Command("ClearWarns", "Cw")]

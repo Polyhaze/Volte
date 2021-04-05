@@ -16,13 +16,7 @@ namespace Volte.Core.Entities
                 Message = message.Message,
                 Severity = message.Severity,
                 Exception = message.Exception,
-                Source = message.Source switch
-                {
-                    "Rest" => LogSource.Rest,
-                    "Discord" => LogSource.Discord,
-                    "Gateway" => LogSource.Gateway,
-                    _ => LogSource.Unknown
-                }
+                Source = LogSources.Parse(message.Source)
             };
     }
 }

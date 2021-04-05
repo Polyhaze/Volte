@@ -1,6 +1,7 @@
 ﻿using System;
 using Discord;
 using Gommon;
+using Humanizer;
 using Volte.Core.Helpers;
 
 namespace Volte.Interactive
@@ -20,13 +21,13 @@ namespace Volte.Interactive
         public string FooterFormat = "Page {0} / {1}";
         public string InformationText = "This is a paginator. React with the various icons to change page and more.";
 
-        public JumpDisplayOptions JumpDisplayOptions = JumpDisplayOptions.Always;
+        public readonly JumpDisplayOptions JumpDisplayOptions = JumpDisplayOptions.Always;
         public bool DisplayInformationIcon = true;
 
         public TimeSpan? Timeout = null;
-        public TimeSpan InfoTimeout = TimeSpan.FromSeconds(30);
+        public TimeSpan InfoTimeout = 30.Seconds();
 
-        public int FieldsPerPage = 6;
+        public int FieldsPerPage => 6;
     }
 
     public enum JumpDisplayOptions

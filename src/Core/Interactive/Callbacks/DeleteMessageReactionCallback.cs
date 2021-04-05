@@ -1,7 +1,11 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Helpers;
@@ -13,8 +17,9 @@ namespace Volte.Interactive
     {
         public RunMode RunMode { get; } = RunMode.Parallel;
         public ICriterion<SocketReaction> Criterion { get; } = new EnsureReactionFromSourceUserCriterion();
-        public TimeSpan? Timeout { get; } = TimeSpan.FromSeconds(10);
+        public TimeSpan? Timeout { get; } = 10.Seconds();
         public VolteContext Context { get; }
+        public RestUserMessage Message { get; private set; }
         public async Task<bool> HandleCallbackAsync(SocketReaction reaction)
         {
             if (reaction.Emote.Name.EqualsIgnoreCase(DiscordHelper.X))
@@ -26,8 +31,9 @@ namespace Volte.Interactive
 
         }
 
-        public DeleteMessageReactionCallback(VolteContext ctx)
+        public DeleteMessageReactionCallback(VolteContext ctx, Embed embed)
         {
+            _ = Executor.ExecuteAsync(async () => await (Message = await Context.Channel.SendMessageAsync(embed: embed)).AddReactionAsync(DiscordHelper.X.ToEmoji()));
             Context = ctx;
         }
     }

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using Discord;
 using Discord.WebSocket;
+using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
@@ -19,7 +20,7 @@ namespace Gommon
             coll.AddVolteServices()
                 .AddSingleton(new HttpClient
                 {
-                    Timeout = TimeSpan.FromSeconds(10)
+                    Timeout = 10.Seconds()
                 })
                 .AddSingleton<CancellationTokenSource>()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration

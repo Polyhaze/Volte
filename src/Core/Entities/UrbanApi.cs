@@ -4,9 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace Volte.Core.Entities
 {
-    public class UrbanApiResponse
+    internal class UrbanApiResponse
     {
         [JsonPropertyName("list")]
+        // ReSharper disable once CollectionNeverUpdated.Global
+        // this property is loaded via System.Text.Json; that's why there's a public setter.
         public List<UrbanEntry> Entries { get; set; }
     }
 

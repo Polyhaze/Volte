@@ -1,5 +1,17 @@
 namespace Volte.Core.Entities
 {
+
+    public class LogSources
+    {
+        public static LogSource Parse(string source) => source.ToLower() switch
+        {
+            "rest" => LogSource.Rest,
+            "discord" => LogSource.Discord,
+            "gateway" => LogSource.Gateway,
+            _ => LogSource.Unknown
+        };
+    }
+    
     public enum LogSource : uint
     {
         /// <summary>

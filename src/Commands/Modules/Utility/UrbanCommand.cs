@@ -13,26 +13,23 @@ namespace Volte.Commands.Modules
         public async Task<ActionResult> UrbanAsync([Remainder, Description("The word to get a definition for.")]
             string word)
         {
-            var res = await GetDefinitionAsync(word);
+            var res = await RequestUrbanDefinitionsAsync(word);
 
-            var pages = res?.Entries?.Select(entry => Context.CreateEmbedBuilder()
+            var pages = res.Select(entry => Context.CreateEmbedBuilder()
                     .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
-                    .AddField("Word", Format.Bold(entry.Word), true)
+                    .AddField("Word", Format.Bold(entry.Word) ?? "<error occurred>", true)
                     .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
-                    .AddField("Definition", entry.Definition)
-                    .AddField("Example", entry.Example)
-                    .AddField("Author", entry.Author, true)
-                    .AddField("URL", entry.Permalink, true)
+                    .AddField("Definition", entry.Definition ?? "No definition provided?")
+                    .AddField("Example", entry.Example ?? "None provided")
+                    .AddField("Author", entry.Author ?? "None provided", true)
+                    .AddField("URL", entry.Permalink ?? "None provided", true)
                     .WithFooter($"Created {entry.CreatedAt.FormatPrettyString()}"))
-                ?.ToList();
+                .ToList();
 
-            if (pages is null || pages.IsEmpty())
+            if (pages.IsEmpty())
                 return BadRequest("That word didn't have a definition of Urban Dictionary.");
 
-            if (pages.Count is 1)
-                return Ok(pages[0]);
-            
-            return Ok(pages);
+            return pages.Count is 1 ? Ok(pages.First()) : Ok(pages);
         }
     }
 }

@@ -5,6 +5,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -21,11 +22,17 @@ namespace Volte.Commands.Modules
                     return Ok("You have no addons!\n" +
                               "Addons can be made via making an `addons` directory in my installation folder, " +
                               $"and {Format.Url("following this", "https://github.com/GreemDev/ExampleVolteAddon")}.");
-                return Ok(Context.CreateEmbedBuilder(
-                        Addon.LoadedAddons.Select(kvp => $"**{kvp.Key.Name}**: {kvp.Key.Description}").Join("\n")
-                    ).WithTitle("All Loaded Addons")
-                    .WithFooter(
-                        $"To see a specific addon's code, run '{Context.GuildData.Configuration.CommandPrefix}addon {{addonName}}'."));
+
+                var addonEmbeds = Addon.LoadedAddons.Select(x => Context.CreateEmbedBuilder()
+                        .AddField("Name", x.Key.Name)
+                        .AddField("Description", x.Key.Description).WithDescription(Format.Code(x.Value, "cs")))
+                    .ToList();
+
+                if (addonEmbeds.Count is 1) return Ok(addonEmbeds.First());
+                return Ok(PaginatedMessageBuilder.New
+                    .WithDefaults(Context)
+                    .WithPages(addonEmbeds)
+                    .WithTitle("All installed addons"));
             }
 
             if (Addon.LoadedAddons.Any(x => x.Key.Name.EqualsIgnoreCase(listOrAddon)))

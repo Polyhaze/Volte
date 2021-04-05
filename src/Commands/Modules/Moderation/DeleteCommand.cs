@@ -23,6 +23,8 @@ namespace Volte.Commands.Modules
 
             return Ok($"{DiscordHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
+                
+                //await Interactive.ReplyAndDeleteAsync(Context,)
                 _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), async () =>
                 {
                     await Context.Message.TryDeleteAsync();

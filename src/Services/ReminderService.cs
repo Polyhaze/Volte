@@ -36,7 +36,7 @@ namespace Volte.Services
             _checker = new Timer(
                 _ => Check(),
                 null,
-                TimeSpan.FromSeconds(5),
+                5.Seconds(),
                 TimeSpan.FromSeconds(PollRate)
             );
         }

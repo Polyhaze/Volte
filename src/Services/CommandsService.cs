@@ -98,7 +98,7 @@ namespace Volte.Services
                 ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
                 TypeParseFailedResult tpfr => tpfr.FailureReason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
-                ExecutionFailedResult efr => ExecutionFailed(efr),
+                CommandExecutionFailedResult cefr => ExecutionFailed(cefr),
                 _ => Unknown(args.Result)
             };
 
@@ -109,7 +109,7 @@ namespace Volte.Services
                 return "Unknown error.";
             }
 
-            static string ExecutionFailed(ExecutionFailedResult result)
+            static string ExecutionFailed(CommandExecutionFailedResult result)
             {
                 Logger.Exception(result.Exception);
                 return $"Execution of this command failed. Exception: {result.Exception.GetType()}";

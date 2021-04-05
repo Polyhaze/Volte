@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Commands;
 
@@ -15,19 +16,18 @@ namespace Volte.Interactive
     public sealed class PaginatedMessageCallback : IReactionCallback
     {
         public VolteContext Context { get; }
-        public InteractiveService Interactive { get; private set; }
+        public InteractiveService Interactive { get; }
         public IUserMessage Message { get; private set; }
 
         public RunMode RunMode => RunMode.Sequential;
-        public ICriterion<SocketReaction> Criterion => _criterion;
-        public TimeSpan? Timeout => options.Timeout;
+        public ICriterion<SocketReaction> Criterion { get; }
 
-        private readonly ICriterion<SocketReaction> _criterion;
+        public TimeSpan? Timeout => _pager.Options.Timeout;
+
         private readonly PaginatedMessage _pager;
-
-        private PaginatedAppearanceOptions options => _pager.Options;
-        private readonly int pages;
-        private int page = 1;
+        
+        private readonly int _pageCount;
+        private int _currentPageIndex = 1;
 
 
         public PaginatedMessageCallback(InteractiveService interactive,
@@ -37,12 +37,12 @@ namespace Volte.Interactive
         {
             Interactive = interactive;
             Context = sourceContext;
-            _criterion = criterion ?? new EmptyCriterion<SocketReaction>();
+            Criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
-                pages = ((_pager.Pages.Count() - 1) / options.FieldsPerPage) + 1;
+                _pageCount = ((_pager.Pages.Count() - 1) / _pager.Options.FieldsPerPage) + 1;
             else
-                pages = _pager.Pages.Count();
+                _pageCount = _pager.Pages.Count();
         }
 
         public async Task DisplayAsync()
@@ -52,31 +52,31 @@ namespace Volte.Interactive
             Message = message;
             Interactive.AddReactionCallback(message, this);
             // Reactions take a while to add, don't wait for them
-            _ = Task.Run(async () =>
+            _ = Executor.ExecuteAsync(async () =>
             {
                 if (!(_pager.Pages.Count() is 1))
                 {
-                    await message.AddReactionAsync(options.First);
-                    await message.AddReactionAsync(options.Back);
-                    await message.AddReactionAsync(options.Next);
-                    await message.AddReactionAsync(options.Last);
-                    var manageMessages = (Context.Channel is IGuildChannel guildChannel) &&
+                    await message.AddReactionAsync(_pager.Options.First);
+                    await message.AddReactionAsync(_pager.Options.Back);
+                    await message.AddReactionAsync(_pager.Options.Next);
+                    await message.AddReactionAsync(_pager.Options.Last);
+                    var manageMessages = Context.Channel is IGuildChannel guildChannel &&
                                          (Context.User as IGuildUser).GetPermissions(guildChannel).ManageMessages;
 
-                    if (options.JumpDisplayOptions == JumpDisplayOptions.Always
-                        || (options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
-                        await message.AddReactionAsync(options.Jump);
+                    if (_pager.Options.JumpDisplayOptions == JumpDisplayOptions.Always
+                        || (_pager.Options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
+                        await message.AddReactionAsync(_pager.Options.Jump);
                 }
 
-                await message.AddReactionAsync(options.Stop);
+                await message.AddReactionAsync(_pager.Options.Stop);
 
-                if (options.DisplayInformationIcon)
-                    await message.AddReactionAsync(options.Info);
+                if (_pager.Options.DisplayInformationIcon)
+                    await message.AddReactionAsync(_pager.Options.Info);
             });
 
             if (Timeout != null)
             {
-                _ = Task.Delay(Timeout.Value).ContinueWith(_ =>
+                Executor.ExecuteAfterDelay(Timeout.Value, () =>
                 {
                     Interactive.RemoveReactionCallback(message);
                     _ = Message.DeleteAsync();
@@ -88,53 +88,53 @@ namespace Volte.Interactive
         {
             var emote = reaction.Emote;
 
-            if (emote.Equals(options.First))
-                page = 1;
-            else if (emote.Equals(options.Next))
+            if (emote.Equals(_pager.Options.First))
+                _currentPageIndex = 1;
+            else if (emote.Equals(_pager.Options.Next))
             {
-                if (page >= pages)
+                if (_currentPageIndex >= _pageCount)
                     return false;
-                ++page;
+                _currentPageIndex++;
             }
-            else if (emote.Equals(options.Back))
+            else if (emote.Equals(_pager.Options.Back))
             {
-                if (page <= 1)
+                if (_currentPageIndex <= 1)
                     return false;
-                --page;
+                _currentPageIndex--;
             }
-            else if (emote.Equals(options.Last))
-                page = pages;
-            else if (emote.Equals(options.Stop))
+            else if (emote.Equals(_pager.Options.Last))
+                _currentPageIndex = _pageCount;
+            else if (emote.Equals(_pager.Options.Stop))
             {
                 await Message.TryDeleteAsync();
                 return true;
             }
-            else if (emote.Equals(options.Jump))
+            else if (emote.Equals(_pager.Options.Jump))
             {
-                _ = Task.Run(async () =>
+                _ = Executor.ExecuteAsync(async () =>
                 {
                     var criteria = new Criteria<SocketMessage>()
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
                         .AddCriterion(new EnsureIsIntegerCriterion());
-                    var response = await Interactive.NextMessageAsync(Context, criteria, TimeSpan.FromSeconds(15));
+                    var response = await Interactive.NextMessageAsync(Context, criteria, 15.Seconds());
                     var req = int.Parse(response.Content);
 
-                    if (req < 1 || req > pages)
+                    if (req < 1 || req > _pageCount)
                     {
                         _ = response.TryDeleteAsync();
-                        await Interactive.ReplyAndDeleteAsync(Context, options.Stop.Name);
+                        await Interactive.ReplyAndDeleteAsync(Context, _pager.Options.Stop.Name, timeout: 3.Seconds());
                         return;
                     }
 
-                    page = req;
+                    _currentPageIndex = req;
                     _ = response.TryDeleteAsync();
                     await RenderAsync();
                 });
             }
-            else if (emote.Equals(options.Info))
+            else if (emote.Equals(_pager.Options.Info))
             {
-                await Interactive.ReplyAndDeleteAsync(Context, options.InformationText, timeout: options.InfoTimeout);
+                await Interactive.ReplyAndDeleteAsync(Context, _pager.Options.InformationText, timeout: _pager.Options.InfoTimeout);
                 return false;
             }
 
@@ -145,21 +145,20 @@ namespace Volte.Interactive
 
         private Embed BuildEmbed()
         {
-            var initialEmbed = _pager.Pages.ElementAt(page - 1).Cast<EmbedBuilder>() ?? new EmbedBuilder();
+            var initialEmbed = _pager.Pages.ElementAt(_currentPageIndex - 1).Cast<EmbedBuilder>() ?? new EmbedBuilder();
             var builder = initialEmbed.WithAuthor(_pager.Author)
                 .WithRelevantColor(Context.User)
-                .WithFooter(string.Format(options.FooterFormat, page, pages))
-                .WithTitle(_pager.Title ?? initialEmbed.Title);
+                .WithFooter(string.Format(_pager.Options.FooterFormat, _currentPageIndex, _pageCount));
             switch (_pager.Pages)
             {
                 case IEnumerable<EmbedBuilder> _:
                     return builder.Build();
                 case IEnumerable<EmbedFieldBuilder> efb:
-                    builder.Fields = efb.Skip((page - 1) * options.FieldsPerPage).Take(options.FieldsPerPage).ToList();
+                    builder.Fields = efb.Skip((_currentPageIndex - 1) * _pager.Options.FieldsPerPage).Take(_pager.Options.FieldsPerPage).ToList();
                     builder.Description = _pager.AlternateDescription;
                     break;
                 default:
-                    builder.Description = _pager.Pages.ElementAt(page - 1).ToString();
+                    builder.Description = _pager.Pages.ElementAt(_currentPageIndex - 1).ToString();
                     break;
             }
 
@@ -168,8 +167,7 @@ namespace Volte.Interactive
 
         private async Task RenderAsync()
         {
-            var embed = BuildEmbed();
-            await Message.ModifyAsync(m => m.Embed = embed).ConfigureAwait(false);
+            await Message.ModifyAsync(m => m.Embed = BuildEmbed()).ConfigureAwait(false);
         }
     }
 }

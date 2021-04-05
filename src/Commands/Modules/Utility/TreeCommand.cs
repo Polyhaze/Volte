@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {
@@ -16,37 +15,36 @@ namespace Volte.Commands.Modules
         [Description("Shows all categories in this guild and their children channels.")]
         public Task<ActionResult> TreeAsync()
         {
-            var uncategorized = new StringBuilder();
-            var categories = new StringBuilder();
-
-            foreach (var c in Context.Guild.TextChannels
-                .Where(c => c.CategoryId == null)
+            var uncategorized = Context.CreateEmbedBuilder();
+            var categories = new List<EmbedBuilder>();
+            var toIterate = Context.Guild.TextChannels.Where(c => c.CategoryId == null)
                 .Cast<SocketGuildChannel>()
-                .Concat(Context.Guild.VoiceChannels
-                    .Where(a => a.CategoryId == null)).OrderBy(c => c.Position))
+                .Concat(Context.Guild.VoiceChannels.Where(a => a.CategoryId == null))
+                .OrderBy(c => c.Position).ToList();
+
+            if (toIterate.IsEmpty())
             {
-                uncategorized.AppendLine($"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()?.Mention)}");
+                uncategorized = null;
+            }
+            else
+            {
+                foreach (var c in toIterate)
+                {
+                    uncategorized.WithDescription(uncategorized.Description + $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()?.Mention)}\n");
+                }
             }
 
-            uncategorized.AppendLine();
+            //uncategorized.AppendLine();
             foreach (var category in Context.Guild.CategoryChannels.OrderBy(x => x.Position))
             {
-                var index = 0;
-                var text = 0;
-                var voice = 0;
-                var categoryBuilder = new StringBuilder().AppendLine($"{Format.Bold(category.Name)}");
+                var embedBuilder = Context.CreateEmbedBuilder().WithTitle(category.Name);
                 var textChannels = category.Channels.Where(c => c is ITextChannel)
                     .OrderBy(c => c.Position).ToList()
                     .Select(x => x.Cast<ITextChannel>()).ToArray();
                 foreach (var child in textChannels)
                 {
-                    if (index >= 5)                     {
-                        categoryBuilder.AppendLine(Format.Bold($"And {"other text channel".ToQuantity(textChannels.Length - text)}."));
-                        break;
-                    }
-                    categoryBuilder.AppendLine($"- {child.Mention}");
-                    text++;
-                    index++;
+                    embedBuilder.WithDescription((embedBuilder.Description ?? "") + $"- {child.Mention}\n");
+                    //categoryBuilder.AppendLine($"- {child.Mention}");
                 }
 
                 var voiceChannels = category.Channels.Where(c => c is IVoiceChannel)
@@ -55,21 +53,28 @@ namespace Volte.Commands.Modules
                 
                 foreach (var channel in voiceChannels)
                 {
-                    if (index >= 5)
-                    {
-                        categoryBuilder.AppendLine(Format.Bold($"And {"other voice channel".ToQuantity(voiceChannels.Length - voice)}."));
-                        break;
-                    }
-                    categoryBuilder.AppendLine($"- {channel.Name}");
-                    voice++;
-                    index++;
+                    embedBuilder.WithDescription((embedBuilder.Description ?? "") + $"- {channel.Name}\n");
+                    //categoryBuilder.AppendLine($"- {channel.Name}");
                 }
-                categories.AppendLine(categoryBuilder.ToString());
+                categories.Add(embedBuilder);
+                //categories.AppendLine(categoryBuilder.ToString());
             }
 
-            var res = uncategorized.AppendLine(categories.ToString()).ToString();
+            //var res = uncategorized.AppendLine(categories.ToString()).ToString();
+            var res = new List<EmbedBuilder>();
+            if (uncategorized != null)
+            {
+                res.Add(uncategorized);   
+            }
 
-            return res.Length >= 2048 ? BadRequest("This guild is too large; I cannot show the tree of channels here.") : Ok(res);
+            if (!categories.IsEmpty())
+            {
+                res.AddRange(categories);
+            }
+
+            return res.Count is 1 ? Ok(res[0]) : Ok(res);
+
+            //return res.Length >= 2048 ? BadRequest("This guild is too large; I cannot show the tree of channels here.") : Ok(res);
         }
     }
 }
