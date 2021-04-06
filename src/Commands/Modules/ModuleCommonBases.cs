@@ -39,8 +39,8 @@ namespace Volte.Commands.Modules
 
             return apiResp != null ? apiResp.Entries.Select(x =>
             {
-                x.Definition = x.Definition.Replace("]", "").Replace("[", "");
-                x.Example = x.Example.Replace("]", "").Replace("[", "");
+                x.Definition = x.Definition.Replace("]", string.Empty).Replace("[", string.Empty);
+                x.Example = x.Example.Replace("]", string.Empty).Replace("[", string.Empty);
                 return x;
             }).ToArray() : Array.Empty<UrbanEntry>();
         }
@@ -65,22 +65,21 @@ namespace Volte.Commands.Modules
     {
         public InteractiveService Interactive { get; set; }
 
-        private async Task<(SocketRole Role, bool DidTimeout)> GetRoleAsync()
+        private async Task<(T Result, bool DidTimeout)> GetAsync<T>()
         {
-            var parser = CommandService.GetTypeParser<SocketRole>();
+            var parser = CommandService.GetTypeParser<T>();
             var message = await Interactive.NextMessageAsync(Context, timeout: 15.Seconds());
             if (message is null)
             {
                 await Context.CreateEmbed("You didn't reply within 15 seconds. Run the command and try again.")
                     .SendToAsync(Context.Channel);
-                return (null, true);
+                return (default, true);
             }
 
             var parserResult = await parser.ParseAsync(null, message.Content, Context);
             if (parserResult.IsSuccessful)
                 return (parserResult.Value, false);
-            return (null, false);
-
+            return (default, false);
         }
     }
 

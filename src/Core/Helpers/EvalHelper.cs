@@ -102,7 +102,7 @@ namespace Volte.Core.Helpers
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                             .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                            .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? "" : "ini")).Build());
+                            .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build());
                 }
             }
             catch (Exception ex)

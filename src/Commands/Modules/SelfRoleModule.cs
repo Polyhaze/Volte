@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
             var roles = Context.GuildData.Extras.SelfRoles.Select(x =>
             {
                 var currentRole = Context.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x));
-                return currentRole is null ? "" : $"**{currentRole.Name}**";
+                return currentRole is null ? string.Empty : $"**{currentRole.Name}**";
             }).Where(x => !x.IsNullOrEmpty()).Join("\n");
 
             return Ok(Context.CreateEmbedBuilder(roles).WithTitle("Roles available to self-assign in this guild:"));

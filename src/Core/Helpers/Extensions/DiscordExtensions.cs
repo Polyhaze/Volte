@@ -162,7 +162,7 @@ namespace Gommon
             e.WithColor(user.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor));
 
         public static EmbedBuilder AppendDescription(this EmbedBuilder e, string toAppend) =>
-            e.WithDescription((e.Description ?? "") + toAppend);
+            e.WithDescription((e.Description ?? string.Empty) + toAppend);
 
         public static EmbedBuilder AppendDescriptionLine(this EmbedBuilder e, string toAppend = "") =>
             e.AppendDescription($"{toAppend}\n");

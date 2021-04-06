@@ -25,7 +25,7 @@ namespace Volte.Interactive
         /// <summary>
         /// Content sets the content of the message, displayed above the embed. This may remain empty.
         /// </summary>
-        public string Content { get; set; } = "";
+        public string Content { get; set; } = string.Empty;
 
         /// <summary>
         /// Author sets the <see cref="EmbedBuilder.Author"/> property directly.
@@ -37,7 +37,7 @@ namespace Volte.Interactive
         /// AlternateDescription will be used as the description of the pager only when
         /// <see cref="Pages"/> is a collection of <see cref="EmbedFieldBuilder"/>.
         /// </summary>
-        public string AlternateDescription { get; set; } = "";
+        public string AlternateDescription { get; set; } = string.Empty;
 
         public PaginatedAppearanceOptions Options { get; set; } = PaginatedAppearanceOptions.Default;
 

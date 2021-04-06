@@ -42,7 +42,7 @@ namespace Volte.Commands.Modules
                     .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
                 .ToList();
             if (pages.IsEmpty())
-                return Ok($"You currently have no reminders set{(onlyCurrentGuild ? " in this guild" : "")}.");
+                return Ok($"You currently have no reminders set{(onlyCurrentGuild ? " in this guild" : string.Empty)}.");
             if (pages.Count is 1) return Ok(pages.First());
             return Ok(pages);
         }

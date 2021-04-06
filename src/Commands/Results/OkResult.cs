@@ -52,7 +52,8 @@ namespace Volte.Commands
 
             if (_pager != null)
             {
-                _ = Executor.ExecuteAsync(async () => await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
+                _ = Executor.ExecuteAsync(async () =>
+                    await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
                 return new ResultCompletionData();
             }
 
@@ -68,7 +69,20 @@ namespace Volte.Commands
 
             var data = ctx.Services.Get<DatabaseService>().GetData(ctx.Guild);
 
-            IUserMessage message;
+            var message = _embed is null
+                ? _shouldEmbed
+                    ? data.Configuration.ReplyInline
+                        ? await ctx.CreateEmbed(_message).ReplyToAsync(ctx.Message)
+                        : await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel)
+                    : data.Configuration.ReplyInline
+                        ? await ctx.Message.ReplyAsync(_message)
+                        : await ctx.Channel.SendMessageAsync(_message)
+                : data.Configuration.ReplyInline
+                    ? await _embed.ReplyToAsync(ctx.Message)
+                    : await _embed.SendToAsync(ctx.Channel);
+
+
+            /*IUserMessage message;
             if (_embed is null)
             {
                 if (_shouldEmbed)
@@ -76,16 +90,15 @@ namespace Volte.Commands
                         message = await ctx.CreateEmbed(_message).ReplyToAsync(ctx.Message);
                     else
                         message = await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel);
+                else if (data.Configuration.ReplyInline)
+                    message = await ctx.Message.ReplyAsync(_message);
                 else
-                    if (data.Configuration.ReplyInline)
-                        message = await ctx.Message.ReplyAsync(_message);
-                    else
-                        message = await ctx.Channel.SendMessageAsync(_message);
+                    message = await ctx.Channel.SendMessageAsync(_message);
             }
             else if (ctx.GuildData.Configuration.ReplyInline)
                 message = await _embed.ReplyToAsync(ctx.Message);
             else
-                message = await _embed.SendToAsync(ctx.Channel);
+                message = await _embed.SendToAsync(ctx.Channel);*/
 
 
             if (_callback != null)

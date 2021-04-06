@@ -41,7 +41,7 @@ namespace Volte.Commands.Modules
             //-1 to show that the correct amount of messages were deleted.
             return None(async () =>
             {
-                await Interactive.ReplyAndDeleteAsync(Context, "",
+                await Interactive.ReplyAndDeleteAsync(Context, string.Empty,
                     embed: Context.CreateEmbed($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**."), timeout: 3.Seconds());
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)

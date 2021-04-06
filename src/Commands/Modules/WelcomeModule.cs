@@ -35,7 +35,7 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, "")}")
+                    .AppendLine($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}")
                     .ToString());
             }
 
@@ -48,7 +48,7 @@ namespace Volte.Commands.Modules
                 : $"Sending a test message to {welcomeChannel.Mention}.";
 
             return Ok(new StringBuilder()
-                .AppendLine($"Set this guild's welcome message to: {Format.Code(message, "")}")
+                .AppendLine($"Set this guild's welcome message to: {Format.Code(message, string.Empty)}")
                 .AppendLine()
                 .AppendLine($"{sendingTest}").ToString(),
                 async _ => {
@@ -74,7 +74,7 @@ namespace Volte.Commands.Modules
             if (message is null)
             {
                 return Ok(new StringBuilder()
-                    .AppendLine($"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, "")}")
+                    .AppendLine($"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, string.Empty)}")
                     .ToString());
             }
 
@@ -87,7 +87,7 @@ namespace Volte.Commands.Modules
                 : $"Sending a test message to {welcomeChannel.Mention}.";
 
             return Ok(new StringBuilder()
-                    .AppendLine($"Set this server's leaving message to: {Format.Code(message, "")}")
+                    .AppendLine($"Set this server's leaving message to: {Format.Code(message, string.Empty)}")
                     .AppendLine()
                     .AppendLine($"{sendingTest}").ToString(),
                 async _ =>
@@ -108,7 +108,7 @@ namespace Volte.Commands.Modules
 
             Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
             Db.Save(Context.GuildData);
-            return Ok($"Set the WelcomeDmMessage to: {Format.Code(message, "")}");
+            return Ok($"Set the WelcomeDmMessage to: {Format.Code(message, string.Empty)}");
         }
     }
 }

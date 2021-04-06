@@ -85,7 +85,7 @@ namespace Volte.Services
                 .WithTitle("Reminder")
                 .WithRelevantColor(author)
                 .WithDescription(
-                    $"You asked me {timestamp} to remind you about: {Format.Code(reminder.Value, "")}");
+                    $"You asked me {timestamp} to remind you about: {Format.Code(reminder.Value, string.Empty)}");
             await channel.SendMessageAsync(author.Mention, embed: e.Build());
             _db.TryDeleteReminder(reminder);
         }

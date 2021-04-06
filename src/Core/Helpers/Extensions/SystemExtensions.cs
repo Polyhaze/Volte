@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -21,8 +20,8 @@ namespace Gommon
 
         public static string Repeat(this string str, int times)
         {
-            var sb = new StringBuilder(str);
-            for (var i = 0; i < times - 1; i++)
+            var sb = new StringBuilder();
+            for (var i = 0; i < times; i++)
             {
                 sb.Append(str);
             }

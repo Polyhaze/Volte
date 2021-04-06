@@ -15,7 +15,7 @@ namespace Volte.Core.Entities
             Context = context.Cast<VolteContext>();
             Stopwatch = sw;
             Command = Context.Message.Content.Split(" ")[0];
-            Arguments = Context.Message.Content.Replace($"{Command}", "").Trim();
+            Arguments = Context.Message.Content.Replace($"{Command}", string.Empty).Trim();
             if (Arguments.IsNullOrEmpty()) Arguments = "None";
         }
 

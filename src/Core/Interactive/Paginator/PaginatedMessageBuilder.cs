@@ -10,11 +10,11 @@ namespace Volte.Interactive
     public class PaginatedMessageBuilder
     {
         public IEnumerable<object> Pages { get; private set; }
-        public string Content { get; private set; } = "";
+        public string Content { get; private set; } = string.Empty;
         public IGuildUser Author { get; private set; }
         public Color Color { get; private set; } = new Color(Config.SuccessColor);
         public string Title { get; private set; }
-        public string AlternateDescription { get; private set; } = "";
+        public string AlternateDescription { get; private set; } = string.Empty;
         public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.Default;
         
         public static PaginatedMessageBuilder New => new PaginatedMessageBuilder();

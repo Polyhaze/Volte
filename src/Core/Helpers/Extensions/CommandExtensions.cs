@@ -1,15 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Qmmands;
-using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
-using Volte.Core.Helpers;
 using Module = Qmmands.Module;
 
 namespace Gommon
@@ -30,12 +26,13 @@ namespace Gommon
             
             foreach (var parser in parsers)
             {
-                var attr = parser.GetCustomAttribute<VolteTypeParserAttribute>();
                 var parserObj = parser.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
                 var method = meth?.MakeGenericMethod(
                     parser.BaseType?.GenericTypeArguments[0]
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
-                method?.Invoke(service, new[] {parserObj, attr?.OverridePrimitive});
+                // ReSharper disable once PossibleNullReferenceException
+                // cant happen
+                method?.Invoke(service, new[] {parserObj, parser.GetCustomAttribute<VolteTypeParserAttribute>().OverridePrimitive});
                 yield return parser;
             }
         }
@@ -49,9 +46,10 @@ namespace Gommon
                 .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
             //add the number of primitive TypeParsers (that come with Qmmands) obtained from the private field _primitiveTypeParsers's Count
             // ReSharper disable twice PossibleNullReferenceException
-            var primitiveTypeParsers = cs.GetType().GetField("_primitiveTypeParsers", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(cs);
-            return customParsers + primitiveTypeParsers.GetType().GetProperty("Count", BindingFlags.Instance | BindingFlags.Public).GetValue(primitiveTypeParsers)
-                .Cast<int>();
+            var primitiveTypeParsers = cs.GetType()
+                .GetField("_primitiveTypeParsers", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(cs)
+                .Cast<IDictionary>();
+            return customParsers + primitiveTypeParsers.Count;
         }
     }
 }

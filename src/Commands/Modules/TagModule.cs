@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle($"Tag {tag.Name}")
-                .AddField("Response", Format.Code(tag.Response, ""), true)
+                .AddField("Response", Format.Code(tag.Response, string.Empty), true)
                 .AddField("Creator", $"{u}", true)
                 .AddField("Uses", $"**{tag.Uses}**", true));
         }
