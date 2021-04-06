@@ -22,24 +22,19 @@ namespace Volte.Core.Entities
 
         public bool EnsureValidConfiguration(DiscordShardedClient client, out SocketTextChannel channel)
         {
+            channel = null;
             if (!Enabled)
             {
-                channel = null;
                 return false;
             }
 
             if (GuildId is 0 || ChannelId is 0)
             {
-                channel = null;
                 return false;
             }
 
             var g = client.GetGuild(GuildId);
             channel = g?.GetTextChannel(ChannelId);
-            if (g is null)
-            {
-                return false;
-            }
 
             return channel != null;
         }

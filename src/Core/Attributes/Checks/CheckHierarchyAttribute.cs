@@ -16,11 +16,9 @@ namespace Volte.Core.Entities
                 $"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
             var ctx = context.Cast<VolteContext>();
 
-            if (u.IsAdmin(ctx)) return CheckResult.Failed("Cannot ban someone with the configured Admin role.");
-            
-            return u.IsAdmin(ctx)
+            return ctx.IsAdmin(u)
                 ? CheckResult.Failed("Cannot ban someone with the configured Admin role.")
-                : ctx.User.Hierarchy >= u.Hierarchy
+                : ctx.User.Hierarchy > u.Hierarchy
                     ? CheckResult.Successful
                     : CheckResult.Failed("Cannot ban someone in a higher, or equal, hierarchy position than yourself.");
         }

@@ -6,10 +6,8 @@ namespace Volte.Interactive
 {
     public class EnsureSourceUserCriterion : ICriterion<IMessage>
     {
-        public Task<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter)
-        {
-            var ok = sourceContext.User.Id == parameter.Author.Id;
-            return Task.FromResult(ok);
-        }
+        public Task<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
+            => Task.FromResult(sourceContext.User.Id == parameter.Author.Id);
+
     }
 }

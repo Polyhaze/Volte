@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +9,7 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Module = Qmmands.Module;
 
 namespace Gommon
@@ -40,12 +43,15 @@ namespace Gommon
         public static Command GetCommand(this CommandService service, string name)
             => service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
 
-        public static int GetTotalTypeParsers(this CommandService _)
+        public static int GetTotalTypeParsers(this CommandService cs)
         {
             var customParsers = typeof(VolteBot).Assembly.GetTypes()
                 .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
-            //add the number of primitive TypeParsers (that come with Qmmands), which is 13, minus bool since we override that one, therefore 12.
-            return customParsers + (12); 
+            //add the number of primitive TypeParsers (that come with Qmmands) obtained from the private field _primitiveTypeParsers's Count
+            // ReSharper disable twice PossibleNullReferenceException
+            var primitiveTypeParsers = cs.GetType().GetField("_primitiveTypeParsers", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(cs);
+            return customParsers + primitiveTypeParsers.GetType().GetProperty("Count", BindingFlags.Instance | BindingFlags.Public).GetValue(primitiveTypeParsers)
+                .Cast<int>();
         }
     }
 }

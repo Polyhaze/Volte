@@ -13,7 +13,8 @@ namespace Volte.Commands.Modules
         [Description(
             "Mentions a role. If it isn't mentionable, it allows it to be, mentions it, and then undoes the first action.")]
         [RequireBotGuildPermission(GuildPermission.ManageRoles)]
-        public Task<ActionResult> MentionRoleAsync([Remainder, Description("The role to mention.")] SocketRole role)
+        public Task<ActionResult> MentionRoleAsync([Remainder, Description("The role to mention.")]
+            SocketRole role)
         {
             if (role.IsMentionable)
                 return Ok(role.Mention, shouldEmbed: false);

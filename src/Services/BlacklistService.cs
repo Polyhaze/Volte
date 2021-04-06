@@ -13,7 +13,7 @@ namespace Volte.Services
         {
             if (args.Data.Configuration.Moderation.Blacklist.IsEmpty()) return;
             Logger.Debug(LogSource.Volte, "Checking a message for blacklisted words.");
-            if (args.Context.User.IsAdmin(args.Context))
+            if (args.Context.IsAdmin(args.Context.User))
             {
                 Logger.Debug(LogSource.Volte, "Aborting check because the user is a guild admin.");
                 return;

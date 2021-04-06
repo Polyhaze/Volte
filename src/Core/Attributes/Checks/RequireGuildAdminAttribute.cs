@@ -10,7 +10,7 @@ namespace Volte.Core.Entities
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             var ctx = context.Cast<VolteContext>();
-            if (ctx.User.IsAdmin(ctx)) return CheckResult.Successful;
+            if (ctx.IsAdmin(ctx.User)) return CheckResult.Successful;
             
             return CheckResult.Failed("Insufficient permission.");
         }

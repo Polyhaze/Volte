@@ -16,6 +16,7 @@ namespace Gommon
 {
     public static partial class Extensions
     {
+
         public static IServiceCollection AddAllServices(this IServiceCollection coll, int shardCount) =>
             coll.AddVolteServices()
                 .AddSingleton(new HttpClient

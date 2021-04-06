@@ -16,7 +16,7 @@ namespace Volte.Services
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (!args.Data.Configuration.Moderation.Antilink ||
-                args.Context.User.IsAdmin(args.Context)) return;
+                args.Context.IsAdmin(args.Context.User)) return;
 
             Logger.Debug(LogSource.Volte,
                 $"Checking a message in #{args.Context.Channel.Name} ({args.Context.Guild.Name}) for Discord invite URLs.");

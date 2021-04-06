@@ -40,7 +40,7 @@ namespace Volte.Core.Helpers
             return Format.Bold(Format.Code(firstAlias));
         }
 
-        private static async IAsyncEnumerable<Command> WhereAccessibleAsync(IEnumerable<Command> commands,
+        public static async IAsyncEnumerable<Command> WhereAccessibleAsync(this IEnumerable<Command> commands,
             VolteContext ctx)
         {
             foreach (var cmd in commands)
@@ -57,8 +57,8 @@ namespace Volte.Core.Helpers
 
             if (command.Attributes.Any(x => x is DummyCommandAttribute))
             {
-                embed.AddField("Subcommands", (await WhereAccessibleAsync(command.Module.Commands
-                        .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute)), ctx).ToListAsync())
+                embed.AddField("Subcommands", (await command.Module.Commands.WhereAccessibleAsync(ctx)
+                        .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute)).ToListAsync())
                     .Select(x => FormatCommandShort(x, false))
                     .Join(", "));
             }

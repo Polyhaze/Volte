@@ -113,29 +113,32 @@ namespace Volte.Core.Helpers
 
             if (!message.IsNullOrWhitespace())
             {
-                Append(message, Color.White);
-                content.Append(message);
+                Append(message, Color.White, ref content);
             }
 
             if (e != null)
             {
                 var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
-                Append(toWrite, Color.IndianRed);
-                content.Append(toWrite);
+                Append(toWrite, Color.IndianRed, ref content);
             }
 
             Console.Write(Environment.NewLine);
             content.AppendLine();
             if (Config.EnabledFeatures.LogToFile)
-            {
                 File.AppendAllText(LogFile, content.ToString());
-            }
         }
 
         private static void Append(string m, Color c)
         {
             Console.ForegroundColor = c;
             Console.Write(m);
+        }
+
+        private static void Append(string m, Color c, ref StringBuilder sb)
+        {
+            Console.ForegroundColor = c;
+            Console.Write(m);
+            sb.Append(m);
         }
 
         private static (Color Color, string Source) VerifySource(LogSource source) =>

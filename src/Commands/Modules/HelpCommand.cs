@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
                 {
                     return Ok(PaginatedMessageBuilder.New
                         .WithDefaults(Context)
-                        .WithPages(await GetPagesAsync(CommandService.GetAllCommands()).ToListAsync()));
+                        .WithPages(await GetPagesAsync().ToListAsync()));
 
                 }
                 
@@ -94,11 +94,10 @@ namespace Volte.Commands.Modules
             }
         }
         
-        private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync(IEnumerable<Command> commands)
+        private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync()
         {
-            foreach (var cmd in commands)
+            foreach (var cmd in await CommandService.GetAllCommands().WhereAccessibleAsync(Context).ToListAsync())
             {
-                if (!await CommandHelper.CanShowCommandAsync(Context, cmd)) continue;
                 yield return await CommandHelper.CreateCommandEmbedAsync(cmd, Context);
             }
         }

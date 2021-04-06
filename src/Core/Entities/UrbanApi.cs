@@ -34,8 +34,6 @@ namespace Volte.Core.Entities
         public int Upvotes { get; set; }
         [JsonPropertyName("thumbs_down")]
         public int Downvotes { get; set; }
-        [JsonPropertyName("sound_urls")]
-        public IReadOnlyList<string> Sounds { get; set; }
 
         public int Score => Upvotes - Downvotes;
     }

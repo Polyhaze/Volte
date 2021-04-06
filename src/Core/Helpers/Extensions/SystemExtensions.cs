@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Humanizer;
@@ -15,6 +16,19 @@ namespace Gommon
     {
         public static string ReplaceIgnoreCase(this string str, string toReplace, object replacement)
             => str.Replace(toReplace, replacement.ToString(), StringComparison.OrdinalIgnoreCase);
+
+        public static string Prepend(this string str, string other) => str.Insert(0, other);
+
+        public static string Repeat(this string str, int times)
+        {
+            var sb = new StringBuilder(str);
+            for (var i = 0; i < times - 1; i++)
+            {
+                sb.Append(str);
+            }
+
+            return sb.ToString();
+        }
         
         public static string CalculateUptime(this Process process)
             => (DateTime.Now - process.StartTime).Humanize(3);

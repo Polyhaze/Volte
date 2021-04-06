@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Commands;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -11,10 +9,10 @@ namespace Volte.Commands.Modules
         [Command("Shutdown")]
         [Description("Forces the bot to shutdown.")]
         public Task<ActionResult> ShutdownAsync()
-            => Ok($"Goodbye! {DiscordHelper.Wave}", _ =>
+            => Ok($"Goodbye! {DiscordHelper.Wave}", async _ =>
             {
+                await Task.Yield();
                 Cts.Cancel();
-                return Task.CompletedTask;
             });
     }
 }

@@ -30,17 +30,17 @@ namespace Gommon
         private static bool IsGuildOwner(this SocketGuildUser user)
             => user.Guild.OwnerId == user.Id || IsBotOwner(user);
 
-        public static bool IsModerator(this SocketGuildUser user, VolteContext ctx)
+        public static bool IsModerator(this VolteContext ctx, SocketGuildUser user)
         {
-            return HasRole(user, ctx.GuildData.Configuration.Moderation.ModRole) ||
-                   IsAdmin(user, ctx) ||
+            return user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) ||
+                   ctx.IsAdmin(user) ||
                    IsGuildOwner(user);
         }
 
         public static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this SocketGuildUser user, VolteContext ctx)
+        public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user)
         {
             return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);

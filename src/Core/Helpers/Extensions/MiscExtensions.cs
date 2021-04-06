@@ -17,15 +17,14 @@ namespace Gommon
 {
     public partial class Extensions
     {
-        
         public static MemoryStream CreateColorImage(this Rgba32 color)
         {
-            var @out = new MemoryStream();
+            var ms = new MemoryStream();
             using var image = new Image<Rgba32>(200, 200);
             image.Mutate(a => a.BackgroundColor(color));
-            image.SaveAsPng(@out);
-            @out.Position = 0;
-            return @out;
+            image.SaveAsPng(ms);
+            ms.Position = 0;
+            return ms;
         }
 
         public static Rgba32 ToRgba32(this Color color) => new Rgba32(color.R, color.G, color.B);

@@ -18,11 +18,11 @@ namespace Volte.Interactive
         public IEmote Jump = DiscordHelper.E1234.ToEmoji();
         public IEmote Info = DiscordHelper.Question.ToEmoji();
 
-        public string FooterFormat = "Page {0} / {1}";
-        public string InformationText = "This is a paginator. React with the various icons to change page and more.";
+        public string FooterFormat => "Page {0} / {1}";
+        public string InformationText => "This is a paginator. React with the various icons to change page and more.";
 
-        public readonly JumpDisplayOptions JumpDisplayOptions = JumpDisplayOptions.Always;
-        public bool DisplayInformationIcon = true;
+        public JumpDisplayOptions JumpDisplayOptions => JumpDisplayOptions.Always;
+        public bool DisplayInformationIcon => true;
 
         public TimeSpan? Timeout = null;
         public TimeSpan InfoTimeout = 30.Seconds();
@@ -30,10 +30,10 @@ namespace Volte.Interactive
         public int FieldsPerPage => 6;
     }
 
-    public enum JumpDisplayOptions
+    public enum JumpDisplayOptions : uint
     {
-        Never,
-        WithManageMessages,
-        Always
+        Never = 0,
+        WithManageMessages = 1,
+        Always = 2
     }
 }

@@ -24,7 +24,7 @@ namespace Volte.Services
                 return;
             }
 
-            await args.User.AddRoleAsync(targetRole);
+            await args.User.AddRoleAsync(targetRole, DiscordHelper.CreateRequestOptions(x => x.AuditLogReason = "Volte Autorole"));
             Logger.Debug(LogSource.Volte,
                 $"Applied role {targetRole.Name} to user {args.User} in guild {args.Guild.Name}.");
         }

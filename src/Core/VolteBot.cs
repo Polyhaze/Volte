@@ -29,8 +29,8 @@ namespace Volte.Core
         private DiscordShardedClient _client;
         private CancellationTokenSource _cts;
 
-        private static void BuildServiceProvider(int shardCount, out IServiceProvider provider)
-            => provider = new ServiceCollection() 
+        private static IServiceProvider BuildServiceProvider(int shardCount)
+            => new ServiceCollection() 
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
@@ -52,7 +52,7 @@ namespace Volte.Core
                 await rest.LogoutAsync();
             }
 
-            BuildServiceProvider(shardCount, out _provider);
+            _provider = BuildServiceProvider(shardCount);
 
             _provider.Get(out _client);
             _provider.Get(out _cts);
@@ -68,10 +68,10 @@ namespace Volte.Core
             {
                 await Task.Delay(-1, _cts.Token);
             }
-            catch (TaskCanceledException) //this exception always occurs when CancellationTokenSource#Cancel() is called; so we put the shutdown logic inside the catch block
+            catch (TaskCanceledException)
             {
                 await ShutdownAsync(_client, _provider);
-            }
+            } //this exception always occurs when CancellationTokenSource#Cancel() is called
         }
 
         // ReSharper disable SuggestBaseTypeForParameter

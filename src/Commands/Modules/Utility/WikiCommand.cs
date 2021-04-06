@@ -30,9 +30,7 @@ namespace Volte.Commands.Modules
             };
 
             if (page is null)
-            {
                 return Ok(embed.WithDescription(FormatPages()));
-            }
 
             return Ok(embed.WithDescription(pages.ContainsKey(page)
                 ? $"[{pages.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(page))}]({pages.FirstOrDefault(x => x.Key.EqualsIgnoreCase(page)).Value})"

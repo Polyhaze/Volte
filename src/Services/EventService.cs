@@ -126,7 +126,7 @@ namespace Volte.Services
                     $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
             }
 
-            _ = Task.Run(async () =>
+            _ = Executor.ExecuteAsync(async () =>
             {
                 foreach (var guild in args.Shard.Guilds)
                 {

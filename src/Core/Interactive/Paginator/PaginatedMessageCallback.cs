@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -48,13 +47,13 @@ namespace Volte.Interactive
         public async Task DisplayAsync()
         {
             var embed = BuildEmbed();
-            var message = await Context.Channel.SendMessageAsync(_pager.Content, embed: embed).ConfigureAwait(false);
+            var message = await Context.Channel.SendMessageAsync(_pager.Content, embed: embed);
             Message = message;
             Interactive.AddReactionCallback(message, this);
             // Reactions take a while to add, don't wait for them
             _ = Executor.ExecuteAsync(async () =>
             {
-                if (!(_pager.Pages.Count() is 1))
+                if (_pager.Pages.Count() > 1)
                 {
                     await message.AddReactionAsync(_pager.Options.First);
                     await message.AddReactionAsync(_pager.Options.Back);
@@ -84,7 +83,7 @@ namespace Volte.Interactive
             }
         }
 
-        public async Task<bool> HandleCallbackAsync(SocketReaction reaction)
+        public async Task<bool> HandleAsync(SocketReaction reaction)
         {
             var emote = reaction.Emote;
 
@@ -116,7 +115,8 @@ namespace Volte.Interactive
                     var criteria = new Criteria<SocketMessage>()
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
-                        .AddCriterion(new EnsureIsIntegerCriterion());
+                        .AddCriterion((___, param) => Task.FromResult(int.TryParse(param.Content, out _)));
+                    
                     var response = await Interactive.NextMessageAsync(Context, criteria, 15.Seconds());
                     var req = int.Parse(response.Content);
 

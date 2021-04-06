@@ -33,7 +33,7 @@ namespace Volte.Services
         public async Task InitAsync()
         {
             var sw = Stopwatch.StartNew();
-            if (!Directory.Exists("addons") || _isInitialized) return; //don't auto-create a directory; if someone wants to use addons they need to make it themselves.
+            if (_isInitialized || !Directory.Exists("addons")) return; //don't auto-create a directory; if someone wants to use addons they need to make it themselves.
             var addonFolders = Directory.GetDirectories("addons");
             if (addonFolders.IsEmpty())
             {
@@ -44,14 +44,10 @@ namespace Volte.Services
             foreach (var folder in addonFolders)
             {
                 if (TryGetAddonContent(folder, out var meta, out var code))
-                {
                     LoadedAddons.Add(meta, code);
-                }
                 else
-                {
                     if (meta != null && code is null)
-                        Logger.Error(LogSource.Service, $"Attempted to load addon {meta.Name} but there were no C# source files in its directory. These are necessary as an addon with no logic does nothing.");   
-                }
+                        Logger.Error(LogSource.Service, $"Attempted to load addon {meta.Name} but there were no C# source files in its directory. These are necessary as an addon with no logic does nothing.");
             }
 
             foreach (var (meta, code) in LoadedAddons)

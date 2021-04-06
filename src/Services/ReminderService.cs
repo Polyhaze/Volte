@@ -48,13 +48,11 @@ namespace Volte.Services
             {
                 Logger.Debug(LogSource.Service, $"Reminder '{reminder.Value}', set for {reminder.TargetTime}");
                 if (reminder.TargetTime.Ticks <= DateTime.Now.Ticks)
-                {
-                    Executor.Execute(async () => await SendReminderAsync(reminder));
-                }
+                    Executor.Execute(async () => await SendAsync(reminder));
             }
         }
 
-        private async Task SendReminderAsync(Reminder reminder)
+        private async Task SendAsync(Reminder reminder)
         {
             var guild = _client.GetGuild(reminder.GuildId);
             var channel = guild?.GetTextChannel(reminder.ChannelId);

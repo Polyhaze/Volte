@@ -10,7 +10,7 @@ namespace Volte.Services
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
             if (args.Data.Configuration.Moderation.MassPingChecks &&
-                !args.Context.User.IsAdmin(args.Context))
+                !args.Context.IsAdmin(args.Context.User))
             {
                 Logger.Debug(LogSource.Service,
                     "Received a message to check for ping threshold violations.");

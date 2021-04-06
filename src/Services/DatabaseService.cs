@@ -58,7 +58,7 @@ namespace Volte.Services
             collection.Update(newConfig);
         }
 
-        private static GuildData Create(SocketGuild guild)
+        private static GuildData Create(IGuild guild)
             => new GuildData
             {
                 Id = guild.Id,

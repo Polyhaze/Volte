@@ -30,11 +30,11 @@ namespace Volte.Interactive
             _callbacks = new Dictionary<ulong, IReactionCallback>();
         }
 
-        public Task<SocketMessage> NextMessageAsync(VolteContext context, 
-            bool fromSourceUser = true, 
-            bool inSourceChannel = true, 
+        public Task<SocketMessage> NextMessageAsync(VolteContext context,
+            bool fromSourceUser = true,
+            bool inSourceChannel = true,
             TimeSpan? timeout = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var criterion = new Criteria<SocketMessage>();
             if (fromSourceUser)
@@ -43,11 +43,11 @@ namespace Volte.Interactive
                 criterion.AddCriterion(new EnsureSourceChannelCriterion());
             return NextMessageAsync(context, criterion, timeout, token);
         }
-        
-        public async Task<SocketMessage> NextMessageAsync(VolteContext context, 
-            ICriterion<SocketMessage> criterion, 
+
+        public async Task<SocketMessage> NextMessageAsync(VolteContext context,
+            ICriterion<SocketMessage> criterion,
             TimeSpan? timeout = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             timeout ??= _defaultTimeout;
 
@@ -66,22 +66,20 @@ namespace Volte.Interactive
             context.Client.MessageReceived += Handler;
 
             var trigger = eventTrigger.Task;
-            var cancel = cancelTrigger.Task;
-            var delay = Task.Delay(timeout.Value);
-            var task = await Task.WhenAny(trigger, delay, cancel);
+            var task = await Task.WhenAny(trigger, Task.Delay(timeout.Value), cancelTrigger.Task);
 
             context.Client.MessageReceived -= Handler;
 
             if (task == trigger)
                 return await trigger;
-            
+
             return null;
         }
 
-        public async Task<IUserMessage> ReplyAndDeleteAsync(VolteContext context, 
-            string content, bool isTts = false, 
-            Embed embed = null, 
-            TimeSpan? timeout = null, 
+        public async Task<IUserMessage> ReplyAndDeleteAsync(VolteContext context,
+            string content, bool isTts = false,
+            Embed embed = null,
+            TimeSpan? timeout = null,
             RequestOptions options = null)
         {
             timeout ??= _defaultTimeout;
@@ -90,8 +88,8 @@ namespace Volte.Interactive
             return message;
         }
 
-        public async Task<IUserMessage> SendPaginatedMessageAsync(VolteContext context, 
-            PaginatedMessage pager, 
+        public async Task<IUserMessage> SendPaginatedMessageAsync(VolteContext context,
+            PaginatedMessage pager,
             ICriterion<SocketReaction> criterion = null)
         {
             var callback = new PaginatedMessageCallback(this, context, pager, criterion);
@@ -101,36 +99,32 @@ namespace Volte.Interactive
 
         public void AddReactionCallback(IMessage message, IReactionCallback callback)
             => _callbacks[message.Id] = callback;
+
         public void RemoveReactionCallback(IMessage message)
             => RemoveReactionCallback(message.Id);
+
         public void RemoveReactionCallback(ulong id)
             => _callbacks.Remove(id);
+
         public void ClearReactionCallbacks()
             => _callbacks.Clear();
-        
-        private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> message, 
-            ISocketMessageChannel channel, 
+
+
+        private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> message,
+            ISocketMessageChannel channel,
             SocketReaction reaction)
         {
             if (reaction.UserId == _client.CurrentUser.Id) return;
             if (!_callbacks.TryGetValue(message.Id, out var callback)) return;
-            if (!await callback.Criterion.JudgeAsync(callback.Context, reaction))
-                return;
-            switch (callback.RunMode)
+            if (!await callback.Criterion.JudgeAsync(callback.Context, reaction)) return;
+            var callbackTask = Executor.ExecuteAsync(async () =>
             {
-                case RunMode.Parallel:
-                    _ = Executor.ExecuteAsync(async () =>
-                    {
-                        if (await callback.HandleCallbackAsync(reaction))
-                            RemoveReactionCallback(message.Id);
-                    });
-                    break;
-                case RunMode.Sequential:
-                    if (await callback.HandleCallbackAsync(reaction))
-                        RemoveReactionCallback(message.Id);
-                    break;
-                default:
-                    throw new InvalidOperationException("Cannot perform an Interactivity callback with an invalid RunMode. Received: " + callback.RunMode);
+                if (await callback.HandleAsync(reaction)) RemoveReactionCallback(message.Id);
+            });
+            
+            if (callback.RunMode is RunMode.Sequential)
+            {
+                await callbackTask;
             }
         }
 

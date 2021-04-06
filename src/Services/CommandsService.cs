@@ -157,30 +157,32 @@ namespace Volte.Services
             Logger.Error(LogSource.Module, sb.ToString());
         }
 
-        public const string Separator = "                    -------------------------------------------------";
+        private const int SpaceCount = 20;
+
+        public static string Separator => new StringBuilder(" ".Repeat(SpaceCount)).Append("-".Repeat(49)).ToString();
 
         private string CommandFrom(CommandEventArgs args) =>
             $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})"; //yes, the spaces in front of each string are indeed intentional on all lines after this
 
         private string CommandIssued(CommandEventArgs args) =>
-            $"                    |     -Command Issued: {args.Context.Command.Name}";
+            $"|     -Command Issued: {args.Context.Command.Name}".Prepend(" ".Repeat(SpaceCount));
 
         private string FullMessage(CommandEventArgs args) =>
-            $"                    |       -Full Message: {args.Context.Message.Content}";
+            $"|       -Full Message: {args.Context.Message.Content}".Prepend(" ".Repeat(SpaceCount));
 
         private string InGuild(CommandEventArgs args) =>
-            $"                    |           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})";
+            $"|           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})".Prepend(" ".Repeat(SpaceCount));
 
         private string InChannel(CommandEventArgs args) =>
-            $"                    |         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})";
+            $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})".Prepend(" ".Repeat(SpaceCount));
 
         private string TimeIssued(CommandEventArgs args) =>
-            $"                    |        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}";
+            $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}".Prepend(" ".Repeat(SpaceCount));
 
         private string After(CommandEventArgs args) =>
-            $"                    |              -After: {args.Stopwatch.Elapsed.Humanize()}";
+            $"|              -After: {args.Stopwatch.Elapsed.Humanize()}".Prepend(" ".Repeat(SpaceCount));
 
         private string ResultMessage(ResultCompletionData data) =>
-            $"                    |     -Result Message: {data.Message?.Id}";
+            $"|     -Result Message: {data.Message?.Id}".Prepend(" ".Repeat(SpaceCount));
     }
 }
