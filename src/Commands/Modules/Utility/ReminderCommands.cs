@@ -23,7 +23,7 @@ namespace Volte.Commands.Modules
             var end = Context.Now.Add(time);
             Db.CreateReminder(Reminder.FromContext(Context, end, reminder));
             return Ok(
-                $"I'll remind you {end.FormatPrettyString()} ({end.Humanize(dateToCompareAgainst: Context.Now)}).");
+                $"I'll remind you {end.FormatBoldString()} ({end.Humanize(dateToCompareAgainst: Context.Now)}).");
         }
 
         [Command("Reminds", "Reminders")]
@@ -33,12 +33,13 @@ namespace Volte.Commands.Modules
                 "Whether or not to only include reminders made in this current guild; or all of your reminders bot-wide.")]
             bool onlyCurrentGuild = true)
         {
-            var pages = Db.GetAllReminders().Where(x =>
-                    x.CreatorId == Context.User.Id && (!onlyCurrentGuild || x.GuildId == Context.Guild.Id))
-                .Select(x => Context.CreateEmbedBuilder()
-                    .WithTitle(x.TargetTime.Humanize(dateToCompareAgainst: Context.Now))
+            var pages = (onlyCurrentGuild
+                ? Db.GetReminders(Context.User.Id, Context.Guild.Id)
+                : Db.GetReminders(Context.User)
+                ).Select(x => Context.CreateEmbedBuilder()
+                    .WithTitle(x.TargetTime.Humanize(false, Context.Now))
                     .AddField("Reminder", Format.Code(x.Value))
-                    .AddField("Created at", x.CreationTime.FormatPrettyString())
+                    .AddField("Created", x.CreationTime.FormatBoldString())
                     .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
                 .ToList();
             if (pages.IsEmpty())

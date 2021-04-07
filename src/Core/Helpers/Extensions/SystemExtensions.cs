@@ -38,5 +38,19 @@ namespace Gommon
         {
             return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions, reference);
         }
+
+        public static string FormatBoldString(this DateTime dt)
+        {
+            var res = dt.FormatPrettyString().Split(" ");
+            res[1] = Format.Bold(res[1]);
+            res[2] = $"{Format.Bold(res[2].TrimEnd(','))},";
+            res[4] = Format.Bold(res[4]);
+            return res.Join(" ");
+        }
+        
+        public static string FormatBoldString(this DateTimeOffset dt)
+        {
+            return dt.DateTime.FormatBoldString();
+        }
     }
 }

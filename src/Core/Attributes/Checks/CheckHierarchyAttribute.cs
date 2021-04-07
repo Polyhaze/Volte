@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Entities
 {

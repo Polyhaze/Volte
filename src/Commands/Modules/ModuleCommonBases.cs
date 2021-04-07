@@ -61,27 +61,7 @@ namespace Volte.Commands.Modules
     }
 
     [RequireGuildAdmin]
-    public sealed partial class AdminUtilityModule : VolteModule
-    {
-        public InteractiveService Interactive { get; set; }
-
-        private async Task<(T Result, bool DidTimeout)> GetAsync<T>()
-        {
-            var parser = CommandService.GetTypeParser<T>();
-            var message = await Interactive.NextMessageAsync(Context, timeout: 15.Seconds());
-            if (message is null)
-            {
-                await Context.CreateEmbed("You didn't reply within 15 seconds. Run the command and try again.")
-                    .SendToAsync(Context.Channel);
-                return (default, true);
-            }
-
-            var parserResult = await parser.ParseAsync(null, message.Content, Context);
-            if (parserResult.IsSuccessful)
-                return (parserResult.Value, false);
-            return (default, false);
-        }
-    }
+    public sealed partial class AdminUtilityModule : VolteModule { }
 
     [RequireBotOwner]
     public sealed partial class BotOwnerModule : VolteModule

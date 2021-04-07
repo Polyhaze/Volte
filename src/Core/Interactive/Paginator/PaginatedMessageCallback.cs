@@ -9,6 +9,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Helpers;
 
 namespace Volte.Interactive
 {

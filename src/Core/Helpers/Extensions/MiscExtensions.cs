@@ -20,7 +20,7 @@ namespace Gommon
         public static MemoryStream CreateColorImage(this Rgba32 color)
         {
             var ms = new MemoryStream();
-            using var image = new Image<Rgba32>(200, 200);
+            using var image = new Image<Rgba32>(125, 200);
             image.Mutate(a => a.BackgroundColor(color));
             image.SaveAsPng(ms);
             ms.Position = 0;
@@ -34,13 +34,13 @@ namespace Gommon
             switch (action)
             {
                 case BlacklistAction.Warn:
-                    await member.WarnAsync(ctx, $"Said blacklisted word \"{word}\"");
+                    await member.WarnAsync(ctx, $"Used blacklisted phrase \"{word}\"");
                     break;
                 case BlacklistAction.Kick:
-                    await member.KickAsync($"Said blacklisted word \"{word}\"");
+                    await member.KickAsync($"Used blacklisted phrase \"{word}\"");
                     break;
                 case BlacklistAction.Ban:
-                    await member.BanAsync(7, $"Said blacklisted word \"{word}\"");
+                    await member.BanAsync(7, $"Used blacklisted phrase \"{word}\"");
                     break;
                 case BlacklistAction.Nothing:
                     break;

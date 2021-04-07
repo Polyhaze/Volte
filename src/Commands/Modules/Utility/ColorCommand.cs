@@ -6,6 +6,7 @@ using Gommon;
 using Qmmands;
 using SixLabors.ImageSharp.PixelFormats;
 using Volte.Commands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {

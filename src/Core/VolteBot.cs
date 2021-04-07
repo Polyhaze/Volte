@@ -86,7 +86,7 @@ namespace Volte.Core
                     .WithErrorColor()
                     .WithAuthor(client.GetOwner())
                     .WithDescription(
-                        $"Volte {Version.FullVersion} is shutting down {DateTime.Now.FormatPrettyString()}. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
+                        $"Volte {Version.FullVersion} is shutting down {DateTime.Now.FormatBoldString()}. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);
             }
             

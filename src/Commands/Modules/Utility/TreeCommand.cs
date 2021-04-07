@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {

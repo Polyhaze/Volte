@@ -34,8 +34,8 @@ namespace Volte.Services
                 case ActionResult actionRes:
                 {
                     data = await actionRes.ExecuteResultAsync(args.Context);
-                    Logger.Debug(LogSource.Volte,
-                        $"Executed {args.Context.Command.Name}'s resulting ActionResult.");
+                    Logger.Debug(LogSource.Service,
+                        $"Executed {args.Context.Command.Name}'s resulting {actionRes.GetType().AsPrettyString()}.");
 
                     if (actionRes is BadRequestResult badreq)
                     {
@@ -161,28 +161,28 @@ namespace Volte.Services
 
         public static string Separator => new StringBuilder(" ".Repeat(SpaceCount)).Append("-".Repeat(49)).ToString();
 
-        private string CommandFrom(CommandEventArgs args) =>
-            $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})"; //yes, the spaces in front of each string are indeed intentional on all lines after this
+        private string CommandFrom(CommandEventArgs args) => 
+            $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})";
 
-        private string CommandIssued(CommandEventArgs args) =>
-            $"|     -Command Issued: {args.Context.Command.Name}".Prepend(" ".Repeat(SpaceCount));
+        private string CommandIssued(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|     -Command Issued: {args.Context.Command.Name}").ToString();
 
-        private string FullMessage(CommandEventArgs args) =>
-            $"|       -Full Message: {args.Context.Message.Content}".Prepend(" ".Repeat(SpaceCount));
+        private string FullMessage(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|       -Full Message: {args.Context.Message.Content}").ToString();
 
-        private string InGuild(CommandEventArgs args) =>
-            $"|           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})".Prepend(" ".Repeat(SpaceCount));
+        private string InGuild(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|           -In Guild: {args.Context.Guild.Name} ({args.Context.Guild.Id})").ToString();
 
-        private string InChannel(CommandEventArgs args) =>
-            $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})".Prepend(" ".Repeat(SpaceCount));
+        private string InChannel(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|         -In Channel: #{args.Context.Channel.Name} ({args.Context.Channel.Id})").ToString();
 
-        private string TimeIssued(CommandEventArgs args) =>
-            $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}".Prepend(" ".Repeat(SpaceCount));
+        private string TimeIssued(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|        -Time Issued: {args.Context.Now.FormatFullTime()}, {args.Context.Now.FormatDate()}").ToString();
 
-        private string After(CommandEventArgs args) =>
-            $"|              -After: {args.Stopwatch.Elapsed.Humanize()}".Prepend(" ".Repeat(SpaceCount));
+        private string After(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|              -After: {args.Stopwatch.Elapsed.Humanize()}").ToString();
 
-        private string ResultMessage(ResultCompletionData data) =>
-            $"|     -Result Message: {data.Message?.Id}".Prepend(" ".Repeat(SpaceCount));
+        private string ResultMessage(ResultCompletionData data) => new StringBuilder(" ".Repeat(SpaceCount)).Append(
+            $"|     -Result Message: {data.Message?.Id}").ToString();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
@@ -80,22 +81,19 @@ namespace Volte.Core.Helpers
                 .SendToAsync(ctx.Channel);
             try
             {
+                var env = CreateEvalEnvironment(ctx);
                 var sw = Stopwatch.StartNew();
-                var state = await CSharpScript.RunAsync(code, Options, CreateEvalEnvironment(ctx));
+                var state = await CSharpScript.RunAsync(code, Options, env);
                 sw.Stop();
-                if (state.ReturnValue is null)
-                {
-                    await msg.DeleteAsync();
-                    await ctx.Message.AddReactionAsync(DiscordHelper.BallotBoxWithCheck.ToEmoji());
-                }
-                else
+                if (state.ReturnValue != null)
                 {
                     var res = state.ReturnValue switch
                     {
-                        string str => str,
+                        bool b => b.ToString().ToLower(),
                         IEnumerable enumerable => enumerable.Cast<object>().ToReadableString(),
                         IUser user => $"{user} ({user.Id})",
                         ITextChannel channel => $"#{channel.Name} ({channel.Id})",
+                        IMessage message => env.Inspect(message),
                         _ => state.ReturnValue.ToString()
                     };
                     await msg.ModifyAsync(m =>
@@ -103,6 +101,11 @@ namespace Volte.Core.Helpers
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                             .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                             .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build());
+                }
+                else
+                {
+                    await msg.DeleteAsync();
+                    await ctx.Message.AddReactionAsync(DiscordHelper.BallotBoxWithCheck.ToEmoji());
                 }
             }
             catch (Exception ex)

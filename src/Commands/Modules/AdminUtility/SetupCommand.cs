@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -16,7 +17,7 @@ namespace Volte.Commands.Modules
                 adminRole:
                 await Context.CreateEmbed("What role would you like to have Admin permission with me?")
                     .SendToAsync(Context.Channel);
-                var (role, didTimeout) = await GetAsync<SocketRole>();
+                var (role, didTimeout) = await Context.GetNextAsync<SocketRole>();
                 if (didTimeout) return;
                 if (role is null) goto adminRole;
 
@@ -26,7 +27,7 @@ namespace Volte.Commands.Modules
                 modRole:
                 await Context.CreateEmbed("What role would you like to have Moderator permission with me?")
                     .SendToAsync(Context.Channel);
-                (role, didTimeout) = await GetAsync<SocketRole>();
+                (role, didTimeout) = await Context.GetNextAsync<SocketRole>();
                 if (didTimeout) return;
                 if (role is null) goto modRole;
 

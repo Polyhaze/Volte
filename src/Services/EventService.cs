@@ -146,7 +146,7 @@ namespace Volte.Services
                     .WithSuccessColor()
                     .WithAuthor(args.Client.GetOwner())
                     .WithDescription(
-                        $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatPrettyString()}**!")
+                        $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}**!")
                     .SendToAsync(channel);
             }
         }

@@ -19,8 +19,11 @@ namespace Volte.Commands.Modules
         {
             var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **{reason}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
+            {
                 e.WithAuthor(author: null);
-            
+                e.WithSuccessColor();
+            }
+
             if (!await member.TrySendMessageAsync(embed: e.Build()))
             {
                 Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");

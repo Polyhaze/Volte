@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Discord;
 using Discord.WebSocket;
 using LiteDB;
@@ -34,6 +35,7 @@ namespace Volte.Services
         }
 
         public IEnumerable<Reminder> GetReminders(IUser user) => GetReminders(user.Id);
+        public IEnumerable<Reminder> GetReminders(IUser user, IGuild guild) => GetReminders(user.Id, guild.Id);
 
         public IEnumerable<Reminder> GetReminders(ulong id)
         {
@@ -41,6 +43,10 @@ namespace Volte.Services
             foreach (var reminder in coll.Find(r => r.CreatorId == id))
                 yield return reminder;
         }
+        
+        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild) 
+            => GetReminders(id).Where(r => r.GuildId == guild);
+
 
         public bool TryDeleteReminder(Reminder reminder) 
             => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);

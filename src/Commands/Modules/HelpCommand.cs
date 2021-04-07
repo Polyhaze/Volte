@@ -15,7 +15,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Get help for Volte's many commands.")]
-        public async Task<ActionResult> HelpAsync([Remainder, Description("The command or command group to search for.")] string query = null)
+        public async Task<ActionResult> HelpAsync([Remainder, Description("The command or command group to search for. If you use pages or pager it will list every command in a paginator.")] string query = null)
         {
             if (query != null)
             {
@@ -24,7 +24,6 @@ namespace Volte.Commands.Modules
                     return Ok(PaginatedMessageBuilder.New
                         .WithDefaults(Context)
                         .WithPages(await GetPagesAsync().ToListAsync()));
-
                 }
                 
                 var search = CommandService.FindCommands(query);

@@ -41,7 +41,7 @@ namespace Volte.Services
                     .WithTitle("Possible Malicious User")
                     .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
-                    .AddField("Account Created", $"{args.User.CreatedAt.FormatPrettyString()}")
+                    .AddField("Account Created", $"{args.User.CreatedAt.FormatBoldString()}")
                     .WithFooter($"Account Created {unit.ToQuantity(time)} ago.")
                     .SendToAsync(c);
             }
@@ -60,7 +60,7 @@ namespace Volte.Services
                 return;
             }
 
-            var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null);
+            var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null).WithSuccessColor();
             Logger.Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
             var sb = new StringBuilder();
 

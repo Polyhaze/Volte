@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -172,9 +173,9 @@ namespace Volte.Core.Entities
             return inspection.ToString();
         }
 
-        public string ReadValue(FieldInfo prop, object obj) => ReadValue((object) prop, obj);
+        public string ReadValue(FieldInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
 
-        public string ReadValue(PropertyInfo prop, object obj) => ReadValue((object) prop, obj);
+        public string ReadValue(PropertyInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
 
         private string ReadValue(object prop, object obj)
         {
@@ -190,15 +191,18 @@ namespace Volte.Core.Entities
                         $"{nameof(prop)} must be PropertyInfo or FieldInfo. Any other type cannot be read.")
                 };
 
-                if (value is null) return "Null";
-
-                if (value is IEnumerable e && !(value is string))
+                static string GetEnumerableStr(IEnumerable e)
                 {
                     var enu = e.Cast<object>().ToList();
-                    return $"{enu.Count} [{enu.GetType().Name}]";
+                    return $"{enu.Count} [{enu.GetType().AsPrettyString()}]";
                 }
 
-                return value + $" [{value.GetType().AsPrettyString()}]";
+                return value switch
+                {
+                    null => "Null",
+                    IEnumerable e when !(value is string) => GetEnumerableStr(e),
+                    _ => value + $" [{value.GetType().AsPrettyString()}]"
+                };
             }
             catch (Exception e)
             {
