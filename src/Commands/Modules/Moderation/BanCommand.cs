@@ -14,8 +14,10 @@ namespace Volte.Commands.Modules
         [Command("Ban")]
         [Description("Bans a member.")]
         [RequireBotGuildPermission(GuildPermission.BanMembers)]
-        public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to ban.")] SocketGuildUser member,
-            [Remainder, Description("The reason for the ban.")] string reason = "Banned by a Moderator.")
+        public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to ban.")]
+            SocketGuildUser member,
+            [Remainder, Description("The reason for the ban.")]
+            string reason = "Banned by a Moderator.")
         {
             var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **{reason}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
@@ -25,9 +27,7 @@ namespace Volte.Commands.Modules
             }
 
             if (!await member.TrySendMessageAsync(embed: e.Build()))
-            {
                 Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
-            }
 
             try
             {
@@ -42,7 +42,8 @@ namespace Volte.Commands.Modules
             }
             catch
             {
-                return BadRequest("An error occurred banning that member. Do I have permission; or are they higher than me in the role list?");
+                return BadRequest(
+                    "An error occurred banning that member. Do I have permission; or are they higher than me in the role list?");
             }
         }
     }

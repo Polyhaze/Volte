@@ -11,9 +11,12 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule
     {
         [Command("Delete")]
-        [Description("Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
+        [Description(
+            "Deletes a message in the current channel by its ID. Creates an audit log entry for abuse prevention.")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        public async Task<ActionResult> DeleteAsync([Description("The ID of the message to delete. Must be in the current channel.")] ulong messageId)
+        public async Task<ActionResult> DeleteAsync(
+            [Description("The ID of the message to delete. Must be in the current channel.")]
+            ulong messageId)
         {
             var target = await Context.Channel.GetMessageAsync(messageId);
             if (target is null)
@@ -23,7 +26,6 @@ namespace Volte.Commands.Modules
 
             return Ok($"{DiscordHelper.BallotBoxWithCheck} Deleted that message.", async m =>
             {
-                
                 //await Interactive.ReplyAndDeleteAsync(Context,)
                 _ = Executor.ExecuteAfterDelayAsync(3.Seconds(), async () =>
                 {

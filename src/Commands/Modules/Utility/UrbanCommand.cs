@@ -29,10 +29,10 @@ namespace Volte.Commands.Modules
 
             var pages = res.Select(CreateEmbed).ToList();
 
-            return pages.IsEmpty() 
+            return pages.IsEmpty()
                 ? BadRequest("That word didn't have a definition of Urban Dictionary.")
-                : pages.Count is 1 
-                    ? Ok(pages.First()) 
+                : pages.Count is 1
+                    ? Ok(pages.First())
                     : Ok(pages);
         }
     }

@@ -51,18 +51,19 @@ namespace Volte.Commands.Modules
                 var voiceChannels = category.Channels.Where(c => c is IVoiceChannel)
                     .OrderBy(c => c.Position).ToList()
                     .Select(x => x.Cast<IVoiceChannel>()).ToArray();
-                
+
                 foreach (var channel in voiceChannels)
                 {
                     embedBuilder.AppendDescriptionLine($"- {channel.Name}");
                 }
+
                 categories.Add(embedBuilder);
             }
-            
+
             var res = new List<EmbedBuilder>();
             if (uncategorized != null)
             {
-                res.Add(uncategorized.WithTitle("Uncategorized"));   
+                res.Add(uncategorized.WithTitle("Uncategorized"));
             }
 
             if (!categories.IsEmpty())

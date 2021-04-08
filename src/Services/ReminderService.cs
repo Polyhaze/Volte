@@ -88,7 +88,7 @@ namespace Volte.Services
                 ? Format.Url(reminder.CreationTime.Humanize(false), message.GetJumpUrl())
                 : reminder.CreationTime.Humanize(false);
 
-            var e = IsReminderMessageUrl(reminder)
+            var e = IsMessageUrl(reminder)
                 ? new EmbedBuilder()
                     .WithTitle("Reminder")
                     .WithRelevantColor(author)
@@ -102,7 +102,7 @@ namespace Volte.Services
             _db.TryDeleteReminder(reminder);
         }
 
-        private bool IsReminderMessageUrl(Reminder reminder) => _jumpUrl.IsMatch(reminder.Value, out var match) &&
+        private bool IsMessageUrl(Reminder reminder) => _jumpUrl.IsMatch(reminder.Value, out var match) &&
                                                                 (match.Groups["GuildId"].Value is "@me" ||
                                                                  ulong.TryParse(match.Groups["GuildId"].Value, out _));
     }

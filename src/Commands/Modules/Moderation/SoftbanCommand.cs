@@ -12,19 +12,26 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule
     {
         [Command("Softban")]
-        [Description("Softbans the mentioned user, kicking them and deleting the last x (where x is defined by the daysToDelete parameter) days of messages.")]
+        [Description(
+            "Softbans the mentioned user, kicking them and deleting the last x (where x is defined by the daysToDelete parameter) days of messages.")]
         [RequireBotGuildPermission(GuildPermission.KickMembers, GuildPermission.BanMembers)]
-        public async Task<ActionResult> SoftBanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to softban.")] SocketGuildUser user, [Description("The amount of days of messages to delete. Defaults to 7.")] int daysToDelete = 0,
-            [Remainder, Description("The reason for the softban.")] string reason = "Softbanned by a Moderator.")
+        public async Task<ActionResult> SoftBanAsync(
+            [CheckHierarchy, EnsureNotSelf, Description("The member to softban.")]
+            SocketGuildUser user, [Description("The amount of days of messages to delete. Defaults to 7.")]
+            int daysToDelete = 0,
+            [Remainder, Description("The reason for the softban.")]
+            string reason = "Softbanned by a Moderator.")
         {
-            var e = Context.CreateEmbedBuilder($"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.");
+            var e = Context.CreateEmbedBuilder(
+                $"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.");
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
-                e.WithAuthor(author: null);
-            
-            if (!await user.TrySendMessageAsync(embed: e.Build()))
             {
-                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {user}!");
+                e.WithAuthor(author: null);
+                e.WithSuccessColor();
             }
+
+            if (!await user.TrySendMessageAsync(embed: e.Build()))
+                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {user}!");
 
             try
             {
@@ -40,7 +47,8 @@ namespace Volte.Commands.Modules
             }
             catch
             {
-                return BadRequest("An error occurred softbanning that user. Do I have permission; or are they higher than me in the role list?");
+                return BadRequest(
+                    "An error occurred softbanning that user. Do I have permission; or are they higher than me in the role list?");
             }
         }
     }

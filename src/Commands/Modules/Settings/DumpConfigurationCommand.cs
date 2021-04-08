@@ -11,7 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Dumps this guild's configuration to paste.greemdev.net in JSON format for getting support.")]
         public async Task<ActionResult> DumpConfigurationAsync()
         {
-            return Ok($"{await HttpHelper.PostToGreemPasteAsync(Context.GuildData.ToString(), Context.Services)}.json");
+            return Ok($"{await HttpHelper.PostToGreemPasteAsync(Context.GuildData.ToString(), Context.Services, ".json")}");
         }
     }
 }

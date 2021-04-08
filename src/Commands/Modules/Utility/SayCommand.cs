@@ -12,7 +12,8 @@ namespace Volte.Commands.Modules
     {
         [Command("Say")]
         [Description("Bot repeats what you tell it to.")]
-        public Task<ActionResult> SayAsync([Remainder, Description("What to say.")] string msg) 
+        public Task<ActionResult> SayAsync([Remainder, Description("What to say.")]
+            string msg)
             => None(async () =>
             {
                 await Context.CreateEmbed(msg).SendToAsync(Context.Channel);
@@ -20,8 +21,10 @@ namespace Volte.Commands.Modules
             });
 
         [Command("SilentSay", "SSay")]
-        [Description("Runs the say command normally, but doesn't show the author in the message. Useful for announcements.")]
-        public Task<ActionResult> SilentSayAsync([Remainder, Description("What to say.")] string msg) 
+        [Description(
+            "Runs the say command normally, but doesn't show the author in the message. Useful for announcements.")]
+        public Task<ActionResult> SilentSayAsync([Remainder, Description("What to say.")]
+            string msg)
             => None(async () =>
             {
                 await new EmbedBuilder()
@@ -32,7 +35,8 @@ namespace Volte.Commands.Modules
             });
 
 
-        public Task<ActionResult> SayPlainAsync([Remainder, Description("What to say.")] string msg)
+        public Task<ActionResult> SayPlainAsync([Remainder, Description("What to say.")]
+            string msg)
             => None(async () =>
             {
                 await Context.Channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.None);

@@ -51,7 +51,8 @@ namespace Volte.Commands.Modules
         }
 
         [Command("Action")]
-        [Description("Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
+        [Description(
+            "Sets the action performed when a member uses a blacklisted word/phrase. I.e. says a swear, gets warned. Default is Nothing.")]
         [Remarks("Valid actions are `Nothing`, `Warn`, `Kick`, and `Ban`.")]
         public Task<ActionResult> BlacklistActionAsync(
             [Description("The action to be performed upon triggering the blacklist.")]

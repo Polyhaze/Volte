@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
@@ -92,10 +93,10 @@ namespace Volte.Services
             {
                 CommandNotFoundResult _ => "Unknown command.",
                 ChecksFailedResult cfr =>
-                    $"One or more checks failed for command **{cfr.Command.Name}**: ```css\n{cfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n')}```",
+                    $"One or more checks failed for command **{cfr.Command.Name}**: {Format.Code(cfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n'), "css")}",
                 ParameterChecksFailedResult pcfr =>
-                    $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: ```css\n{pcfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n')}```",
-                ArgumentParseFailedResult apfr => $"Parsing for arguments failed for **{apfr.Command}**.",
+                    $"One or more checks failed on parameter **{pcfr.Parameter.Name}**: {Format.Code(pcfr.FailedChecks.Select(x => x.Result.FailureReason).Join('\n'), "css")}",
+                ArgumentParseFailedResult apfr => $"Parsing for arguments failed for {Format.Bold(apfr.Command.Name)}.",
                 TypeParseFailedResult tpfr => tpfr.FailureReason,
                 OverloadsFailedResult _ => "A suitable overload could not be found for the given parameter type/order.",
                 CommandExecutionFailedResult cefr => ExecutionFailed(cefr),
@@ -105,14 +106,14 @@ namespace Volte.Services
             static string Unknown(FailedResult result)
             {
                 Logger.Verbose(LogSource.Service,
-                    $"A command returned an unknown error. Please screenshot this message and show it to my developers: {result.GetType().Name}");
+                    $"A command returned an unknown error. Please screenshot this message and show it to my developers: {result.GetType().AsPrettyString()}");
                 return "Unknown error.";
             }
 
             static string ExecutionFailed(CommandExecutionFailedResult result)
             {
                 Logger.Exception(result.Exception);
-                return $"Execution of this command failed. Exception: {result.Exception.GetType()}";
+                return $"Execution of this command failed. Exception: {result.Exception.GetType().AsPrettyString()}";
             }
 
             if (!reason.IsNullOrEmpty())

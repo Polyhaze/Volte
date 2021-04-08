@@ -10,11 +10,11 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule
     {
         [Command("Now")]
-        [Description("Shows the current date and time, in UTC.")]
+        [Description("Shows the current date and time.")]
         public Task<ActionResult> NowAsync()
             => Ok(new EmbedBuilder().WithDescription(new StringBuilder()
-                .AppendLine($"**Date**: {Context.Now.FormatDate()} UTC")
-                .AppendLine($"**Time**: {Context.Now.FormatFullTime()} UTC")
+                .AppendLine($"**Date**: {Context.Now.FormatDate()}")
+                .AppendLine($"**Time**: {Context.Now.FormatFullTime()}")
                 .ToString()).WithCurrentTimestamp());
     }
 }

@@ -10,7 +10,9 @@ namespace Volte.Commands.Modules
     {
         [Command("Avatar")]
         [Description("Shows the mentioned user's avatar, or yours if no one is mentioned.")]
-        public Task<ActionResult> AvatarAsync([Remainder, Description("The user whose avatar you want to get. Defaults to yourself.")] SocketGuildUser user = null)
+        public Task<ActionResult> AvatarAsync(
+            [Remainder, Description("The user whose avatar you want to get. Defaults to yourself.")]
+            SocketGuildUser user = null)
         {
             user ??= Context.User;
             if (user.GetAvatarUrl() is null) return BadRequest("User has a default avatar.");

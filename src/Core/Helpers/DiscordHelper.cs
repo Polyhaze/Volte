@@ -28,7 +28,8 @@ namespace Volte.Core.Helpers
         public static string Left => "◀";
         public static string Right => "▶";
         public static string Last => "⏭";
-        public static string Stop => "⏹";
+        public static string WhiteSquare => "⏹";
+        public static string OctagonalSign => "🛑";
         public static string E1234 => "🔢";
         public static string Question => "\u2753";
 
@@ -44,6 +45,10 @@ namespace Volte.Core.Helpers
             initializer(opts);
             return opts;
         }
+
+        public static string GetUrl(this Emoji emoji) 
+            => $"https://i.kuro.mu/emoji/512x512/{emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
+
         
                 /// <summary>
         ///     Checks if the current user is the user identified in the bot's config.

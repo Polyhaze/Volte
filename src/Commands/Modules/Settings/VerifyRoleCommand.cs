@@ -10,8 +10,10 @@ namespace Volte.Commands.Modules
         [Command("VerifyRole", "Vr")]
         [Description("Sets or shows the Verified or Unverified roles in this guild.")]
         public Task<ActionResult> VerifyRoleCommandAsync(
-            [Description("Valid values are `u` and `v`, for unverified role and verified role respectively.")] string type, 
-            [Remainder, Description("The role to be used.")] SocketRole role = null)
+            [Description("Valid values are `u` and `v`, for unverified role and verified role respectively.")]
+            string type,
+            [Remainder, Description("The role to be used.")]
+            SocketRole role = null)
         {
             switch (type.ToLower())
             {
@@ -20,8 +22,8 @@ namespace Volte.Commands.Modules
                     if (role is null)
                     {
                         role = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.VerifiedRole);
-                        return role is null 
-                            ? BadRequest("This guild does not have a Verified role set.") 
+                        return role is null
+                            ? BadRequest("This guild does not have a Verified role set.")
                             : Ok($"The Verified role for this guild is {role.Mention}.");
                     }
 
@@ -34,8 +36,8 @@ namespace Volte.Commands.Modules
                     if (role is null)
                     {
                         role = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.UnverifiedRole);
-                        return role is null 
-                            ? BadRequest("This guild does not have an Unverified role set.") 
+                        return role is null
+                            ? BadRequest("This guild does not have an Unverified role set.")
                             : Ok($"The Unverified role for this guild is {role.Mention}.");
                     }
 

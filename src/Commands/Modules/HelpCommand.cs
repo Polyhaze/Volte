@@ -15,7 +15,11 @@ namespace Volte.Commands.Modules
     {
         [Command("Help", "H")]
         [Description("Get help for Volte's many commands.")]
-        public async Task<ActionResult> HelpAsync([Remainder, Description("The command or command group to search for. If you use pages or pager it will list every command in a paginator.")] string query = null)
+        public async Task<ActionResult> HelpAsync(
+            [Remainder,
+             Description(
+                 "The command or command group to search for. If you use pages or pager it will list every command in a paginator.")]
+            string query = null)
         {
             if (query != null)
             {
@@ -25,7 +29,7 @@ namespace Volte.Commands.Modules
                         .WithDefaults(Context)
                         .WithPages(await GetPagesAsync().ToListAsync()));
                 }
-                
+
                 var search = CommandService.FindCommands(query);
                 if (search.IsEmpty())
                     return BadRequest($"No command or group found for {Format.Code(query)}.");
@@ -65,7 +69,7 @@ namespace Volte.Commands.Modules
 
             return Ok(e);
         }
-        
+
         //module with aliases: command group; without: regular module
 
         private async IAsyncEnumerable<string> GetAllRegularCommandsAsync()
@@ -92,7 +96,7 @@ namespace Volte.Commands.Modules
                 if (fmt != null) yield return fmt;
             }
         }
-        
+
         private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync()
         {
             foreach (var cmd in await CommandService.GetAllCommands().WhereAccessibleAsync(Context).ToListAsync())
@@ -100,6 +104,5 @@ namespace Volte.Commands.Modules
                 yield return await CommandHelper.CreateCommandEmbedAsync(cmd, Context);
             }
         }
-        
     }
 }

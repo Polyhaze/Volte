@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
     {
         public CommandsService CommandsService { get; set; }
         public HttpClient Http { get; set; }
-        
+
         /// <summary>
         ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
@@ -30,19 +30,23 @@ namespace Volte.Commands.Modules
         /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
         public async Task<UrbanEntry[]> RequestUrbanDefinitionsAsync(string word)
         {
-            var get = await Http.GetAsync($"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(), HttpCompletionOption.ResponseContentRead);
+            var get = await Http.GetAsync(
+                $"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(),
+                HttpCompletionOption.ResponseContentRead);
 
 
             var apiResp = get.IsSuccessStatusCode
                 ? JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync())
                 : null;
 
-            return apiResp != null ? apiResp.Entries.Select(x =>
-            {
-                x.Definition = x.Definition.Replace("]", string.Empty).Replace("[", string.Empty);
-                x.Example = x.Example.Replace("]", string.Empty).Replace("[", string.Empty);
-                return x;
-            }).ToArray() : Array.Empty<UrbanEntry>();
+            return apiResp != null
+                ? apiResp.Entries.Select(x =>
+                {
+                    x.Definition = x.Definition.Replace("]", string.Empty).Replace("[", string.Empty);
+                    x.Example = x.Example.Replace("]", string.Empty).Replace("[", string.Empty);
+                    return x;
+                }).ToArray()
+                : Array.Empty<UrbanEntry>();
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
@@ -75,7 +79,7 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         public InteractiveService Interactive { get; set; }
-        
+
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member,
             DatabaseService db, string reason)
         {
@@ -91,7 +95,10 @@ namespace Volte.Commands.Modules
             var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
                 .WithDescription($"You've been warned in **{issuer.Guild.Name}** for `{reason}`.");
             if (!data.Configuration.Moderation.ShowResponsibleModerator)
+            {
                 e.WithAuthor(author: null);
+                e.WithSuccessColor();
+            }
 
             if (!await member.TrySendMessageAsync(embed: e.Build()))
             {

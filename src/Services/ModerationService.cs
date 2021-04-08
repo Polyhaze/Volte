@@ -210,7 +210,7 @@ namespace Volte.Services
 
         private async Task<string> TargetRestUser(ModActionEventArgs args)
         {
-            var u = await args.Context.Client.Shards.First().Rest.GetUserAsync(args.TargetId ?? 0);
+            var u = await args.Context.Client.Rest.GetUserAsync(args.TargetId ?? 0);
             return u is null
                 ? $"**User:** {args.TargetId}"
                 : $"**User:** {u} ({args.TargetId})";
@@ -219,7 +219,7 @@ namespace Volte.Services
             ? $"**Message Deleted:** {args.TargetId}"
             : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
-        private string Time(ModActionEventArgs args) =>
-            $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
+        private string Time(ModActionEventArgs args) 
+            => $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
     }
 }

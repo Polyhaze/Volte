@@ -17,7 +17,9 @@ namespace Volte.Commands.Modules
         [Command("Purge", "Clear", "Clean")]
         [Description("Purges the last x messages, or the last x messages by a given user.")]
         [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
-        public async Task<ActionResult> PurgeAsync([Description("The amount of messages to purge.")] int count, [Description("If provided, will only delete messages by this user within `count` messages.")] RestUser targetAuthor = null)
+        public async Task<ActionResult> PurgeAsync([Description("The amount of messages to purge.")]
+            int count, [Description("If provided, will only delete messages by this user within `count` messages.")]
+            RestUser targetAuthor = null)
         {
             //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
             //lets you theoretically use 0 to delete only the invocation message, for testing or something.
@@ -28,9 +30,8 @@ namespace Volte.Commands.Modules
                     opts.AuditLogReason = $"Messages purged by {Context.User}.");
 
                 await Context.Channel.DeleteMessagesAsync(
-                    messages.Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id), 
+                    messages.Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id),
                     reqOpts);
-
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -42,7 +43,8 @@ namespace Volte.Commands.Modules
             return None(async () =>
             {
                 await Interactive.ReplyAndDeleteAsync(Context, string.Empty,
-                    embed: Context.CreateEmbed($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**."), timeout: 3.Seconds());
+                    embed: Context.CreateEmbed($"Successfully deleted **{"message".ToQuantity(messages.Count - 1)}**."),
+                    timeout: 3.Seconds());
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Purge)

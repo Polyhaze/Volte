@@ -20,7 +20,7 @@ namespace Volte.Commands.Modules
             {
                 if (Addon.LoadedAddons.IsEmpty())
                     return Ok("You have no addons!\n" +
-                              "Addons can be made via making an `addons` directory in my installation folder, " +
+                              $"Addons can be made via making an {Format.Code("addons")} directory in my installation folder, " +
                               $"and {Format.Url("following this", "https://github.com/GreemDev/ExampleVolteAddon")}.");
 
                 var addonEmbeds = Addon.LoadedAddons.Select(x => Context.CreateEmbedBuilder()

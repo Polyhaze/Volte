@@ -34,8 +34,8 @@ namespace Volte.Commands.Modules
             bool onlyCurrentGuild = true)
         {
             var pages = (onlyCurrentGuild
-                ? Db.GetReminders(Context.User.Id, Context.Guild.Id)
-                : Db.GetReminders(Context.User)
+                    ? Db.GetReminders(Context.User.Id, Context.Guild.Id)
+                    : Db.GetReminders(Context.User)
                 ).Select(x => Context.CreateEmbedBuilder()
                     .WithTitle(x.TargetTime.Humanize(false, Context.Now))
                     .AddField("Reminder", Format.Code(x.Value))
@@ -43,7 +43,8 @@ namespace Volte.Commands.Modules
                     .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
                 .ToList();
             if (pages.IsEmpty())
-                return Ok($"You currently have no reminders set{(onlyCurrentGuild ? " in this guild" : string.Empty)}.");
+                return Ok(
+                    $"You currently have no reminders set{(onlyCurrentGuild ? " in this guild" : string.Empty)}.");
             if (pages.Count is 1) return Ok(pages.First());
             return Ok(pages);
         }

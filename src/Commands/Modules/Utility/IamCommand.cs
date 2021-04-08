@@ -11,7 +11,8 @@ namespace Volte.Commands.Modules
     {
         [Command("Iam")]
         [Description("Gives yourself a role, if it is in the current guild's self role list.")]
-        public async Task<ActionResult> IamAsync([Remainder, Description("The SelfRole you want to give yourself.")] SocketRole role)
+        public async Task<ActionResult> IamAsync([Remainder, Description("The SelfRole you want to give yourself.")]
+            SocketRole role)
         {
             if (Context.GuildData.Extras.SelfRoles.IsEmpty())
                 return BadRequest("This guild does not have any roles you can give yourself.");

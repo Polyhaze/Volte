@@ -7,6 +7,7 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 namespace Volte.Interactive
@@ -30,13 +31,13 @@ namespace Volte.Interactive
             _callbacks = new Dictionary<ulong, IReactionCallback>();
         }
 
-        public Task<SocketMessage> NextMessageAsync(VolteContext context,
+        public Task<SocketUserMessage> NextMessageAsync(VolteContext context,
             bool fromSourceUser = true,
             bool inSourceChannel = true,
             TimeSpan? timeout = null,
             CancellationToken token = default)
         {
-            var criterion = new Criteria<SocketMessage>();
+            var criterion = new Criteria<SocketUserMessage>();
             if (fromSourceUser)
                 criterion.AddCriterion(new EnsureSourceUserCriterion());
             if (inSourceChannel)
@@ -44,29 +45,32 @@ namespace Volte.Interactive
             return NextMessageAsync(context, criterion, timeout, token);
         }
 
-        public async Task<SocketMessage> NextMessageAsync(VolteContext context,
-            ICriterion<SocketMessage> criterion,
+        public async Task<SocketUserMessage> NextMessageAsync(VolteContext context,
+            ICriterion<SocketUserMessage> criterion,
             TimeSpan? timeout = null,
             CancellationToken token = default)
         {
             timeout ??= _defaultTimeout;
 
-            var eventTrigger = new TaskCompletionSource<SocketMessage>();
-            var cancelTrigger = new TaskCompletionSource<bool>();
+            var msgTcs = new TaskCompletionSource<SocketUserMessage>();
+            var cancelTcs = new TaskCompletionSource<bool>();
 
-            token.Register(() => cancelTrigger.SetResult(true));
+            token.Register(() => cancelTcs.SetResult(true));
 
             async Task Handler(SocketMessage message)
             {
-                var result = await criterion.JudgeAsync(context, message);
-                if (result)
-                    eventTrigger.SetResult(message);
+                if (message.ShouldHandle(out var msg))
+                {
+                    var result = await criterion.JudgeAsync(context, msg);
+                    if (result)
+                        msgTcs.SetResult(msg);
+                }
             }
 
             context.Client.MessageReceived += Handler;
 
-            var trigger = eventTrigger.Task;
-            var task = await Task.WhenAny(trigger, Task.Delay(timeout.Value), cancelTrigger.Task);
+            var trigger = msgTcs.Task;
+            var task = await Task.WhenAny(trigger, Task.Delay(timeout.Value), cancelTcs.Task);
 
             context.Client.MessageReceived -= Handler;
 
@@ -84,7 +88,7 @@ namespace Volte.Interactive
         {
             timeout ??= _defaultTimeout;
             var message = await context.Channel.SendMessageAsync(content, isTts, embed, options);
-            _ = Executor.ExecuteAfterDelayAsync(timeout.Value, async () => await message.DeleteAsync());
+            _ = Executor.ExecuteAfterDelayAsync(timeout.Value, async () => await message.TryDeleteAsync());
             return message;
         }
 
@@ -123,9 +127,7 @@ namespace Volte.Interactive
             });
             
             if (callback.RunMode is RunMode.Sequential)
-            {
                 await callbackTask;
-            }
         }
 
         public void Dispose()

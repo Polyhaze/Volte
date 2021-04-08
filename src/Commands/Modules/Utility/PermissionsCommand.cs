@@ -1,5 +1,4 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -14,7 +13,9 @@ namespace Volte.Commands.Modules
     {
         [Command("Permissions", "Perms")]
         [Description("Shows someone's, or the command invoker's, permissions in the current guild.")]
-        public Task<ActionResult> PermissionsAsync([Remainder, Description("The user to show permissions for. Defaults to yourself.")] SocketGuildUser user = null)
+        public Task<ActionResult> PermissionsAsync(
+            [Remainder, Description("The user to show permissions for. Defaults to yourself.")]
+            SocketGuildUser user = null)
         {
             user ??= Context.User; // get the user (or the invoker, if none specified)
 
@@ -24,7 +25,6 @@ namespace Volte.Commands.Modules
 
             if (user.GuildPermissions.Administrator)
                 return Ok("User has Administrator permission, and has all permissions.");
-
 
 
             var (allowed, disallowed) = GetPermissions(user);

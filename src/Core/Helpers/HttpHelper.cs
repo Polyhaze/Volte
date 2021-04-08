@@ -15,13 +15,14 @@ namespace Volte.Core.Helpers
         /// </summary>
         /// <param name="content">The content to send.</param>
         /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>>.</param>
+        /// <param name="fileExtension">The file extension {including .} for the resulting URL.</param>
         /// <returns>The URL of the successful paste.</returns>
         /// <exception cref="InvalidOperationException">If <paramref name="provider"/> doesn't have an <see cref="HttpClient"/> in it.</exception>
-        public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider)
+        public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider, string fileExtension = "")
         {
             var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
             var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}";
+            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{fileExtension}";
         }
     }
 }

@@ -17,7 +17,8 @@ namespace Volte.Commands.Modules
 
         [Command("Stats")]
         [Description("Shows stats for a tag.")]
-        public async Task<ActionResult> TagStatsAsync([Remainder, Description("The tag to show stats for.")] Tag tag)
+        public async Task<ActionResult> TagStatsAsync([Remainder, Description("The tag to show stats for.")]
+            Tag tag)
         {
             var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
 
@@ -36,11 +37,15 @@ namespace Volte.Commands.Modules
                     ? "None"
                     : Context.GuildData.Extras.Tags.Select(x => Format.Code(x.Name)).Join(", ")
             ).WithTitle($"Available Tags for {Context.Guild.Name}"));
-        
+
         [Command("Create", "Add", "New")]
         [Description("Creates a tag with the specified name and response (in that order).")]
         [RequireGuildModerator]
-        public async Task<ActionResult> TagCreateAsync([Description("The name of the tag you want to make. If you want spaces in the name, make sure to surround it in \".")] string name, [Remainder, Description("What you want the tag to reply with.")] string response)
+        public async Task<ActionResult> TagCreateAsync(
+            [Description(
+                "The name of the tag you want to make. If you want spaces in the name, make sure to surround it in \".")]
+            string name, [Remainder, Description("What you want the tag to reply with.")]
+            string response)
         {
             var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
             if (tag != null)
@@ -65,14 +70,19 @@ namespace Volte.Commands.Modules
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
                 .AddField("Name", tag.Name)
-                .AddField("Response", tag.Response.Length > EmbedFieldBuilder.MaxFieldValueLength ? "<Cannot display; too large.>" : tag.Response)
+                .AddField("Response",
+                    tag.Response.Length > EmbedFieldBuilder.MaxFieldValueLength
+                        ? "<Cannot display; too large.>"
+                        : tag.Response)
                 .AddField("Creator", Context.User.Mention));
         }
 
         [Command("Edit", "Ed", "E")]
         [Description("Edit a tag's content if it exists.")]
         [RequireGuildModerator]
-        public Task<ActionResult> TagEditAsync([Description("The tag whose content you want to modify.")] Tag tag, [Remainder, Description("The new content of the tag.")] string response)
+        public Task<ActionResult> TagEditAsync([Description("The tag whose content you want to modify.")]
+            Tag tag, [Remainder, Description("The new content of the tag.")]
+            string response)
         {
             Context.GuildData.Extras.Tags.Remove(tag);
             tag.Response = response;
@@ -84,7 +94,8 @@ namespace Volte.Commands.Modules
         [Command("Delete", "Del", "Rem")]
         [Description("Deletes a tag if it exists.")]
         [RequireGuildModerator]
-        public async Task<ActionResult> TagDeleteAsync([Remainder, Description("The tag to delete.")] Tag tag)
+        public async Task<ActionResult> TagDeleteAsync([Remainder, Description("The tag to delete.")]
+            Tag tag)
         {
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.Save(Context.GuildData);

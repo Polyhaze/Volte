@@ -22,7 +22,7 @@ namespace Volte.Interactive
         public RunMode RunMode => RunMode.Sequential;
         public ICriterion<SocketReaction> Criterion { get; }
 
-        public TimeSpan? Timeout => _pager.Options.Timeout;
+        private TimeSpan Timeout = default;
 
         private readonly PaginatedMessage _pager;
         
@@ -39,6 +39,7 @@ namespace Volte.Interactive
             Context = sourceContext;
             Criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
+            Timeout = _pager.Options.Timeout;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
                 _pageCount = ((_pager.Pages.Count() - 1) / _pager.Options.FieldsPerPage) + 1;
             else
@@ -74,12 +75,14 @@ namespace Volte.Interactive
                     await message.AddReactionAsync(_pager.Options.Info);
             });
 
-            if (Timeout != null)
+            if (Timeout != default)
             {
-                Executor.ExecuteAfterDelay(Timeout.Value, () =>
+                _ = Executor.ExecuteAfterDelayAsync(Timeout, async () =>
                 {
                     Interactive.RemoveReactionCallback(message);
-                    _ = Message.DeleteAsync();
+                    await Message.RemoveAllReactionsAsync();
+                    var m = await Message.Channel.SendMessageAsync("You didn't do anything in one minute.");
+                    await Executor.ExecuteAfterDelayAsync(5.Seconds(), async () => await m.TryDeleteAsync());
                 });
             }
         }
@@ -113,10 +116,10 @@ namespace Volte.Interactive
             {
                 _ = Executor.ExecuteAsync(async () =>
                 {
-                    var criteria = new Criteria<SocketMessage>()
+                    var criteria = new Criteria<SocketUserMessage>()
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
-                        .AddCriterion((___, param) => Task.FromResult(int.TryParse(param.Content, out _)));
+                        .AddCriterion((___, msg) => Task.FromResult(int.TryParse(msg.Content, out _)));
                     
                     var response = await Interactive.NextMessageAsync(Context, criteria, 15.Seconds());
                     var req = int.Parse(response.Content);
@@ -150,13 +153,13 @@ namespace Volte.Interactive
             {
                 var e = embeds.ElementAt(_currentPageIndex - 1);
                 if (!_pager.Title.IsNullOrWhitespace()) e.WithTitle(_pager.Title);
-                return e.WithFooter(string.Format(_pager.Options.FooterFormat, _currentPageIndex, _pageCount)).Build();
+                return e.WithFooter(_pager.Options.GenerateFooter(_currentPageIndex, _pageCount)).Build();
             }
             
             var builder = Context.CreateEmbedBuilder()
                 .WithTitle(_pager.Title)
                 .WithRelevantColor(Context.User)
-                .WithFooter(string.Format(_pager.Options.FooterFormat, _currentPageIndex, _pageCount));
+                .WithFooter(_pager.Options.GenerateFooter(_currentPageIndex, _pageCount));
             switch (_pager.Pages)
             {
                 case IEnumerable<EmbedFieldBuilder> efb:
