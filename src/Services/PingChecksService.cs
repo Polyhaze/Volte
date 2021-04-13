@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Gommon;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 
@@ -14,9 +13,7 @@ namespace Volte.Services
             {
                 Logger.Debug(LogSource.Service,
                     "Received a message to check for ping threshold violations.");
-                var content = args.Message.Content;
-                if (content.ContainsIgnoreCase("@everyone") ||
-                    content.ContainsIgnoreCase("@here") ||
+                if (args.Message.MentionedEveryone ||
                     args.Message.MentionedUsers.Count > 10)
                 {
                     await args.Message.DeleteAsync();

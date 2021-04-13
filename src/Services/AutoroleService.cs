@@ -8,10 +8,8 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public AutoroleService(DatabaseService databaseService)
-        {
-            _db = databaseService;
-        }
+        public AutoroleService(DatabaseService databaseService) 
+            => _db = databaseService;
 
         public async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {

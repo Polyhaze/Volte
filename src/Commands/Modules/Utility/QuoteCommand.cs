@@ -7,6 +7,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -18,23 +19,20 @@ namespace Volte.Commands.Modules
             ulong messageId, [Description("The channel to get the message from. Defaults to the current channel.")]
             SocketTextChannel channel = null)
         {
-            var c = channel ?? Context.Channel;
-            var m = await c.GetMessageAsync(messageId);
+            channel ??= Context.Channel;
+            var m = await channel.GetMessageAsync(messageId);
             if (m is null)
                 return BadRequest("A message with that ID doesn't exist in this channel.");
 
             var e = Context.CreateEmbedBuilder(new StringBuilder()
                     .AppendLine($"{m.Content}")
                     .AppendLine()
-                    .AppendLine($"[Jump!]({m.GetJumpUrl()})")
-                    .ToString())
-                .WithAuthor($"{m.Author}, in #{m.Channel.Name}",
-                    m.Author.GetAvatarUrl())
+                    .AppendLine($"[Jump!]({m.GetJumpUrl()})"))
+                .WithAuthor($"{m.Author}, in #{m.Channel}",
+                    m.Author.GetEffectiveAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize());
             if (!m.Attachments.IsEmpty())
-            {
                 e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
-            }
 
             return Ok(e);
         }

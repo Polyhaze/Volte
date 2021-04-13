@@ -19,15 +19,13 @@ namespace Volte.Commands.Modules
             [Remainder, Description("The reason for the ban.")]
             string reason = "Banned by a Moderator.")
         {
-            var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **{reason}**.");
-            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
-            {
-                e.WithAuthor(author: null);
-                e.WithSuccessColor();
-            }
+            var e = Context
+                .CreateEmbedBuilder(
+                    $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.")
+                .ApplyConfig(Context.GuildData);
 
             if (!await member.TrySendMessageAsync(embed: e.Build()))
-                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
+                Logger.Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
 
             try
             {

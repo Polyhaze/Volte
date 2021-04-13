@@ -38,7 +38,7 @@ namespace Volte.Commands.Modules
                     : Db.GetReminders(Context.User)
                 ).Select(x => Context.CreateEmbedBuilder()
                     .WithTitle(x.TargetTime.Humanize(false, Context.Now))
-                    .AddField("Reminder", Format.Code(x.Value))
+                    .AddField("Reminder", Format.Code(x.ReminderText))
                     .AddField("Created", x.CreationTime.FormatBoldString())
                     .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
                 .ToList();

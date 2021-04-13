@@ -16,12 +16,14 @@ namespace Volte.Commands.Modules
             [Remainder, Description("The role in which you want to count members for.")]
             SocketRole role)
         {
-            var users = await Context.Guild.GetUsersAsync().FlattenAsync();
-            var usersInRole = users.Where(x => x.RoleIds.Contains(role.Id)).ToArray();
-            var result =
-                $"There {"is".ToQuantity(usersInRole.Length).Split(" ")[1]} {"member".ToQuantity(usersInRole.Length)} in the role {role.Mention}";
+            var users = (await Context.Guild.GetUsersAsync().FlattenAsync())
+                .Where(x => x.RoleIds.Contains(role.Id))
+                .ToArray();
 
-            return Ok(usersInRole.Any(x => x.Id == Context.User.Id)
+            var result =
+                $"There {"is".ToQuantity(users.Length).Split(" ")[1]} {"member".ToQuantity(users.Length)} in the role {role.Mention}";
+
+            return Ok(users.Any(x => x.Id == Context.User.Id)
                 ? $"{result}; including you."
                 : $"{result}.");
         }

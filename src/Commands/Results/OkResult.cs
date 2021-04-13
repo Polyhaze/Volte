@@ -52,11 +52,7 @@ namespace Volte.Commands
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
             if (_pager != null)
-            {
-                _ = Executor.ExecuteAsync(async () =>
-                    await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
-                return new ResultCompletionData();
-            }
+                return new ResultCompletionData(await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
 
             if (_separateLogic != null)
             {

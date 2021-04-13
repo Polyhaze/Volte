@@ -25,8 +25,7 @@ namespace Volte.Commands.Modules
                 {
                     e.WithDescription(new StringBuilder()
                         .AppendLine($"{DiscordHelper.Clap} **Gateway**: {Context.Client.Latency} milliseconds")
-                        .AppendLine($"{DiscordHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}")
-                        .ToString());
+                        .AppendLine($"{DiscordHelper.OkHand} **REST**: {sw.Elapsed.Humanize(3)}"));
                     x.Embed = e.Build();
                 });
             }, false);

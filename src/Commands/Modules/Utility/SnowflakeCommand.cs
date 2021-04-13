@@ -17,8 +17,7 @@ namespace Volte.Commands.Modules
             var date = SnowflakeUtils.FromSnowflake(id);
             return Ok(new StringBuilder()
                 .AppendLine($"**Date:** {date.FormatDate()}")
-                .AppendLine($"**Time**: {date.FormatFullTime()}")
-                .ToString());
+                .AppendLine($"**Time**: {date.FormatFullTime()}"));
         }
     }
 }

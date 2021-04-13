@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -16,10 +15,9 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public ModerationService(DatabaseService databaseService)
-        {
-            _db = databaseService;
-        }
+        public ModerationService(DatabaseService databaseService) 
+            => _db = databaseService;
+
 
         public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
         {

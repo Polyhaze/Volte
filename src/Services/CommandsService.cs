@@ -61,7 +61,6 @@ namespace Volte.Services
                         $"The command {args.Context.Command.Name} didn't return some form of ActionResult. " +
                         "This is developer error. " +
                         "Please report this to Volte's developers: https://github.com/Ultz/Volte. Thank you!");
-                    data = null;
                     return;
                 }
             }
@@ -79,9 +78,7 @@ namespace Volte.Services
                 .AppendLine(args.ExecutedLogMessage())
                 .AppendLine(After(args));
             if (data != null)
-            {
                 sb.AppendLine(ResultMessage(data));
-            }
 
             sb.Append(Separator);
             Logger.Info(LogSource.Volte, sb.ToString());

@@ -11,7 +11,7 @@
         <PackageProjectUrl>https://greemdev.net/Volte</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Ultz/Volte</RepositoryUrl>
         <Copyright>MIT</Copyright>
-        <Version>3.2.1.1</Version>
+        <Version>3.6.2</Version>
         <Platforms>AnyCPU;x64</Platforms>
         <ApplicationIcon>Volte.ico</ApplicationIcon>
         <PlatformTarget>x64</PlatformTarget>
@@ -27,7 +27,8 @@
         <PackageReference Include="LiteDB" Version="5.0.10" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.10.0-1.final" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.2.21154.6" />        
-        <PackageReference Include="Qmmands" Version="4.0.0-nightly-00254" />
+        <PackageReference Include="Qmmands" Version="4.0.0-nightly-00254" />        
+        <PackageReference Include="Sentry" Version="3.3.1" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
     </ItemGroup>
 </Project>

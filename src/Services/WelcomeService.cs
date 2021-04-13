@@ -10,10 +10,8 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public WelcomeService(DatabaseService databaseService)
-        {
-            _db = databaseService;
-        }
+        public WelcomeService(DatabaseService databaseService) 
+            => _db = databaseService;
 
         public async Task JoinAsync(UserJoinedEventArgs args)
         {
@@ -34,7 +32,7 @@ namespace Volte.Services
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
                     .WithDescription(welcomeMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl() ?? args.User.GetDefaultAvatarUrl())
+                    .WithThumbnailUrl(args.User.GetEffectiveAvatarUrl())
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
 
@@ -52,22 +50,20 @@ namespace Volte.Services
             if (data.Configuration.Welcome.LeavingMessage.IsNullOrEmpty()) return;
             Logger.Debug(LogSource.Volte,
                 "User left a guild, let's check to see if we should send a leaving embed.");
-            var leavingMessage = data.Configuration.Welcome.FormatLeavingMessage(args.User);
             var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
-            if (c != null)
+            if (c is null)
+                Logger.Debug(LogSource.Volte,
+                    "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
+            else
             {
                 await new EmbedBuilder()
                     .WithColor(data.Configuration.Welcome.WelcomeColor)
-                    .WithDescription(leavingMessage)
-                    .WithThumbnailUrl(args.User.GetAvatarUrl() ?? args.User.GetDefaultAvatarUrl())
+                    .WithDescription(data.Configuration.Welcome.FormatLeavingMessage(args.User))
+                    .WithThumbnailUrl(args.User.GetEffectiveAvatarUrl())
                     .WithCurrentTimestamp()
                     .SendToAsync(c);
                 Logger.Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");
-                return;
             }
-
-            Logger.Debug(LogSource.Volte,
-                "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
         }
     }
 }

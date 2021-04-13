@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +19,9 @@ namespace Volte.Interactive
 
         private readonly Dictionary<ulong, IReactionCallback> _callbacks;
         private readonly TimeSpan _defaultTimeout;
+        private readonly ConcurrentQueue<PaginatedMessageCallback> _activePagers;
 
-        // helpers to allow DI containers to resolve without a custom factory
+
         public InteractiveService(DiscordShardedClient discord, InteractiveServiceConfig config = null)
         {
             _client = discord;
@@ -29,6 +31,7 @@ namespace Volte.Interactive
             _defaultTimeout = config.DefaultTimeout;
 
             _callbacks = new Dictionary<ulong, IReactionCallback>();
+            _activePagers = new ConcurrentQueue<PaginatedMessageCallback>(); 
         }
 
         public Task<SocketUserMessage> NextMessageAsync(VolteContext context,
@@ -57,9 +60,9 @@ namespace Volte.Interactive
 
             token.Register(() => cancelTcs.SetResult(true));
 
-            async Task Handler(SocketMessage message)
+            async Task Handler(SocketMessage m)
             {
-                if (message.ShouldHandle(out var msg))
+                if (m.ShouldHandle(out var msg))
                 {
                     var result = await criterion.JudgeAsync(context, msg);
                     if (result)
@@ -70,7 +73,7 @@ namespace Volte.Interactive
             context.Client.MessageReceived += Handler;
 
             var trigger = msgTcs.Task;
-            var task = await Task.WhenAny(trigger, Task.Delay(timeout.Value), cancelTcs.Task);
+            var task = await Task.WhenAny(trigger, Task.Delay(timeout.Value, token), cancelTcs.Task);
 
             context.Client.MessageReceived -= Handler;
 
@@ -97,21 +100,15 @@ namespace Volte.Interactive
             ICriterion<SocketReaction> criterion = null)
         {
             var callback = new PaginatedMessageCallback(this, context, pager, criterion);
+            _activePagers.Enqueue(callback);
             await callback.DisplayAsync();
             return callback.Message;
         }
 
-        public void AddReactionCallback(IMessage message, IReactionCallback callback)
-            => _callbacks[message.Id] = callback;
-
-        public void RemoveReactionCallback(IMessage message)
-            => RemoveReactionCallback(message.Id);
-
-        public void RemoveReactionCallback(ulong id)
-            => _callbacks.Remove(id);
-
-        public void ClearReactionCallbacks()
-            => _callbacks.Clear();
+        public void AddReactionCallback(IMessage message, IReactionCallback callback) => _callbacks[message.Id] = callback;
+        public void RemoveReactionCallback(IMessage message) => RemoveReactionCallback(message.Id);
+        public void RemoveReactionCallback(ulong id) => _callbacks.Remove(id);
+        public void ClearReactionCallbacks() => _callbacks.Clear();
 
 
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> message,
@@ -125,14 +122,12 @@ namespace Volte.Interactive
             {
                 if (await callback.HandleAsync(reaction)) RemoveReactionCallback(message.Id);
             });
-            
+
             if (callback.RunMode is RunMode.Sequential)
                 await callbackTask;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             _client.ReactionAdded -= HandleReactionAsync;
-        }
     }
 }

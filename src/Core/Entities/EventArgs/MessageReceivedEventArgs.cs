@@ -2,7 +2,6 @@ using System;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Entities;
 using Volte.Services;
 
 namespace Volte.Core.Entities
@@ -16,9 +15,8 @@ namespace Volte.Core.Entities
         public MessageReceivedEventArgs(SocketMessage s, IServiceProvider provider)
         {
             Message = s.Cast<SocketUserMessage>() ?? throw new ArgumentException($"{nameof(s)} is not a SocketUserMessage; aborting event handler call.");
-            provider.Get(out DatabaseService db);
             Context = VolteContext.Create(s, provider);
-            Data = db.GetData(Context.Guild);
+            Data = provider.Get<DatabaseService>().GetData(Context.Guild);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Volte.Commands
             var ctx = context.Cast<VolteContext>();
             var users = ctx.Guild.Users.ToList();
 
-            SocketGuildUser user = default;
+            SocketGuildUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = users.FirstOrDefault(x => x.Id == id);
@@ -53,16 +53,35 @@ namespace Volte.Commands
         {
             var ctx = context.Cast<VolteContext>();
 
-            RestUser user = default;
+            RestUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = await ctx.Client.Rest.GetUserAsync(id);
-
             
-
             return user is null
                 ? TypeParserResult<RestUser>.Failed("User not found.")
                 : TypeParserResult<RestUser>.Successful(user);
+        }
+    }
+    
+    [VolteTypeParser]
+    public sealed class RestGuildUserParser : TypeParser<RestGuildUser>
+    {
+        public override async ValueTask<TypeParserResult<RestGuildUser>> ParseAsync(
+            Parameter parameter,
+            string value,
+            CommandContext context)
+        {
+            var ctx = context.Cast<VolteContext>();
+
+            RestGuildUser user = null;
+
+            if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
+                user = await ctx.Client.Rest.GetGuildUserAsync(ctx.Guild.Id, id);
+            
+            return user is null
+                ? TypeParserResult<RestGuildUser>.Failed("User not found.")
+                : TypeParserResult<RestGuildUser>.Successful(user);
         }
     }
 }

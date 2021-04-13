@@ -1,9 +1,12 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -16,15 +19,24 @@ namespace Volte.Commands.Modules
         {
             var res = await RequestUrbanDefinitionsAsync(word);
 
-            EmbedBuilder CreateEmbed(UrbanEntry entry) => Context.CreateEmbedBuilder()
+            EmbedBuilder CreateEmbed(UrbanEntry entry) 
+            {
+                if (entry.Definition.Length > 1024)
+                {
+                    var oldDefLength = entry.Definition.Length;
+                    entry.Definition = string.Join("", entry.Definition.Take(980)) + Format.Bold($"\n...and {oldDefLength - 980} more {"character".ToQuantity(oldDefLength - 980).Split(" ").Last()}.");
+                } else if (entry.Definition.IsEmpty())
+                    entry.Definition = "<error occurred>";
+
+                return Context.CreateEmbedBuilder()
                 .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
-                .AddField("Word", Format.Bold(entry.Word) ?? "<error occurred>", true)
+                .AddField("URL", entry.Permalink.IsNullOrEmpty() ? "None provided" : entry.Permalink, true)
                 .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
-                .AddField("Definition", entry.Definition.IsNullOrEmpty() ? "No definition provided?" : entry.Definition)
+                .AddField("Definition", entry.Definition)
                 .AddField("Example", entry.Example.IsNullOrEmpty() ? "None provided" : entry.Example)
                 .AddField("Author", entry.Author.IsNullOrEmpty() ? "None provided" : entry.Author, true)
-                .AddField("URL", entry.Permalink.IsNullOrEmpty() ? "None provided" : entry.Permalink, true)
-                .WithFooter($"Created {entry.CreatedAt.FormatPrettyString()}");
+                .AddField("Created", entry.CreatedAt.FormatBoldString(), true);
+            }
 
 
             var pages = res.Select(CreateEmbed).ToList();
@@ -33,7 +45,10 @@ namespace Volte.Commands.Modules
                 ? BadRequest("That word didn't have a definition of Urban Dictionary.")
                 : pages.Count is 1
                     ? Ok(pages.First())
-                    : Ok(pages);
+                    : Ok(PaginatedMessageBuilder.New
+                        .WithPages(pages)
+                        .WithTitle(word)
+                        .WithDefaults(Context));
         }
     }
 }

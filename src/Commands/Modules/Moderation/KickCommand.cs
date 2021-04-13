@@ -19,15 +19,11 @@ namespace Volte.Commands.Modules
             [Remainder, Description("The reason for the kick.")]
             string reason = "Kicked by a Moderator.")
         {
-            var e = Context.CreateEmbedBuilder($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.");
-            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
-            {
-                e.WithAuthor(author: null);
-                e.WithSuccessColor();
-            }
+            var e = Context.CreateEmbedBuilder($"You've been kicked from **{Context.Guild.Name}** for **{reason}**.")
+                .ApplyConfig(Context.GuildData);
 
             if (!await user.TrySendMessageAsync(embed: e.Build()))
-                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {user}!");
+                Logger.Warn(LogSource.Module, $"encountered a 403 when trying to message {user}!");
 
             try
             {

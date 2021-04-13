@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Volte.Commands;
+using Volte.Core.Helpers;
 
 namespace Volte.Core.Entities
 {
@@ -19,8 +20,8 @@ namespace Volte.Core.Entities
 
         public string SanitizeContent() 
             => Response
-                .Replace("@everyone", "@\u200Beveryone")
-                .Replace("@here", "@\u200Bhere");
+                .Replace("@everyone", $"@{DiscordHelper.Zws}everyone")
+                .Replace("@here", $"@{DiscordHelper.Zws}here");
 
         public string FormatContent(VolteContext ctx) 
             => SanitizeContent()

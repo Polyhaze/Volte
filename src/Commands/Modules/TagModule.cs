@@ -47,10 +47,9 @@ namespace Volte.Commands.Modules
             string name, [Remainder, Description("What you want the tag to reply with.")]
             string response)
         {
-            var tag = Context.GuildData.Extras.Tags.FirstOrDefault(t => t.Name.EqualsIgnoreCase(name));
-            if (tag != null)
+            if (Context.GuildData.Extras.Tags.AnyGet(t => t.Name.EqualsIgnoreCase(name), out var tag))
             {
-                var user = await Context.Client.GetShardFor(Context.Guild).Rest.GetUserAsync(tag.CreatorId);
+                var user = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
                 return BadRequest(
                     $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
             }

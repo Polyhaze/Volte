@@ -1,6 +1,5 @@
 namespace Volte.Core.Entities
 {
-
     public class LogSources
     {
         public static LogSource Parse(string source) => source.ToLower() switch

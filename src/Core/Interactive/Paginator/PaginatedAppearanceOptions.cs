@@ -9,13 +9,13 @@ namespace Volte.Interactive
     {
         public static PaginatedAppearanceOptions Default = new PaginatedAppearanceOptions();
 
-        public IEmote First => DiscordHelper.First.ToEmoji();
-        public IEmote Back => DiscordHelper.Left.ToEmoji();
-        public IEmote Next => DiscordHelper.Right.ToEmoji();
-        public IEmote Last => DiscordHelper.Last.ToEmoji();
-        public IEmote Stop => DiscordHelper.WhiteSquare.ToEmoji();
-        public IEmote Jump => DiscordHelper.E1234.ToEmoji();
-        public IEmote Info => DiscordHelper.Question.ToEmoji();
+        public readonly IEmote First = DiscordHelper.First.ToEmoji();
+        public readonly IEmote Back = DiscordHelper.Left.ToEmoji();
+        public readonly IEmote Next = DiscordHelper.Right.ToEmoji();
+        public readonly IEmote Last = DiscordHelper.Last.ToEmoji();
+        public readonly IEmote Stop = DiscordHelper.WhiteSquare.ToEmoji();
+        public readonly IEmote Jump = DiscordHelper.E1234.ToEmoji();
+        public readonly IEmote Info = DiscordHelper.Question.ToEmoji();
 
         public string FooterFormat => "Page {0} / {1}";
 

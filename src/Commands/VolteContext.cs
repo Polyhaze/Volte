@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -45,16 +46,26 @@ namespace Volte.Commands
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
             .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor))
-            .WithAuthor(User.ToString(), User.GetAvatarUrl() ?? User.GetDefaultAvatarUrl())
+            .WithAuthor(User.ToString(), User.GetEffectiveAvatarUrl())
             .WithDescription(content ?? string.Empty);
+
+        public EmbedBuilder CreateEmbedBuilder(StringBuilder content) => CreateEmbedBuilder(content.ToString());
         
-        public async Task<(T Result, bool DidTimeout)> GetNextAsync<T>()
+        /// <summary>
+        ///     Waits for a message containing content parseable by a registered <see cref="TypeParser{T}"/>.
+        ///     Waiting times out after <paramref name="timeout"/> is over; returning no result and DidTimeout as true;
+        ///     Receiving a message results in this method parsing its contents via the <see cref="TypeParser{T}"/>.
+        ///     TL;DR: Your <see cref="CommandService"/> must have a <see cref="TypeParser{T}"/> for <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="timeout">The timespan to wait for. Defaults to 15 seconds.</param>
+        /// <typeparam name="T">The type of object to wait for.</typeparam>
+        public async Task<(T Result, bool DidTimeout)> GetNextAsync<T>(TimeSpan? timeout = null)
         {
             var parser = Services.Get<CommandService>().GetTypeParser<T>();
-            var message = await Interactive.NextMessageAsync(this, timeout: 15.Seconds());
+            var message = await Interactive.NextMessageAsync(this, timeout: timeout ?? 15.Seconds());
             if (message is null)
             {
-                await CreateEmbed("You didn't reply within 15 seconds. Run the command and try again.")
+                await CreateEmbed("You didn't reply within the specified timeout. Run the command and try again.")
                     .SendToAsync(Channel);
                 return (default, true);
             }

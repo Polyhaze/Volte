@@ -64,11 +64,11 @@ namespace Volte.Commands.Modules
         [Command("Clear", "Cl", "C")]
         [Description("Clears the self role list for this guild.")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleClearAsync()
-        {
-            Context.GuildData.Extras.SelfRoles.Clear();
-            Db.Save(Context.GuildData);
-            return Ok("Successfully cleared all Self Roles for this guild.");
-        }
+        public Task<ActionResult> SelfRoleClearAsync() => 
+            Ok("Successfully cleared all Self Roles for this guild.").Apply(_ =>
+                {
+                    Context.GuildData.Extras.SelfRoles.Clear();
+                    Db.Save(Context.GuildData);
+                });
     }
 }

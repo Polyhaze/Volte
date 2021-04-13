@@ -68,13 +68,11 @@ namespace Volte.Commands.Modules
         [Command("List", "L")]
         [Description("Lists every single word/phrase inside of the blacklist.")]
         public Task<ActionResult> BlacklistListAsync()
-        {
-            return Ok(Context.CreateEmbedBuilder()
+            => Ok(Context.CreateEmbedBuilder()
                 .WithTitle($"Blacklist for {Context.Guild.Name}")
                 .WithDescription(Context.GuildData.Configuration.Moderation.Blacklist.IsEmpty()
                     ? "This guild has no words/phrases blacklisted."
                     : Context.GuildData.Configuration.Moderation.Blacklist.Select(x => Format.Code(x)).Join(", "))
             );
-        }
     }
 }

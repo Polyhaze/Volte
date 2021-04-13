@@ -14,6 +14,7 @@ namespace Volte.Core.Helpers
 {
     public static class DiscordHelper
     {
+        public static string Zws => "\u200B";
         public static string Wave => "\uD83D\uDC4B";
         public static string X => "\u274C";
         public static string BallotBoxWithCheck => "\u2611";
@@ -36,7 +37,7 @@ namespace Volte.Core.Helpers
         public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollEmojis()
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
 
-        public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis() 
+        public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis()
             => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
 
         public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer)
@@ -46,11 +47,11 @@ namespace Volte.Core.Helpers
             return opts;
         }
 
-        public static string GetUrl(this Emoji emoji) 
+        public static string GetUrl(this Emoji emoji)
             => $"https://i.kuro.mu/emoji/512x512/{emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
 
-        
-                /// <summary>
+
+        /// <summary>
         ///     Checks if the current user is the user identified in the bot's config.
         /// </summary>
         /// <param name="user">The current user</param>
@@ -61,21 +62,17 @@ namespace Volte.Core.Helpers
         private static bool IsGuildOwner(this SocketGuildUser user)
             => user.Guild.OwnerId == user.Id || IsBotOwner(user);
 
-        public static bool IsModerator(this VolteContext ctx, SocketGuildUser user)
-        {
-            return user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) ||
+        public static bool IsModerator(this VolteContext ctx, SocketGuildUser user) 
+            => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) ||
                    ctx.IsAdmin(user) ||
                    IsGuildOwner(user);
-        }
 
-        public static bool HasRole(this SocketGuildUser user, ulong roleId)
+            public static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user)
-        {
-            return HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
+        public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user) 
+            => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
                    IsGuildOwner(user);
-        }
 
         public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,
             bool isTts = false, Embed embed = null, RequestOptions options = null)
@@ -90,11 +87,11 @@ namespace Volte.Core.Helpers
                 return false;
             }
         }
-        
+
         public static SocketRole GetHighestRole(this SocketGuildUser member)
             => member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
-        
-        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member) 
+
+        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member)
             => member.Roles.Where(x => x.HasColor())
                 .OrderByDescending(x => x.Position).FirstOrDefault();
 
@@ -130,7 +127,7 @@ namespace Volte.Core.Helpers
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var mod = provider.Get<ModerationService>();
-            
+
             client.Log += m =>
             {
                 Logger.HandleLogEvent(new LogEventArgs(m));
@@ -143,7 +140,8 @@ namespace Volte.Core.Helpers
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
                 if (Config.EnabledFeatures.Autorole) await autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
-                if (provider.Get<DatabaseService>().GetData(user.Guild).Configuration.Moderation.CheckAccountAge && Config.EnabledFeatures.ModLog) 
+                if (provider.Get<DatabaseService>().GetData(user.Guild).Configuration.Moderation.CheckAccountAge &&
+                    Config.EnabledFeatures.ModLog)
                     await mod.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
             };
             client.UserLeft += async user =>
@@ -160,8 +158,7 @@ namespace Volte.Core.Helpers
                         await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
                     else
                         await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
-
-                };
+                }
             };
         }
 
@@ -171,12 +168,12 @@ namespace Volte.Core.Helpers
         public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
             c.SendMessageAsync(embed: e);
 
-        public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) => 
+        public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) =>
             msg.ReplyAsync(embed: e.Build());
 
-        public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) => 
+        public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) =>
             msg.ReplyAsync(embed: e);
-        
+
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
         public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
@@ -198,6 +195,20 @@ namespace Volte.Core.Helpers
         public static EmbedBuilder AppendDescriptionLine(this EmbedBuilder e, string toAppend = "") =>
             e.AppendDescription($"{toAppend}\n");
 
+        /// <summary>
+        ///     Removes the author and sets the color to the config-provided <see cref="Config"/>.<see cref="Config.SuccessColor"/>,
+        /// however it only removes it if <see cref="ModerationOptions.ShowResponsibleModerator"/> on the provided <paramref name="data"/> is <see langword="false"/>
+        /// </summary>
+        /// <param name="e">The current <see cref="EmbedBuilder"/>.</param>
+        /// <param name="data">The <see cref="GuildData"/> to apply settings for.</param>
+        /// <returns>The possibly-modified <see cref="EmbedBuilder"/></returns>
+        public static EmbedBuilder ApplyConfig(this EmbedBuilder e, GuildData data) => e.Apply(eb =>
+        {
+            if (!data.Configuration.Moderation.ShowResponsibleModerator) return;
+            eb.WithAuthor(author: null);
+            eb.WithSuccessColor();
+        });
+
         public static Emoji ToEmoji(this string str) => new Emoji(str);
 
         public static bool ShouldHandle(this SocketMessage message, out SocketUserMessage userMessage)
@@ -207,6 +218,7 @@ namespace Volte.Core.Helpers
                 userMessage = msg;
                 return true;
             }
+
             userMessage = null;
             return false;
         }
@@ -225,10 +237,10 @@ namespace Volte.Core.Helpers
             }
         }
 
-        public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason) 
-            => deletable.TryDeleteAsync(DiscordHelper.CreateRequestOptions(opts => opts.AuditLogReason = reason));
+        public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
+            => deletable.TryDeleteAsync(CreateRequestOptions(opts => opts.AuditLogReason = reason));
 
-        public static string GetEffectiveUsername(this SocketGuildUser user) =>
+        public static string GetEffectiveUsername(this IGuildUser user) =>
             user.Nickname ?? user.Username;
 
         public static string GetEffectiveAvatarUrl(this IUser user, ImageFormat format = ImageFormat.Auto,
@@ -240,8 +252,8 @@ namespace Volte.Core.Helpers
 
         public static bool HasColor(this IRole role)
             => role.Color.RawValue != 0;
-        
-        public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb) 
+
+        public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb)
             => e.WithDescription(sb.ToString());
     }
 }

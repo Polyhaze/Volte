@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
@@ -9,7 +8,6 @@ using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Helpers;
-using Volte.Services;
 
 namespace Volte.Interactive
 {

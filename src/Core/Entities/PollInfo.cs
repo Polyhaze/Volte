@@ -10,7 +10,7 @@ namespace Volte.Core.Entities
 {
     public sealed class PollInfo
     {
-        public static PollInfo FromFields(params (string Name, string Value)[] fields) => new PollInfo().AddFields(fields);
+        public static PollInfo FromFields(params (string Name, object Value)[] fields) => new PollInfo().AddFields(fields);
 
         public static PollInfo FromDefaultFields(IEnumerable<string> choices)
         {
@@ -49,21 +49,21 @@ namespace Volte.Core.Entities
         public static PollInfo FromInvalid()
             => new PollInfo { IsValid = false };
 
-        public Dictionary<string, string> Fields { get; }
+        public Dictionary<string, object> Fields { get; }
         public bool IsValid { get; set; }
         public const string Footer = "Click one of the numbers below to vote.";
 
         public PollInfo()
         {
-            Fields = new Dictionary<string, string>();
+            Fields = new Dictionary<string, object>();
             IsValid = true;
         }
 
-        public PollInfo AddFields(params (string Name, string Value)[] fields)
+        public PollInfo AddFields(params (string Name, object Value)[] fields)
         {
             foreach (var (name, value) in fields)
             {
-                if (name.IsNullOrEmpty() || value.IsNullOrEmpty()) continue;
+                if (name.IsNullOrEmpty() || value is null) continue;
                 Fields.Add(name, value);
             }
 

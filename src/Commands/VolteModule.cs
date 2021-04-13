@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
@@ -26,6 +27,8 @@ namespace Volte.Commands
             bool awaitLogic = true) 
             => new OkResult(logic, awaitLogic);
 
+        protected ActionResult Ok(StringBuilder text, Func<IUserMessage, Task> callback = null, bool shouldEmbed = true)
+            => Ok(text.ToString(), callback, shouldEmbed);
         protected ActionResult Ok(PaginatedMessageBuilder pager) => new OkResult(pager);
         protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds);
 

@@ -5,7 +5,7 @@ using Discord;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
-using Volte.Commands;
+using Volte.Core.Helpers;
 using Gommon;
 
 namespace Volte.Commands.Modules
@@ -30,8 +30,7 @@ namespace Volte.Commands.Modules
                         .AppendLine($"**Album:** {spotify.AlbumTitle}")
                         .AppendLine(
                             $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
-                        .AppendLine($"**Artist(s):** {spotify.Artists.Join(", ")}")
-                        .ToString())
+                        .AppendLine($"**Artist(s):** {spotify.Artists.Join(", ")}"))
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
 

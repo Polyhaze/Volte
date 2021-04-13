@@ -38,8 +38,7 @@ namespace Volte.Commands.Modules
             {
                 return Ok(new StringBuilder()
                     .AppendLine(
-                        $"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}")
-                    .ToString());
+                        $"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}"));
             }
 
             Context.GuildData.Configuration.Welcome.WelcomeMessage = message;
@@ -53,12 +52,8 @@ namespace Volte.Commands.Modules
             return Ok(new StringBuilder()
                     .AppendLine($"Set this guild's welcome message to: {Format.Code(message, string.Empty)}")
                     .AppendLine()
-                    .AppendLine($"{sendingTest}").ToString(),
-                async _ =>
-                {
-                    if (welcomeChannel != null)
-                        await Service.JoinAsync(new UserJoinedEventArgs(Context.User));
-                });
+                    .AppendLine($"{sendingTest}"),
+                _ =>  Service.JoinAsync(new UserJoinedEventArgs(Context.User)));
         }
 
         [Command("Color", "Colour", "Cl")]
@@ -76,12 +71,10 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> LeavingMessageAsync([Remainder] string message = null)
         {
             if (message is null)
-            {
                 return Ok(new StringBuilder()
                     .AppendLine(
                         $"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, string.Empty)}")
                     .ToString());
-            }
 
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
             Db.Save(Context.GuildData);
@@ -94,12 +87,8 @@ namespace Volte.Commands.Modules
             return Ok(new StringBuilder()
                     .AppendLine($"Set this server's leaving message to: {Format.Code(message, string.Empty)}")
                     .AppendLine()
-                    .AppendLine($"{sendingTest}").ToString(),
-                async _ =>
-                {
-                    if (welcomeChannel != null)
-                        await Service.LeaveAsync(new UserLeftEventArgs(Context.User));
-                });
+                    .AppendLine($"{sendingTest}"),
+                _ => Service.LeaveAsync(new UserLeftEventArgs(Context.User)));
         }
 
         [Command("Dm")]

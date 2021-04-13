@@ -31,7 +31,7 @@ namespace Volte.Commands.Modules
             }
 
             if (!await user.TrySendMessageAsync(embed: e.Build()))
-                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {user}!");
+                Logger.Warn(LogSource.Module, $"encountered a 403 when trying to message {user}!");
 
             try
             {

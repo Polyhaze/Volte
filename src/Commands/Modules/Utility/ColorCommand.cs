@@ -33,8 +33,7 @@ namespace Volte.Commands.Modules
                             .WithTitle($"{role.Name}'s Color")
                             .WithDescription(new StringBuilder()
                                 .AppendLine($"**Hex:** {role.Color.ToString().ToUpper()}")
-                                .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}")
-                                .ToString())
+                                .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"))
                             .WithImageUrl("attachment://role.png")
                             .WithCurrentTimestamp()
                             .Build(),

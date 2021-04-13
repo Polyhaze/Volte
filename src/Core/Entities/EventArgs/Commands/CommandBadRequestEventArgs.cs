@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Volte.Commands;
+﻿using Volte.Commands;
 
 namespace Volte.Core.Entities
 {

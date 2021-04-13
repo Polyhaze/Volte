@@ -30,7 +30,7 @@ namespace Volte.Commands
             }
 
             return role is null
-                ? TypeParserResult<SocketRole>.Failed($"Role `{value}` not found.")
+                ? TypeParserResult<SocketRole>.Failed($"Role {Format.Code(value)} not found.")
                 : TypeParserResult<SocketRole>.Successful(role);
         }
     }

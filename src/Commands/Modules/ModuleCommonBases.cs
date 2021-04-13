@@ -40,12 +40,7 @@ namespace Volte.Commands.Modules
                 : null;
 
             return apiResp != null
-                ? apiResp.Entries.Select(x =>
-                {
-                    x.Definition = x.Definition.Replace("]", string.Empty).Replace("[", string.Empty);
-                    x.Example = x.Example.Replace("]", string.Empty).Replace("[", string.Empty);
-                    return x;
-                }).ToArray()
+                ? apiResp.Entries.ToArray()
                 : Array.Empty<UrbanEntry>();
         }
 
@@ -92,17 +87,13 @@ namespace Volte.Commands.Modules
             });
             db.Save(data);
 
-            var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
-                .WithDescription($"You've been warned in **{issuer.Guild.Name}** for `{reason}`.");
-            if (!data.Configuration.Moderation.ShowResponsibleModerator)
-            {
-                e.WithAuthor(author: null);
-                e.WithSuccessColor();
-            }
+            var e = new EmbedBuilder().WithRelevantColor(issuer).WithAuthor(issuer)
+                .WithDescription($"You've been warned in {Format.Bold(issuer.Guild.Name)} for {Format.Code(reason)}.")
+                .ApplyConfig(data);
 
             if (!await member.TrySendMessageAsync(embed: e.Build()))
             {
-                Logger.Warn(LogSource.Volte,
+                Logger.Warn(LogSource.Module,
                     $"encountered a 403 when trying to message {member}!");
             }
         }

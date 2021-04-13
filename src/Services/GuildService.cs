@@ -1,15 +1,11 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Net;
 using Discord.WebSocket;
 using Volte.Core;
 using Volte.Core.Entities;
-using Gommon;
-using Qmmands;
 using Volte.Core.Helpers;
 
 namespace Volte.Services
@@ -18,11 +14,8 @@ namespace Volte.Services
     {
         private readonly DiscordShardedClient _client;
 
-        public GuildService(DiscordShardedClient discordShardedClient)
-        {
-            _client = discordShardedClient;
-        }
-
+        public GuildService(DiscordShardedClient discordShardedClient) 
+            => _client = discordShardedClient;
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {

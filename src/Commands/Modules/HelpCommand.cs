@@ -47,24 +47,20 @@ namespace Volte.Commands.Modules
 
             try
             {
-                if (!cmds.IsEmpty())
-                    e.AddField("Regular Commands", cmds.Join(", "));
+                if (!cmds.IsEmpty()) e.AddField("Regular Commands", cmds.Join(", "));
             }
             catch (ArgumentException)
             {
-                e.AppendDescriptionLine()
-                    .AppendDescriptionLine(cmds.Join(", "));
+                e.AppendDescriptionLine().AppendDescriptionLine(cmds.Join(", "));
             }
 
             try
             {
-                if (!groupCmds.IsEmpty())
-                    e.AddField("Group Commands", groupCmds.Join(", "));
+                if (!groupCmds.IsEmpty()) e.AddField("Group Commands", groupCmds.Join(", "));
             }
             catch (ArgumentException)
             {
-                e.AppendDescriptionLine()
-                    .AppendDescriptionLine(groupCmds.Join(", "));
+                e.AppendDescriptionLine().AppendDescriptionLine(groupCmds.Join(", "));
             }
 
             return Ok(e);
@@ -97,12 +93,10 @@ namespace Volte.Commands.Modules
             }
         }
 
-        private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync()
+        private async IAsyncEnumerable<EmbedBuilder> GetPagesAsync() 
         {
             foreach (var cmd in await CommandService.GetAllCommands().WhereAccessibleAsync(Context).ToListAsync())
-            {
                 yield return await CommandHelper.CreateCommandEmbedAsync(cmd, Context);
-            }
         }
     }
 }

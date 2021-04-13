@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using Qmmands;
-using Volte.Commands;
+﻿using Qmmands;
 
 namespace Volte.Core.Entities
 {

@@ -33,12 +33,6 @@ namespace Volte.Interactive
         public IGuildUser Author { get; set; } = null;
         public Color Color { get; set; } = Color.Default;
         public string Title { get; set; }
-        /// <summary>
-        /// AlternateDescription will be used as the description of the pager only when
-        /// <see cref="Pages"/> is a collection of <see cref="EmbedFieldBuilder"/>.
-        /// </summary>
-        public string AlternateDescription { get; set; } = string.Empty;
-
         public PaginatedAppearanceOptions Options { get; set; } = PaginatedAppearanceOptions.Default;
 
         public PaginatedMessage SplitPagesBy(int entriesPerPage)

@@ -9,7 +9,7 @@ namespace Volte.Commands
     [VolteTypeParser(true)]
     public sealed class BooleanParser : TypeParser<bool>
     {
-        private static string[] TrueValues =
+        private string[] _trueValues =
         {
             "true", "y",
             "yes", "ye",
@@ -22,7 +22,7 @@ namespace Volte.Commands
             "1"
         };
 
-        private static string[] FalseValues =
+        private readonly string[] _falseValues =
         {
             "false", "n",
             "no", "nah",
@@ -35,10 +35,10 @@ namespace Volte.Commands
 
         public override ValueTask<TypeParserResult<bool>> ParseAsync(Parameter _, string value, CommandContext __)
         {
-            if (TrueValues.ContainsIgnoreCase(value))
+            if (_trueValues.ContainsIgnoreCase(value))
                 return TypeParserResult<bool>.Successful(true);
 
-            if (FalseValues.ContainsIgnoreCase(value))
+            if (_falseValues.ContainsIgnoreCase(value))
                 return TypeParserResult<bool>.Successful(false);
 
             return bool.TryParse(value, out var result)

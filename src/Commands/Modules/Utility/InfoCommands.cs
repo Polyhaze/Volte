@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
                 .AddField("Uptime", Process.GetCurrentProcess().CalculateUptime(), true)
                 .AddField("Successful Commands", CommandsService.SuccessfulCommandCalls, true)
                 .AddField("Failed Commands", CommandsService.FailedCommandCalls, true)
-                .WithThumbnailUrl(Context.Client.CurrentUser.GetAvatarUrl()));
+                .WithThumbnailUrl(Context.Client.CurrentUser.GetEffectiveAvatarUrl(size: 512)));
 
         [Command("UserInfo", "Ui")]
         [Description("Shows info for the mentioned user or yourself if none is provided.")]
@@ -42,43 +42,36 @@ namespace Volte.Commands.Modules
             SocketGuildUser user = null)
         {
             user ??= Context.User;
-
-            string GetRelevantActivity()
+            
+            string GetRelevantActivity() => user.Activity switch
             {
-                return user.Activity switch
-                {
-                    //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive (and ugly) embed field value
-                    CustomStatusGame {Emote: Emoji _} csg => $"{csg.Emote} {csg.State}",
-                    CustomStatusGame csg => $"{csg.State}",
-                    SpotifyGame _ => "Listening to Spotify",
-                    _ => user.Activity?.Name
-                };
-            }
+                //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive (and ugly) embed field value
+                CustomStatusGame {Emote: Emoji _} csg => $"{csg.Emote} {csg.State}",
+                CustomStatusGame csg => $"{csg.State}",
+                SpotifyGame _ => "Listening to Spotify",
+                _ => user.Activity?.Name
+            } ?? "Nothing";
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle(user.ToString())
                 .AddField("ID", user.Id, true)
-                .AddField("Activity", GetRelevantActivity() ?? "Nothing", true)
+                .AddField("Activity", GetRelevantActivity(), true)
                 .AddField("Status", user.Status, true)
                 .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
                 .AddField("Role Hierarchy", user.Hierarchy, true)
                 .AddField("Account Created",
-                    $"{user.CreatedAt.FormatDate()}, {user.CreatedAt.FormatFullTime()}")
+                    $"{user.CreatedAt.FormatBoldString()}")
                 .AddField("Joined This Guild",
-                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatDate() : "\u200B")}, " +
-                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatFullTime() : "\u200B")}")
-                .WithThumbnailUrl(user.GetAvatarUrl(size: 512)));
+                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatBoldString() : DiscordHelper.Zws)}")
+                .WithThumbnailUrl(user.GetEffectiveAvatarUrl(size: 512)));
         }
 
         [Command("GuildInfo", "Gi")]
         [Description("Shows some info about the current guild.")]
         public Task<ActionResult> GuildInfoAsync()
-        {
-            var cAt = Context.Guild.CreatedAt;
-
-            return Ok(Context.CreateEmbedBuilder()
+            => Ok(Context.CreateEmbedBuilder()
                 .WithTitle(Context.Guild.Name)
-                .AddField("Created", $"{cAt.FormatDate()} ({cAt.Humanize()})")
+                .AddField("Created", $"{Context.Guild.CreatedAt.FormatBoldString()}")
                 .AddField("Owner", Context.Guild.Owner)
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", Context.Guild.Users.Count, true)
@@ -87,6 +80,5 @@ namespace Volte.Commands.Modules
                 .AddField("Voice Channels", Context.Guild.VoiceChannels.Count, true)
                 .AddField("Text Channels", Context.Guild.TextChannels.Count, true)
                 .WithThumbnailUrl(Context.Guild.IconUrl));
-        }
     }
 }

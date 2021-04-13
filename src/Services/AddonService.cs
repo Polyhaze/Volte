@@ -20,7 +20,7 @@ namespace Volte.Services
         private readonly IServiceProvider _provider;
         private bool _isInitialized;
         public Dictionary<VolteAddonMeta, string> LoadedAddons { get; }
-        private List<ScriptState> AddonResults { get; }
+        internal List<ScriptState> AddonResults { get; }
 
         public AddonService(IServiceProvider serviceProvider)
         {
@@ -80,11 +80,9 @@ namespace Volte.Services
                         meta = JsonSerializer.Deserialize<VolteAddonMeta>(File.ReadAllText(file),
                             Config.JsonOptions);
                         if (meta.Name.EqualsIgnoreCase("list"))
-                        {
                             throw new InvalidOperationException(
-                                $"Addon with name {meta.Name} is being ignored because it is using a reserved name. Please change the name or remove it.");
-                        }
-                            
+                                $"Addon with name {meta.Name} is being ignored because it is using a reserved name. Please change the name or remove the addon.");
+
                     }
                     catch (JsonException e)
                     {

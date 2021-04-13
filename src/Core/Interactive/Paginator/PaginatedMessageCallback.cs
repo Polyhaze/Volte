@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
@@ -13,7 +12,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Interactive
 {
-    public sealed class PaginatedMessageCallback : IReactionCallback
+    public sealed class PaginatedMessageCallback : IReactionCallback, IAsyncDisposable
     {
         public VolteContext Context { get; }
         public InteractiveService Interactive { get; }
@@ -22,7 +21,7 @@ namespace Volte.Interactive
         public RunMode RunMode => RunMode.Sequential;
         public ICriterion<SocketReaction> Criterion { get; }
 
-        private TimeSpan Timeout = default;
+        private readonly TimeSpan _timeout;
 
         private readonly PaginatedMessage _pager;
         
@@ -39,7 +38,7 @@ namespace Volte.Interactive
             Context = sourceContext;
             Criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
-            Timeout = _pager.Options.Timeout;
+            _timeout = _pager.Options.Timeout;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
                 _pageCount = ((_pager.Pages.Count() - 1) / _pager.Options.FieldsPerPage) + 1;
             else
@@ -49,37 +48,36 @@ namespace Volte.Interactive
         public async Task DisplayAsync()
         {
             var embed = BuildEmbed();
-            var message = await Context.Channel.SendMessageAsync(_pager.Content, embed: embed);
-            Message = message;
-            Interactive.AddReactionCallback(message, this);
+            Message = await Context.Channel.SendMessageAsync(_pager.Content, embed: embed);
+            Interactive.AddReactionCallback(Message, this);
             // Reactions take a while to add, don't wait for them
             _ = Executor.ExecuteAsync(async () =>
             {
                 if (_pager.Pages.Count() > 1)
                 {
-                    await message.AddReactionAsync(_pager.Options.First);
-                    await message.AddReactionAsync(_pager.Options.Back);
-                    await message.AddReactionAsync(_pager.Options.Next);
-                    await message.AddReactionAsync(_pager.Options.Last);
+                    await Message.AddReactionAsync(_pager.Options.First);
+                    await Message.AddReactionAsync(_pager.Options.Back);
+                    await Message.AddReactionAsync(_pager.Options.Next);
+                    await Message.AddReactionAsync(_pager.Options.Last);
                     var manageMessages = Context.Channel is IGuildChannel guildChannel &&
                                          (Context.User as IGuildUser).GetPermissions(guildChannel).ManageMessages;
 
                     if (_pager.Options.JumpDisplayOptions == JumpDisplayOptions.Always
                         || (_pager.Options.JumpDisplayOptions == JumpDisplayOptions.WithManageMessages && manageMessages))
-                        await message.AddReactionAsync(_pager.Options.Jump);
+                        await Message.AddReactionAsync(_pager.Options.Jump);
                 }
 
-                await message.AddReactionAsync(_pager.Options.Stop);
+                await Message.AddReactionAsync(_pager.Options.Stop);
 
                 if (_pager.Options.DisplayInformationIcon)
-                    await message.AddReactionAsync(_pager.Options.Info);
+                    await Message.AddReactionAsync(_pager.Options.Info);
             });
 
-            if (Timeout != default)
+            if (_timeout != default)
             {
-                _ = Executor.ExecuteAfterDelayAsync(Timeout, async () =>
+                _ = Executor.ExecuteAfterDelayAsync(_timeout, async () =>
                 {
-                    Interactive.RemoveReactionCallback(message);
+                    Interactive.RemoveReactionCallback(Message);
                     await Message.RemoveAllReactionsAsync();
                     var m = await Message.Channel.SendMessageAsync("You didn't do anything in one minute.");
                     await Executor.ExecuteAfterDelayAsync(5.Seconds(), async () => await m.TryDeleteAsync());
@@ -108,20 +106,15 @@ namespace Volte.Interactive
             else if (emote.Equals(_pager.Options.Last))
                 _currentPageIndex = _pageCount;
             else if (emote.Equals(_pager.Options.Stop))
-            {
-                await Message.TryDeleteAsync();
-                return true;
-            }
+                return await Context.Message.TryDeleteAsync() && await Message.TryDeleteAsync();
             else if (emote.Equals(_pager.Options.Jump))
             {
                 _ = Executor.ExecuteAsync(async () =>
                 {
-                    var criteria = new Criteria<SocketUserMessage>()
+                    var response = await Interactive.NextMessageAsync(Context, new Criteria<SocketUserMessage>()
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
-                        .AddCriterion((___, msg) => Task.FromResult(int.TryParse(msg.Content, out _)));
-                    
-                    var response = await Interactive.NextMessageAsync(Context, criteria, 15.Seconds());
+                        .AddCriterion((___, msg) => Task.FromResult(int.TryParse(msg.Content, out _))), 15.Seconds());
                     var req = int.Parse(response.Content);
 
                     if (req < 1 || req > _pageCount)
@@ -142,8 +135,7 @@ namespace Volte.Interactive
                 return false;
             }
 
-            _ = Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
-            await RenderAsync();
+            await RenderAsync().ContinueWith(async _ => await Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value));
             return false;
         }
 
@@ -160,21 +152,21 @@ namespace Volte.Interactive
                 .WithTitle(_pager.Title)
                 .WithRelevantColor(Context.User)
                 .WithFooter(_pager.Options.GenerateFooter(_currentPageIndex, _pageCount));
-            switch (_pager.Pages)
-            {
-                case IEnumerable<EmbedFieldBuilder> efb:
-                    builder.Fields = efb.Skip((_currentPageIndex - 1) * _pager.Options.FieldsPerPage).Take(_pager.Options.FieldsPerPage).ToList();
-                    builder.Description = _pager.AlternateDescription;
-                    break;
-                default:
-                    builder.Description = _pager.Pages.ElementAt(_currentPageIndex - 1).ToString();
-                    break;
-            }
 
-            return builder.Build();
+            return (_pager.Pages switch
+            {
+                IEnumerable<EmbedFieldBuilder> efb => builder.WithFields(efb
+                    .Skip((_currentPageIndex - 1) * _pager.Options.FieldsPerPage)
+                    .Take(_pager.Options.FieldsPerPage).ToList()),
+                _ => builder.WithDescription(_pager.Pages.ElementAt(_currentPageIndex - 1).ToString())
+            }).Build();
         }
 
         private Task RenderAsync() => Message.ModifyAsync(m => m.Embed = BuildEmbed());
 
+        public async ValueTask DisposeAsync()
+        {
+            await Message.RemoveAllReactionsAsync();
+        }
     }
 }

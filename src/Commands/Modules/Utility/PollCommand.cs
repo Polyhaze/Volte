@@ -27,9 +27,8 @@ namespace Volte.Commands.Modules
             var embed = Context.CreateEmbedBuilder()
                 .WithTitle(Format.Bold(content[0]));
 
-            return None(async () =>
+            return Ok(pollInfo.Apply(embed), async m =>
             {
-                var m = await pollInfo.Apply(embed).SendToAsync(Context.Channel);
                 _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
                 await PollHelper.AddPollReactionsAsync(pollInfo.Fields.Count, m);
             });

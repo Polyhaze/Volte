@@ -4,7 +4,7 @@ using Volte.Commands;
 
 namespace Volte.Core.Entities
 {
-    public class ModActionEventArgs : EventArgs
+    public class ModActionEventArgs
     {
         public SocketGuildUser Moderator { get; private set; }
         public VolteContext Context { get; private set; }

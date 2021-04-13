@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Colorful;
 using Discord;
 using Gommon;
+using Sentry;
 using Volte.Core.Entities;
 using Volte.Services;
 using Color = System.Drawing.Color;
@@ -112,12 +112,11 @@ namespace Volte.Core.Helpers
             content.Append($"{value} -> ");
 
             if (!message.IsNullOrWhitespace())
-            {
                 Append(message, Color.White, ref content);
-            }
 
             if (e != null)
             {
+                SentrySdk.CaptureException(e);
                 var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
                 Append(toWrite, Color.IndianRed, ref content);
             }

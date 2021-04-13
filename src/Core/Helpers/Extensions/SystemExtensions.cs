@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -18,39 +19,41 @@ namespace Gommon
 
         public static string Prepend(this string str, string other) => str.Insert(0, other);
 
-        public static string Repeat(this string str, int times)
+        public static void For(this int timesToLoop, Action action)
         {
-            var sb = new StringBuilder();
-            for (var i = 0; i < times; i++)
-            {
-                sb.Append(str);
-            }
-
-            return sb.ToString();
+            for (var i = 0; i < timesToLoop; i++)
+                action();
         }
-        
+
+        public static string Repeat(this string str, int times) 
+            => new StringBuilder().Apply(sb => times.For(() => sb.Append(str))).ToString();
+
         public static string CalculateUptime(this Process process)
             => (DateTime.Now - process.StartTime).Humanize(3);
 
-        public static Task<IUserMessage> SendFileToAsync(this MemoryStream stream, 
-            ITextChannel channel, string filename, string text = null, bool isTts = false, Embed embed = null, RequestOptions options = null,
+        public static Task<IUserMessage> SendFileToAsync(this MemoryStream stream,
+            ITextChannel channel, string filename, string text = null, bool isTts = false, Embed embed = null,
+            RequestOptions options = null,
             bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference reference = null)
-        {
-            return channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions, reference);
-        }
+            => channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions,
+                reference);
 
         public static string FormatBoldString(this DateTime dt)
+            => dt.FormatPrettyString().Split(" ").Apply(arr =>
+            {
+                arr[1] = Format.Bold(arr[1]);
+                arr[2] = $"{Format.Bold(arr[2].TrimEnd(','))},";
+                arr[4] = Format.Bold(arr[4]);
+            }).Join(" ");
+
+        public static string FormatBoldString(this DateTimeOffset dt) 
+            => dt.DateTime.FormatBoldString();
+
+
+        public static T Apply<T>(this T curr, Action<T> apply)
         {
-            var res = dt.FormatPrettyString().Split(" ");
-            res[1] = Format.Bold(res[1]);
-            res[2] = $"{Format.Bold(res[2].TrimEnd(','))},";
-            res[4] = Format.Bold(res[4]);
-            return res.Join(" ");
-        }
-        
-        public static string FormatBoldString(this DateTimeOffset dt)
-        {
-            return dt.DateTime.FormatBoldString();
+            apply(curr);
+            return curr;
         }
     }
 }

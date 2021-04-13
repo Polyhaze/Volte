@@ -15,7 +15,6 @@ namespace Volte.Interactive
         public IGuildUser Author { get; private set; }
         public Color Color { get; private set; } = new Color(Config.SuccessColor);
         public string Title { get; private set; }
-        public string AlternateDescription { get; private set; } = string.Empty;
         public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.Default;
         
         public static PaginatedMessageBuilder New => new PaginatedMessageBuilder();
@@ -49,13 +48,7 @@ namespace Volte.Interactive
             Title = text;
             return this;
         }
-        
-        public PaginatedMessageBuilder WithAlternateDescription(string text)
-        {
-            AlternateDescription = text;
-            return this;
-        }
-        
+
         public PaginatedMessageBuilder WithOptions(PaginatedAppearanceOptions options)
         {
             Options = options;
@@ -93,7 +86,6 @@ namespace Volte.Interactive
                 Author = Author,
                 Color = Color,
                 Title = Title,
-                AlternateDescription = AlternateDescription,
                 Options = Options
             };
         }

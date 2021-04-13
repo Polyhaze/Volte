@@ -57,7 +57,7 @@ namespace Volte.Services
         {
             var e = ctx.CreateEmbedBuilder()
                 .WithAuthor(message.Author)
-                .WithFooter($"Quoted by {ctx.User}", ctx.User.GetAvatarUrl());
+                .WithFooter($"Quoted by {ctx.User}", ctx.User.GetEffectiveAvatarUrl());
 
             if (!message.Content.IsNullOrEmpty())
                 e.WithDescription(message.Content);

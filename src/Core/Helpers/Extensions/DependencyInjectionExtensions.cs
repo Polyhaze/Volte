@@ -8,7 +8,9 @@ using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qmmands;
+using Sentry;
 using Volte;
+using Volte.Core;
 using Volte.Services;
 using Version = Volte.Version;
 
@@ -16,9 +18,13 @@ namespace Gommon
 {
     public static partial class Extensions
     {
-
         public static IServiceCollection AddAllServices(this IServiceCollection coll, int shardCount) =>
             coll.AddVolteServices()
+                .AddSingleton(SentrySdk.Init(so =>
+                {
+                    so.Dsn = Config.SentryDsn;
+                    so.Debug = Config.EnableDebugLogging || Version.ReleaseType is Version.DevelopmentStage.Development;
+                }))
                 .AddSingleton(new HttpClient
                 {
                     Timeout = 10.Seconds()
@@ -45,21 +51,20 @@ namespace Gommon
                     TotalShards = shardCount
                 }));
 
-        private static GatewayIntents Intents 
+        private static GatewayIntents Intents
             => GatewayIntents.Guilds | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers |
-                   GatewayIntents.GuildMessages | GatewayIntents.GuildPresences;
+               GatewayIntents.GuildMessages | GatewayIntents.GuildPresences;
 
-        public static IServiceCollection AddVolteServices(this IServiceCollection coll)
-        {
-            //get all the classes that inherit VolteService, aren't abstract.
-            foreach (var service in typeof(Program).Assembly.GetTypes()
-                .Where(t => t.Inherits<VolteService>() && !t.IsAbstract))
+        public static IServiceCollection AddVolteServices(this IServiceCollection serviceCollection)
+            => serviceCollection.Apply(coll =>
             {
-                coll.TryAddSingleton(service);
-            }
-
-            return coll;
-        }
+                //get all the classes that inherit VolteService, and aren't abstract.
+                foreach (var service in typeof(Program).Assembly.GetTypes()
+                    .Where(t => t.Inherits<VolteService>() && !t.IsAbstract))
+                {
+                    coll.TryAddSingleton(service);
+                }
+            });
 
         public static T Get<T>(this IServiceProvider provider)
             => provider.GetRequiredService<T>();

@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Qmmands;
 using Qommon.Collections;
+using Sentry;
 using Volte.Commands;
 using Volte.Core.Entities;
 using Volte.Services;
@@ -90,7 +91,7 @@ namespace Volte.Core.Helpers
                     var res = state.ReturnValue switch
                     {
                         bool b => b.ToString().ToLower(),
-                        IEnumerable enumerable => enumerable.Cast<object>().ToReadableString(),
+                        IEnumerable enumerable when state.ReturnValue.GetType() != typeof(string) => enumerable.Cast<object>().ToReadableString(),
                         IUser user => $"{user} ({user.Id})",
                         ITextChannel channel => $"#{channel.Name} ({channel.Id})",
                         IMessage message => env.Inspect(message),
@@ -110,6 +111,7 @@ namespace Volte.Core.Helpers
             }
             catch (Exception ex)
             {
+                SentrySdk.CaptureException(ex);
                 await msg.ModifyAsync(m =>
                     m.Embed = embed
                         .AddField("Exception Type", ex.GetType().AsPrettyString(), true)

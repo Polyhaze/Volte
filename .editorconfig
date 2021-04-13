@@ -1,2 +1,7 @@
 ﻿# CA1031: Do not catch general exception types
 
+
+[*.cs]
+
+# IDE0008: Use explicit type
+dotnet_diagnostic.IDE0008.severity = none

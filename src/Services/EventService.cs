@@ -2,16 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Net;
-using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Qommon.Collections;
 using Volte.Core;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
@@ -27,13 +22,6 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
-        private readonly DiscordShardedClient _client;
-
-        private readonly bool _shouldStream =
-            !Config.Streamer.IsNullOrWhitespace();
-
-        private readonly bool _shouldSetGame =
-            !Config.Game.IsNullOrWhitespace();
 
         public EventService(DatabaseService databaseService,
             AntilinkService antilinkService,
@@ -41,8 +29,7 @@ namespace Volte.Services
             PingChecksService pingChecksService,
             CommandService commandService,
             CommandsService commandsService,
-            QuoteService quoteService,
-            DiscordShardedClient client)
+            QuoteService quoteService)
         {
             _antilink = antilinkService;
             _db = databaseService;
@@ -51,8 +38,8 @@ namespace Volte.Services
             _commandService = commandService;
             _commandsService = commandsService;
             _quoteService = quoteService;
-            _client = client;
         }
+
 
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
@@ -88,10 +75,9 @@ namespace Volte.Services
                     await args.Context.CreateEmbedBuilder($"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
                                                           $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                         .ReplyToAsync(args.Message);
-                    return;
                 }
-
-                await _quoteService.CheckMessageAsync(args);
+                else
+                    await _quoteService.CheckMessageAsync(args);
             }
         }
 
@@ -111,19 +97,18 @@ namespace Volte.Services
             Logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
             Logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
 
-            if (!_shouldStream)
+            var (type, name, streamer) = Config.ParseConfigActivity();
+
+            if (streamer is null && type != ActivityType.CustomStatus)
             {
-                if (_shouldSetGame)
-                {
-                    await args.Shard.SetGameAsync(Config.Game);
-                    Logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
-                }
+                await args.Shard.SetGameAsync(name, null, type);
+                Logger.Info(LogSource.Volte, $"Set {args.Shard.CurrentUser.Username}'s game to \"{Config.Game}\".");
             }
-            else
+            else if (type != ActivityType.CustomStatus)
             {
-                await args.Shard.SetGameAsync(Config.Game, Config.FormattedStreamUrl, ActivityType.Streaming);
+                await args.Shard.SetGameAsync(name, Config.FormattedStreamUrl, type);
                 Logger.Info(LogSource.Volte,
-                    $"Set {args.Shard.CurrentUser.Username}'s activity to \"{ActivityType.Streaming}: {Config.Game}\", at Twitch user {Config.Streamer}.");
+                    $"Set {args.Shard.CurrentUser.Username}'s activity to \"{type}: {name}\", at Twitch user {Config.Streamer}.");
             }
 
             _ = Executor.ExecuteAsync(async () =>
@@ -146,7 +131,7 @@ namespace Volte.Services
                     .WithSuccessColor()
                     .WithAuthor(args.Client.GetOwner())
                     .WithDescription(
-                        $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}**!")
+                        $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}!")
                     .SendToAsync(channel);
             }
         }

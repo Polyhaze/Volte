@@ -6,6 +6,7 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Commands;
@@ -39,7 +40,7 @@ namespace Volte.Commands.Modules
             SocketGuildUser member)
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id)
-                .Select(x => $"**{x.Reason}**, on **{x.Date.FormatDate()}**");
+                .Select(x => $"{Format.Bold(x.Reason)}, on {Format.Bold(x.Date.FormatDate())}");
             return Ok(PaginatedMessageBuilder.New
                 .WithPages(warns)
                 .WithTitle($"Warns for {member}")
@@ -56,16 +57,13 @@ namespace Volte.Commands.Modules
             var warnCount = Context.GuildData.Extras.Warns.RemoveAll(x => x.User == member.Id);
             Db.Save(Context.GuildData);
 
-            try
-            {
-                await Context.CreateEmbed($"Your warns in **{Context.Guild.Name}** have been cleared. Hooray!")
-                    .SendToAsync(member);
-            }
-            catch (HttpException e) when (e.HttpCode == HttpStatusCode.Forbidden)
-            {
-                Logger.Warn(LogSource.Volte,
-                    $"encountered a 403 when trying to message {member}!", e);
-            }
+            var e = Context
+                .CreateEmbedBuilder(
+                    $"Your {"warn".ToQuantity(warnCount)} in {Format.Bold(Context.Guild.Name)} have been cleared. Hooray!")
+                .ApplyConfig(Context.GuildData);
+
+            if (!await member.TrySendMessageAsync(embed: e.Build()))
+                Logger.Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
 
             return Ok($"Cleared **{warnCount}** warnings for **{member}**.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New

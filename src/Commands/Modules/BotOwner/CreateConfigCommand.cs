@@ -2,8 +2,6 @@
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

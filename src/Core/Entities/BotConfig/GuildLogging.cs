@@ -33,8 +33,7 @@ namespace Volte.Core.Entities
                 return false;
             }
 
-            var g = client.GetGuild(GuildId);
-            channel = g?.GetTextChannel(ChannelId);
+            channel = client.GetGuild(GuildId)?.GetTextChannel(ChannelId);
 
             return channel != null;
         }

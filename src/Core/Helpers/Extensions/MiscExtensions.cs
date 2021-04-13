@@ -17,42 +17,28 @@ namespace Gommon
 {
     public partial class Extensions
     {
-        public static MemoryStream CreateColorImage(this Rgba32 color)
+        public static MemoryStream CreateColorImage(this Rgba32 color) => new MemoryStream().Apply(ms =>
         {
-            var ms = new MemoryStream();
             using var image = new Image<Rgba32>(125, 200);
             image.Mutate(a => a.BackgroundColor(color));
             image.SaveAsPng(ms);
             ms.Position = 0;
-            return ms;
-        }
+        });
 
         public static Rgba32 ToRgba32(this Color color) => new Rgba32(color.R, color.G, color.B);
 
-        public static async Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member, string word)
+        public static Task PerformAsync(this BlacklistAction action, VolteContext ctx, SocketGuildUser member,
+            string word) => action switch
         {
-            switch (action)
-            {
-                case BlacklistAction.Warn:
-                    await member.WarnAsync(ctx, $"Used blacklisted phrase \"{word}\"");
-                    break;
-                case BlacklistAction.Kick:
-                    await member.KickAsync($"Used blacklisted phrase \"{word}\"");
-                    break;
-                case BlacklistAction.Ban:
-                    await member.BanAsync(7, $"Used blacklisted phrase \"{word}\"");
-                    break;
-                case BlacklistAction.Nothing:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
-            }
-        }
-        
-        public static async Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
-        {
-            await ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member, ctx.Services.GetRequiredService<DatabaseService>(), reason);
-        }
-        
+            BlacklistAction.Warn => member.WarnAsync(ctx, $"Used blacklisted phrase \"{word}\""),
+            BlacklistAction.Kick => member.KickAsync($"Used blacklisted phrase \"{word}\""),
+            BlacklistAction.Ban => member.BanAsync(7, $"Used blacklisted phrase \"{word}\""),
+            BlacklistAction.Nothing => Task.CompletedTask,
+            _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
+        };
+
+        public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
+            => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
+                ctx.Services.GetRequiredService<DatabaseService>(), reason);
     }
 }

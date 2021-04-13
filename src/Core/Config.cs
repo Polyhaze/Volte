@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Discord;
 using Gommon;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Volte.Services;
 
 namespace Volte.Core
 {
@@ -33,19 +33,18 @@ namespace Volte.Core
         {
             if (!Directory.Exists(DataDirectory))
             {
-                Console.WriteLine($"The \"{DataDirectory}\" directory didn't exist, so I created it for you. Please fill in the configuration!", Color.Red);
+                Logger.Error(LogSource.Volte,
+                    $"The \"{DataDirectory}\" directory didn't exist, so I created it for you. Please fill in the configuration!");
                 Directory.CreateDirectory(DataDirectory);
                 //99.9999999999% of the time the config also won't exist if this block is reached
                 //if the config does exist when this block is reached, feel free to become the lead developer of this project
             }
-            
-            if (!CreateIfAbsent())
-            {
-                Console.WriteLine($"Please fill in the configuration located at \"{ConfigFilePath}\"; restart me when you've done so.", Color.Crimson);
-                return false;
-            }
 
-            return true;
+            if (CreateIfAbsent()) return true;
+            Logger.Error(LogSource.Volte,
+                $"Please fill in the configuration located at \"{ConfigFilePath}\"; restart me when you've done so.");
+            return false;
+
         }
         
         public static bool CreateIfAbsent()
@@ -54,6 +53,7 @@ namespace Volte.Core
             _configuration = new BotConfig
             {
                 Token = "token here",
+                SentryDsn = "",
                 CommandPrefix = "$",
                 Owner = 0,
                 Game = "game here",
@@ -73,7 +73,7 @@ namespace Volte.Core
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                Logger.Error(LogSource.Volte, e.Message, e);
             }
 
             return false;
@@ -100,12 +100,30 @@ namespace Volte.Core
             }
         }
 
+        public static (ActivityType Type, string Name, string Streamer) ParseConfigActivity()
+        {
+            var split = Game.Split(" ");
+            var title = split.Skip(1).Join(" ");
+            if (split[0].ToLower() is "streaming") title = split.Skip(2).Join(" ");
+            return split.First().ToLower() switch
+            {
+                "playing" => (ActivityType.Playing, title, null),
+                "listeningto" => (ActivityType.Listening, title, null),
+                "listening" => (ActivityType.Listening, title, null),
+                "streaming" => (ActivityType.Streaming, title, split[1]),
+                "watching" => (ActivityType.Watching, title, null),
+                _ => (ActivityType.Playing, Game, null)
+            };
+        }
+
         public static bool IsValidToken() 
             => !(Token.IsNullOrEmpty() || Token.Equals("token here"));
 
         public static string Token => _configuration.Token;
 
         public static string CommandPrefix => _configuration.CommandPrefix;
+
+        public static string SentryDsn => _configuration.SentryDsn;
 
         public static ulong Owner => _configuration.Owner;
 
@@ -130,10 +148,13 @@ namespace Volte.Core
         public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
         
         // ReSharper disable MemberHidesStaticFromOuterClass
-        private class BotConfig
+        private struct BotConfig
         {
             [JsonPropertyName("discord_token")]
             public string Token { get; set; }
+            
+            [JsonPropertyName("sentry_dsn")]
+            public string SentryDsn { get; set; }
 
             [JsonPropertyName("command_prefix")]
             public string CommandPrefix { get; set; }

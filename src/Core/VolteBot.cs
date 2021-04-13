@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
+using Sentry;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
@@ -53,14 +54,25 @@ namespace Volte.Core
             }
 
             _provider = BuildServiceProvider(shardCount);
-
-            _provider.Get(out _client);
-            _provider.Get(out _cts);
+            _client = _provider.Get<DiscordShardedClient>();
+            _cts = _provider.Get<CancellationTokenSource>();
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
 
-            Initialize(_provider);
+            var commandService = _provider.Get<CommandService>();
+
+            var sw = Stopwatch.StartNew();
+            var l = commandService.AddTypeParsers();
+            sw.Stop();
+            Logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
+            sw = Stopwatch.StartNew();
+            var loaded = commandService.AddModules(GetType().Assembly);
+            sw.Stop();
+            Logger.Info(LogSource.Volte,
+                $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
+            _client.RegisterVolteEventHandlers(_provider);
+
             Executor.Execute(async () => await _provider.Get<AddonService>().InitAsync());
             _provider.Get<ReminderService>().Initialize();
 
@@ -68,10 +80,11 @@ namespace Volte.Core
             {
                 await Task.Delay(-1, _cts.Token);
             }
-            catch (TaskCanceledException)
+            catch (Exception e)
             {
+                SentrySdk.CaptureException(e);
                 await ShutdownAsync(_client, _provider);
-            } //this exception always occurs when CancellationTokenSource#Cancel() is called
+            }
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
@@ -97,22 +110,6 @@ namespace Volte.Core
             await client.LogoutAsync();
             await client.StopAsync();
             Environment.Exit(0);
-        }
-        
-        public void Initialize(IServiceProvider provider)
-        {
-            var commandService = provider.Get<CommandService>();
-
-            var sw = Stopwatch.StartNew();
-            var l = commandService.AddTypeParsers();
-            sw.Stop();
-            Logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
-            sw = Stopwatch.StartNew();
-            var loaded = commandService.AddModules(GetType().Assembly);
-            sw.Stop();
-            Logger.Info(LogSource.Volte,
-                $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
-            _client.RegisterVolteEventHandlers(provider);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Volte.Commands.Modules
         {
             var uncategorized = Context.CreateEmbedBuilder();
             var categories = new List<EmbedBuilder>();
-            var toIterate = Context.Guild.TextChannels.Where(c => c.CategoryId == null)
+            var toIterate = Context.Guild.TextChannels.Where(c => c.CategoryId is null)
                 .Cast<SocketGuildChannel>()
-                .Concat(Context.Guild.VoiceChannels.Where(a => a.CategoryId == null))
+                .Concat(Context.Guild.VoiceChannels.Where(a => a.CategoryId is null))
                 .OrderBy(c => c.Position).ToList();
 
             if (toIterate.IsEmpty())

@@ -1,3 +1,7 @@
+using Discord;
+using Gommon;
+using Humanizer;
+using Qmmands;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,10 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Gommon;
-using Humanizer;
-using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
 using Module = Qmmands.Module;
@@ -22,7 +22,6 @@ namespace Volte.Core.Helpers
 
         public static async Task<bool> CanShowModuleAsync(VolteContext ctx, Module module) =>
             await module.RunChecksAsync(ctx) is SuccessfulResult;
-
 
         public static string FormatCommandShort(Command command, bool includeGroup = true)
         {
@@ -49,7 +48,7 @@ namespace Volte.Core.Helpers
         {
             foreach (var cmd in commands)
             {
-                if (await CanShowCommandAsync(ctx, cmd)) 
+                if (await CanShowCommandAsync(ctx, cmd))
                     yield return cmd;
             }
         }
@@ -134,45 +133,42 @@ namespace Volte.Core.Helpers
             };
 
         private static string FormatParameter(Parameter param)
-        {
-            var sb = new StringBuilder(Format.Code(param.Name));
-            if (!param.Description.IsNullOrWhitespace())
-                sb.Append($": {param.Description} ");
-            if (param.Checks.Any(x => x is EnsureNotSelfAttribute))
-                sb.Append("Cannot be yourself.");
-            if (param.DefaultValue != null)
-                sb.Append($"Defaults to: {Format.Code(param.DefaultValue.ToString())}");
+            => new StringBuilder(Format.Code(param.Name)).Apply(sb =>
+            {
+                if (!param.Description.IsNullOrWhitespace())
+                    sb.Append($": {param.Description} ");
+                if (param.Checks.Any(x => x is EnsureNotSelfAttribute))
+                    sb.Append("Cannot be yourself.");
+                if (param.DefaultValue != null)
+                    sb.Append($"Defaults to: {Format.Code(param.DefaultValue.ToString())}");
+            }).ToString().Trim();
 
-            return sb.ToString().Trim();
-        }
-        
-                public static string SanitizeName(this Module m)
+        public static string SanitizeName(this Module m)
             => m.Name.Replace("Module", string.Empty);
-        
+
         public static string SanitizeParserName(this Type type)
             => type.Name.Replace("Parser", string.Empty);
 
         internal static IEnumerable<Type> AddTypeParsers(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;
-            var meth = typeof(CommandService).GetMethod("AddTypeParser");
             var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>()).ToList();
-            
+
             foreach (var parser in parsers)
             {
                 var parserObj = parser.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>());
-                var method = meth?.MakeGenericMethod(
+                var method = typeof(CommandService).GetMethod("AddTypeParser")?.MakeGenericMethod(
                     parser.BaseType?.GenericTypeArguments[0]
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
                 // ReSharper disable once PossibleNullReferenceException
                 // cant happen
-                method?.Invoke(service, new[] {parserObj, parser.GetCustomAttribute<VolteTypeParserAttribute>().OverridePrimitive});
+                method?.Invoke(service, new[] { parserObj, parser.GetCustomAttribute<VolteTypeParserAttribute>().OverridePrimitive });
                 yield return parser;
             }
         }
 
         public static Command GetCommand(this CommandService service, string name)
-            => service.GetAllCommands().FirstOrDefault(x => x.FullAliases.ContainsIgnoreCase(name));
+            => service.FindCommands(name).FirstOrDefault()?.Command;
 
         public static int GetTotalTypeParsers(this CommandService cs)
         {

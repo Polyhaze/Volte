@@ -16,7 +16,7 @@ namespace Volte.Core.Entities
             GuildId = ctx.Guild.Id,
             ChannelId = ctx.Channel.Id,
             MessageId = ctx.Message.Id,
-            Value = reminder
+            ReminderText = reminder
         };
         
         [JsonPropertyName("id"), BsonId]
@@ -34,7 +34,7 @@ namespace Volte.Core.Entities
         [JsonPropertyName("message")]
         public ulong MessageId { get; set; }
         [JsonPropertyName("reminder_for")]
-        public string Value { get; set; }
+        public string ReminderText { get; set; }
 
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

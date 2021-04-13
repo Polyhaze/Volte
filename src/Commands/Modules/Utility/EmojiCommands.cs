@@ -29,14 +29,13 @@ namespace Volte.Commands.Modules
         public EmbedBuilder GenerateEmbed(IEmote emoteIn)
         {
             EmbedBuilder GenerateEmoteEmbed(Emote emote) =>
-                Context.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url)).WithImageUrl(emote.Url)
+                Context.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url))
+                    .WithImageUrl(emote.Url)
                     .WithAuthor($":{emote.Name}:", emote.Url);
 
-            EmbedBuilder GenerateEmojiEmbed(Emoji emoji)
-            {
-                var url = emoji.GetUrl();
-                return Context.CreateEmbedBuilder(Format.Url("Direct Link", url)).WithImageUrl(url);
-            }
+            EmbedBuilder GenerateEmojiEmbed(Emoji emoji) 
+                => Context.CreateEmbedBuilder(Format.Url("Direct Link", emoji.GetUrl()))
+                    .WithImageUrl(emoji.GetUrl());
 
             return emoteIn switch
             {

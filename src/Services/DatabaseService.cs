@@ -37,22 +37,14 @@ namespace Volte.Services
         public IEnumerable<Reminder> GetReminders(IUser user) => GetReminders(user.Id);
         public IEnumerable<Reminder> GetReminders(IUser user, IGuild guild) => GetReminders(user.Id, guild.Id);
 
-        public IEnumerable<Reminder> GetReminders(ulong id)
-        {
-            var coll = Database.GetCollection<Reminder>(RemindersCollection);
-            foreach (var reminder in coll.Find(r => r.CreatorId == id))
-                yield return reminder;
-        }
-        
-        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild) 
-            => GetReminders(id).Where(r => r.GuildId == guild);
+        public IEnumerable<Reminder> GetReminders(ulong id) 
+            => GetAllReminders().Where(r => r.CreatorId == id);
 
+        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild) => GetReminders(id).Where(r => r.GuildId == guild);
 
-        public bool TryDeleteReminder(Reminder reminder) 
-            => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
+        public bool TryDeleteReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
 
-        public IEnumerable<Reminder> GetAllReminders() 
-            => Database.GetCollection<Reminder>(RemindersCollection).FindAll();
+        public IEnumerable<Reminder> GetAllReminders() => Database.GetCollection<Reminder>(RemindersCollection).FindAll();
 
 
         public void CreateReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Insert(reminder);
