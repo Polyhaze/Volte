@@ -24,10 +24,24 @@ namespace Volte.Commands
             _runFuncAsync = awaitCallback;
         }
 
-        public OkResult(IEnumerable<EmbedBuilder> pages)
+        public OkResult(IEnumerable<EmbedBuilder> pages, int pageSplit = -1, Color? color = null, IGuildUser author = null,
+            VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null)
         {
             _pager = PaginatedMessageBuilder.New
                 .WithPages(pages);
+
+            if (color.HasValue)
+                _pager.WithColor(color.Value);
+            if (author != null)
+                _pager.WithAuthor(author);
+            if (ctx != null)
+                _pager.WithDefaults(ctx);
+            if (title != null)
+                _pager.WithTitle(title);
+            if (options != null)
+                _pager.WithOptions(options);
+            if (pageSplit > 0)
+                _pager.SplitPages(pageSplit);
         }
 
         public OkResult(PaginatedMessageBuilder pager) => _pager = pager;
@@ -52,7 +66,8 @@ namespace Volte.Commands
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
             if (_pager != null)
-                return new ResultCompletionData(await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
+                return new ResultCompletionData(
+                    await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
 
             if (_separateLogic != null)
             {

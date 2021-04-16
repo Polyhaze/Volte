@@ -8,13 +8,12 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class ChannelParser : TypeParser<SocketTextChannel>
+    [InjectTypeParser]
+    public sealed class ChannelParser : VolteTypeParser<SocketTextChannel>
     {
         public override ValueTask<TypeParserResult<SocketTextChannel>> ParseAsync(Parameter _, string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
             SocketTextChannel channel = default;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseChannel(value, out id))
@@ -25,14 +24,14 @@ namespace Volte.Commands
                 var match = ctx.Guild.TextChannels.Where(x => x.Name.EqualsIgnoreCase(value))
                     .ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketTextChannel>.Failed(
+                    return Failure(
                         "Multiple channels found. Try mentioning the channel or using its ID.");
                 channel = match.First();
             }
 
             return channel is null
-                ? TypeParserResult<SocketTextChannel>.Failed("Channel not found.")
-                : TypeParserResult<SocketTextChannel>.Successful(channel);
+                ? Failure("Channel not found.")
+                : Success(channel);
         }
     }
 }

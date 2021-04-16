@@ -17,9 +17,7 @@ namespace Volte.Commands
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (_after is null)
-            {
                 return new ResultCompletionData();
-            }
 
             if (_awaitCallback)
                 await _after();

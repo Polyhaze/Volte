@@ -93,7 +93,7 @@ namespace Volte.Core
             Logger.Critical(LogSource.Volte,
                 "Bot shutdown requested; shutting down and cleaning up.");
             
-            if (Config.GuildLogging.EnsureValidConfiguration(client, out var channel))
+            if (Config.GuildLogging.TryValidate(client, out var channel))
             {
                 await new EmbedBuilder()
                     .WithErrorColor()

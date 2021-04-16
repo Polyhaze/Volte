@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using Humanizer;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

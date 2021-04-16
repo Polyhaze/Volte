@@ -6,14 +6,14 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class EmoteParser : TypeParser<IEmote>
+    [InjectTypeParser]
+    public sealed class EmoteParser : VolteTypeParser<IEmote>
     {
-        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(Parameter _, string value, CommandContext __)
+        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(Parameter _, string value, VolteContext __)
             => Emote.TryParse(value, out var emote)
-                ? TypeParserResult<IEmote>.Successful(emote)
+                ? Success(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
-                    ? TypeParserResult<IEmote>.Successful(new Emoji(value))
-                    : TypeParserResult<IEmote>.Failed("Emote not found.");
+                    ? Success(new Emoji(value))
+                    : Failure("Emote not found.");
     }
 }

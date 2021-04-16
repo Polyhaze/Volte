@@ -7,10 +7,10 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class ColorParser : TypeParser<Color>
+    [InjectTypeParser]
+    public sealed class ColorParser : VolteTypeParser<Color>
     {
-        public override ValueTask<TypeParserResult<Color>> ParseAsync(Parameter _, string value, CommandContext __)
+        public override ValueTask<TypeParserResult<Color>> ParseAsync(Parameter _, string value, VolteContext __)
         {
             Color? c = null;
 
@@ -28,7 +28,7 @@ namespace Volte.Commands
 
                     if (r > 255 || g > 255 || b > 255)
                     {
-                        return TypeParserResult<Color>.Failed(
+                        return Failure(
                             "A value in an RGB sequence may not be over the value of 255.");
                     }
 
@@ -41,8 +41,8 @@ namespace Volte.Commands
             }
 
             return c is null
-                ? TypeParserResult<Color>.Failed("A color could not be determined from your input text. Try using a hex value.")
-                : TypeParserResult<Color>.Successful(c.Value);
+                ? Failure("A color could not be determined from your input text. Try using a hex value.")
+                : Success(c.Value);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Volte.Commands.Modules
             Dictionary<string, string> options)
         {
             var embed = new EmbedBuilder();
+            var shouldPublish = options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _);
 
             string GetRoleMention(TypeParserResult<SocketRole> res) => res.IsSuccessful ? res.Value.Mention : null;
 
@@ -92,8 +93,9 @@ namespace Volte.Commands.Modules
 
             return Ok(async () =>
             {
-                await Context.Channel.SendMessageAsync(toMention, embed: embed.Build());
+                var m = await Context.Channel.SendMessageAsync(toMention, embed: embed.Build());
                 await Context.Message.TryDeleteAsync();
+                if (shouldPublish) await m.CrosspostAsync();
             });
         }
     }

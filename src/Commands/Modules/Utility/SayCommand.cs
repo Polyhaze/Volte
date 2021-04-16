@@ -34,12 +34,10 @@ namespace Volte.Commands.Modules
                 _ = await Context.Message.TryDeleteAsync();
             });
 
-
+        [Command("PlainSay", "PSay")]
+        [Description("Bot repeats what you tell it to; outside of an embed.")]
         public Task<ActionResult> SayPlainAsync([Remainder, Description("What to say.")]
             string msg)
-            => None(async () =>
-            {
-                await Context.Channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.None);
-            });
+            => None(() => Context.Channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.None));
     }
 }

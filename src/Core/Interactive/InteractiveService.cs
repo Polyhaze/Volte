@@ -18,7 +18,7 @@ namespace Volte.Interactive
         private readonly DiscordShardedClient _client;
 
         private readonly Dictionary<ulong, IReactionCallback> _callbacks;
-        private readonly TimeSpan _defaultTimeout;
+        private readonly InteractiveServiceConfig _config;
         private readonly ConcurrentQueue<PaginatedMessageCallback> _activePagers;
 
 
@@ -27,13 +27,22 @@ namespace Volte.Interactive
             _client = discord;
             _client.ReactionAdded += HandleReactionAsync;
 
-            config ??= new InteractiveServiceConfig();
-            _defaultTimeout = config.DefaultTimeout;
+            _config = config ?? new InteractiveServiceConfig();
 
             _callbacks = new Dictionary<ulong, IReactionCallback>();
-            _activePagers = new ConcurrentQueue<PaginatedMessageCallback>(); 
+            _activePagers = new ConcurrentQueue<PaginatedMessageCallback>();
         }
 
+        /// <summary>
+        ///     Waits for the next message in the contextual channel.
+        ///     This is a long-running <see cref="Task"/>.
+        /// </summary>
+        /// <param name="context">The context to wait on.</param>
+        /// <param name="fromSourceUser">Should the message only be from the source user.</param>
+        /// <param name="inSourceChannel">Should the message only be from the source channel.</param>
+        /// <param name="timeout">The timeout to abort the waiting after.</param>
+        /// <param name="token">The cancellation token to observe.</param>
+        /// <returns>The waited message; or null if no message was received.</returns>
         public Task<SocketUserMessage> NextMessageAsync(VolteContext context,
             bool fromSourceUser = true,
             bool inSourceChannel = true,
@@ -48,12 +57,21 @@ namespace Volte.Interactive
             return NextMessageAsync(context, criterion, timeout, token);
         }
 
+        /// <summary>
+        ///     Waits for the next message in the contextual channel.
+        ///     This is a long-running <see cref="Task"/>.
+        /// </summary>
+        /// <param name="context">The context to wait on.</param>
+        /// <param name="criterion">The <see cref="ICriterion{SocketUserMessage}"/> to use.</param>
+        /// <param name="timeout">The timeout to abort the waiting after.</param>
+        /// <param name="token">The cancellation token to observe.</param>
+        /// <returns>The waited message; or null if no message was received.</returns>
         public async Task<SocketUserMessage> NextMessageAsync(VolteContext context,
             ICriterion<SocketUserMessage> criterion,
             TimeSpan? timeout = null,
             CancellationToken token = default)
         {
-            timeout ??= _defaultTimeout;
+            timeout ??= _config.DefaultTimeout;
 
             var msgTcs = new TaskCompletionSource<SocketUserMessage>();
             var cancelTcs = new TaskCompletionSource<bool>();
@@ -83,13 +101,23 @@ namespace Volte.Interactive
             return null;
         }
 
+        /// <summary>
+        ///     Sends a message to the contextual channel and deletes it after <paramref name="timeout"/> has ended.
+        /// </summary>
+        /// <param name="context">The context to use.</param>
+        /// <param name="content">The content of the message to send. Can be empty if you're sending an embed.</param>
+        /// <param name="isTts">Whether or not the message should use TTS. Defaults to false.</param>
+        /// <param name="embed">The embed to send.</param>
+        /// <param name="timeout">The time elapsed after the message is sent for it to be deleted.</param>
+        /// <param name="options">The Discord.Net <see cref="RequestOptions"/> for the SendMessageAsync method.</param>
+        /// <returns>The message that will be deleted.</returns>
         public async Task<IUserMessage> ReplyAndDeleteAsync(VolteContext context,
             string content, bool isTts = false,
             Embed embed = null,
             TimeSpan? timeout = null,
             RequestOptions options = null)
         {
-            timeout ??= _defaultTimeout;
+            timeout ??= _config.DefaultTimeout;
             var message = await context.Channel.SendMessageAsync(content, isTts, embed, options);
             _ = Executor.ExecuteAfterDelayAsync(timeout.Value, async () => await message.TryDeleteAsync());
             return message;
@@ -106,8 +134,8 @@ namespace Volte.Interactive
         }
 
         public void AddReactionCallback(IMessage message, IReactionCallback callback) => _callbacks[message.Id] = callback;
-        public void RemoveReactionCallback(IMessage message) => RemoveReactionCallback(message.Id);
-        public void RemoveReactionCallback(ulong id) => _callbacks.Remove(id);
+        public bool RemoveReactionCallback(IMessage message) => RemoveReactionCallback(message.Id);
+        public bool RemoveReactionCallback(ulong id) => _callbacks.Remove(id);
         public void ClearReactionCallbacks() => _callbacks.Clear();
 
 
@@ -120,7 +148,8 @@ namespace Volte.Interactive
             if (!await callback.Criterion.JudgeAsync(callback.Context, reaction)) return;
             var callbackTask = Executor.ExecuteAsync(async () =>
             {
-                if (await callback.HandleAsync(reaction)) RemoveReactionCallback(message.Id);
+                if (await callback.HandleAsync(reaction)) 
+                    RemoveReactionCallback(await message.GetOrDownloadAsync());
             });
 
             if (callback.RunMode is RunMode.Sequential)

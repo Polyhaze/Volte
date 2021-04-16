@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using LiteDB;
@@ -24,6 +25,8 @@ namespace Volte.Services
 
         public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
 
+        public ValueTask<GuildData> GetDataAsync(ulong id) => new ValueTask<GuildData>(GetData(id));
+
         public GuildData GetData(ulong id)
         {
             var coll = Database.GetCollection<GuildData>(GuildsCollection);
@@ -37,10 +40,8 @@ namespace Volte.Services
         public IEnumerable<Reminder> GetReminders(IUser user) => GetReminders(user.Id);
         public IEnumerable<Reminder> GetReminders(IUser user, IGuild guild) => GetReminders(user.Id, guild.Id);
 
-        public IEnumerable<Reminder> GetReminders(ulong id) 
-            => GetAllReminders().Where(r => r.CreatorId == id);
-
-        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild) => GetReminders(id).Where(r => r.GuildId == guild);
+        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild = 0) 
+            => GetAllReminders().Where(r => r.CreatorId == id && (guild is 0 || r.GuildId == guild));
 
         public bool TryDeleteReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
 

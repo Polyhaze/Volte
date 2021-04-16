@@ -6,8 +6,8 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public class TimeSpanParser : TypeParser<TimeSpan>
+    [InjectTypeParser]
+    public class TimeSpanParser : VolteTypeParser<TimeSpan>
     {
         //These were, let's just say "borrowed" from Discord.Net.
         //In fact, even the parsing logic was "borrowed".
@@ -30,9 +30,9 @@ namespace Volte.Commands
             "%s's'"                 //      1s
         };
         
-        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(Parameter _, string value, CommandContext __) 
+        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(Parameter _, string value, VolteContext __) 
             => TimeSpan.TryParseExact(value.ToLowerInvariant(), Formats, CultureInfo.InvariantCulture, out var ts)
-                ? TypeParserResult<TimeSpan>.Successful(ts)
-                : TypeParserResult<TimeSpan>.Failed("You didn't give me a valid time.");
+                ? Success(ts)
+                : Failure("You didn't give me a valid time.");
     }
 }

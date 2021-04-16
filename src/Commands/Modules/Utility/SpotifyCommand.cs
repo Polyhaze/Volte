@@ -18,22 +18,16 @@ namespace Volte.Commands.Modules
             SocketGuildUser target = null)
         {
             target ??= Context.User;
-            // i-
-            var spotify = Context.User.Activity?.Cast<SpotifyGame>() ??
-                          Context.User.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
-            if (spotify != null)
+            if (target.TryGetSpotifyStatus(out var spotify))
             {
                 return Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(target)
-                    .WithDescription(new StringBuilder()
-                        .AppendLine($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})")
-                        .AppendLine($"**Album:** {spotify.AlbumTitle}")
-                        .AppendLine(
-                            $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
-                        .AppendLine($"**Artist(s):** {spotify.Artists.Join(", ")}"))
+                    .AppendDescriptionLine($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})")
+                    .AppendDescriptionLine($"**Album:** {spotify.AlbumTitle}")
+                    .AppendDescriptionLine($"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
+                    .AppendDescriptionLine($"**Artist(s):** {spotify.Artists.Join(", ")}")
                     .WithThumbnailUrl(spotify.AlbumArtUrl));
             }
-
             return BadRequest("Target user isn't listening to Spotify!");
         }
     }

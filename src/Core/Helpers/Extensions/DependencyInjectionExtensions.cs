@@ -20,16 +20,16 @@ namespace Gommon
     {
         public static IServiceCollection AddAllServices(this IServiceCollection coll, int shardCount) =>
             coll.AddVolteServices()
+                .AddSingleton<CancellationTokenSource>()
+                .AddSingleton(new HttpClient
+                {
+                    Timeout = 10.Seconds()
+                })
                 .AddSingleton(SentrySdk.Init(so =>
                 {
                     so.Dsn = Config.SentryDsn;
                     so.Debug = Config.EnableDebugLogging || Version.ReleaseType is Version.DevelopmentStage.Development;
                 }))
-                .AddSingleton(new HttpClient
-                {
-                    Timeout = 10.Seconds()
-                })
-                .AddSingleton<CancellationTokenSource>()
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
                     IgnoresExtraArguments = true,
@@ -41,9 +41,7 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
-                    LogLevel = Version.ReleaseType is Version.DevelopmentStage.Development
-                        ? LogSeverity.Debug
-                        : LogSeverity.Verbose,
+                    LogLevel = Severity,
                     GatewayIntents = Intents,
                     AlwaysDownloadUsers = true,
                     ConnectionTimeout = 10000,
@@ -51,16 +49,21 @@ namespace Gommon
                     TotalShards = shardCount
                 }));
 
+        private static LogSeverity Severity => Version.ReleaseType is Version.DevelopmentStage.Development
+            ? LogSeverity.Debug
+            : LogSeverity.Verbose;
         private static GatewayIntents Intents
             => GatewayIntents.Guilds | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers |
                GatewayIntents.GuildMessages | GatewayIntents.GuildPresences;
+
+        private static bool IsEligibleService(Type type) => type.Inherits<VolteService>() && !type.IsAbstract;
 
         public static IServiceCollection AddVolteServices(this IServiceCollection serviceCollection)
             => serviceCollection.Apply(coll =>
             {
                 //get all the classes that inherit VolteService, and aren't abstract.
                 foreach (var service in typeof(Program).Assembly.GetTypes()
-                    .Where(t => t.Inherits<VolteService>() && !t.IsAbstract))
+                    .Where(IsEligibleService))
                 {
                     coll.TryAddSingleton(service);
                 }
@@ -69,7 +72,13 @@ namespace Gommon
         public static T Get<T>(this IServiceProvider provider)
             => provider.GetRequiredService<T>();
 
+        public static bool TryGet<T>(this IServiceProvider provider, out T service)
+        {
+            service = provider.GetService(typeof(T)).Cast<T>();
+            return service != null;
+        }
+
         public static void Get<T>(this IServiceProvider provider, out T service)
-            => service = provider.GetRequiredService<T>();
+            => provider.TryGet(out service);
     }
 }

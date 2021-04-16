@@ -20,7 +20,7 @@ namespace Volte.Core.Entities
         public ulong ChannelId { get; set; }
 
 
-        public bool EnsureValidConfiguration(DiscordShardedClient client, out SocketTextChannel channel)
+        public bool TryValidate(DiscordShardedClient client, out SocketTextChannel channel)
         {
             channel = null;
             if (!Enabled)

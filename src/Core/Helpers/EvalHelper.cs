@@ -86,31 +86,42 @@ namespace Volte.Core.Helpers
                 var sw = Stopwatch.StartNew();
                 var state = await CSharpScript.RunAsync(code, Options, env);
                 sw.Stop();
+                var shouldReply = true;
                 if (state.ReturnValue != null)
                 {
+                    switch (state.ReturnValue)
+                    {
+                        case EmbedBuilder eb:
+                            shouldReply = false;
+                            await env.ReplyAsync(eb);
+                            break;
+                        case Embed e:
+                            shouldReply = false;
+                            await env.ReplyAsync(e);
+                            break;
+                    }
+                    
                     var res = state.ReturnValue switch
                     {
                         bool b => b.ToString().ToLower(),
-                        IEnumerable enumerable when state.ReturnValue.GetType() != typeof(string) => enumerable.Cast<object>().ToReadableString(),
+                        IEnumerable enumerable when !(state.ReturnValue is string) => enumerable.Cast<object>().ToReadableString(),
                         IUser user => $"{user} ({user.Id})",
                         ITextChannel channel => $"#{channel.Name} ({channel.Id})",
                         IMessage message => env.Inspect(message),
                         _ => state.ReturnValue.ToString()
                     };
-                    await msg.ModifyAsync(m =>
+                    if (shouldReply) await msg.ModifyAsync(m =>
                         m.Embed = embed.WithTitle("Eval")
                             .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                             .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                             .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build());
                 }
                 else
-                {
-                    await msg.DeleteAsync();
-                    await ctx.Message.AddReactionAsync(DiscordHelper.BallotBoxWithCheck.ToEmoji());
-                }
+                    await msg.DeleteAsync().ContinueWith(_ => env.ReactAsync(DiscordHelper.BallotBoxWithCheck));
             }
             catch (Exception ex)
             {
+                SentrySdk.AddBreadcrumb("This exception comes from an eval.");
                 SentrySdk.CaptureException(ex);
                 await msg.ModifyAsync(m =>
                     m.Embed = embed

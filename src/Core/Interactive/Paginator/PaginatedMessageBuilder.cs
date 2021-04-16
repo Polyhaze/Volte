@@ -5,12 +5,14 @@ using Gommon;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Helpers;
+// ReSharper disable UnusedMethodReturnValue.Global
+// chaining
 
 namespace Volte.Interactive
 {
     public class PaginatedMessageBuilder
     {
-        public IEnumerable<object> Pages { get; private set; }
+        public object[] Pages { get; private set; }
         public string Content { get; private set; } = string.Empty;
         public IGuildUser Author { get; private set; }
         public Color Color { get; private set; } = new Color(Config.SuccessColor);
@@ -19,9 +21,9 @@ namespace Volte.Interactive
         
         public static PaginatedMessageBuilder New => new PaginatedMessageBuilder();
 
-        public PaginatedMessageBuilder WithPages(IEnumerable<object> pages)
+        public PaginatedMessageBuilder WithPages(params object[] pages)
         {
-            Pages = pages;
+            Pages = pages.ToArray();
             return this;
         }
 
@@ -73,13 +75,12 @@ namespace Volte.Interactive
                 temp.RemoveRange(0, temp.Count < perPage ? temp.Count : perPage);
             } while (!temp.IsEmpty());
 
-            Pages = newList;
+            Pages = newList.ToArray();
             return this;
         }
 
-        public PaginatedMessage Build()
-        {
-            return new PaginatedMessage
+        public PaginatedMessage Build() 
+            => new PaginatedMessage
             {
                 Pages = Pages,
                 Content = Content,
@@ -89,6 +90,4 @@ namespace Volte.Interactive
                 Options = Options
             };
         }
-        
-    }
 }

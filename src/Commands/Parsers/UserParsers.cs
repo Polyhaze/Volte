@@ -9,13 +9,12 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class SocketGuildUserParser : TypeParser<SocketGuildUser>
+    [InjectTypeParser]
+    public sealed class SocketGuildUserParser : VolteTypeParser<SocketGuildUser>
     {
         public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(Parameter _, string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
             var users = ctx.Guild.Users.ToList();
 
             SocketGuildUser user = null;
@@ -31,57 +30,53 @@ namespace Volte.Commands
                     x.Username.EqualsIgnoreCase(value)
                     || x.Nickname.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketGuildUser>.Failed(
+                    return Failure(
                         "Multiple users found, try mentioning the user or using their ID.");
 
                 user = match.FirstOrDefault();
             }
 
             return user is null
-                ? TypeParserResult<SocketGuildUser>.Failed("User not found.")
-                : TypeParserResult<SocketGuildUser>.Successful(user);
+                ? Failure("User not found.")
+                : Success(user);
         }
     }
 
-    [VolteTypeParser]
-    public sealed class RestUserParser : TypeParser<RestUser>
+    [InjectTypeParser]
+    public sealed class RestUserParser : VolteTypeParser<RestUser>
     {
         public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(
             Parameter parameter,
             string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
-
             RestUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = await ctx.Client.Rest.GetUserAsync(id);
             
             return user is null
-                ? TypeParserResult<RestUser>.Failed("User not found.")
-                : TypeParserResult<RestUser>.Successful(user);
+                ? Failure("User not found.")
+                : Success(user);
         }
     }
     
-    [VolteTypeParser]
-    public sealed class RestGuildUserParser : TypeParser<RestGuildUser>
+    [InjectTypeParser]
+    public sealed class RestGuildUserParser : VolteTypeParser<RestGuildUser>
     {
         public override async ValueTask<TypeParserResult<RestGuildUser>> ParseAsync(
-            Parameter parameter,
+            Parameter _,
             string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
-
             RestGuildUser user = null;
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = await ctx.Client.Rest.GetGuildUserAsync(ctx.Guild.Id, id);
             
             return user is null
-                ? TypeParserResult<RestGuildUser>.Failed("User not found.")
-                : TypeParserResult<RestGuildUser>.Successful(user);
+                ? Failure("User not found.")
+                : Success(user);
         }
     }
 }

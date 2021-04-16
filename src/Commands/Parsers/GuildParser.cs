@@ -7,13 +7,12 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class GuildParser : TypeParser<SocketGuild>
+    [InjectTypeParser]
+    public sealed class GuildParser : VolteTypeParser<SocketGuild>
     {
         public override ValueTask<TypeParserResult<SocketGuild>> ParseAsync(Parameter _, string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
             SocketGuild guild = default;
 
             var guilds = ctx.Client.Guilds;
@@ -26,15 +25,15 @@ namespace Volte.Commands
                 var match = guilds.Where(x =>
                     x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketGuild>.Failed(
+                    return Failure(
                         "Multiple guilds found with that name, try using its ID.");
 
                 guild = match.FirstOrDefault();
             }
 
             return guild is null
-                ? TypeParserResult<SocketGuild>.Failed("Guild not found.")
-                : TypeParserResult<SocketGuild>.Successful(guild);
+                ? Failure("Guild not found.")
+                : Success(guild);
         }
     }
 }

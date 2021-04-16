@@ -95,6 +95,13 @@ namespace Volte.Core.Helpers
             => member.Roles.Where(x => x.HasColor())
                 .OrderByDescending(x => x.Position).FirstOrDefault();
 
+        public static bool TryGetSpotifyStatus(this IGuildUser user, out SpotifyGame spotify)
+        {
+            spotify = user.Activity?.Cast<SpotifyGame>() ??
+                      user.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
+            return spotify != null;
+        }
+
         public static async Task<bool> TrySendMessageAsync(this SocketTextChannel channel, string text = null,
             bool isTts = false, Embed embed = null, RequestOptions options = null)
         {
@@ -123,7 +130,6 @@ namespace Volte.Core.Helpers
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
             var welcome = provider.Get<WelcomeService>();
-            var guild = provider.Get<GuildService>();
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var mod = provider.Get<ModerationService>();
@@ -133,8 +139,12 @@ namespace Volte.Core.Helpers
                 Logger.HandleLogEvent(new LogEventArgs(m));
                 return Task.CompletedTask;
             };
-            client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
-            client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
+            if (provider.TryGet<GuildService>(out var guild))
+            {
+                client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
+                client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
+            }
+
 
             client.UserJoined += async user =>
             {

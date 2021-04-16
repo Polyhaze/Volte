@@ -7,18 +7,17 @@ using Volte.Core.Helpers;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class TagParser : TypeParser<Tag>
+    [InjectTypeParser]
+    public sealed class TagParser : VolteTypeParser<Tag>
     {
         public override ValueTask<TypeParserResult<Tag>> ParseAsync(Parameter _, string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
             if (ctx.GuildData.Extras.Tags.AnyGet(x => x.Name.EqualsIgnoreCase(value), out var tag))
-                return TypeParserResult<Tag>.Successful(tag);
+                return Success(tag);
 
-            return TypeParserResult<Tag>.Failed($"The tag **{value}** doesn't exist in this guild. " +
-                                                    $"Try using the `{CommandHelper.FormatUsage(ctx, context.Services.Get<CommandService>().GetCommand("Tags List"))}` command to see all tags in this guild.");
+            return Failure($"The tag **{value}** doesn't exist in this guild. " +
+                                                    $"Try using the `{CommandHelper.FormatUsage(ctx, ctx.Services.Get<CommandService>().GetCommand("Tags List"))}` command to see all tags in this guild.");
         }
     }
 }

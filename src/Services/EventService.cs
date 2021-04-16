@@ -22,6 +22,7 @@ namespace Volte.Services
         private readonly CommandService _commandService;
         private readonly CommandsService _commandsService;
         private readonly QuoteService _quoteService;
+        private bool _isReady;
 
         public EventService(DatabaseService databaseService,
             AntilinkService antilinkService,
@@ -61,18 +62,17 @@ namespace Volte.Services
             {
                 var sw = Stopwatch.StartNew();
                 var result = await _commandService.ExecuteAsync(cmd, args.Context);
-
-                if (result is CommandNotFoundResult) return;
-                
                 sw.Stop();
-                await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
+
+                if (!(result is CommandNotFoundResult))
+                    await _commandsService.OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
             }
             else
             {
                 if (args.Message.Content.Equals($"<@{args.Context.Client.CurrentUser.Id}>")
                     || args.Message.Content.Equals($"<@!{args.Context.Client.CurrentUser.Id}>"))
                 {
-                    await args.Context.CreateEmbedBuilder($"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                    await args.Context.CreateEmbed($"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
                                                           $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                         .ReplyToAsync(args.Message);
                 }
@@ -83,6 +83,7 @@ namespace Volte.Services
 
         public async Task OnShardReadyAsync(ShardReadyEventArgs args)
         {
+            if (_isReady) return; //temporary
             var guilds = args.Shard.Guilds.Count;
             var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
@@ -116,16 +117,13 @@ namespace Volte.Services
                 foreach (var guild in args.Shard.Guilds)
                 {
                     if (Config.BlacklistedOwners.Contains(guild.OwnerId))
-                    {
-                        Logger.Warn(LogSource.Volte,
-                            $"Left guild \"{guild.Name}\" owned by blacklisted owner {guild.Owner}.");
-                        await guild.LeaveAsync();
-                    }
+                        await guild.LeaveAsync().ContinueWith(async _ => Logger.Warn(LogSource.Volte,
+                            $"Left guild \"{guild.Name}\" owned by blacklisted owner {await args.Shard.Rest.GetUserAsync(guild.OwnerId)}."));
                     else _db.GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
                 }
             });
 
-            if (Config.GuildLogging.EnsureValidConfiguration(args.Client, out var channel))
+            if (Config.GuildLogging.TryValidate(args.Client, out var channel))
             {
                 await new EmbedBuilder()
                     .WithSuccessColor()
@@ -134,6 +132,7 @@ namespace Volte.Services
                         $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}!")
                     .SendToAsync(channel);
             }
+            _isReady = true;
         }
     }
 }

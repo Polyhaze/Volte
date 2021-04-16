@@ -57,7 +57,7 @@ namespace Volte.Services
                 if (c != null) await embed.SendToAsync(c);
             }
 
-            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
+            if (!Config.GuildLogging.TryValidate(_client, out var channel))
             {
                 if (Config.GuildLogging.Enabled)
                     Logger.Error(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");
@@ -89,7 +89,7 @@ namespace Volte.Services
         public async Task OnLeaveAsync(LeftGuildEventArgs args)
         {
             Logger.Debug(LogSource.Volte, "Left a guild.");
-            if (!Config.GuildLogging.EnsureValidConfiguration(_client, out var channel))
+            if (!Config.GuildLogging.TryValidate(_client, out var channel))
             {
                 if (Config.GuildLogging.Enabled)
                     Logger.Warn(LogSource.Volte, "Invalid guild_logging.guild_id/guild_logging.channel_id configuration. Check your IDs and try again.");

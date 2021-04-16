@@ -53,7 +53,7 @@ namespace Volte.Core.Helpers
             }
         }
 
-        public static async Task<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
+        public static async ValueTask<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
         {
             var embed = ctx.CreateEmbedBuilder()
                 .WithTitle(command.Name)
@@ -71,7 +71,7 @@ namespace Volte.Core.Helpers
                 if (command.Remarks != null)
                     embed.AppendDescription($" {command.Remarks}");
 
-                if (command.FullAliases.Count > 1)
+                if (!command.FullAliases.IsEmpty())
                     embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).Join(", "), true);
 
                 if (!command.Parameters.IsEmpty())
@@ -152,7 +152,7 @@ namespace Volte.Core.Helpers
         internal static IEnumerable<Type> AddTypeParsers(this CommandService service)
         {
             var assembly = typeof(VolteBot).Assembly;
-            var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<VolteTypeParserAttribute>()).ToList();
+            var parsers = assembly.ExportedTypes.Where(x => x.HasAttribute<InjectTypeParserAttribute>()).ToList();
 
             foreach (var parser in parsers)
             {
@@ -162,7 +162,7 @@ namespace Volte.Core.Helpers
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
                 // ReSharper disable once PossibleNullReferenceException
                 // cant happen
-                method?.Invoke(service, new[] { parserObj, parser.GetCustomAttribute<VolteTypeParserAttribute>().OverridePrimitive });
+                method?.Invoke(service, new[] { parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive });
                 yield return parser;
             }
         }
@@ -173,7 +173,7 @@ namespace Volte.Core.Helpers
         public static int GetTotalTypeParsers(this CommandService cs)
         {
             var customParsers = typeof(VolteBot).Assembly.GetTypes()
-                .Count(x => x.HasAttribute<VolteTypeParserAttribute>());
+                .Count(x => x.HasAttribute<InjectTypeParserAttribute>());
             //add the number of primitive TypeParsers (that come with Qmmands) obtained from the private field _primitiveTypeParsers's Count
             // ReSharper disable twice PossibleNullReferenceException
             var primitiveTypeParsers = cs.GetType()

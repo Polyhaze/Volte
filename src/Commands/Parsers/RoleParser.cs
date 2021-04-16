@@ -8,13 +8,12 @@ using Volte.Core.Entities;
 
 namespace Volte.Commands
 {
-    [VolteTypeParser]
-    public sealed class RoleParser : TypeParser<SocketRole>
+    [InjectTypeParser]
+    public sealed class RoleParser : VolteTypeParser<SocketRole>
     {
         public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(Parameter _, string value,
-            CommandContext context)
+            VolteContext ctx)
         {
-            var ctx = context.Cast<VolteContext>();
             SocketRole role = default;
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))
                 role = ctx.Guild.GetRole(id).Cast<SocketRole>();
@@ -23,15 +22,15 @@ namespace Volte.Commands
             {
                 var match = ctx.Guild.Roles.Where(x => x.Name.EqualsIgnoreCase(value)).ToList();
                 if (match.Count > 1)
-                    return TypeParserResult<SocketRole>.Failed(
+                    return Failure(
                         "Multiple roles found. Try mentioning the role or using its ID.");
 
                 role = match.FirstOrDefault().Cast<SocketRole>();
             }
 
             return role is null
-                ? TypeParserResult<SocketRole>.Failed($"Role {Format.Code(value)} not found.")
-                : TypeParserResult<SocketRole>.Successful(role);
+                ? Failure($"Role {Format.Code(value)} not found.")
+                : Success(role);
         }
     }
 }
