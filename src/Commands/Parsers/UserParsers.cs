@@ -22,7 +22,7 @@ namespace Volte.Commands
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = users.FirstOrDefault(x => x.Id == id);
 
-            if (user is null) user = users.FirstOrDefault(x => x.ToString().EqualsIgnoreCase(value));
+            user ??= users.FirstOrDefault(x => x.ToString().EqualsIgnoreCase(value));
 
             if (user is null)
             {

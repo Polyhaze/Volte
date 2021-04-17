@@ -80,8 +80,8 @@ namespace Volte.Services
 
             if (bots.Length > users.Length)
                 await channel.SendMessageAsync(
-                    $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", false,
-                    e.WithSuccessColor().Build());
+                    $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", 
+                    embed: e.WithSuccessColor().Build());
             else
                 await e.WithSuccessColor().SendToAsync(channel);
         }

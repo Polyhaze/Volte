@@ -21,31 +21,17 @@ namespace Volte.Commands.Modules
                  "Unix-style command line arguments. Example: `-description=\"Some cool thing!\"` will set the embed's description.")]
             Dictionary<string, string> options)
         {
-            var embed = new EmbedBuilder();
-            var shouldPublish = options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _);
+            static string GetRoleMention(TypeParserResult<SocketRole> res) =>
+                res.IsSuccessful ? res.Value.Mention : null;
 
-            string GetRoleMention(TypeParserResult<SocketRole> res) => res.IsSuccessful ? res.Value.Mention : null;
-
-            Color GetColor(TypeParserResult<Color> res) =>
+            static Color GetColor(TypeParserResult<Color> res) =>
                 res.IsSuccessful ? res.Value : new Color(Config.SuccessColor);
 
-            RestGuildUser GetUser(TypeParserResult<RestGuildUser> res) => res.IsSuccessful ? res.Value : null;
+            static RestGuildUser GetUser(TypeParserResult<RestGuildUser> res) => res.IsSuccessful ? res.Value : null;
 
-            string toMention = null;
+            var embed = new EmbedBuilder();
 
-            if (options.TryGetValue("mention", out var result) || options.TryGetValue("ping", out result))
-            {
-                toMention = result switch
-                {
-                    "none" => null,
-                    "everyone" => "@everyone",
-                    "here" => "@here",
-                    _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
-                        .ParseAsync(null, result, Context))
-                };
-            }
-
-            if (options.TryGetValue("footer", out result) || options.TryGetValue("foot", out result))
+            if (options.TryGetValue("footer", out var result) || options.TryGetValue("foot", out result))
                 embed.WithFooter(result);
 
             if (options.TryGetValue("thumbnail", out result))
@@ -76,11 +62,9 @@ namespace Volte.Commands.Modules
 
             if (options.TryGetValue("author", out result))
             {
-                if (result.EqualsIgnoreCase("self") || result.EqualsIgnoreCase("me"))
+                if (result.EqualsAnyIgnoreCase("self", "me"))
                     embed.WithAuthor(Context.User);
-                else if (result.EqualsIgnoreCase("bot")
-                         || result.EqualsIgnoreCase("you")
-                         || result.EqualsIgnoreCase("volte"))
+                else if (result.EqualsAnyIgnoreCase("bot", "you", "volte"))
                     embed.WithAuthor(Context.Guild.CurrentUser);
                 else
                 {
@@ -93,9 +77,20 @@ namespace Volte.Commands.Modules
 
             return Ok(async () =>
             {
-                var m = await Context.Channel.SendMessageAsync(toMention, embed: embed.Build());
+                var m = await Context.Channel.SendMessageAsync(options.TryGetValue("mention", out result) || options.TryGetValue("ping", out result)
+                    ? result switch
+                    {
+                        "none" => null,
+                        "everyone" => "@everyone",
+                        "here" => "@here",
+                        _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
+                            .ParseAsync(null, result, Context))
+                    }
+                    : null, embed: embed.Build());
                 await Context.Message.TryDeleteAsync();
-                if (shouldPublish) await m.CrosspostAsync();
+                if ((options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _))
+                    && Context.Channel is INewsChannel)
+                    await m.CrosspostAsync();
             });
         }
     }

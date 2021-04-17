@@ -40,9 +40,9 @@ namespace Volte.Interactive
             _pager = pager;
             _timeout = _pager.Options.Timeout;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
-                _pageCount = ((_pager.Pages.Count() - 1) / _pager.Options.FieldsPerPage) + 1;
+                _pageCount = ((_pager.Pages.Length - 1) / _pager.Options.FieldsPerPage) + 1;
             else
-                _pageCount = _pager.Pages.Count();
+                _pageCount = _pager.Pages.Length;
         }
 
         public async Task DisplayAsync()
@@ -53,7 +53,7 @@ namespace Volte.Interactive
             // Reactions take a while to add, don't wait for them
             _ = Executor.ExecuteAsync(async () =>
             {
-                if (_pager.Pages.Count() > 1)
+                if (!_pager.Pages.IsEmpty())
                 {
                     await Message.AddReactionAsync(_pager.Options.First);
                     await Message.AddReactionAsync(_pager.Options.Back);

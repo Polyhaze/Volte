@@ -27,7 +27,7 @@ namespace Volte.Commands
         public OkResult(IEnumerable<EmbedBuilder> pages, int pageSplit = -1, Color? color = null, IGuildUser author = null,
             VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null)
         {
-            _pager = PaginatedMessageBuilder.New
+            _pager = PaginatedMessage.Builder.New
                 .WithPages(pages);
 
             if (color.HasValue)
@@ -44,7 +44,7 @@ namespace Volte.Commands
                 _pager.SplitPages(pageSplit);
         }
 
-        public OkResult(PaginatedMessageBuilder pager) => _pager = pager;
+        public OkResult(PaginatedMessage.Builder pager) => _pager = pager;
 
         public OkResult(Func<Task> logic, bool awaitFunc = true)
         {
@@ -56,7 +56,7 @@ namespace Volte.Commands
 
         private readonly string _message;
         private readonly bool _shouldEmbed;
-        private readonly PaginatedMessageBuilder _pager;
+        private readonly PaginatedMessage.Builder _pager;
         private readonly Func<IUserMessage, Task> _callback;
         private readonly Func<Task> _separateLogic;
         private readonly EmbedBuilder _embed;

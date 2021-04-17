@@ -69,11 +69,12 @@ namespace Volte.Services
             }
             else
             {
-                if (args.Message.Content.Equals($"<@{args.Context.Client.CurrentUser.Id}>")
-                    || args.Message.Content.Equals($"<@!{args.Context.Client.CurrentUser.Id}>"))
+                if (args.Message.Content.EqualsAnyIgnoreCase($"<@{args.Context.Client.CurrentUser.Id}>",
+                    $"<@!{args.Context.Client.CurrentUser.Id}>"))
                 {
-                    await args.Context.CreateEmbed($"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
-                                                          $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
+                    await args.Context.CreateEmbed(
+                            $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                            $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                         .ReplyToAsync(args.Message);
                 }
                 else
@@ -132,6 +133,7 @@ namespace Volte.Services
                         $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}!")
                     .SendToAsync(channel);
             }
+
             _isReady = true;
         }
     }

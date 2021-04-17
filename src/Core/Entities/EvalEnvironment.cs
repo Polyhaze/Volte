@@ -57,18 +57,14 @@ namespace Volte.Core.Entities
         }
 
         public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
-        public T GetFromProvider<T>() => Context.Services.GetRequiredService<T>();
+        public T Service<T>() => Context.Services.GetRequiredService<T>();
 
         public SocketUserMessage Message(string id)
-        {
-            if (ulong.TryParse(id, out var ulongId))
-            {
-                return Message(ulongId);
-            }
+            => ulong.TryParse(id, out var ulongId)
+                ? Message(ulongId)
+                : throw new ArgumentException(
+                    $"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
 
-            throw new ArgumentException($"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
-        }
-        
         public Task ReplyAsync(string content) => Context.Channel.SendMessageAsync(content);
 
         public Task ReplyAsync(Embed embed) => embed.SendToAsync(Context.Channel);

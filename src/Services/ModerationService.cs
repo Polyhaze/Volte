@@ -17,8 +17,7 @@ namespace Volte.Services
 
         public ModerationService(DatabaseService databaseService) 
             => _db = databaseService;
-
-
+        
         public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
         {
             if (args.User.IsBot) return;
@@ -28,12 +27,12 @@ namespace Volte.Services
             var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation.ModActionLogChannel);
             if (c is null) return;
             Logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
-            var difference = DateTimeOffset.Now - args.User.CreatedAt;
-            if (difference.Days <= 30)
+            var diff = DateTimeOffset.Now - args.User.CreatedAt;
+            if (diff.Days <= 30)
             {
                 Logger.Debug(LogSource.Volte, "Account younger than 30 days; posting message.");
-                var unit = difference.Days > 0 ? "day" : difference.Hours > 0 ? "hour" : "minute";
-                var time = difference.Days > 0 ? difference.Days : difference.Hours > 0 ? difference.Hours : difference.Minutes;
+                var unit = diff.Days > 0 ? "day" : diff.Hours > 0 ? "hour" : "minute";
+                var time = diff.Days > 0 ? diff.Days : diff.Hours > 0 ? diff.Hours : diff.Minutes;
                 await new EmbedBuilder()
                     .WithColor(Color.Red)
                     .WithTitle("Possible Malicious User")

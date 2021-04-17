@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,9 @@ namespace Gommon
     /// </summary>
     public static partial class Extensions
     {
+        public static bool EqualsAnyIgnoreCase(this string str, params string[] potentialMatches) 
+            => potentialMatches.Any(str.EqualsIgnoreCase);
+
         public static string ReplaceIgnoreCase(this string str, string toReplace, object replacement)
             => str.Replace(toReplace, replacement.ToString(), StringComparison.OrdinalIgnoreCase);
 

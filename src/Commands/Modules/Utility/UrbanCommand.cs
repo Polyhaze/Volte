@@ -19,23 +19,26 @@ namespace Volte.Commands.Modules
         {
             var res = await RequestUrbanDefinitionsAsync(word);
 
-            EmbedBuilder CreateEmbed(UrbanEntry entry) 
+            EmbedBuilder CreateEmbed(UrbanEntry entry)
             {
                 if (entry.Definition.Length > 1024)
                 {
                     var oldDefLength = entry.Definition.Length;
-                    entry.Definition = string.Join("", entry.Definition.Take(980)) + Format.Bold($"\n...and {oldDefLength - 980} more {"character".ToQuantity(oldDefLength - 980).Split(" ").Last()}.");
-                } else if (entry.Definition.IsEmpty())
+                    entry.Definition = string.Join("", entry.Definition.Take(980)) +
+                                       Format.Bold(
+                                           $"\n...and {oldDefLength - 980} more {"character".ToQuantity(oldDefLength - 980).Split(" ").Last()}.");
+                }
+                else if (entry.Definition.IsEmpty())
                     entry.Definition = "<error occurred>";
 
                 return Context.CreateEmbedBuilder()
-                .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
-                .AddField("URL", entry.Permalink.IsNullOrEmpty() ? "None provided" : entry.Permalink, true)
-                .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
-                .AddField("Definition", entry.Definition)
-                .AddField("Example", entry.Example.IsNullOrEmpty() ? "None provided" : entry.Example)
-                .AddField("Author", entry.Author.IsNullOrEmpty() ? "None provided" : entry.Author, true)
-                .AddField("Created", entry.CreatedAt.FormatBoldString(), true);
+                    .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
+                    .AddField("URL", entry.Permalink.IsNullOrEmpty() ? "None provided" : entry.Permalink, true)
+                    .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
+                    .AddField("Definition", entry.Definition)
+                    .AddField("Example", entry.Example.IsNullOrEmpty() ? "None provided" : entry.Example)
+                    .AddField("Author", entry.Author.IsNullOrEmpty() ? "None provided" : entry.Author, true)
+                    .AddField("Created", entry.CreatedAt.FormatBoldString(), true);
             }
 
 
@@ -45,7 +48,7 @@ namespace Volte.Commands.Modules
                 ? BadRequest("That word didn't have a definition of Urban Dictionary.")
                 : pages.Count is 1
                     ? Ok(pages.First())
-                    : Ok(PaginatedMessageBuilder.New
+                    : Ok(PaginatedMessage.Builder.New
                         .WithPages(pages)
                         .WithTitle(word)
                         .WithDefaults(Context));

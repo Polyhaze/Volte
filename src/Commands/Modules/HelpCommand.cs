@@ -23,11 +23,9 @@ namespace Volte.Commands.Modules
         {
             if (query != null)
             {
-                if (query.EqualsIgnoreCase("pages") || query.EqualsIgnoreCase("pager"))
+                if (query.EqualsAnyIgnoreCase("pages", "pager"))
                 {
-                    return Ok(PaginatedMessageBuilder.New
-                        .WithDefaults(Context)
-                        .WithPages(await GetPagesAsync().ToListAsync()));
+                    return Ok(await GetPagesAsync().ToListAsync());
                 }
 
                 var search = CommandService.FindCommands(query);

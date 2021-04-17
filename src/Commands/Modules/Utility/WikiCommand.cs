@@ -20,7 +20,7 @@ namespace Volte.Commands.Modules
             string page = null)
         {
             var embed = Context.CreateEmbedBuilder()
-                .WithThumbnailUrl("https://i.greemdev.net/volte_whitepinkyellow.png");
+                .WithThumbnailUrl("https://img.greemdev.net/YmdTzPoEYx/volte_whiteorangepurple.png");
             var pages = new Dictionary<string, string>
             {
                 {"Home", _baseWikiUrl},
@@ -34,21 +34,18 @@ namespace Volte.Commands.Modules
             };
 
             if (page is null)
-                return Ok(embed.WithDescription(FormatPages()));
+                return Ok(pages.Select(x => embed.WithTitle(x.Key).WithDescription(x.Value)));
 
             return Ok(embed.WithDescription(pages.ContainsKey(page)
                 ? $"[{pages.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(page))}]({pages.FirstOrDefault(x => x.Key.EqualsIgnoreCase(page)).Value})"
                 : $"{page} wasn't found. Here's a list of valid wiki pages: {FormatPages()}"));
 
 
-            string FormatPages()
+            string FormatPages() => new StringBuilder().Apply(sb =>
             {
-                var formattedPages = new StringBuilder();
                 foreach (var (key, value) in pages)
-                    formattedPages.AppendLine($"[{key}]({value})");
-
-                return formattedPages.ToString();
-            }
+                    sb.AppendLine($"[{key}]({value})");
+            }).ToString();
         }
     }
 }
