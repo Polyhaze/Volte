@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Gommon;
 using Qmmands;
 using Volte.Core;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
@@ -15,6 +16,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Announce")]
         [Description("Allows you to construct a custom embed from Unix-style command arguments.")]
+        [ShowUnixArgumentsInHelp(VolteUnixCommand.Announce)]
         public async Task<ActionResult> AnnounceAsync(
             [Remainder,
              Description(

@@ -12,7 +12,7 @@ namespace Volte.Interactive
     {
         public class Builder
         {
-            public object[] Pages { get; private set; }
+            public IEnumerable<object> Pages { get; private set; }
             public string Content { get; private set; } = string.Empty;
             public IGuildUser Author { get; private set; }
             public Color Color { get; private set; } = new Color(Config.SuccessColor);
@@ -21,9 +21,9 @@ namespace Volte.Interactive
 
             public static Builder New => new Builder();
 
-            public Builder WithPages(params object[] pages)
+            public Builder WithPages(IEnumerable<object> pages)
             {
-                Pages = pages.ToArray();
+                Pages = pages;
                 return this;
             }
 
@@ -74,7 +74,7 @@ namespace Volte.Interactive
                     temp.RemoveRange(0, temp.Count < perPage ? temp.Count : perPage);
                 } while (!temp.IsEmpty());
 
-                Pages = newList.ToArray();
+                Pages = newList;
                 return this;
             }
 
@@ -104,7 +104,7 @@ namespace Volte.Interactive
         /// If this collection is of <see cref="EmbedBuilder"/>, every setting in <see cref="PaginatedMessage"/> will be ignored as
         /// the contents of the EmbedBuilders are used instead.
         /// </summary>
-        public object[] Pages { get; internal set; }
+        public IEnumerable<object> Pages { get; internal set; }
 
         /// <summary>
         /// Content sets the content of the message, displayed above the embed. This may remain empty.
@@ -131,7 +131,7 @@ namespace Volte.Interactive
                 temp.RemoveRange(0, temp.Count < entriesPerPage ? temp.Count : entriesPerPage);
             } while (!temp.IsEmpty());
 
-            Pages = newList.ToArray();
+            Pages = newList;
 
             return this;
         }

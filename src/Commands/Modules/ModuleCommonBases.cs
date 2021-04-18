@@ -60,7 +60,21 @@ namespace Volte.Commands.Modules
     }
 
     [RequireGuildAdmin]
-    public sealed partial class AdminUtilityModule : VolteModule { }
+    public sealed partial class AdminUtilityModule : VolteModule
+    {
+        public static Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>()
+        {
+            {new[] {"crosspost", "publish"}, "Whether or not to automatically publish this message if it's sent in an announcement channel. This option takes no value."},
+            {new[] {"ping", "mention"}, "none, everyone, here, or a role ID"},
+            {new[] {"foot", "footer"}, "Set the embed's footer content."},
+            {new[] {"thumbnail"}, "Set the embed's small thumbnail URL."},
+            {new[] {"image"}, "Set the embed's large image URL."},
+            {new[] {"desc", "description"}, "Set the embed's description content."},
+            {new[] {"title"}, "Set the embed's title content."},
+            {new[] {"color"}, "Set the embed's color."},
+            {new[] {"author"}, "Set the author of the embed. `self` or `me` will make you the author; `bot`, `you`, or `volte` will make volte the author, or you can use a server member's ID."}
+        };
+    }
 
     [RequireBotOwner]
     public sealed partial class BotOwnerModule : VolteModule

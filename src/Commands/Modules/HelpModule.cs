@@ -7,7 +7,6 @@ using Discord;
 using Qmmands;
 using Gommon;
 using Volte.Core.Helpers;
-using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -24,15 +23,13 @@ namespace Volte.Commands.Modules
             if (query != null)
             {
                 if (query.EqualsAnyIgnoreCase("pages", "pager"))
-                {
                     return Ok(await GetPagesAsync().ToListAsync());
-                }
 
-                var search = CommandService.FindCommands(query);
-                if (search.IsEmpty())
+                var searchRes = CommandService.GetCommand(query);
+                if (searchRes is null)
                     return BadRequest($"No command or group found for {Format.Code(query)}.");
 
-                return Ok(await CommandHelper.CreateCommandEmbedAsync(search.First().Command, Context));
+                return Ok(await CommandHelper.CreateCommandEmbedAsync(searchRes, Context));
             }
 
             var e = Context.CreateEmbedBuilder()

@@ -25,8 +25,7 @@ namespace Volte.Interactive
 
         public JumpDisplayOptions JumpDisplayOptions => JumpDisplayOptions.Always;
         public bool DisplayInformationIcon => true;
-
-        public TimeSpan Timeout = 1.Minutes();
+        
         public TimeSpan InfoTimeout = 30.Seconds();
 
         public int FieldsPerPage => 6;

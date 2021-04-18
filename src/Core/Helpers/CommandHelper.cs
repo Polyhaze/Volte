@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Volte.Commands;
+using Volte.Commands.Modules;
 using Volte.Core.Entities;
 using Module = Qmmands.Module;
 
@@ -17,10 +18,10 @@ namespace Volte.Core.Helpers
 {
     public static class CommandHelper
     {
-        public static async Task<bool> CanShowCommandAsync(VolteContext ctx, Command command) =>
+        public static async ValueTask<bool> CanShowCommandAsync(VolteContext ctx, Command command) =>
             await command.RunChecksAsync(ctx) is SuccessfulResult;
 
-        public static async Task<bool> CanShowModuleAsync(VolteContext ctx, Module module) =>
+        public static async ValueTask<bool> CanShowModuleAsync(VolteContext ctx, Module module) =>
             await module.RunChecksAsync(ctx) is SuccessfulResult;
 
         public static string FormatCommandShort(Command command, bool includeGroup = true)
@@ -89,6 +90,21 @@ namespace Volte.Core.Helpers
                 if (command.Attributes.Any(x => x is ShowTimeFormatInHelpAttribute))
                     embed.AddField("Example Valid Time",
                         $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
+
+                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var attr))
+                {
+                    var attribute = attr.Cast<ShowUnixArgumentsInHelpAttribute>();
+                    switch (attribute.VolteUnixCommand)
+                    {
+                        case VolteUnixCommand.Announce:
+                            embed.AddField("Unix Arguments",
+                                AdminUtilityModule.AnnounceNamedArguments.Select(x =>
+                                    $"{Format.Bold(x.Key.Select(name => $"-{name}").Join(" or "))}: {x.Value}").Join("\n"));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
             }
 
             var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
@@ -162,7 +178,8 @@ namespace Volte.Core.Helpers
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
                 // ReSharper disable once PossibleNullReferenceException
                 // cant happen
-                method?.Invoke(service, new[] { parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive });
+                method?.Invoke(service,
+                    new[] {parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive});
                 yield return parser;
             }
         }

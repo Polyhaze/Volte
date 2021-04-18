@@ -21,8 +21,6 @@ namespace Volte.Interactive
         public RunMode RunMode => RunMode.Sequential;
         public ICriterion<SocketReaction> Criterion { get; }
 
-        private readonly TimeSpan _timeout;
-
         private readonly PaginatedMessage _pager;
         
         private readonly int _pageCount;
@@ -38,11 +36,10 @@ namespace Volte.Interactive
             Context = sourceContext;
             Criterion = criterion ?? new EmptyCriterion<SocketReaction>();
             _pager = pager;
-            _timeout = _pager.Options.Timeout;
             if (_pager.Pages is IEnumerable<EmbedFieldBuilder>)
-                _pageCount = ((_pager.Pages.Length - 1) / _pager.Options.FieldsPerPage) + 1;
+                _pageCount = ((_pager.Pages.Count() - 1) / _pager.Options.FieldsPerPage) + 1;
             else
-                _pageCount = _pager.Pages.Length;
+                _pageCount = _pager.Pages.Count();
         }
 
         public async Task DisplayAsync()
@@ -72,17 +69,6 @@ namespace Volte.Interactive
                 if (_pager.Options.DisplayInformationIcon)
                     await Message.AddReactionAsync(_pager.Options.Info);
             });
-
-            if (_timeout != default)
-            {
-                _ = Executor.ExecuteAfterDelayAsync(_timeout, async () =>
-                {
-                    Interactive.RemoveReactionCallback(Message);
-                    await Message.RemoveAllReactionsAsync();
-                    var m = await Message.Channel.SendMessageAsync("You didn't do anything in one minute.");
-                    await Executor.ExecuteAfterDelayAsync(5.Seconds(), async () => await m.TryDeleteAsync());
-                });
-            }
         }
 
         public async Task<bool> HandleAsync(SocketReaction reaction)
