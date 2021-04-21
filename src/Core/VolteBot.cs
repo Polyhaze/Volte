@@ -45,15 +45,8 @@ namespace Volte.Core
             Config.Load();
 
             if (!Config.IsValidToken()) return;
-            int shardCount;
-            using (var rest = new DiscordRestClient())
-            {
-                await rest.LoginAsync(TokenType.Bot, Config.Token);
-                shardCount = await rest.GetRecommendedShardCountAsync();
-                await rest.LogoutAsync();
-            }
 
-            _provider = BuildServiceProvider(shardCount);
+            _provider = BuildServiceProvider(await DiscordHelper.GetRecommendedShardCountAsync());
             _client = _provider.Get<DiscordShardedClient>();
             _cts = _provider.Get<CancellationTokenSource>();
 

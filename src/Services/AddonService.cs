@@ -20,14 +20,14 @@ namespace Volte.Services
         private readonly IServiceProvider _provider;
         private bool _isInitialized;
         public Dictionary<VolteAddonMeta, string> LoadedAddons { get; }
-        internal List<ScriptState> AddonResults { get; }
+        internal HashSet<ScriptState> AddonResults { get; }
 
         public AddonService(IServiceProvider serviceProvider)
         {
             _isInitialized = false;
             _provider = serviceProvider;
             LoadedAddons = new Dictionary<VolteAddonMeta, string>();
-            AddonResults = new List<ScriptState>();
+            AddonResults = new HashSet<ScriptState>();
         }
 
         public async Task InitAsync()

@@ -11,8 +11,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class ChannelParser : VolteTypeParser<SocketTextChannel>
     {
-        public override ValueTask<TypeParserResult<SocketTextChannel>> ParseAsync(Parameter _, string value,
-            VolteContext ctx)
+        public override ValueTask<TypeParserResult<SocketTextChannel>> ParseAsync(string value, VolteContext ctx)
         {
             SocketTextChannel channel = default;
 

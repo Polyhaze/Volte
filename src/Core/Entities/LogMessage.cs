@@ -3,7 +3,7 @@ using Discord;
 
 namespace Volte.Core.Entities
 {
-    public sealed class LogMessage
+    public struct LogMessage
     {
         public LogSeverity Severity { get; private set; }
         public LogSource Source { get; private set; }

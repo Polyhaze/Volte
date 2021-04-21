@@ -10,8 +10,7 @@ namespace Volte.Commands.Modules
         [Description("Toggles whether or not Tags requested in your guild will be in an embed and be shown with the person who requested the Tag.")]
         public Task<ActionResult> ShowRequesterAndEmbedTagsAsync(bool enabled)
         {
-            Context.GuildData.Configuration.EmbedTagsAndShowAuthor = enabled;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.EmbedTagsAndShowAuthor = enabled);
             return Ok(enabled
                 ? "Tags will now show their requester and be displayed in an embed!"
                 : "Tags will **NO LONGER** show their requester and be displayed in an embed!");

@@ -10,7 +10,7 @@ namespace Volte.Core.Entities
     public sealed class ModerationOptions
     {
         internal ModerationOptions()
-            => Blacklist = new List<string>();
+            => Blacklist = new HashSet<string>();
 
         [JsonPropertyName("mass_ping_checks")]
         public bool MassPingChecks { get; set; }
@@ -40,7 +40,7 @@ namespace Volte.Core.Entities
         public bool ShowResponsibleModerator { get; set; }
 
         [JsonPropertyName("blacklist")]
-        public List<string> Blacklist { get; set; }
+        public HashSet<string> Blacklist { get; set; }
 
         [JsonPropertyName("blacklist_action")]
         public BlacklistAction BlacklistAction { get; set; }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,9 +8,9 @@ namespace Volte.Core.Entities
     {
         internal GuildExtras()
         {
-            SelfRoles = new List<string>();
-            Tags = new List<Tag>();
-            Warns = new List<Warn>();
+            SelfRoles = new HashSet<string>();
+            Tags = new HashSet<Tag>();
+            Warns = new HashSet<Warn>();
         }
         
         [JsonPropertyName("mod_log_case_number")]
@@ -21,22 +20,22 @@ namespace Volte.Core.Entities
         public bool AutoParseQuoteUrls { get; set; }
 
         [JsonPropertyName("self_roles")]
-        public List<string> SelfRoles { get; set; }
+        public HashSet<string> SelfRoles { get; set; }
 
         [JsonPropertyName("tags")]
-        public List<Tag> Tags { get; set; }
+        public HashSet<Tag> Tags { get; set; }
 
         [JsonPropertyName("warns")]
-        public List<Warn> Warns { get; set; }
+        public HashSet<Warn> Warns { get; set; }
 
-        public void AddTag(Action<Tag> initializer)
+        public void AddTag(TagInitializer initializer)
         {
             var t = new Tag();
             initializer(t);
             Tags.Add(t);
         }
 
-        public void AddWarn(Action<Warn> initializer)
+        public void AddWarn(WarnInitializer initializer)
         {
             var w = new Warn();
             initializer(w);

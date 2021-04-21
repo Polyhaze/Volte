@@ -89,7 +89,7 @@ namespace Volte.Services
             var users = args.Shard.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
             var channels = args.Shard.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
 
-            Logger.PrintVersion();
+            Logger.PrintHeader();
             Logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
             Logger.Info(LogSource.Volte, $"{args.Shard.GetInviteUrl()}");
             Logger.Info(LogSource.Volte, $"Logged in as {args.Shard.CurrentUser}, shard {args.Shard.ShardId}");

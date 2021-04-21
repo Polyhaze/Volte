@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Entities;
 using Volte.Interactive;
 using Volte.Services;
 
@@ -18,24 +19,25 @@ namespace Volte.Commands
         
         protected ActionResult Ok(
             string text, 
-            Func<IUserMessage, Task> afterCompletion = null,
+            Callback afterCompletion = null,
             bool shouldEmbed = true) 
             => new OkResult(text, shouldEmbed, null, afterCompletion);
 
         protected ActionResult Ok(
-            Func<Task> logic, 
+            AsyncFunction logic, 
             bool awaitLogic = true) 
             => new OkResult(logic, awaitLogic);
 
-        protected ActionResult Ok(StringBuilder text, Func<IUserMessage, Task> callback = null, bool shouldEmbed = true)
+        protected ActionResult Ok(StringBuilder text, Callback callback = null, bool shouldEmbed = true)
             => Ok(text.ToString(), callback, shouldEmbed);
         protected ActionResult Ok(PaginatedMessage.Builder pager) => new OkResult(pager);
         protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds);
 
+        protected ActionResult Ok(PollInfo pollInfo) => new OkResult(pollInfo);
 
         protected ActionResult Ok(
             EmbedBuilder embed, 
-            Func<IUserMessage, Task> afterCompletion = null) 
+            Callback afterCompletion = null) 
             => new OkResult(null, true, embed, afterCompletion);
 
         protected ActionResult Ok(string text) 
@@ -48,7 +50,7 @@ namespace Volte.Commands
             => new BadRequestResult(reason);
 
         protected ActionResult None(
-            Func<Task> afterCompletion = null, 
+            AsyncFunction afterCompletion = null, 
             bool awaitCallback = true) 
             => new NoResult(afterCompletion, awaitCallback);
     }

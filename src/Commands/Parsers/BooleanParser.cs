@@ -32,7 +32,7 @@ namespace Volte.Commands
             "negative", "0"
         };
 
-        public override ValueTask<TypeParserResult<bool>> ParseAsync(Parameter _, string value, VolteContext __)
+        public override ValueTask<TypeParserResult<bool>> ParseAsync(string value, VolteContext _)
         {
             if (_trueValues.ContainsIgnoreCase(value))
                 return Success(true);

@@ -10,8 +10,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class GuildParser : VolteTypeParser<SocketGuild>
     {
-        public override ValueTask<TypeParserResult<SocketGuild>> ParseAsync(Parameter _, string value,
-            VolteContext ctx)
+        public override ValueTask<TypeParserResult<SocketGuild>> ParseAsync(string value, VolteContext ctx)
         {
             SocketGuild guild = default;
 

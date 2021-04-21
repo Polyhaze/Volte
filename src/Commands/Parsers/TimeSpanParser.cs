@@ -30,7 +30,7 @@ namespace Volte.Commands
             "%s's'"                 //      1s
         };
         
-        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(Parameter _, string value, VolteContext __) 
+        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(string value, VolteContext _) 
             => TimeSpan.TryParseExact(value.ToLowerInvariant(), Formats, CultureInfo.InvariantCulture, out var ts)
                 ? Success(ts)
                 : Failure("You didn't give me a valid time.");

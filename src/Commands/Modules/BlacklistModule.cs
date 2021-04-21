@@ -4,7 +4,6 @@ using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Commands;
 using Volte.Core.Entities;
 
 namespace Volte.Commands.Modules
@@ -21,8 +20,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> BlacklistAddAsync([Remainder, Description("The phrase to add to the blacklist.")]
             string phrase)
         {
-            Context.GuildData.Configuration.Moderation.Blacklist.Add(phrase);
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.Blacklist.Add(phrase));
             return Ok($"Added **{phrase}** to the blacklist.");
         }
 
@@ -35,8 +33,7 @@ namespace Volte.Commands.Modules
             if (!Context.GuildData.Configuration.Moderation.Blacklist.ContainsIgnoreCase(phrase))
                 return BadRequest($"**{phrase}** doesn't exist in the blacklist.");
 
-            Context.GuildData.Configuration.Moderation.Blacklist.Remove(phrase);
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.Blacklist.Remove(phrase));
             return Ok($"Removed **{phrase}** from the word blacklist.");
         }
 
@@ -45,8 +42,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> BlacklistClearAsync()
         {
             var count = Context.GuildData.Configuration.Moderation.Blacklist.Count;
-            Context.GuildData.Configuration.Moderation.Blacklist.Clear();
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.Blacklist.Clear());
             return Ok($"Cleared the this guild's blacklist, containing {"word".ToQuantity(count)}.");
         }
 
@@ -58,8 +54,7 @@ namespace Volte.Commands.Modules
             [Description("The action to be performed upon triggering the blacklist.")]
             BlacklistAction action)
         {
-            Context.GuildData.Configuration.Moderation.BlacklistAction = action;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.BlacklistAction = action);
             return action is BlacklistAction.Nothing
                 ? Ok("Disabled punishing users for blacklist infractions.")
                 : Ok($"Set {action} as the action performed when a member uses a blacklisted word/phrase.");

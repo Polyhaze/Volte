@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text.Json.Serialization;
+using Qommon.Collections;
 
 namespace Volte.Core.Entities
 {
@@ -9,7 +11,7 @@ namespace Volte.Core.Entities
         [JsonPropertyName("list")]
         // ReSharper disable once CollectionNeverUpdated.Global
         // this property is loaded via System.Text.Json; that's why there's a public setter.
-        public List<UrbanEntry> Entries { get; set; }
+        public IReadOnlyList<UrbanEntry> Entries { get; set; }
     }
 
     public class UrbanEntry

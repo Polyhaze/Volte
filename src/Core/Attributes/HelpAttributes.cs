@@ -7,7 +7,8 @@ namespace Volte.Core.Entities
 {
     public enum VolteUnixCommand
     {
-        Announce
+        Announce,
+        Zalgo
     }
     
     /// <summary>

@@ -37,18 +37,23 @@ namespace Volte.Services
             return newConf;
         }
 
-        public IEnumerable<Reminder> GetReminders(IUser user) => GetReminders(user.Id);
-        public IEnumerable<Reminder> GetReminders(IUser user, IGuild guild) => GetReminders(user.Id, guild.Id);
+        public HashSet<Reminder> GetReminders(IUser user, IGuild guild = null) => GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
 
-        public IEnumerable<Reminder> GetReminders(ulong id, ulong guild = 0) 
-            => GetAllReminders().Where(r => r.CreatorId == id && (guild is 0 || r.GuildId == guild));
+        public HashSet<Reminder> GetReminders(ulong id, ulong guild = 0) 
+            => GetAllReminders().Where(r => r.CreatorId == id && (guild is 0 || r.GuildId == guild)).ToHashSet();
 
         public bool TryDeleteReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
 
-        public IEnumerable<Reminder> GetAllReminders() => Database.GetCollection<Reminder>(RemindersCollection).FindAll();
-
-
+        public HashSet<Reminder> GetAllReminders() => Database.GetCollection<Reminder>(RemindersCollection).FindAll().ToHashSet();
+        
         public void CreateReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Insert(reminder);
+
+        public void Modify(ulong guildId, DataEditor modifier)
+        {
+            var data = GetData(guildId);
+            modifier(data);
+            Save(data);
+        }
 
         public void Save(GuildData newConfig)
         {
@@ -70,7 +75,7 @@ namespace Volte.Services
                     {
                         AdminRole = default,
                         Antilink = default,
-                        Blacklist = new List<string>(),
+                        Blacklist = new HashSet<string>(),
                         MassPingChecks = default,
                         ModActionLogChannel = default,
                         ModRole = default,
@@ -91,9 +96,9 @@ namespace Volte.Services
                 Extras = new GuildExtras
                 {
                     ModActionCaseNumber = default,
-                    SelfRoles = new List<string>(),
-                    Tags = new List<Tag>(),
-                    Warns = new List<Warn>()
+                    SelfRoles = new HashSet<string>(),
+                    Tags = new HashSet<Tag>(),
+                    Warns = new HashSet<Warn>()
                 }
             };
 

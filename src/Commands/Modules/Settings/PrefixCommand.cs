@@ -11,8 +11,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the command prefix for this guild.")]
         public Task<ActionResult> PrefixAsync([Remainder] string newPrefix)
         {
-            Context.GuildData.Configuration.CommandPrefix = newPrefix;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.CommandPrefix = newPrefix);
             return Ok($"Set this guild's prefix to **{newPrefix}**.");
         }
     }

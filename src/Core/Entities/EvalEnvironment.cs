@@ -44,7 +44,7 @@ namespace Volte.Core.Entities
                                                       throw new InvalidOperationException(
                                                           $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
 
-        public async Task<IUserMessage> MessageAsync(ulong id)
+        public async ValueTask<IUserMessage> MessageAsync(ulong id)
         {
             var m = await Context.Channel.GetMessageAsync(id);
             if (m is IUserMessage userMessage)
@@ -65,11 +65,11 @@ namespace Volte.Core.Entities
                 : throw new ArgumentException(
                     $"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
 
-        public Task ReplyAsync(string content) => Context.Channel.SendMessageAsync(content);
+        public async ValueTask<IUserMessage> ReplyAsync(string content) => await Context.Channel.SendMessageAsync(content);
 
-        public Task ReplyAsync(Embed embed) => embed.SendToAsync(Context.Channel);
+        public async ValueTask<IUserMessage> ReplyAsync(Embed embed) => await embed.SendToAsync(Context.Channel);
 
-        public Task ReplyAsync(EmbedBuilder embed) => embed.SendToAsync(Context.Channel);
+        public async ValueTask<IUserMessage> ReplyAsync(EmbedBuilder embed) => await embed.SendToAsync(Context.Channel);
 
         public Task ReactAsync(string unicode) => Context.Message.AddReactionAsync(new Emoji(unicode));
 
@@ -163,7 +163,7 @@ namespace Volte.Core.Entities
                 if (arr.IsEmpty()) return inspection.ToString();
                 inspection.AppendLine();
                 inspection.AppendLine("<< Items >>");
-                foreach (var prop in arr) inspection.Append(" - ").Append(prop).AppendLine();
+                arr.ForEach(prop => inspection.Append(" - ").Append(prop).AppendLine());
             }
 
             return inspection.ToString();

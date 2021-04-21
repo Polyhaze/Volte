@@ -10,8 +10,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class TagParser : VolteTypeParser<Tag>
     {
-        public override ValueTask<TypeParserResult<Tag>> ParseAsync(Parameter _, string value,
-            VolteContext ctx)
+        public override ValueTask<TypeParserResult<Tag>> ParseAsync(string value, VolteContext ctx)
         {
             if (ctx.GuildData.Extras.Tags.AnyGet(x => x.Name.EqualsIgnoreCase(value), out var tag))
                 return Success(tag);

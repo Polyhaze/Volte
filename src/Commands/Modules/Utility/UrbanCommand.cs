@@ -23,10 +23,10 @@ namespace Volte.Commands.Modules
             {
                 if (entry.Definition.Length > 1024)
                 {
-                    var oldDefLength = entry.Definition.Length;
+                    var oldDefLeng = entry.Definition.Length;
                     entry.Definition = string.Join("", entry.Definition.Take(980)) +
                                        Format.Bold(
-                                           $"\n...and {oldDefLength - 980} more {"character".ToQuantity(oldDefLength - 980).Split(" ").Last()}.");
+                                           $"\n...and {oldDefLeng - 980} more {"character".ToQuantity(oldDefLeng - 980).Split(" ").Last()}.");
                 }
                 else if (entry.Definition.IsEmpty())
                     entry.Definition = "<error occurred>";

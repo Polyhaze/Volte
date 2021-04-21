@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -22,13 +23,15 @@ namespace Volte.Commands
         // ReSharper disable once SuggestBaseTypeForParameter
         private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
         {
-            Client = provider.Get<DiscordShardedClient>();
+            if (provider.TryGet<DiscordShardedClient>(out var client))
+                Client = client;
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Interactive = provider.Get<InteractiveService>();
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
-            GuildData = provider.Get<DatabaseService>().GetData(Guild);
+            if (provider.TryGet<DatabaseService>(out var db))
+                GuildData = db.GetData(Guild);
             Now = DateTime.Now;
         }
 
@@ -45,7 +48,7 @@ namespace Volte.Commands
         public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()
-            .WithColor(User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor))
+            .WithColor(User.GetHighestRole()?.Color ?? new Color(Config.SuccessColor))
             .WithAuthor(User.ToString(), User.GetEffectiveAvatarUrl())
             .WithDescription(content ?? string.Empty);
 
@@ -55,25 +58,33 @@ namespace Volte.Commands
         ///     Waits for a message containing content parseable by a registered <see cref="TypeParser{T}"/>.
         ///     Waiting times out after <paramref name="timeout"/> is over; returning no result and DidTimeout as true;
         ///     Receiving a message results in this method parsing its contents via the <see cref="TypeParser{T}"/>.
+        ///     To disable a timeout, set it to <see cref="Timeout"/>.<see cref="Timeout.InfiniteTimeSpan"/>
         ///     TL;DR: Your <see cref="CommandService"/> must have a <see cref="TypeParser{T}"/> for <typeparamref name="T"/>.
         /// </summary>
         /// <param name="timeout">The timespan to wait for. Defaults to 15 seconds.</param>
         /// <typeparam name="T">The type of object to wait for.</typeparam>
-        public async Task<(T Result, bool DidTimeout)> GetNextAsync<T>(TimeSpan? timeout = null)
+        public async ValueTask<(T Result, bool DidTimeout)> GetNextAsync<T>(TimeSpan? timeout = null)
         {
-            var parser = Services.Get<CommandService>().GetTypeParser<T>();
-            var message = await Interactive.NextMessageAsync(this, timeout: timeout ?? 15.Seconds());
+            timeout ??= 15.Seconds();
+            var message = await Interactive.NextMessageAsync(this, timeout: timeout);
             if (message is null)
             {
-                await CreateEmbed("You didn't reply within the specified timeout. Run the command and try again.")
+                await CreateEmbed($"You didn't reply within {timeout.Value.Humanize()}. Run the command and try again.")
                     .SendToAsync(Channel);
                 return (default, true);
             }
 
-            var parserResult = await parser.ParseAsync(null, message.Content, this);
+            var parserResult = await Services.Get<CommandService>().GetTypeParser<T>().ParseAsync(null, message.Content, this);
             if (parserResult.IsSuccessful)
                 return (parserResult.Value, false);
             return (default, false);
+        }
+
+        public void Modify(DataEditor modifier)
+        {
+            modifier(GuildData);
+            if (Services.TryGet<DatabaseService>(out var db))
+                db.Save(GuildData);
         }
     }
 }

@@ -24,8 +24,7 @@ namespace Volte.Commands.Modules
             [Remainder, Description("The channel to use for welcoming messages.")]
             SocketTextChannel channel)
         {
-            Context.GuildData.Configuration.Welcome.WelcomeChannel = channel.Id;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Welcome.WelcomeChannel = channel.Id);
             return Ok($"Set this guild's welcome channel to {channel.Mention}.");
         }
 
@@ -35,14 +34,9 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
             if (message is null)
-            {
-                return Ok(new StringBuilder()
-                    .AppendLine(
-                        $"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}"));
-            }
+                return Ok($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}");
 
-            Context.GuildData.Configuration.Welcome.WelcomeMessage = message;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Welcome.WelcomeMessage = message);
             var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
             var sendingTest = welcomeChannel is null
                 ? "Not sending a test message as you do not have a welcome channel set." +
@@ -73,8 +67,7 @@ namespace Volte.Commands.Modules
             if (message is null)
                 return Ok(new StringBuilder()
                     .AppendLine(
-                        $"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, string.Empty)}")
-                    .ToString());
+                        $"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage, string.Empty)}"));
 
             Context.GuildData.Configuration.Welcome.LeavingMessage = message;
             Db.Save(Context.GuildData);

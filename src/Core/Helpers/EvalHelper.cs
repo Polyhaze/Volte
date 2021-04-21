@@ -110,11 +110,16 @@ namespace Volte.Core.Helpers
                         IMessage message => env.Inspect(message),
                         _ => state.ReturnValue.ToString()
                     };
-                    if (shouldReply) await msg.ModifyAsync(m =>
-                        m.Embed = embed.WithTitle("Eval")
-                            .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                            .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                            .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build());
+                    await (shouldReply switch
+                    {
+                        true => msg.ModifyAsync(m =>
+                            m.Embed = embed.WithTitle("Eval")
+                                .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                                .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
+                                .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build()),
+                        false => msg.DeleteAsync().ContinueWith(_ => env.ReactAsync(DiscordHelper.BallotBoxWithCheck))
+                        
+                    });
                 }
                 else
                     await msg.DeleteAsync().ContinueWith(_ => env.ReactAsync(DiscordHelper.BallotBoxWithCheck));

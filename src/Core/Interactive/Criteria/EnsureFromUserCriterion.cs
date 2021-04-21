@@ -16,8 +16,8 @@ namespace Volte.Interactive
         public EnsureFromUserCriterion(ulong id)
             => _id = id;
 
-        public Task<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
-            => Task.FromResult(_id == parameter.Author.Id);
+        public ValueTask<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
+            => new ValueTask<bool>(_id == parameter.Author.Id);
 
     }
 }

@@ -11,8 +11,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class RoleParser : VolteTypeParser<SocketRole>
     {
-        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(Parameter _, string value,
-            VolteContext ctx)
+        public override ValueTask<TypeParserResult<SocketRole>> ParseAsync(string value, VolteContext ctx)
         {
             SocketRole role = default;
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseRole(value, out id))

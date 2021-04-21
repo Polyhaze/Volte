@@ -54,7 +54,7 @@ namespace Volte.Commands.Modules
             [Remainder, EnsureNotSelf, Description("The member who you want to clear warns for.")]
             SocketGuildUser member)
         {
-            var warnCount = Context.GuildData.Extras.Warns.RemoveAll(x => x.User == member.Id);
+            var warnCount = Context.GuildData.Extras.Warns.RemoveWhere(x => x.User == member.Id);
             Db.Save(Context.GuildData);
 
             var e = Context

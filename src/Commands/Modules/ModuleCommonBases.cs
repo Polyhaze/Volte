@@ -10,6 +10,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
@@ -23,25 +24,47 @@ namespace Volte.Commands.Modules
         public CommandsService CommandsService { get; set; }
         public HttpClient Http { get; set; }
 
+        public static readonly Dictionary<string[], string> ZalgoNamedArguments = new Dictionary<string[], string>()
+        {
+            {new[] {"max"}, "Use the highest intensity and include every character type. This option takes no value."},
+            {new[] {"up"}, "Include upwards characters. This option takes no value."},
+            {new[] {"mid", "middle"}, "Include middle characters. This option takes no value."},
+            {new[] {"down"}, "Include downward characters. This option takes no value."},
+            {new[] {"intensity"}, "`high`, `med`, or `low`"}
+            
+        };
+        
+        private readonly Dictionary<char, string> _nato = new Dictionary<char, string>
+        {
+            {'a', "Alfa"}, {'b', "Bravo"}, {'c', "Charlie"}, {'d', "Delta"},
+            {'e', "Echo"}, {'f', "Foxtrot"}, {'g', "Golf"}, {'h', "Hotel"},
+            {'i', "India"}, {'j', "Juliett"}, {'k', "Kilo"}, {'l', "Lima"},
+            {'m', "Mike"}, {'n', "November"}, {'o', "Oscar"}, {'p', "Papa"},
+            {'q', "Quebec"}, {'r', "Romeo"}, {'s', "Sierra"}, {'t', "Tango"},
+            {'u', "Uniform"}, {'v', "Victor"}, {'w', "Whiskey"}, {'x', "X-ray"},
+            {'y', "Yankee"}, {'z', "Zulu"}, {'1', "One"}, {'2', "Two"},
+            {'3', "Three"}, {'4', "Four"}, {'5', "Five"}, {'6', "Six"}, 
+            {'7', "Seven"}, {'8', "Eight"}, {'9', "Nine"}, {'0', "Zero"}
+
+        };
+
+        private string GetNato(char i) =>
+            _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString()); 
+        
         /// <summary>
         ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
         /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
         /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
-        public async Task<UrbanEntry[]> RequestUrbanDefinitionsAsync(string word)
+        public async Task<IReadOnlyList<UrbanEntry>> RequestUrbanDefinitionsAsync(string word)
         {
             var get = await Http.GetAsync(
                 $"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(),
                 HttpCompletionOption.ResponseContentRead);
 
-
-            var apiResp = get.IsSuccessStatusCode
-                ? JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync())
-                : null;
-
-            return apiResp != null
-                ? apiResp.Entries.ToArray()
-                : Array.Empty<UrbanEntry>();
+            get.EnsureSuccessStatusCode();
+            
+            return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
@@ -62,7 +85,7 @@ namespace Volte.Commands.Modules
     [RequireGuildAdmin]
     public sealed partial class AdminUtilityModule : VolteModule
     {
-        public static Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>()
+        public static readonly Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>()
         {
             {new[] {"crosspost", "publish"}, "Whether or not to automatically publish this message if it's sent in an announcement channel. This option takes no value."},
             {new[] {"ping", "mention"}, "none, everyone, here, or a role ID"},

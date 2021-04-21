@@ -16,51 +16,10 @@ namespace Volte.Core.Helpers
             foreach (var (key, value) in pollInfo.Fields)
                 embedBuilder.AddField(key, value, true);
 
+            embedBuilder.WithTitle(pollInfo.Prompt);
             embedBuilder.WithFooter(PollInfo.Footer);
 
             return embedBuilder;
-        }
-
-        public static Task AddPollReactionsAsync(int amount, IUserMessage msg)
-        {
-            var (one, two, three, four, five) = DiscordHelper.GetPollEmojis();
-
-            return amount switch
-            {
-                1 => One(),
-                2 => Two(),
-                3 => Three(),
-                4 => Four(),
-                5 => Five(),
-                _ => Task.CompletedTask
-            };
-
-            Task One() => msg.AddReactionAsync(one);
-            
-            async Task Two()
-            {
-                await One();
-                await msg.AddReactionAsync(two);
-            }
-            
-            async Task Three()
-            {
-                await Two();
-                await msg.AddReactionAsync(three);
-            }
-            
-            async Task Four()
-            {
-                await Three();
-                await msg.AddReactionAsync(four);
-            }
-            
-            async Task Five()
-            {
-                await Four();
-                await msg.AddReactionAsync(five);
-            }
-            
         }
     }
 }

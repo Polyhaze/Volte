@@ -11,8 +11,8 @@ namespace Volte.Interactive
         public EnsureFromChannelCriterion(IMessageChannel channel)
             => _channelId = channel.Id;
 
-        public Task<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
-            => Task.FromResult(_channelId == parameter.Channel.Id);
+        public ValueTask<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
+            => new ValueTask<bool>(_channelId == parameter.Channel.Id);
 
     }
 }

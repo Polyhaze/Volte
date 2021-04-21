@@ -16,18 +16,21 @@ namespace Volte.Core.Helpers
     {
         private static readonly object Lock = new object();
         private const string LogFile = Config.DataDirectory + "/Volte.log";
+        private static bool _hasPrinted = false;
 
         public static void HandleLogEvent(LogEventArgs args) =>
             Log(args.LogMessage.Severity, args.LogMessage.Source,
                 args.LogMessage.Message, args.LogMessage.Exception);
 
-        internal static void PrintVersion()
+        internal static void PrintHeader()
         {
+            if (_hasPrinted) return;
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             new Figlet().ToAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries)
-                .ForEach(asciiLine => { Info(LogSource.Volte, asciiLine); });
+                .ForEach(asciiLine => Info(LogSource.Volte, asciiLine));
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
+            _hasPrinted = true;
         }
 
         private static void Log(LogSeverity s, LogSource from, string message, Exception e = null)

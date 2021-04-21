@@ -8,8 +8,10 @@ namespace Volte.Interactive
 {
     public class Criteria<T> : ICriterion<T>
     {
-        private List<ICriterion<T>> _critiera = new List<ICriterion<T>>();
-        private List<Func<VolteContext, T, Task<bool>>> _localCriteria = new List<Func<VolteContext, T, Task<bool>>>();
+        public delegate ValueTask<bool> LocalCriteria(VolteContext ctx, T value);
+        
+        private readonly HashSet<ICriterion<T>> _critiera = new HashSet<ICriterion<T>>();
+        private readonly HashSet<LocalCriteria> _localCriteria = new HashSet<LocalCriteria>();
 
         public Criteria<T> AddCriterion(ICriterion<T> criterion)
         {
@@ -17,13 +19,13 @@ namespace Volte.Interactive
             return this;
         }
 
-        public Criteria<T> AddCriterion(Func<VolteContext, T, Task<bool>> criteria)
+        public Criteria<T> AddCriterion(LocalCriteria criteria)
         {
             _localCriteria.Add(criteria);
             return this;
         }
 
-        public async Task<bool> JudgeAsync(VolteContext sourceContext, T parameter)
+        public async ValueTask<bool> JudgeAsync(VolteContext sourceContext, T parameter)
         {
             foreach (var criterion in _critiera)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Discord;
 using Gommon;
@@ -17,7 +18,7 @@ namespace Volte.Interactive
             public IGuildUser Author { get; private set; }
             public Color Color { get; private set; } = new Color(Config.SuccessColor);
             public string Title { get; private set; }
-            public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.Default;
+            public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.New;
 
             public static Builder New => new Builder();
 
@@ -59,10 +60,12 @@ namespace Volte.Interactive
 
             public Builder WithDefaults(VolteContext ctx)
             {
-                return WithColor(ctx.User.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor))
+                return WithColor(ctx.User.GetHighestRole()?.Color ?? new Color(Config.SuccessColor))
                     .WithAuthor(ctx.User);
             }
 
+            public Builder SplitPages(uint perPage) => SplitPages(perPage.Cast<int>());
+            
             public Builder SplitPages(int perPage)
             {
                 var temp = Pages.ToList();
@@ -118,7 +121,7 @@ namespace Volte.Interactive
 
         public Color Color { get; internal set; } = Color.Default;
         public string Title { get; internal set; }
-        public PaginatedAppearanceOptions Options { get; internal set; } = PaginatedAppearanceOptions.Default;
+        public PaginatedAppearanceOptions Options { get; internal set; } = PaginatedAppearanceOptions.New;
 
         public PaginatedMessage SplitPagesBy(int entriesPerPage)
         {

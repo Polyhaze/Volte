@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
@@ -61,8 +60,7 @@ namespace Volte.Commands.Modules
             return Ok(e);
         }
 
-        //module with aliases: command group; without: regular module
-
+        //module without aliases: regular module
         private async IAsyncEnumerable<string> GetAllRegularCommandsAsync()
         {
             foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.IsEmpty()))
@@ -77,6 +75,7 @@ namespace Volte.Commands.Modules
             }
         }
 
+        // module with aliases: group command module
         private async IAsyncEnumerable<string> GetAllGroupCommandsAsync()
         {
             foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.IsEmpty()))

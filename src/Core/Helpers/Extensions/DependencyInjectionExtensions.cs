@@ -11,6 +11,8 @@ using Qmmands;
 using Sentry;
 using Volte;
 using Volte.Core;
+using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 using Version = Volte.Version;
 
@@ -62,23 +64,9 @@ namespace Gommon
             => serviceCollection.Apply(coll =>
             {
                 //get all the classes that inherit VolteService, and aren't abstract.
-                foreach (var service in typeof(Program).Assembly.GetTypes()
-                    .Where(IsEligibleService))
-                {
-                    coll.TryAddSingleton(service);
-                }
+                var l = typeof(Program).Assembly.GetTypes()
+                    .Where(IsEligibleService).Apply(ls => ls.ForEach(coll.TryAddSingleton));
+                Logger.Info(LogSource.Volte, $"Injected {l.Count()} services into the provider.");
             });
-
-        public static T Get<T>(this IServiceProvider provider)
-            => provider.GetRequiredService<T>();
-
-        public static bool TryGet<T>(this IServiceProvider provider, out T service)
-        {
-            service = provider.GetService(typeof(T)).Cast<T>();
-            return service != null;
-        }
-
-        public static void Get<T>(this IServiceProvider provider, out T service)
-            => provider.TryGet(out service);
     }
 }

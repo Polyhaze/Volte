@@ -63,8 +63,7 @@ namespace Volte.Commands.Modules
                 Uses = default
             };
 
-            Context.GuildData.Extras.Tags.Add(tag);
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Extras.Tags.Add(tag));
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")

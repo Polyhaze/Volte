@@ -6,7 +6,7 @@ namespace Volte.Interactive
 {
     public class EmptyCriterion<T> : ICriterion<T>
     {
-        public Task<bool> JudgeAsync(VolteContext sourceContext, T parameter)
-            => Task.FromResult(true);
+        public ValueTask<bool> JudgeAsync(VolteContext sourceContext, T parameter)
+            => new ValueTask<bool>(true);
     }
 }

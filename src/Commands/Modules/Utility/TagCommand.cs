@@ -16,11 +16,10 @@ namespace Volte.Commands.Modules
             tag.Uses += 1;
             Db.Save(Context.GuildData);
 
-            if (Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
-                return Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null)
-                    .WithFooter($"Requested by {Context.User}."));
-
-            return Ok(tag.FormatContent(Context), shouldEmbed: false);
+            return Context.GuildData.Configuration.EmbedTagsAndShowAuthor
+                ? Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null)
+                    .WithFooter($"Requested by {Context.User}."))
+                : Ok(tag.FormatContent(Context), shouldEmbed: false);
         }
     }
 }

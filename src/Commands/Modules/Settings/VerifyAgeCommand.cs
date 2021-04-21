@@ -10,8 +10,7 @@ namespace Volte.Commands.Modules
             "Enables or disables the automatic account age warnings when a user who joins has a very young account (created within the last month).")]
         public Task<ActionResult> VerifyAgeAutomaticallyAsync(bool enabled)
         {
-            Context.GuildData.Configuration.Moderation.CheckAccountAge = enabled;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.CheckAccountAge = enabled);
             return Ok(enabled ? "Account age detection has been enabled." : "Account age detection has been disabled.");
         }
     }

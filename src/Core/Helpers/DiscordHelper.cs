@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
+using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Commands;
@@ -20,11 +22,11 @@ namespace Volte.Core.Helpers
         public static string BallotBoxWithCheck => "\u2611";
         public static string Clap => "\uD83D\uDC4F";
         public static string OkHand => "\uD83D\uDC4C";
-        public static string One => "\u0031\u20E3";
-        public static string Two => "\u0032\u20E3";
-        public static string Three => "\u0033\u20E3";
-        public static string Four => "\u0034\u20E3";
-        public static string Five => "\u0035\u20E3";
+        public static string One => "1️⃣";
+        public static string Two => "2️⃣";
+        public static string Three => "3️⃣";
+        public static string Four => "4️⃣";
+        public static string Five => "5️⃣";
         public static string First => "⏮";
         public static string Left => "◀";
         public static string Right => "▶";
@@ -34,21 +36,30 @@ namespace Volte.Core.Helpers
         public static string E1234 => "🔢";
         public static string Question => "\u2753";
 
-        public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollEmojis()
+        public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollButtons()
             => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
+        
+        public static List<Emoji> GetPollEmojis()
+            => new List<Emoji> {One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji()};
 
         public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis()
             => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
 
-        public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer)
+        public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer) 
+            => new RequestOptions().Apply(initializer);
+        
+        public static async ValueTask<int> GetRecommendedShardCountAsync()
         {
-            var opts = RequestOptions.Default;
-            initializer(opts);
-            return opts;
+            using var client = new DiscordRestClient();
+            await client.LoginAsync(TokenType.Bot, Config.Token);
+            var res = await client.GetRecommendedShardCountAsync();
+            await client.LogoutAsync();
+            return res;
         }
 
         public static string GetUrl(this Emoji emoji)
-            => $"https://i.kuro.mu/emoji/512x512/{emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
+            =>
+                $"https://i.kuro.mu/emoji/512x512/{emoji.ToString().GetUnicodePoints().Select(x => x.ToString("x2")).Join('-')}.png";
 
 
         /// <summary>
@@ -62,17 +73,17 @@ namespace Volte.Core.Helpers
         private static bool IsGuildOwner(this SocketGuildUser user)
             => user.Guild.OwnerId == user.Id || IsBotOwner(user);
 
-        public static bool IsModerator(this VolteContext ctx, SocketGuildUser user) 
-            => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) ||
-                   ctx.IsAdmin(user) ||
-                   IsGuildOwner(user);
+        public static bool IsModerator(this VolteContext ctx, SocketGuildUser user)
+            => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) 
+               || ctx.IsAdmin(user) 
+               || IsGuildOwner(user);
 
-            public static bool HasRole(this SocketGuildUser user, ulong roleId)
+        public static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
-        public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user) 
-            => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) ||
-                   IsGuildOwner(user);
+        public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user)
+            => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) 
+               || IsGuildOwner(user);
 
         public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,
             bool isTts = false, Embed embed = null, RequestOptions options = null)
@@ -88,11 +99,8 @@ namespace Volte.Core.Helpers
             }
         }
 
-        public static SocketRole GetHighestRole(this SocketGuildUser member)
-            => member.Roles.OrderByDescending(x => x.Position).FirstOrDefault();
-
-        public static SocketRole GetHighestRoleWithColor(this SocketGuildUser member)
-            => member.Roles.Where(x => x.HasColor())
+        public static SocketRole GetHighestRole(this SocketGuildUser member, bool requireColor = true)
+            => member.Roles.Where(x => !requireColor || x.HasColor())
                 .OrderByDescending(x => x.Position).FirstOrDefault();
 
         public static bool TryGetSpotifyStatus(this IGuildUser user, out SpotifyGame spotify)
@@ -125,7 +133,9 @@ namespace Volte.Core.Helpers
             => client.GetUser(Config.Owner);
 
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
-            => client.GetGuild(405806471578648588);
+            =>
+                client.GetGuild(
+                    405806471578648588); //yes hardcoded, the functions that use this guild are not meant for volte selfhosters anyways
 
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
@@ -134,10 +144,10 @@ namespace Volte.Core.Helpers
             var autorole = provider.Get<AutoroleService>();
             var mod = provider.Get<ModerationService>();
 
-            client.Log += m =>
+            client.Log += async m =>
             {
+                await Task.Yield();
                 Logger.HandleLogEvent(new LogEventArgs(m));
-                return Task.CompletedTask;
             };
             if (provider.TryGet<GuildService>(out var guild))
             {
@@ -197,7 +207,7 @@ namespace Volte.Core.Helpers
         public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
         public static EmbedBuilder WithRelevantColor(this EmbedBuilder e, SocketGuildUser user) =>
-            e.WithColor(user.GetHighestRoleWithColor()?.Color ?? new Color(Config.SuccessColor));
+            e.WithColor(user.GetHighestRole()?.Color ?? new Color(Config.SuccessColor));
 
         public static EmbedBuilder AppendDescription(this EmbedBuilder e, string toAppend) =>
             e.WithDescription((e.Description ?? string.Empty) + toAppend);

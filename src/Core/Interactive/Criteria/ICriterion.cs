@@ -6,6 +6,6 @@ namespace Volte.Interactive
 {
     public interface ICriterion<in T>
     {
-        Task<bool> JudgeAsync(VolteContext sourceContext, T parameter);
+        ValueTask<bool> JudgeAsync(VolteContext sourceContext, T parameter);
     }
 }

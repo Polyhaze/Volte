@@ -21,9 +21,9 @@ namespace Volte.Commands.Modules
                 if (didTimeout) return;
                 if (role is null) goto adminRole;
 
-                Context.GuildData.Configuration.Moderation.AdminRole = role.Id;
-                Db.Save(Context.GuildData);
-                
+                // ReSharper disable twice AccessToModifiedClosure
+                Context.Modify(data => data.Configuration.Moderation.AdminRole = role.Id);
+
                 modRole:
                 await Context.CreateEmbed("What role would you like to have Moderator permission with me?")
                     .SendToAsync(Context.Channel);
@@ -31,8 +31,7 @@ namespace Volte.Commands.Modules
                 if (didTimeout) return;
                 if (role is null) goto modRole;
 
-                Context.GuildData.Configuration.Moderation.ModRole = role.Id;
-                Db.Save(Context.GuildData);
+                Context.Modify(data => data.Configuration.Moderation.ModRole = role.Id);
                 
                 await Context.CreateEmbed("Done. People with those roles can now use their respective commands.")
                     .SendToAsync(Context.Channel);

@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Humanizer;
@@ -15,22 +14,11 @@ namespace Gommon
     /// </summary>
     public static partial class Extensions
     {
-        public static bool EqualsAnyIgnoreCase(this string str, params string[] potentialMatches) 
-            => potentialMatches.Any(str.EqualsIgnoreCase);
+        public static bool ExistsInAny<T>(this T @this, params IEnumerable<T>[] collections) 
+            => collections.Any(x => x.Contains(@this));
 
         public static string ReplaceIgnoreCase(this string str, string toReplace, object replacement)
             => str.Replace(toReplace, replacement.ToString(), StringComparison.OrdinalIgnoreCase);
-
-        public static string Prepend(this string str, string other) => str.Insert(0, other);
-
-        public static void For(this int timesToLoop, Action action)
-        {
-            for (var i = 0; i < timesToLoop; i++)
-                action();
-        }
-
-        public static string Repeat(this string str, int times) 
-            => new StringBuilder().Apply(sb => times.For(() => sb.Append(str))).ToString();
 
         public static string CalculateUptime(this Process process)
             => (DateTime.Now - process.StartTime).Humanize(3);
@@ -52,12 +40,5 @@ namespace Gommon
 
         public static string FormatBoldString(this DateTimeOffset dt) 
             => dt.DateTime.FormatBoldString();
-
-
-        public static T Apply<T>(this T curr, Action<T> apply)
-        {
-            apply(curr);
-            return curr;
-        }
     }
 }

@@ -12,8 +12,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class SocketGuildUserParser : VolteTypeParser<SocketGuildUser>
     {
-        public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(Parameter _, string value,
-            VolteContext ctx)
+        public override ValueTask<TypeParserResult<SocketGuildUser>> ParseAsync(string value, VolteContext ctx)
         {
             var users = ctx.Guild.Users.ToList();
 
@@ -45,10 +44,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class RestUserParser : VolteTypeParser<RestUser>
     {
-        public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(
-            Parameter parameter,
-            string value,
-            VolteContext ctx)
+        public override async ValueTask<TypeParserResult<RestUser>> ParseAsync(string value, VolteContext ctx)
         {
             RestUser user = null;
 
@@ -64,10 +60,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class RestGuildUserParser : VolteTypeParser<RestGuildUser>
     {
-        public override async ValueTask<TypeParserResult<RestGuildUser>> ParseAsync(
-            Parameter _,
-            string value,
-            VolteContext ctx)
+        public override async ValueTask<TypeParserResult<RestGuildUser>> ParseAsync(string value, VolteContext ctx)
         {
             RestGuildUser user = null;
 

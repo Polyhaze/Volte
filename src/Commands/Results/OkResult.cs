@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Qommon.Collections;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Interactive;
 using Volte.Services;
@@ -15,7 +12,7 @@ namespace Volte.Commands
     public class OkResult : ActionResult
     {
         public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
-            Func<IUserMessage, Task> func = null, bool awaitCallback = true)
+            Callback func = null, bool awaitCallback = true)
         {
             _message = text;
             _shouldEmbed = shouldEmbed;
@@ -24,7 +21,7 @@ namespace Volte.Commands
             _runFuncAsync = awaitCallback;
         }
 
-        public OkResult(IEnumerable<EmbedBuilder> pages, int pageSplit = -1, Color? color = null, IGuildUser author = null,
+        public OkResult(IEnumerable<EmbedBuilder> pages, uint pageSplit = 0, Color? color = null, IGuildUser author = null,
             VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null)
         {
             _pager = PaginatedMessage.Builder.New
@@ -46,25 +43,31 @@ namespace Volte.Commands
 
         public OkResult(PaginatedMessage.Builder pager) => _pager = pager;
 
-        public OkResult(Func<Task> logic, bool awaitFunc = true)
+        public OkResult(AsyncFunction logic, bool awaitFunc = true)
         {
             _separateLogic = logic;
             _runFuncAsync = awaitFunc;
         }
+
+        public OkResult(PollInfo poll) => _poll = poll;
 
         private readonly bool _runFuncAsync;
 
         private readonly string _message;
         private readonly bool _shouldEmbed;
         private readonly PaginatedMessage.Builder _pager;
-        private readonly Func<IUserMessage, Task> _callback;
-        private readonly Func<Task> _separateLogic;
+        private readonly Callback _callback;
+        private readonly AsyncFunction _separateLogic;
         private readonly EmbedBuilder _embed;
+        private readonly PollInfo _poll;
 
         public override async ValueTask<ResultCompletionData> ExecuteResultAsync(VolteContext ctx)
         {
             if (!ctx.Guild.CurrentUser.GetPermissions(ctx.Channel).SendMessages) return new ResultCompletionData();
 
+            if (_poll != null)
+                return new ResultCompletionData(await ctx.Interactive.StartPollAsync(ctx, _poll));
+            
             if (_pager != null)
                 return new ResultCompletionData(
                     await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));

@@ -93,13 +93,19 @@ namespace Volte.Core.Helpers
 
                 if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var attr))
                 {
+                    string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
+                        $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
+                    
                     var attribute = attr.Cast<ShowUnixArgumentsInHelpAttribute>();
                     switch (attribute.VolteUnixCommand)
                     {
                         case VolteUnixCommand.Announce:
                             embed.AddField("Unix Arguments",
-                                AdminUtilityModule.AnnounceNamedArguments.Select(x =>
-                                    $"{Format.Bold(x.Key.Select(name => $"-{name}").Join(" or "))}: {x.Value}").Join("\n"));
+                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"));
+                            break;
+                        case VolteUnixCommand.Zalgo:
+                            embed.AddField("Unix Arguments",
+                                UtilityModule.ZalgoNamedArguments.Select(FormatUnixArgs).Join("\n"));
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

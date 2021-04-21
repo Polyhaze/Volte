@@ -50,12 +50,12 @@ namespace Volte.Services
         private void Check()
         {
             Logger.Debug(LogSource.Service, "Checking all reminders.");
-            foreach (var reminder in _db.GetAllReminders())
+            _db.GetAllReminders().ForEachIndexedAsync(async (reminder, index) =>
             {
-                Logger.Debug(LogSource.Service, $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime}");
+                Logger.Debug(LogSource.Service, $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");
                 if (reminder.TargetTime.Ticks <= DateTime.Now.Ticks)
-                    Executor.Execute(async () => await SendAsync(reminder));
-            }
+                    await SendAsync(reminder);
+            });
         }
 
         private async Task SendAsync(Reminder reminder)

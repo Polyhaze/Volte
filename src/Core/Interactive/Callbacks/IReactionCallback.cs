@@ -12,6 +12,6 @@ namespace Volte.Interactive
         ICriterion<SocketReaction> Criterion { get; }
         VolteContext Context { get; }
 
-        Task<bool> HandleAsync(SocketReaction reaction);
+        ValueTask<bool> HandleAsync(SocketReaction reaction);
     }
 }

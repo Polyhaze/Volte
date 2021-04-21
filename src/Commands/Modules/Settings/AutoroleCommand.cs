@@ -15,8 +15,7 @@ namespace Volte.Commands.Modules
             if (role is null)
                 return Ok($"The current Autorole for this guild is <@&{Context.GuildData.Configuration.Autorole}>");
 
-            Context.GuildData.Configuration.Autorole = role.Id;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Autorole = role.Id);
             return Ok($"Successfully set **{role.Name}** as the role to be given to members upon joining this guild.");
         }
     }

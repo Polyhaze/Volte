@@ -10,8 +10,7 @@ namespace Volte.Commands.Modules
         [Description("Sets the channel to be used for mod log.")]
         public Task<ActionResult> ModLogAsync([Description("The channel to be used by my moderation log.")] SocketTextChannel c)
         {
-            Context.GuildData.Configuration.Moderation.ModActionLogChannel = c.Id;
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Configuration.Moderation.ModActionLogChannel = c.Id);
             return Ok($"Set {c.Mention} as the channel to be used by mod log.");
         }
     }

@@ -23,12 +23,8 @@ namespace Volte.Commands.Modules
             string reason = "Softbanned by a Moderator.")
         {
             var e = Context.CreateEmbedBuilder(
-                $"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.");
-            if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator)
-            {
-                e.WithAuthor(author: null);
-                e.WithSuccessColor();
-            }
+                    $"You've been softbanned from **{Context.Guild.Name}** for **{reason}**.")
+                .ApplyConfig(Context.GuildData);
 
             if (!await user.TrySendMessageAsync(embed: e.Build()))
                 Logger.Warn(LogSource.Module, $"encountered a 403 when trying to message {user}!");

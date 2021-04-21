@@ -49,61 +49,60 @@ namespace Volte.Core.Helpers
             var result = new Dictionary<string, string>();
             var argName = string.Empty;
             var argVal = string.Empty;
-            var lastChar = "";
-            for (var index = 0; index < input.Length; index++)
+            var lastChar = new char();
+            input.ForEachIndexed((token, index) =>
             {
-                var token = input[index].ToString();
                 switch (token)
                 {
-                    case "-" when state is ParsingState.ArgumentName && lastChar is " ":
+                    case '-' when state is ParsingState.ArgumentName && lastChar is ' ':
                         state = ParsingState.Neutral;
                         result.Add(argName, true.ToString());
                         argName = string.Empty;
                         break;
-                    case "-":
+                    case '-':
                         state = ParsingState.ArgumentName;
                         break;
-                    case "=" when state is ParsingState.ArgumentName:
+                    case '=' when state is ParsingState.ArgumentName:
                         state = ParsingState.ArgumentValue;
                         break;
-                    case " " when inQuote:
+                    case ' ' when inQuote:
                         argVal += ' ';
                         break;
-                    case " " when state is ParsingState.ArgumentName && (input.ElementAtOrDefault(index + 1) is '-' || input[index..].All(x => x != ' ')):
+                    case ' ' when state is ParsingState.ArgumentName && (input.ElementAtOrDefault(index + 1) is '-' || input[index..].All(x => x != ' ')):
                         state = ParsingState.Neutral;
                         result.Add(argName, true.ToString());
                         argName = string.Empty;
                         break;
-                    case " " when state is ParsingState.ArgumentName:
+                    case ' ' when state is ParsingState.ArgumentName:
                         state = ParsingState.ArgumentValue;
                         break;
-                    case " " when state is ParsingState.ArgumentValue:
+                    case ' ' when state is ParsingState.ArgumentValue:
                         state = ParsingState.Neutral;
                         result.Add(argName, argVal);
                         argName = string.Empty;
                         argVal = string.Empty;
                         break;
-                    case "\"" when state is ParsingState.ArgumentValue && !inQuote:
+                    case '"' when state is ParsingState.ArgumentValue && !inQuote:
                         inQuote = true;
                         break;
-                    case "\"" when state is ParsingState.ArgumentValue && inQuote:
+                    case '"' when state is ParsingState.ArgumentValue && inQuote:
                         inQuote = false;
                         result.Add(argName, argVal);
                         argName = string.Empty;
                         argVal = string.Empty;
                         state = ParsingState.Neutral;
                         break;
-                    case "\"": throw new ArgumentException("Content contained an unexpected quotation mark.");
+                    case '"': throw new ArgumentException("Content contained an unexpected quotation mark.");
                     default:
                         // ReSharper disable once ConvertIfStatementToSwitchStatement
                         if (state is ParsingState.ArgumentName)
-                            argName += token.ToLower();
+                            argName += char.ToLower(token);
                         else if (state is ParsingState.ArgumentValue)
                             argVal += token;
                         break;
                 }
                 lastChar = token;
-            }
+            });
 
             if (!argName.IsEmpty())
                 result.Add(argName, argVal);

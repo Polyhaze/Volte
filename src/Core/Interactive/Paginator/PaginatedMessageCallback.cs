@@ -9,6 +9,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Helpers;
+using Volte.Services;
 
 namespace Volte.Interactive
 {
@@ -71,7 +72,7 @@ namespace Volte.Interactive
             });
         }
 
-        public async Task<bool> HandleAsync(SocketReaction reaction)
+        public async ValueTask<bool> HandleAsync(SocketReaction reaction)
         {
             var emote = reaction.Emote;
 
@@ -100,7 +101,7 @@ namespace Volte.Interactive
                     var response = await Interactive.NextMessageAsync(Context, new Criteria<SocketUserMessage>()
                         .AddCriterion(new EnsureSourceChannelCriterion())
                         .AddCriterion(new EnsureFromUserCriterion(reaction.UserId))
-                        .AddCriterion((___, msg) => Task.FromResult(int.TryParse(msg.Content, out _))), 15.Seconds());
+                        .AddCriterion((__, msg) => new ValueTask<bool>(int.TryParse(msg.Content, out _))), 15.Seconds());
                     var req = int.Parse(response.Content);
 
                     if (req < 1 || req > _pageCount)
@@ -119,9 +120,15 @@ namespace Volte.Interactive
             {
                 await Interactive.ReplyAndDeleteAsync(Context, _pager.Options.InformationText, timeout: _pager.Options.InfoTimeout);
                 return false;
+            } 
+            else if (emote.Name.Equals(DiscordHelper.OctagonalSign))
+            {
+                await DisposeAsync();
+                return true;
             }
 
-            await RenderAsync().ContinueWith(async _ => await Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value));
+            await Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
+            await RenderAsync();
             return false;
         }
 

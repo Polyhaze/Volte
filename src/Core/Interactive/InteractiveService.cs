@@ -8,10 +8,11 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Commands;
+using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Volte.Services;
+using Volte.Interactive;
 
-namespace Volte.Interactive
+namespace Volte.Services
 {
     public class InteractiveService : VolteService, IDisposable
     {
@@ -20,7 +21,6 @@ namespace Volte.Interactive
         private readonly Dictionary<ulong, IReactionCallback> _callbacks;
         private readonly InteractiveServiceConfig _config;
         private readonly ConcurrentQueue<PaginatedMessageCallback> _activePagers;
-
 
         public InteractiveService(DiscordShardedClient discord, InteractiveServiceConfig config = null)
         {
@@ -43,7 +43,7 @@ namespace Volte.Interactive
         /// <param name="timeout">The timeout to abort the waiting after.</param>
         /// <param name="token">The cancellation token to observe.</param>
         /// <returns>The waited message; or null if no message was received.</returns>
-        public Task<SocketUserMessage> NextMessageAsync(VolteContext context,
+        public ValueTask<SocketUserMessage> NextMessageAsync(VolteContext context,
             bool fromSourceUser = true,
             bool inSourceChannel = true,
             TimeSpan? timeout = null,
@@ -66,7 +66,7 @@ namespace Volte.Interactive
         /// <param name="timeout">The timeout to abort the waiting after.</param>
         /// <param name="token">The cancellation token to observe.</param>
         /// <returns>The waited message; or null if no message was received.</returns>
-        public async Task<SocketUserMessage> NextMessageAsync(VolteContext context,
+        public async ValueTask<SocketUserMessage> NextMessageAsync(VolteContext context,
             ICriterion<SocketUserMessage> criterion,
             TimeSpan? timeout = null,
             CancellationToken token = default)
@@ -111,7 +111,7 @@ namespace Volte.Interactive
         /// <param name="timeout">The time elapsed after the message is sent for it to be deleted.</param>
         /// <param name="options">The Discord.Net <see cref="RequestOptions"/> for the SendMessageAsync method.</param>
         /// <returns>The message that will be deleted.</returns>
-        public async Task<IUserMessage> ReplyAndDeleteAsync(VolteContext context,
+        public async ValueTask<IUserMessage> ReplyAndDeleteAsync(VolteContext context,
             string content, bool isTts = false,
             Embed embed = null,
             TimeSpan? timeout = null,
@@ -123,7 +123,32 @@ namespace Volte.Interactive
             return message;
         }
 
-        public async Task<IUserMessage> SendPaginatedMessageAsync(VolteContext context,
+        /// <summary>
+        ///     Starts a poll in the contextual channel using the specified <see cref="PollInfo"/> applied to the embed.
+        ///     This method does not start or in any way support reaction tracking.
+        ///     This message will have its poll emojis added in the background so it's not a long-running <see cref="Task"/>.
+        /// </summary>
+        /// <param name="context">The context to use</param>
+        /// <param name="pollInfo">The <see cref="PollInfo"/> to apply</param>
+        /// <returns>The sent poll message.</returns>
+        public async ValueTask<IUserMessage> StartPollAsync(VolteContext context,
+            PollInfo pollInfo)
+        {
+            var m = await pollInfo.Apply(context.CreateEmbedBuilder()).SendToAsync(context.Channel);
+
+            _ = Executor.ExecuteAsync(async () =>
+            {
+                _ = await context.Message.TryDeleteAsync("Poll invocation message.");
+                await DiscordHelper.GetPollEmojis().GetRange(0, pollInfo.Fields.Count)
+                    .ForEachAsync(async emoji =>
+                {
+                    await m.AddReactionAsync(emoji);
+                });
+            });
+            return m;
+        }
+
+        public async ValueTask<IUserMessage> SendPaginatedMessageAsync(VolteContext context,
             PaginatedMessage pager,
             ICriterion<SocketReaction> criterion = null)
         {
@@ -133,7 +158,9 @@ namespace Volte.Interactive
             return callback.Message;
         }
 
-        public void AddReactionCallback(IMessage message, IReactionCallback callback) => _callbacks[message.Id] = callback;
+        public void AddReactionCallback(IMessage message, IReactionCallback callback) =>
+            _callbacks[message.Id] = callback;
+
         public bool RemoveReactionCallback(IMessage message) => RemoveReactionCallback(message.Id);
         public bool RemoveReactionCallback(ulong id) => _callbacks.Remove(id);
         public void ClearReactionCallbacks() => _callbacks.Clear();
@@ -148,7 +175,7 @@ namespace Volte.Interactive
             if (!await callback.Criterion.JudgeAsync(callback.Context, reaction)) return;
             var callbackTask = Executor.ExecuteAsync(async () =>
             {
-                if (await callback.HandleAsync(reaction)) 
+                if (await callback.HandleAsync(reaction))
                     RemoveReactionCallback(await message.GetOrDownloadAsync());
             });
 

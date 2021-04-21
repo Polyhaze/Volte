@@ -7,7 +7,7 @@ namespace Volte.Interactive
 {
     public class PaginatedAppearanceOptions
     {
-        public static PaginatedAppearanceOptions Default = new PaginatedAppearanceOptions();
+        public static PaginatedAppearanceOptions New => new PaginatedAppearanceOptions();
 
         public readonly IEmote First = DiscordHelper.First.ToEmoji();
         public readonly IEmote Back = DiscordHelper.Left.ToEmoji();

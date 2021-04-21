@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -19,19 +20,11 @@ namespace Volte.Commands.Modules
         {
             var content = poll.Split(';', StringSplitOptions.RemoveEmptyEntries);
             var pollInfo = PollHelper.GetPollBody(content);
-            if (!pollInfo.IsValid)
-                return BadRequest(content.Length - 1 > 5
-                    ? "More than 5 options were specified."
-                    : "No options specified.");
+            if (!pollInfo.Validation.IsValid)
+                return BadRequest(pollInfo.Validation.InvalidationReason);
+            pollInfo.WithPrompt(content.First());
 
-            var embed = Context.CreateEmbedBuilder()
-                .WithTitle(Format.Bold(content[0]));
-
-            return Ok(pollInfo.Apply(embed), async m =>
-            {
-                _ = await Context.Message.TryDeleteAsync("Poll invocation message.");
-                await PollHelper.AddPollReactionsAsync(pollInfo.Fields.Count, m);
-            });
+            return Ok(pollInfo);
         }
     }
 }

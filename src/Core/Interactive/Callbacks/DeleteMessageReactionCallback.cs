@@ -18,7 +18,7 @@ namespace Volte.Interactive
         public TimeSpan? Timeout { get; } = 10.Seconds();
         public VolteContext Context { get; }
         public RestUserMessage Message { get; private set; }
-        public async Task<bool> HandleAsync(SocketReaction reaction)
+        public async ValueTask<bool> HandleAsync(SocketReaction reaction)
         {
             if (reaction.Emote.Name.EqualsIgnoreCase(DiscordHelper.X))
             {

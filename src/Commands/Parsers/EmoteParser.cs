@@ -9,7 +9,7 @@ namespace Volte.Commands
     [InjectTypeParser]
     public sealed class EmoteParser : VolteTypeParser<IEmote>
     {
-        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(Parameter _, string value, VolteContext __)
+        public override ValueTask<TypeParserResult<IEmote>> ParseAsync(string value, VolteContext _)
             => Emote.TryParse(value, out var emote)
                 ? Success(emote)
                 : Regex.Match(value, "[^\u0000-\u007F]+", RegexOptions.IgnoreCase).Success
