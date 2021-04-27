@@ -5,6 +5,7 @@ using Colorful;
 using Discord;
 using Gommon;
 using Sentry;
+using Sentry.Infrastructure;
 using Volte.Core.Entities;
 using Volte.Services;
 using Color = System.Drawing.Color;
@@ -14,9 +15,15 @@ namespace Volte.Core.Helpers
 {
     public static class Logger
     {
-        private static readonly object Lock = new object();
-        private const string LogFile = Config.DataDirectory + "/Volte.log";
-        private static bool _hasPrinted = false;
+        static Logger()
+        {
+            Lock = new object();
+            LogFile = $"{Config.DataDirectory}/Volte.log";
+        }
+        
+        private static readonly object Lock;
+        private static readonly string LogFile;
+        private static bool _hasPrinted;
 
         public static void HandleLogEvent(LogEventArgs args) =>
             Log(args.LogMessage.Severity, args.LogMessage.Source,
@@ -37,7 +44,7 @@ namespace Volte.Core.Helpers
         {
             lock (Lock)
             {
-                if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
+                if (s is LogSeverity.Debug && !(Config.EnableDebugLogging || Version.IsDevelopment))
                     return;
 
                 Execute(s, from, message, e);
@@ -97,6 +104,7 @@ namespace Volte.Core.Helpers
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
+        ///     This method calls <see cref="SentrySdk"/>'s CaptureException so it is logged to Sentry.
         /// </summary>
         /// <param name="e">Exception to print.</param>
         public static void Exception(Exception e)
@@ -107,7 +115,7 @@ namespace Volte.Core.Helpers
             var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
             Append($"{value}:".PadRight(10), color);
-            var dto = DateTimeOffset.UtcNow;
+            var dto = DateTimeOffset.Now.ToLocalTime();
             content.Append($"[{dto.FormatDate()} | {dto.FormatFullTime()}] {value} -> ");
 
             (color, value) = VerifySource(src);

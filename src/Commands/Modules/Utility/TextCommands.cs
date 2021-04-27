@@ -58,7 +58,7 @@ namespace Volte.Commands.Modules
             Dictionary<string, string> options)
         {
             if (options.TryGetValue("max", out _))
-                return Ok(ZalgoHelper.Zalgoify(content, ZalgoIntensity.High,
+                return Ok(ZalgoHelper.GenerateZalgo(content, ZalgoIntensity.High,
                     IncludeChars.Up | IncludeChars.Middle | IncludeChars.Down));
 
             var intensity = options.TryGetValue("intensity", out var result)
@@ -82,7 +82,7 @@ namespace Volte.Commands.Modules
             if (includeChars is 0)
                 return BadRequest("No up/middle/down characters were allowed.");
 
-            return Ok(ZalgoHelper.Zalgoify(content, intensity, includeChars));
+            return Ok(ZalgoHelper.GenerateZalgo(content, intensity, includeChars));
         }
 
         [Command("Nato")]

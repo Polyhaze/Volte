@@ -14,7 +14,7 @@ using Volte.Interactive;
 
 namespace Volte.Services
 {
-    public class InteractiveService : VolteService, IDisposable
+    public class InteractiveService : IVolteService, IDisposable
     {
         private readonly DiscordShardedClient _client;
 

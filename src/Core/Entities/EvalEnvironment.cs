@@ -39,25 +39,33 @@ namespace Volte.Core.Entities
             a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
 
         public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
+        public SocketVoiceChannel VoiceChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketVoiceChannel>();
+        public SocketNewsChannel NewsChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketNewsChannel>();
+        public SocketDMChannel DmChannel(ulong id) => Context.Client.GetDMChannelAsync(id).Cast<SocketDMChannel>();
 
-        public SocketUserMessage Message(ulong id) => Context.Channel.GetCachedMessage(id).Cast<SocketUserMessage>() ??
-                                                      throw new InvalidOperationException(
-                                                          $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
+        public SocketSystemMessage SystemMessage(ulong id) =>
+            Context.Channel.CachedMessages.AnyGet(m => m.Id == id && m is SocketSystemMessage, out var message)
+                ? message.Cast<SocketSystemMessage>()
+                : throw new InvalidOperationException(
+                    $"The ID provided didn't lead to a valid system message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
+        public SocketUserMessage Message(ulong id) =>
+            Context.Channel.CachedMessages.AnyGet(m => m.Id == id && m is SocketUserMessage, out var message)
+                ? message.Cast<SocketUserMessage>()
+                : throw new InvalidOperationException(
+                    $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
 
         public async ValueTask<IUserMessage> MessageAsync(ulong id)
         {
             var m = await Context.Channel.GetMessageAsync(id);
-            if (m is IUserMessage userMessage)
-            {
-                return userMessage;
-            }
 
-            throw new InvalidOperationException(
+            return m is IUserMessage result
+                ? result
+                : throw new InvalidOperationException(
                 $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
         }
 
         public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
-        public T Service<T>() => Context.Services.GetRequiredService<T>();
+        public T Service<T>() where T : notnull => Context.Services.GetRequiredService<T>();
 
         public SocketUserMessage Message(string id)
             => ulong.TryParse(id, out var ulongId)
@@ -65,7 +73,8 @@ namespace Volte.Core.Entities
                 : throw new ArgumentException(
                     $"Method parameter {nameof(id)} is not a valid {typeof(ulong).FullName}.");
 
-        public async ValueTask<IUserMessage> ReplyAsync(string content) => await Context.Channel.SendMessageAsync(content);
+        public async ValueTask<IUserMessage> ReplyAsync(string content) =>
+            await Context.Channel.SendMessageAsync(content);
 
         public async ValueTask<IUserMessage> ReplyAsync(Embed embed) => await embed.SendToAsync(Context.Channel);
 

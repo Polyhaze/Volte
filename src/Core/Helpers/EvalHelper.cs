@@ -28,9 +28,9 @@ namespace Volte.Core.Helpers
         public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
         {
             "System", "System.IO", "System.Linq", "System.Text", "System.Threading", "System.Threading.Tasks",
-            "System.Collections.Generic", "System.Diagnostics", "System.Globalization",
+            "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
 
-            "Volte.Core", "Volte.Core.Helpers", "Volte.Core.Entities", "Volte.Commands",
+            "Volte.Core", "Volte.Core.Helpers", "Volte.Core.Entities", "Volte.Commands", "Volte.Services",
 
             "Discord", "Discord.WebSocket",
 

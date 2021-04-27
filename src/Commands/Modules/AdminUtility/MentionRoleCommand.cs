@@ -3,7 +3,6 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {
@@ -16,15 +15,14 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> MentionRoleAsync([Remainder, Description("The role to mention.")]
             SocketRole role)
         {
-            if (role.IsMentionable)
-                return Ok(role.Mention, shouldEmbed: false);
-
-            return Ok(async () =>
-            {
-                await role.ModifyAsync(x => x.Mentionable = true);
-                await Context.Channel.SendMessageAsync(role.Mention);
-                await role.ModifyAsync(x => x.Mentionable = false);
-            });
+            return role.IsMentionable
+                ? Ok(role.Mention, shouldEmbed: false)
+                : Ok(async () =>
+                {
+                    await role.ModifyAsync(x => x.Mentionable = true);
+                    await Context.Channel.SendMessageAsync(role.Mention);
+                    await role.ModifyAsync(x => x.Mentionable = false);
+                });
         }
     }
 }

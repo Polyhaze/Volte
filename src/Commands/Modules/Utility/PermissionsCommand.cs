@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
-using Humanizer;
 using Qmmands;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
-using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands;
 using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules

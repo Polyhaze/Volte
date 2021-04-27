@@ -1,15 +1,11 @@
 ﻿using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
-using Volte.Commands;
 using Volte.Core.Helpers;
 using Volte.Interactive;
 

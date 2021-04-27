@@ -13,7 +13,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class EventService : VolteService
+    public sealed class EventService : IVolteService
     {
         private readonly DatabaseService _db;
         private readonly AntilinkService _antilink;

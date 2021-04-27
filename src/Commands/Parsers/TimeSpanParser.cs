@@ -1,6 +1,10 @@
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Gommon;
+using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
 
@@ -9,30 +13,37 @@ namespace Volte.Commands
     [InjectTypeParser]
     public class TimeSpanParser : VolteTypeParser<TimeSpan>
     {
-        //These were, let's just say "borrowed" from Discord.Net.
-        //In fact, even the parsing logic was "borrowed".
-        //Thanks dnet :^)
-        private static readonly string[] Formats = {
-            "%d'd'%h'h'%m'm'%s's'", //4d3h2m1s
-            "%d'd'%h'h'%m'm'",      //4d3h2m
-            "%d'd'%h'h'%s's'",      //4d3h  1s
-            "%d'd'%h'h'",           //4d3h
-            "%d'd'%m'm'%s's'",      //4d  2m1s
-            "%d'd'%m'm'",           //4d  2m
-            "%d'd'%s's'",           //4d    1s
-            "%d'd'",                //4d
-            "%h'h'%m'm'%s's'",      //  3h2m1s
-            "%h'h'%m'm'",           //  3h2m
-            "%h'h'%s's'",           //  3h  1s
-            "%h'h'",                //  3h
-            "%m'm'%s's'",           //    2m1s
-            "%m'm'",                //    2m
-            "%s's'"                 //      1s
-        };
-        
-        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(string value, VolteContext _) 
-            => TimeSpan.TryParseExact(value.ToLowerInvariant(), Formats, CultureInfo.InvariantCulture, out var ts)
-                ? Success(ts)
-                : Failure("You didn't give me a valid time.");
+        private static readonly Regex TimeSpanRegex = new Regex(
+            @"(?<Years>\d{1}y\s*)?(?<Weeks>\d+w\s*)?(?<Days>\d+d\s*)?(?<Hours>\d+h\s*)?(?<Minutes>\d+m\s*)?(?<Seconds>\d+s\s*)?",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ECMAScript);
+
+        public override ValueTask<TypeParserResult<TimeSpan>> ParseAsync(string value, VolteContext _)
+        {
+            if (!TimeSpanRegex.IsMatch(value, out var match))
+                return Failure("Content contained no valid TimeSpan expressions.");
+
+            var r = ..^1;
+            var result = new TimeSpan();
+
+            if (match.Groups["Years"].Success && int.TryParse(match.Groups["Years"].Value[r], out var years))
+                result = result.Add((years * 365).Days());
+
+            if (match.Groups["Weeks"].Success && int.TryParse(match.Groups["Weeks"].Value[r], out var weeks))
+                result = result.Add((weeks * 7).Days());
+            
+            if (match.Groups["Days"].Success && int.TryParse(match.Groups["Days"].Value[r], out var days))
+                result = result.Add(days.Days());
+            
+            if (match.Groups["Hours"].Success && int.TryParse(match.Groups["Hours"].Value[r], out var hours))
+                result = result.Add(hours.Hours());
+
+            if (match.Groups["Minutes"].Success && int.TryParse(match.Groups["Minutes"].Value[r], out var minutes))
+                result = result.Add(minutes.Minutes());
+
+            if (match.Groups["Seconds"].Success && int.TryParse(match.Groups["Seconds"].Value[r], out var seconds))
+                result = result.Add(seconds.Seconds());
+
+            return Success(result);
+        }
     }
 }

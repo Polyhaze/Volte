@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {
@@ -12,7 +11,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> PrefixAsync([Remainder] string newPrefix)
         {
             Context.Modify(data => data.Configuration.CommandPrefix = newPrefix);
-            return Ok($"Set this guild's prefix to **{newPrefix}**.");
+            return Ok($"Set this guild's prefix to {Format.Bold(newPrefix)}.");
         }
     }
 }

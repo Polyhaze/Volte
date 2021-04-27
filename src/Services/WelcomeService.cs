@@ -6,7 +6,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class WelcomeService : VolteService
+    public sealed class WelcomeService : IVolteService
     {
         private readonly DatabaseService _db;
 

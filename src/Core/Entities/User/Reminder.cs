@@ -1,8 +1,7 @@
 using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using LiteDB;
 using Volte.Commands;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Volte.Core.Entities
 {
@@ -19,7 +18,7 @@ namespace Volte.Core.Entities
             ReminderText = reminder
         };
         
-        [JsonPropertyName("id"), BsonId]
+        [JsonPropertyName("id"), LiteDB.BsonId]
         public long Id { get; set; }
         [JsonPropertyName("target_timestamp")]
         public DateTime TargetTime { get; set; }

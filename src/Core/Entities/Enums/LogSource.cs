@@ -11,7 +11,7 @@ namespace Volte.Core.Entities
         };
     }
     
-    public enum LogSource : uint
+    public enum LogSource
     {
         /// <summary>
         ///     Indicates that this log message is from a command or module.
@@ -40,6 +40,6 @@ namespace Volte.Core.Entities
         /// <summary>
         ///     Indicates that this log message came from an unknown source.
         /// </summary>
-        Unknown = uint.MaxValue
+        Unknown = int.MaxValue
     }
 }

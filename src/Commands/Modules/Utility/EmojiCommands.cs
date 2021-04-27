@@ -27,22 +27,17 @@ namespace Volte.Commands.Modules
         }
 
         public EmbedBuilder GenerateEmbed(IEmote emoteIn)
-        {
-            EmbedBuilder GenerateEmoteEmbed(Emote emote) =>
-                Context.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url))
-                    .WithImageUrl(emote.Url)
-                    .WithAuthor($":{emote.Name}:", emote.Url);
-
-            EmbedBuilder GenerateEmojiEmbed(Emoji emoji) 
-                => Context.CreateEmbedBuilder(Format.Url("Direct Link", emoji.GetUrl()))
-                    .WithImageUrl(emoji.GetUrl());
-
-            return emoteIn switch
+            => emoteIn switch
             {
-                Emote emote => GenerateEmoteEmbed(emote),
-                Emoji emoji => GenerateEmojiEmbed(emoji),
+                Emote emote => Context.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url))
+                    .AddField("Created", emote.CreatedAt.FormatBoldString(), true)
+                    .AddField("Animated?", emote.Animated ? "Yes" : "No")
+                    .WithImageUrl(emote.Url)
+                    .WithAuthor($":{emote.Name}:", emote.Url),
+                Emoji emoji => Context.CreateEmbedBuilder(Format.Url("Direct Link", emoji.GetUrl()))
+                    .AddField("Raw", Format.Code(emoji.Name))
+                    .WithImageUrl(emoji.GetUrl()),
                 _ => throw new ArgumentException("GenerateEmbed's parameter must be an Emote or an Emoji.")
             };
-        }
     }
 }

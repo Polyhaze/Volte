@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Qmmands;
-using Volte.Core.Entities;
 using Volte.Core;
-using Volte.Commands;
 
 namespace Volte.Commands.Modules
 {

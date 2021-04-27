@@ -1,17 +1,17 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Timer = System.Threading.Timer;
 
 namespace Volte.Services
 {
-    public class ReminderService : VolteService
+    public class ReminderService : IVolteService
     {
         private static readonly Regex JumpUrl =
             new Regex(
@@ -87,17 +87,12 @@ namespace Volte.Services
                 ? Format.Url(reminder.CreationTime.Humanize(false), message.GetJumpUrl())
                 : reminder.CreationTime.Humanize(false);
 
-            var e = IsMessageUrl(reminder)
-                ? new EmbedBuilder()
-                    .WithTitle("Reminder")
-                    .WithRelevantColor(author)
-                    .WithDescription($"You asked me {timestamp} to remind you about {Format.Url("this message", reminder.ReminderText)}.")
-                : new EmbedBuilder()
-                    .WithTitle("Reminder")
-                    .WithRelevantColor(author)
-                    .WithDescription(
-                        $"You asked me {timestamp} to remind you about: {Format.Code(reminder.ReminderText, string.Empty)}");
-            await channel.SendMessageAsync(author.Mention, embed: e.Build());
+            await channel.SendMessageAsync(author.Mention, embed: new EmbedBuilder()
+                .WithTitle("Reminder")
+                .WithRelevantColor(author)
+                .WithDescription(IsMessageUrl(reminder)
+                    ? $"You asked me {timestamp} to remind you about {Format.Url("this message", reminder.ReminderText)}."
+                    : $"You asked me {timestamp} to remind you about: {Format.Code(reminder.ReminderText, string.Empty)}").Build());
             _db.TryDeleteReminder(reminder);
         }
 

@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Gommon;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Volte.Core.Helpers
 {
@@ -70,7 +68,7 @@ namespace Volte.Core.Helpers
 
         private static double Rand(int max) => Math.Floor(new Random().NextDouble() * max);
 
-        public static string Zalgoify(string content, ZalgoIntensity intensity, IncludeChars includeChars)
+        public static string GenerateZalgo(string content, ZalgoIntensity intensity, IncludeChars includeChars)
             => new StringBuilder().Apply(sb => content.Where(c => !IsZalgoChar(c)).ForEach(c =>
             {
                 var (up, mid, down) = intensity switch
@@ -78,7 +76,7 @@ namespace Volte.Core.Helpers
                     ZalgoIntensity.Low => (Rand(8), Rand(2), Rand(8)),
                     ZalgoIntensity.Medium => (Rand(16) / 2 + 1, Rand(6) / 2, Rand(16) / 2 + 1),
                     ZalgoIntensity.High => (Rand(64) / 4 + 3, Rand(16) / 4 + 1, Rand(64) / 4 + 3),
-                    _ => throw new ArgumentOutOfRangeException()
+                    _ => throw new ArgumentException($"Invalid {nameof(ZalgoIntensity)} provided.")
                 };
 
                 sb.Append(c);

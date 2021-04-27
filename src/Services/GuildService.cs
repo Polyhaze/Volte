@@ -10,7 +10,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class GuildService : VolteService
+    public sealed class GuildService : IVolteService
     {
         private readonly DiscordShardedClient _client;
 

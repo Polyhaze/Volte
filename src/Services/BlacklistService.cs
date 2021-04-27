@@ -7,7 +7,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class BlacklistService : VolteService
+    public sealed class BlacklistService : IVolteService
     {
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {

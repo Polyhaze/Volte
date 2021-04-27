@@ -7,7 +7,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class AntilinkService : VolteService
+    public sealed class AntilinkService : IVolteService
     {
         private readonly Regex _invitePattern =
             new Regex(@"discord(?:\.gg|\.io|\.me|app\.com\/invite)\/([\w\-]+)", RegexOptions.Compiled);

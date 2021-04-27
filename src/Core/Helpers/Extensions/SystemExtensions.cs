@@ -14,6 +14,9 @@ namespace Gommon
     /// </summary>
     public static partial class Extensions
     {
+        public static bool ContainsAnyIgnoreCase(this string str, params string[] possibleContents) 
+            => possibleContents.Any(str.ContainsIgnoreCase);
+        
         public static bool ExistsInAny<T>(this T @this, params IEnumerable<T>[] collections) 
             => collections.Any(x => x.Contains(@this));
 

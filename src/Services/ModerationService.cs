@@ -11,7 +11,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public class ModerationService : VolteService
+    public class ModerationService : IVolteService
     {
         private readonly DatabaseService _db;
 

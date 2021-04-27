@@ -53,7 +53,24 @@ namespace Volte.Commands.Modules
             }
 
             if (options.TryGetValue("description", out result) || options.TryGetValue("desc", out result))
+            {
+                //must be a URL
+                if (Uri.IsWellFormedUriString(result, UriKind.RelativeOrAbsolute)
+                    //must be a version of hastebin-server, there's 3 i know of currently
+                    && result.ContainsAnyIgnoreCase("paste.greemdev.net", "hastebin.com", "paste.mod.gg") 
+                    //must be a <url>/raw/pasteID url so it's not a bunch of HTML as the result.
+                    && result.ContainsIgnoreCase("raw"))
+                {
+                    try
+                    {
+                        var m = await Http.GetAsync(result);
+                        result = await m.Content.ReadAsStringAsync();
+                    }
+                    catch { /* ignored */ }
+                }
+                
                 embed.WithDescription(result);
+            }
 
             if (options.TryGetValue("title", out result))
                 embed.WithTitle(result);
@@ -79,16 +96,17 @@ namespace Volte.Commands.Modules
 
             return Ok(async () =>
             {
-                var m = await Context.Channel.SendMessageAsync(options.TryGetValue("mention", out result) || options.TryGetValue("ping", out result)
-                    ? result switch
-                    {
-                        "none" => null,
-                        "everyone" => "@everyone",
-                        "here" => "@here",
-                        _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
-                            .ParseAsync(null, result, Context))
-                    }
-                    : null, embed: embed.Build());
+                var m = await Context.Channel.SendMessageAsync(
+                    options.TryGetValue("mention", out result) || options.TryGetValue("ping", out result)
+                        ? result switch
+                        {
+                            "none" => null,
+                            "everyone" => "@everyone",
+                            "here" => "@here",
+                            _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
+                                .ParseAsync(null, result, Context))
+                        }
+                        : null, embed: embed.Build());
                 await Context.Message.TryDeleteAsync();
                 if ((options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _))
                     && Context.Channel is INewsChannel)

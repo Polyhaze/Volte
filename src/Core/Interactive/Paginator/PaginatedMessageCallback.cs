@@ -138,7 +138,8 @@ namespace Volte.Interactive
             {
                 var e = embeds.ElementAt(_currentPageIndex - 1);
                 if (!_pager.Title.IsNullOrWhitespace()) e.WithTitle(_pager.Title);
-                return e.WithFooter(_pager.Options.GenerateFooter(_currentPageIndex, _pageCount)).Build();
+                var footer = _pager.Options.GenerateFooter(_currentPageIndex, _pageCount);
+                return e.WithFooter(e.Footer is null ? footer : $"{footer} | {e.Footer.Text}").Build();
             }
             
             var builder = Context.CreateEmbedBuilder()

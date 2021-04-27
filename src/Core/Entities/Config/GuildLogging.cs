@@ -1,5 +1,5 @@
-using Discord.WebSocket;
 using System.Text.Json.Serialization;
+using Discord.WebSocket;
 
 namespace Volte.Core.Entities
 {
@@ -24,14 +24,10 @@ namespace Volte.Core.Entities
         {
             channel = null;
             if (!Enabled)
-            {
                 return false;
-            }
 
             if (GuildId is 0 || ChannelId is 0)
-            {
                 return false;
-            }
 
             channel = client.GetGuild(GuildId)?.GetTextChannel(ChannelId);
 

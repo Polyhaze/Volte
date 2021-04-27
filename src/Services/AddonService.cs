@@ -15,46 +15,48 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public class AddonService : VolteService
+    public class AddonService : IVolteService
     {
         private readonly IServiceProvider _provider;
         private bool _isInitialized;
-        public Dictionary<VolteAddonMeta, string> LoadedAddons { get; }
+        public Dictionary<VolteAddonMeta, (string Code, ScriptState Output)> LoadedAddons { get; }
         internal HashSet<ScriptState> AddonResults { get; }
 
         public AddonService(IServiceProvider serviceProvider)
         {
             _isInitialized = false;
             _provider = serviceProvider;
-            LoadedAddons = new Dictionary<VolteAddonMeta, string>();
+            LoadedAddons = new Dictionary<VolteAddonMeta, (string Code, ScriptState Output)>();
             AddonResults = new HashSet<ScriptState>();
+        }
+
+        private IEnumerable<(VolteAddonMeta Meta, string Code)> GetAvailableAddons()
+        {
+            foreach (var dir in Directory.GetDirectories("addons"))
+            {
+                if (TryGetAddonContent(dir, out var meta, out var code))
+                    yield return (meta, code);
+                if (meta != null && code is null)
+                    Logger.Error(LogSource.Service,
+                        $"Attempted to load addon {meta.Name} but there were no C# source files in its directory. These are necessary as an addon with no logic does nothing.");
+            }
         }
 
         public async Task InitAsync()
         {
             var sw = Stopwatch.StartNew();
             if (_isInitialized || !Directory.Exists("addons")) return; //don't auto-create a directory; if someone wants to use addons they need to make it themselves.
-            var addonFolders = Directory.GetDirectories("addons");
-            if (addonFolders.IsEmpty())
+            if (Directory.GetDirectories("addons").IsEmpty())
             {
                 Logger.Info(LogSource.Service, "No addons are in the addons directory; skipping initialization.");
                 return;
             }
-            
-            foreach (var folder in addonFolders)
-            {
-                if (TryGetAddonContent(folder, out var meta, out var code))
-                    LoadedAddons.Add(meta, code);
-                else
-                    if (meta != null && code is null)
-                        Logger.Error(LogSource.Service, $"Attempted to load addon {meta.Name} but there were no C# source files in its directory. These are necessary as an addon with no logic does nothing.");
-            }
 
-            foreach (var (meta, code) in LoadedAddons)
+            foreach (var (meta, code) in GetAvailableAddons())
             {
                 try
                 {
-                    AddonResults.Add(await CSharpScript.RunAsync(code, EvalHelper.Options, new AddonEnvironment(_provider)));
+                    LoadedAddons.Add(meta, (code, await CSharpScript.RunAsync(code, EvalHelper.Options, new AddonEnvironment(_provider))));
                 }
                 catch (Exception e)
                 {

@@ -11,14 +11,13 @@ using Volte.Core.Helpers;
 namespace Volte.Services
 {
     //thanks discord-csharp/MODiX for the idea and some of the code (definitely the regex lol)
-    public class QuoteService : VolteService
+    public class QuoteService : IVolteService
     {
         private readonly DiscordShardedClient _client;
 
-        public QuoteService(DiscordShardedClient client)
-        {
-            _client = client;
-        }
+        public QuoteService(DiscordShardedClient client) 
+            => _client = client;
+
 
         private static readonly RegexOptions Options =
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
@@ -37,8 +36,9 @@ namespace Volte.Services
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
 
-            var g = _client.GetGuild(guildId);
-            var c = g?.GetTextChannel(channelId);
+            var g = await _client.Rest.GetGuildAsync(guildId);
+            if (g is null) return;
+            var c = await g.GetTextChannelAsync(channelId);
             if (c is null) return;
 
             var m = await c.GetMessageAsync(messageId);

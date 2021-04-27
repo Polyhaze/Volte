@@ -35,10 +35,11 @@ namespace Volte.Commands.Modules
                     .WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/vi/7/70/Urban_Dictionary_logo.png")
                     .AddField("URL", entry.Permalink.IsNullOrEmpty() ? "None provided" : entry.Permalink, true)
                     .AddField("Thumbs Up/Down", $"{entry.Upvotes}/{entry.Downvotes}", true)
+                    .AddField("Score", entry.Score, true)
                     .AddField("Definition", entry.Definition)
                     .AddField("Example", entry.Example.IsNullOrEmpty() ? "None provided" : entry.Example)
                     .AddField("Author", entry.Author.IsNullOrEmpty() ? "None provided" : entry.Author, true)
-                    .AddField("Created", entry.CreatedAt.FormatBoldString(), true);
+                    .WithFooter($"Created {entry.CreatedAt.FormatPrettyString()}");
             }
 
 

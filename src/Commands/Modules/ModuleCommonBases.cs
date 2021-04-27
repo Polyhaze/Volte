@@ -10,11 +10,9 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qmmands;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
@@ -31,9 +29,8 @@ namespace Volte.Commands.Modules
             {new[] {"mid", "middle"}, "Include middle characters. This option takes no value."},
             {new[] {"down"}, "Include downward characters. This option takes no value."},
             {new[] {"intensity"}, "`high`, `med`, or `low`"}
-            
         };
-        
+
         private readonly Dictionary<char, string> _nato = new Dictionary<char, string>
         {
             {'a', "Alfa"}, {'b', "Bravo"}, {'c', "Charlie"}, {'d', "Delta"},
@@ -43,14 +40,13 @@ namespace Volte.Commands.Modules
             {'q', "Quebec"}, {'r', "Romeo"}, {'s', "Sierra"}, {'t', "Tango"},
             {'u', "Uniform"}, {'v', "Victor"}, {'w', "Whiskey"}, {'x', "X-ray"},
             {'y', "Yankee"}, {'z', "Zulu"}, {'1', "One"}, {'2', "Two"},
-            {'3', "Three"}, {'4', "Four"}, {'5', "Five"}, {'6', "Six"}, 
+            {'3', "Three"}, {'4', "Four"}, {'5', "Five"}, {'6', "Six"},
             {'7', "Seven"}, {'8', "Eight"}, {'9', "Nine"}, {'0', "Zero"}
-
         };
 
         private string GetNato(char i) =>
-            _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString()); 
-        
+            _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
+
         /// <summary>
         ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
@@ -63,7 +59,7 @@ namespace Volte.Commands.Modules
                 HttpCompletionOption.ResponseContentRead);
 
             get.EnsureSuccessStatusCode();
-            
+
             return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
         }
 
@@ -85,17 +81,29 @@ namespace Volte.Commands.Modules
     [RequireGuildAdmin]
     public sealed partial class AdminUtilityModule : VolteModule
     {
+        public HttpClient Http { get; set; }
+
         public static readonly Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>()
         {
-            {new[] {"crosspost", "publish"}, "Whether or not to automatically publish this message if it's sent in an announcement channel. This option takes no value."},
+            {
+                new[] {"crosspost", "publish"},
+                "Whether or not to automatically publish this message if it's sent in an announcement channel. This option takes no value."
+            },
             {new[] {"ping", "mention"}, "none, everyone, here, or a role ID"},
             {new[] {"foot", "footer"}, "Set the embed's footer content."},
             {new[] {"thumbnail"}, "Set the embed's small thumbnail URL."},
             {new[] {"image"}, "Set the embed's large image URL."},
-            {new[] {"desc", "description"}, "Set the embed's description content."},
+            {
+                new[] {"desc", "description"},
+                "Set the embed's description content. If this is a URL to a raw paste on 3 known hastebin sites, " +
+                "`paste.greemdev.net`, `hastebin.com`, or `paste.mod.gg`, the embed's description will be that paste's content."
+            },
             {new[] {"title"}, "Set the embed's title content."},
             {new[] {"color"}, "Set the embed's color."},
-            {new[] {"author"}, "Set the author of the embed. `self` or `me` will make you the author; `bot`, `you`, or `volte` will make volte the author, or you can use a server member's ID."}
+            {
+                new[] {"author"},
+                "Set the author of the embed. `self` or `me` will make you the author; `bot`, `you`, or `volte` will make volte the author, or you can use a server member's ID."
+            }
         };
     }
 

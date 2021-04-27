@@ -27,6 +27,10 @@ namespace Volte.Core.Helpers
         public static string Three => "3️⃣";
         public static string Four => "4️⃣";
         public static string Five => "5️⃣";
+        public static string Six => "6️⃣";
+        public static string Seven => "7️⃣";
+        public static string Eight => "8️⃣";
+        public static string Nine => "9️⃣";
         public static string First => "⏮";
         public static string Left => "◀";
         public static string Right => "▶";
@@ -36,14 +40,12 @@ namespace Volte.Core.Helpers
         public static string E1234 => "🔢";
         public static string Question => "\u2753";
 
-        public static (Emoji One, Emoji Two, Emoji Three, Emoji Four, Emoji Five) GetPollButtons()
-            => (One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji());
-        
         public static List<Emoji> GetPollEmojis()
-            => new List<Emoji> {One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji()};
-
-        public static (Emoji X, Emoji BallotBoxWithCheck) GetCommandEmojis()
-            => (X.ToEmoji(), BallotBoxWithCheck.ToEmoji());
+            => new List<Emoji>
+            {
+                One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji(),
+                Six.ToEmoji(), Seven.ToEmoji(), Eight.ToEmoji(), Nine.ToEmoji()
+            };
 
         public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer) 
             => new RequestOptions().Apply(initializer);

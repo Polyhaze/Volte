@@ -27,10 +27,10 @@ namespace Gommon
                 {
                     Timeout = 10.Seconds()
                 })
-                .AddSingleton(SentrySdk.Init(so =>
+                .AddSingleton(SentrySdk.Init(opts =>
                 {
-                    so.Dsn = Config.SentryDsn;
-                    so.Debug = Config.EnableDebugLogging || Version.ReleaseType is Version.DevelopmentStage.Development;
+                    opts.Dsn = Config.SentryDsn;
+                    opts.Debug = Config.EnableDebugLogging || Version.IsDevelopment;
                 }))
                 .AddSingleton(new CommandService(new CommandServiceConfiguration
                 {
@@ -51,19 +51,18 @@ namespace Gommon
                     TotalShards = shardCount
                 }));
 
-        private static LogSeverity Severity => Version.ReleaseType is Version.DevelopmentStage.Development
-            ? LogSeverity.Debug
-            : LogSeverity.Verbose;
+        private static LogSeverity Severity => Version.IsDevelopment ? LogSeverity.Debug : LogSeverity.Verbose;
+        
         private static GatewayIntents Intents
             => GatewayIntents.Guilds | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers |
                GatewayIntents.GuildMessages | GatewayIntents.GuildPresences;
 
-        private static bool IsEligibleService(Type type) => type.Inherits<VolteService>() && !type.IsAbstract;
+        private static bool IsEligibleService(Type type) => type.Inherits<IVolteService>() && !type.IsAbstract;
 
         public static IServiceCollection AddVolteServices(this IServiceCollection serviceCollection)
             => serviceCollection.Apply(coll =>
             {
-                //get all the classes that inherit VolteService, and aren't abstract.
+                //get all the classes that inherit IVolteService, and aren't abstract.
                 var l = typeof(Program).Assembly.GetTypes()
                     .Where(IsEligibleService).Apply(ls => ls.ForEach(coll.TryAddSingleton));
                 Logger.Info(LogSource.Volte, $"Injected {l.Count()} services into the provider.");

@@ -21,20 +21,19 @@ namespace Volte.Commands.Modules
         {
             channel ??= Context.Channel;
             var m = await channel.GetMessageAsync(messageId);
-            if (m is null)
-                return BadRequest("A message with that ID doesn't exist in this channel.");
 
-            var e = Context.CreateEmbedBuilder(new StringBuilder()
-                    .AppendLine($"{m.Content}")
-                    .AppendLine()
-                    .AppendLine($"[Jump!]({m.GetJumpUrl()})"))
-                .WithAuthor($"{m.Author}, in #{m.Channel}",
-                    m.Author.GetEffectiveAvatarUrl())
-                .WithFooter(m.Timestamp.Humanize());
-            if (!m.Attachments.IsEmpty())
-                e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
-
-            return Ok(e);
+            return m != null
+                ? Ok(Context.CreateEmbedBuilder(new StringBuilder()
+                        .AppendLine(m.Content)
+                        .AppendLine()
+                        .AppendLine(Format.Url("Jump!", m.GetJumpUrl())))
+                    .WithAuthor($"{m.Author}, in #{m.Channel}", m.Author.GetEffectiveAvatarUrl())
+                    .WithFooter(m.Timestamp.Humanize()).Apply(e =>
+                    {
+                        if (!m.Attachments.IsEmpty())
+                            e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
+                    }))
+                : BadRequest("A message with that ID doesn't exist in this channel.");
         }
     }
 }

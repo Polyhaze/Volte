@@ -10,7 +10,7 @@ using Volte.Core.Entities;
 
 namespace Volte.Services
 {
-    public sealed class DatabaseService : VolteService, IDisposable
+    public sealed class DatabaseService : IVolteService, IDisposable
     {
         public static readonly LiteDatabase Database = new LiteDatabase($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
         private const string GuildsCollection = "guilds";

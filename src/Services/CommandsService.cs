@@ -1,13 +1,10 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using SixLabors.ImageSharp;
 using Volte.Commands;
 using Volte.Core;
 using Volte.Core.Entities;
@@ -15,7 +12,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class CommandsService : VolteService
+    public sealed class CommandsService : IVolteService
     {
         public ulong SuccessfulCommandCalls { get; private set; }
         public ulong FailedCommandCalls { get; private set; }

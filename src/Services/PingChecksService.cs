@@ -4,7 +4,7 @@ using Volte.Core.Helpers;
 
 namespace Volte.Services
 {
-    public sealed class PingChecksService : VolteService
+    public sealed class PingChecksService : IVolteService
     {
         public async Task CheckMessageAsync(MessageReceivedEventArgs args)
         {
