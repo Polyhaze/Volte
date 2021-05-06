@@ -66,7 +66,7 @@ namespace Volte.Commands
 
             if (ulong.TryParse(value, out var id) || MentionUtils.TryParseUser(value, out id))
                 user = await ctx.Client.Rest.GetGuildUserAsync(ctx.Guild.Id, id);
-            
+
             return user is null
                 ? Failure("User not found.")
                 : Success(user);

@@ -182,9 +182,9 @@ namespace Volte.Core.Helpers
                 var method = typeof(CommandService).GetMethod("AddTypeParser")?.MakeGenericMethod(
                     parser.BaseType?.GenericTypeArguments[0]
                     ?? throw new FormatException("CommandService#AddTypeParser() values invalid."));
-                // ReSharper disable once PossibleNullReferenceException
+                // ReSharper disable twice PossibleNullReferenceException
                 // cant happen
-                method?.Invoke(service,
+                method.Invoke(service,
                     new[] {parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive});
                 yield return parser;
             }

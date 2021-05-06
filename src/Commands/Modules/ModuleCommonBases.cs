@@ -83,7 +83,7 @@ namespace Volte.Commands.Modules
     {
         public HttpClient Http { get; set; }
 
-        public static readonly Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>()
+        public static readonly Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>
         {
             {
                 new[] {"crosspost", "publish"},

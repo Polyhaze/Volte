@@ -157,7 +157,6 @@ namespace Volte.Core.Helpers
                 client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
             }
 
-
             client.UserJoined += async user =>
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
@@ -176,8 +175,8 @@ namespace Volte.Core.Helpers
             {
                 if (socketMessage.ShouldHandle(out var msg))
                 {
-                    if (msg.Channel is IDMChannel)
-                        await msg.Channel.SendMessageAsync("Currently, I do not support commands via DM.");
+                    if (msg.Channel is IDMChannel dm)
+                        await dm.SendMessageAsync("Currently, I do not support commands via DM.");
                     else
                         await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
                 }

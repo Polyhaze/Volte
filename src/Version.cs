@@ -11,7 +11,7 @@ namespace Volte
         }
         
         public static bool IsDevelopment => ReleaseType is DevelopmentStage.Development;
-        public static DevelopmentStage ReleaseType => DevelopmentStage.Development;
+        public static DevelopmentStage ReleaseType => DevelopmentStage.Release;
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;
         public static SysVer AsDotNetVersion() => new SysVer(Major, Minor, Patch, Hotfix);

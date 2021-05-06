@@ -33,15 +33,13 @@ namespace Volte.Commands.Modules
             foreach (var category in Context.Guild.CategoryChannels.OrderBy(x => x.Position))
             {
                 var embedBuilder = Context.CreateEmbedBuilder().WithTitle(category.Name);
-                var textChannels = category.Channels.Where(c => c is ITextChannel)
-                    .OrderBy(c => c.Position).ToList()
-                    .Select(x => x.Cast<ITextChannel>()).ToArray();
+                var textChannels = category.Channels.OfType<ITextChannel>()
+                    .OrderBy(c => c.Position).ToArray();
                 foreach (var child in textChannels)
                     embedBuilder.AppendDescriptionLine($"- {child.Mention}");
 
-                var voiceChannels = category.Channels.Where(c => c is IVoiceChannel)
-                    .OrderBy(c => c.Position).ToList()
-                    .Select(x => x.Cast<IVoiceChannel>()).ToArray();
+                var voiceChannels = category.Channels.OfType<IVoiceChannel>()
+                    .OrderBy(c => c.Position).ToArray();
 
                 foreach (var channel in voiceChannels)
                     embedBuilder.AppendDescriptionLine($"- {channel.Name}");
