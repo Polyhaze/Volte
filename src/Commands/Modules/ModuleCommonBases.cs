@@ -82,8 +82,8 @@ namespace Volte.Commands.Modules
     public sealed partial class AdminUtilityModule : VolteModule
     {
         public HttpClient Http { get; set; }
-        
-        public static string[] AllowedPasteSites => new []
+
+        public static string[] AllowedPasteSites => new[]
         {
             "paste.greemdev.net", "hastebin.com", "paste.mod.gg", "pastebin.com", "githubusercontent.com",
             "pasteall.org"
@@ -94,6 +94,10 @@ namespace Volte.Commands.Modules
             {
                 new[] {"crosspost", "publish"},
                 "Whether or not to automatically publish this message if it's sent in an announcement channel. This option takes no value."
+            },
+            {
+                new[] {"keepmsg", "keepmessage"},
+                "Prevents deletion of the command message allowing people to see what input you used. Useful for demonstrations. This option takes no value."
             },
             {new[] {"ping", "mention"}, "none, everyone, here, or a role ID"},
             {new[] {"foot", "footer"}, "Set the embed's footer content."},
