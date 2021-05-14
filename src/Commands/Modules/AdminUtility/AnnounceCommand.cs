@@ -63,9 +63,7 @@ namespace Volte.Commands.Modules
                 //must be a URL
                 if (Uri.IsWellFormedUriString(WebUtility.UrlEncode(result), UriKind.RelativeOrAbsolute)
                     //must be a website/paste service that has support for raw paste viewing via a URL; feel free to PR more or to message me on discord to add some
-                    && result.ContainsAnyIgnoreCase(
-                        "paste.greemdev.net", "hastebin.com", "paste.mod.gg", "pastebin.com", "githubusercontent.com",
-                        "pasteall.org", "") 
+                    && result.ContainsAnyIgnoreCase(AllowedPasteSites) 
                     //must be a url that leads to plaintext (aka raw on most websites) so it's not a bunch of HTML as the result.
                     && result.ContainsIgnoreCase("raw"))
                 {

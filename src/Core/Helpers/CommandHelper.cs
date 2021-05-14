@@ -95,13 +95,21 @@ namespace Volte.Core.Helpers
                 {
                     string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
                         $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
-                    
+
+                    string FormatAnnounceUnixArgs(KeyValuePair<string[], string> kvp)
+                    {
+                        var result = FormatUnixArgs(kvp);
+                        var allSites = AdminUtilityModule.AllowedPasteSites.Take(AdminUtilityModule.AllowedPasteSites.Length - 1);
+                        return result.ReplaceIgnoreCase("{urls}",
+                            $"{allSites.Select(url => Format.Code(url)).Join(", ")} or {Format.Code(AdminUtilityModule.AllowedPasteSites.Last())}");
+                    }
+
                     var attribute = attr.Cast<ShowUnixArgumentsInHelpAttribute>();
                     switch (attribute.VolteUnixCommand)
                     {
                         case VolteUnixCommand.Announce:
                             embed.AddField("Unix Arguments",
-                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"));
+                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatAnnounceUnixArgs).Join("\n"));
                             break;
                         case VolteUnixCommand.Zalgo:
                             embed.AddField("Unix Arguments",
