@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
@@ -29,7 +31,11 @@ namespace Volte.Commands.Modules
             static Color GetColor(TypeParserResult<Color> res) =>
                 res.IsSuccessful ? res.Value : new Color(Config.SuccessColor);
 
-            static RestGuildUser GetUser(TypeParserResult<RestGuildUser> res) => res.IsSuccessful ? res.Value : null;
+            static bool TryGetUser(TypeParserResult<RestGuildUser> res, out RestGuildUser user)
+            {
+                user = res.IsSuccessful ? res.Value : null;
+                return user != null;
+            }
 
             var embed = new EmbedBuilder();
 
@@ -55,15 +61,17 @@ namespace Volte.Commands.Modules
             if (options.TryGetValue("description", out result) || options.TryGetValue("desc", out result))
             {
                 //must be a URL
-                if (Uri.IsWellFormedUriString(result, UriKind.RelativeOrAbsolute)
-                    //must be a version of hastebin-server, there's 3 i know of currently
-                    && result.ContainsAnyIgnoreCase("paste.greemdev.net", "hastebin.com", "paste.mod.gg") 
-                    //must be a <url>/raw/pasteID url so it's not a bunch of HTML as the result.
+                if (Uri.IsWellFormedUriString(WebUtility.UrlEncode(result), UriKind.RelativeOrAbsolute)
+                    //must be a website/paste service that has support for raw paste viewing via a URL; feel free to PR more or to message me on discord to add some
+                    && result.ContainsAnyIgnoreCase(
+                        "paste.greemdev.net", "hastebin.com", "paste.mod.gg", "pastebin.com", "githubusercontent.com",
+                        "pasteall.org", "") 
+                    //must be a url that leads to plaintext (aka raw on most websites) so it's not a bunch of HTML as the result.
                     && result.ContainsIgnoreCase("raw"))
                 {
                     try
                     {
-                        var m = await Http.GetAsync(result);
+                        var m = await Http.GetAsync(WebUtility.UrlEncode(result));
                         result = await m.Content.ReadAsStringAsync();
                     }
                     catch { /* ignored */ }
@@ -85,29 +93,42 @@ namespace Volte.Commands.Modules
                     embed.WithAuthor(Context.User);
                 else if (result.EqualsAnyIgnoreCase("bot", "you", "volte"))
                     embed.WithAuthor(Context.Guild.CurrentUser);
-                else
-                {
-                    var user = GetUser(await CommandService.GetTypeParser<RestGuildUser>()
-                        .ParseAsync(null, result, Context));
-                    if (user != null)
-                        embed.WithAuthor(user);
-                }
+                else if (TryGetUser(await CommandService.GetTypeParser<RestGuildUser>()
+                    .ParseAsync(null, result, Context), out var user))
+                    embed.WithAuthor(user);
             }
+
+            var mention = options.TryGetValue("mention", out result) || options.TryGetValue("ping", out result)
+                ? result switch
+                {
+                    "none" => null,
+                    "everyone" => "@everyone",
+                    "here" => "@here",
+                    _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
+                        .ParseAsync(null, result, Context))
+                }
+                : null;
 
             return Ok(async () =>
             {
-                var m = await Context.Channel.SendMessageAsync(
-                    options.TryGetValue("mention", out result) || options.TryGetValue("ping", out result)
-                        ? result switch
-                        {
-                            "none" => null,
-                            "everyone" => "@everyone",
-                            "here" => "@here",
-                            _ => GetRoleMention(await CommandService.GetTypeParser<SocketRole>()
-                                .ParseAsync(null, result, Context))
-                        }
-                        : null, embed: embed.Build());
-                await Context.Message.TryDeleteAsync();
+                async Task<RestUserMessage> SendResultAsync()
+                {
+                    try
+                    {
+                        return await Context.Channel.SendMessageAsync(mention, embed: embed.Build());
+                    }
+                    catch (HttpException)
+                    {
+                        return await Context.Channel.SendMessageAsync(
+                            embed: embed.WithTitle("You need to modify the embed in some way.").Build());
+                    }
+                }
+
+                var m = await SendResultAsync();
+                
+                if (!(options.TryGetValue("keepmessage", out _) || options.TryGetValue("keepmsg", out _))
+                    && Context.Guild.CurrentUser.GetPermissions(Context.Channel).ManageMessages)
+                    await Context.Message.TryDeleteAsync();
                 if ((options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _))
                     && Context.Channel is INewsChannel)
                     await m.CrosspostAsync();
