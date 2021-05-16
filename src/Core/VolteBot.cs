@@ -51,19 +51,9 @@ namespace Volte.Core
             _provider = BuildServiceProvider(await DiscordHelper.GetRecommendedShardCountAsync());
             _client = _provider.Get<DiscordShardedClient>();
             _cts = _provider.Get<CancellationTokenSource>();
-            try
-            {
-                var http = _provider.Get<HttpClient>();
 
-                AdminUtilityModule.AllowedPasteSites =
-                    (await (await http.GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
-                        .ReadAsStringAsync()).Split(" ");
-            }
-            catch
-            { /* ignored*/
-            }
-
-
+            AdminUtilityModule.AllowedPasteSites = await HttpHelper.GetAllowedPasteSitesAsync(_provider);
+            
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
 

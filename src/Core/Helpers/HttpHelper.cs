@@ -1,9 +1,11 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Gommon;
+using Sentry;
 
 namespace Volte.Core.Helpers
 {
@@ -23,6 +25,29 @@ namespace Volte.Core.Helpers
             var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
             var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{fileExtension}";
+        }
+        
+        /// <summary>
+        ///     Gets a collection of allowed paste sites from https://paste.greemdev.net/volteAllowedPasteSites with the <see cref="HttpClient"/> from <paramref name="provider"/>.
+        ///     If any error occurs it is captured via Sentry.
+        /// </summary>
+        /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>.</param>
+        /// <returns>An array of strings where each one represents a valid site, or empty if any errors occurred.</returns>
+        public static async Task<string[]> GetAllowedPasteSitesAsync(IServiceProvider provider)
+        {
+            try
+            {
+                var http = provider.Get<HttpClient>();
+
+                return (await (await http.GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
+                    .ReadAsStringAsync()).Split(" ");
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureException(e);
+                return Array.Empty<string>();
+            }
+
         }
     }
 }
