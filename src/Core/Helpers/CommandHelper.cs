@@ -91,25 +91,16 @@ namespace Volte.Core.Helpers
                     embed.AddField("Example Valid Time",
                         $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
 
-                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var attr))
+                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var attr) && attr is ShowUnixArgumentsInHelpAttribute unixAttr)
                 {
-                    string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
+                    static string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
                         $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
-
-                    string FormatAnnounceUnixArgs(KeyValuePair<string[], string> kvp)
-                    {
-                        var result = FormatUnixArgs(kvp);
-                        var allSites = AdminUtilityModule.AllowedPasteSites.Take(AdminUtilityModule.AllowedPasteSites.Length - 1);
-                        return result.ReplaceIgnoreCase("{urls}",
-                            $"{allSites.Select(url => Format.Code(url)).Join(", ")} or {Format.Code(AdminUtilityModule.AllowedPasteSites.Last())}");
-                    }
-
-                    var attribute = attr.Cast<ShowUnixArgumentsInHelpAttribute>();
-                    switch (attribute.VolteUnixCommand)
+                    
+                    switch (unixAttr.VolteUnixCommand)
                     {
                         case VolteUnixCommand.Announce:
                             embed.AddField("Unix Arguments",
-                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatAnnounceUnixArgs).Join("\n"));
+                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"));
                             break;
                         case VolteUnixCommand.Zalgo:
                             embed.AddField("Unix Arguments",

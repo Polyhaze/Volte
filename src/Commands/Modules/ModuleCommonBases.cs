@@ -95,13 +95,13 @@ namespace Volte.Commands.Modules
                 new[] {"keepmsg", "keepmessage"},
                 "Prevents deletion of the command message allowing people to see what input you used. Useful for demonstrations. This option takes no value."
             },
-            {new[] {"ping", "mention"}, "none, everyone, here, or a role ID"},
+            {new[] {"ping", "mention"}, "everyone, here, or a role ID"},
             {new[] {"foot", "footer"}, "Set the embed's footer content."},
             {new[] {"thumbnail"}, "Set the embed's small thumbnail URL."},
             {new[] {"image"}, "Set the embed's large image URL."},
             {
                 new[] {"desc", "description"},
-                $"Set the embed's description content. If this is a URL to a raw paste on any known website; the embed's description will be that paste's content. {Format.Url("All known paste sites.", "https://paste.greemdev.net/volteAllowedPasteSites")}"
+                $"Set the embed's description content. If this is a URL to a raw paste on any known website; the embed's description will be that paste's content. {Format.Url("Supported sites.", "https://paste.greemdev.net/volteAllowedPasteSites")}"
             },
             {new[] {"title"}, "Set the embed's title content."},
             {new[] {"color"}, "Set the embed's color."},
