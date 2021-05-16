@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -10,6 +11,7 @@ using Gommon;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Sentry;
+using Volte.Commands.Modules;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
@@ -31,16 +33,16 @@ namespace Volte.Core
         private CancellationTokenSource _cts;
 
         private static IServiceProvider BuildServiceProvider(int shardCount)
-            => new ServiceCollection() 
+            => new ServiceCollection()
                 .AddAllServices(shardCount)
                 .BuildServiceProvider();
 
-        private VolteBot() 
+        private VolteBot()
             => Console.CancelKeyPress += (_, __) => _cts.Cancel();
 
         private async Task LoginAsync()
         {
-            if (!Config.StartupChecks()) return; 
+            if (!Config.StartupChecks()) return;
 
             Config.Load();
 
@@ -49,6 +51,18 @@ namespace Volte.Core
             _provider = BuildServiceProvider(await DiscordHelper.GetRecommendedShardCountAsync());
             _client = _provider.Get<DiscordShardedClient>();
             _cts = _provider.Get<CancellationTokenSource>();
+            try
+            {
+                var http = _provider.Get<HttpClient>();
+
+                AdminUtilityModule.AllowedPasteSites =
+                    (await (await http.GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
+                        .ReadAsStringAsync()).Split(" ");
+            }
+            catch
+            { /* ignored*/
+            }
+
 
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
@@ -58,7 +72,8 @@ namespace Volte.Core
             var sw = Stopwatch.StartNew();
             var l = commandService.AddTypeParsers();
             sw.Stop();
-            Logger.Info(LogSource.Volte, $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
+            Logger.Info(LogSource.Volte,
+                $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
             var loaded = commandService.AddModules(GetType().Assembly);
             sw.Stop();
@@ -85,7 +100,7 @@ namespace Volte.Core
         {
             Logger.Critical(LogSource.Volte,
                 "Bot shutdown requested; shutting down and cleaning up.");
-            
+
             if (Config.GuildLogging.TryValidate(client, out var channel))
             {
                 await new EmbedBuilder()
@@ -95,7 +110,7 @@ namespace Volte.Core
                         $"Volte {Version.FullVersion} is shutting down {DateTime.Now.FormatBoldString()}. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);
             }
-            
+
             foreach (var disposable in provider.GetServices<IDisposable>())
                 disposable?.Dispose();
 

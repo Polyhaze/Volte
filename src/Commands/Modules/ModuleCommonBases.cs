@@ -83,11 +83,7 @@ namespace Volte.Commands.Modules
     {
         public HttpClient Http { get; set; }
 
-        public static string[] AllowedPasteSites => new[]
-        {
-            "paste.greemdev.net", "hastebin.com", "paste.mod.gg", "pastebin.com", "githubusercontent.com",
-            "pasteall.org"
-        };
+        public static string[] AllowedPasteSites { get; set; }
 
         public static readonly Dictionary<string[], string> AnnounceNamedArguments = new Dictionary<string[], string>
         {
@@ -105,8 +101,7 @@ namespace Volte.Commands.Modules
             {new[] {"image"}, "Set the embed's large image URL."},
             {
                 new[] {"desc", "description"},
-                "Set the embed's description content. If this is a URL to a raw paste on any of the following: " +
-                "{urls}; the embed's description will be that paste's content."
+                $"Set the embed's description content. If this is a URL to a raw paste on any known website; the embed's description will be that paste's content. {Format.Url("All known paste sites.", "https://paste.greemdev.net/volteAllowedPasteSites")}"
             },
             {new[] {"title"}, "Set the embed's title content."},
             {new[] {"color"}, "Set the embed's color."},
