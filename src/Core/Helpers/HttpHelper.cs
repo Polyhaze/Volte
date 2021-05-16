@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -37,9 +36,7 @@ namespace Volte.Core.Helpers
         {
             try
             {
-                var http = provider.Get<HttpClient>();
-
-                return (await (await http.GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
+                return (await (await provider.Get<HttpClient>().GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
                     .ReadAsStringAsync()).Split(" ");
             }
             catch (Exception e)
