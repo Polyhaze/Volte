@@ -91,12 +91,12 @@ namespace Volte.Core.Helpers
                     embed.AddField("Example Valid Time",
                         $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
 
-                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var attr) && attr is ShowUnixArgumentsInHelpAttribute unixAttr)
+                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var unixAttr) && unixAttr is ShowUnixArgumentsInHelpAttribute attr)
                 {
                     static string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
                         $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
                     
-                    switch (unixAttr.VolteUnixCommand)
+                    switch (attr.VolteUnixCommand)
                     {
                         case VolteUnixCommand.Announce:
                             embed.AddField("Unix Arguments",
@@ -113,11 +113,10 @@ namespace Volte.Core.Helpers
             }
 
             var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
-            if (!checks.IsEmpty())
-                embed.AddField("Checks",
-                    (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).Join("\n"));
-
-            return embed;
+            return !checks.IsEmpty()
+                ? embed.AddField("Checks",
+                    (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).Join("\n"))
+                : embed;
         }
 
         public static string FormatUsage(VolteContext ctx, Command cmd)
