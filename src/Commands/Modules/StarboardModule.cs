@@ -10,6 +10,9 @@ namespace Volte.Commands.Modules
     [RequireGuildAdmin]
     public sealed class StarboardModule : VolteModule
     {
+        [Command, DummyCommand, Description("The set of commands used to modify how the Starboard works in your guild.")]
+        public Task<ActionResult> BaseAsync() => None();
+        
         [Command("Channel", "Ch")]
         [Description("Sets the channel to be used by starboard when a message is starred.")]
         public Task<ActionResult> StarboardChannelAsync(SocketTextChannel channel)
