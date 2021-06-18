@@ -39,6 +39,7 @@ namespace Volte.Core.Helpers
         public static string OctagonalSign => "🛑";
         public static string E1234 => "🔢";
         public static string Question => "\u2753";
+        public static string Star => "\u2B50";
 
         public static List<Emoji> GetPollEmojis()
             => new List<Emoji>
@@ -145,6 +146,7 @@ namespace Volte.Core.Helpers
             var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var mod = provider.Get<ModerationService>();
+            var starboard = provider.Get<StarboardService>();
 
             client.Log += async m =>
             {
@@ -181,6 +183,10 @@ namespace Volte.Core.Helpers
                         await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
                 }
             };
+            
+            client.ReactionAdded += starboard.HandleReactionAddAsync;
+            client.ReactionRemoved += starboard.HandleReactionRemoveAsync;
+            client.ReactionsCleared += starboard.HandleReactionsClearAsync;
         }
 
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
