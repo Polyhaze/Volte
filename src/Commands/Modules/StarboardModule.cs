@@ -12,7 +12,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Channel", "Ch")]
         [Description("Sets the channel to be used by starboard when a message is starred.")]
-        [Remarks("starboard channel {Channel}")]
         public Task<ActionResult> StarboardChannelAsync(SocketChannel channel)
         {
             Context.Modify(data =>
@@ -24,7 +23,6 @@ namespace Volte.Commands.Modules
 
         [Command("Amount", "Count")]
         [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
-        [Remarks("starboard amount {Int}")]
         public Task<ActionResult> StarsRequiredToPostAsync(int amount)
         {
             Context.Modify(data =>
@@ -36,7 +34,6 @@ namespace Volte.Commands.Modules
 
         [Command("Enable")]
         [Description("Enable or disable the Starboard in this guild.")]
-        [Remarks("starboard enable {Boolean}")]
         public Task<ActionResult> StarboardEnableAsync(bool enabled)
         {
             Context.Modify(data =>

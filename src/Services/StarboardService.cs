@@ -27,10 +27,46 @@ namespace Volte.Services
             _starboardReadWriteLock = new AsyncDuplicateLock<ulong>();
         }
 
+        /// <summary>
+        /// Verifies if a given reaction operation is for a valid starboard reaction (star emoji, not DM, not made by
+        /// the bot, and a starboard channel exists).
+        /// </summary>
+        /// <param name="channel">The channel the reaction was sent in</param>
+        /// <param name="reaction">The reaction</param>
+        /// <param name="starboard">Will be assigned to retrieved starboard information</param>
+        /// <param name="starboardChannel">Will be assigned to the <see cref="SocketChannel"/> for the starboard channel</param>
+        /// <returns>True if the reaction is valid, false otherwise</returns>
+        private bool IsStarReaction(
+            ISocketMessageChannel channel, SocketReaction reaction,
+            out StarboardOptions starboard, out SocketChannel starboardChannel)
+        {
+            starboard = default;
+            starboardChannel = default;
+            
+            // Ignore reaction events sent in DMs
+            if (!(channel is IGuildChannel guildChannel)) return false;
+
+            // Ignore non-star reactions
+            if (reaction.Emote.Name != _starEmoji.Name) return false;
+            
+            // Ignore reactions from the current user
+            if (reaction.UserId == _client.CurrentUser.Id) return false;
+
+            var data = _db.GetData(guildChannel.Guild.Id);
+            starboard = data.Configuration.Starboard;
+
+            starboardChannel = _client.GetChannel(starboard.StarboardChannel);
+            return !(starboardChannel is null);
+        }
+
         public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
         {
-            if (!IsStarReaction(_message, _channel, _reaction, out var guildId, out var messageId, out var starrerId, out var starboard, out var starboardChannel))
+            if (!IsStarReaction(_channel, _reaction, out var starboard, out var starboardChannel))
                 return;
+
+            var guildId = ((IGuildChannel) _channel).Guild.Id;
+            var messageId = _message.Id;
+            var starrerId = _reaction.UserId;
 
             var message = await _message.GetOrDownloadAsync();
 
@@ -84,8 +120,12 @@ namespace Volte.Services
 
         public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
         {
-            if (!IsStarReaction(_message, _channel, _reaction, out var guildId, out var messageId, out var starrerId, out var starboard, out _))
+            if (!IsStarReaction(_channel, _reaction, out var starboard, out _))
                 return;
+
+            var guildId = ((IGuildChannel) _channel).Guild.Id;
+            var messageId = _message.Id;
+            var starrerId = _reaction.UserId;
 
             var message = await _message.GetOrDownloadAsync();
 
@@ -110,48 +150,6 @@ namespace Volte.Services
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Verifies 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="channel"></param>
-        /// <param name="reaction"></param>
-        /// <param name="guildId"></param>
-        /// <param name="messageId"></param>
-        /// <param name="starrerId"></param>
-        /// <param name="starboard"></param>
-        /// <param name="starboardChannel"></param>
-        /// <returns></returns>
-        private bool IsStarReaction(
-            Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction,
-            out ulong guildId, out ulong messageId, out ulong starrerId, out StarboardOptions starboard, out SocketChannel starboardChannel)
-        {
-            guildId = default;
-            messageId = default;
-            starrerId = default;
-            starboard = default;
-            starboardChannel = default;
-            
-            // Ignore reaction events sent in DMs
-            if (!(channel is IGuildChannel guildChannel)) return false;
-
-            // Ignore non-star reactions
-            if (reaction.Emote.Name != _starEmoji.Name) return false;
-            
-            // Ignore reactions from the current user
-            if (reaction.UserId == _client.CurrentUser.Id) return false;
-
-            guildId = guildChannel.Guild.Id;
-            messageId = message.Id;
-            starrerId = reaction.UserId;
-
-            var data = _db.GetData(guildId);
-            starboard = data.Configuration.Starboard;
-
-            starboardChannel = _client.GetChannel(starboard.StarboardChannel);
-            return !(starboardChannel is null);
         }
 
         public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
@@ -211,12 +209,12 @@ namespace Volte.Services
         ///     Calls to this method should be synchronized to _messageWriteLock beforehand!
         /// </summary>
         /// <param name="starboard">The guild's starboard configuration</param>
-        /// <param name="message">The message to star</param>
+        /// <param name="message">The message to star (must be from a <see cref="IGuildChannel"/>)</param>
         /// <param name="entry"></param>
         /// <returns></returns>
         private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, IMessage message, StarboardEntry2 entry)
         {
-            var starboardChannel = message.Channel.Guild.GetChannel(starboard.StarboardChannel);
+            var starboardChannel = ((IGuildChannel) message.Channel).Guild.Channel(starboard.StarboardChannel);
             if (starboardChannel is null)
             {
                 return;
