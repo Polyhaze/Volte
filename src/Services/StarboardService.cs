@@ -1,9 +1,9 @@
-using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
-using Gommon;
 using Volte.Core.Helpers;
 using Volte.Core.Entities;
 
@@ -99,7 +99,7 @@ namespace Volte.Services
                     if (message.Reactions.FirstOrDefault(e => e.Key.Name == _starEmoji.Name).Value.ReactionCount >= starboard.StarsRequiredToPost)
                     {
                         // Create new star message!
-                        entry = new StarboardEntry2
+                        entry = new StarboardEntry
                         {
                             GuildId = guildId,
                             StarredMessageId = messageId,
@@ -152,7 +152,7 @@ namespace Volte.Services
             }
         }
 
-        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
+        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel)
         {
             // Ignore reactions cleared in DMs
             if (!(_channel is IGuildChannel channel)) return;
@@ -212,13 +212,11 @@ namespace Volte.Services
         /// <param name="message">The message to star (must be from a <see cref="IGuildChannel"/>)</param>
         /// <param name="entry"></param>
         /// <returns></returns>
-        private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, IMessage message, StarboardEntry2 entry)
+        private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, IMessage message, StarboardEntry entry)
         {
-            var starboardChannel = ((IGuildChannel) message.Channel).Guild.Channel(starboard.StarboardChannel);
-            if (starboardChannel is null)
-            {
+            var starboardChannel = _client.GetChannel(starboard.StarboardChannel);
+            if (!(starboardChannel is SocketTextChannel starboardTextChannel))
                 return;
-            }
 
             if (entry.StarboardMessageId == 0)
             {
@@ -231,24 +229,26 @@ namespace Volte.Services
             }
             else
             {
-                DiscordMessage starboardMessage;
+                IMessage starboardMessage;
                 try
                 {
-                    starboardMessage = await starboardChannel.GetMessageAsync(entry.StarboardMessageId);
+                    starboardMessage = await starboardTextChannel.GetMessageAsync(entry.StarboardMessageId);
                 }
-                catch (NotFoundException)
+                catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) 
                 {
                     // Ignore, maybe log to console
                     return;
                 }
 
+                if (!(starboardMessage is IUserMessage starboardUserMessage)) return;
+
                 if (entry.StarCount >= starboard.StarsRequiredToPost)
                 {
                     // Update existing message
-                    var targetMessage = $"{EmojiHelper.Star} {entry.StarCount}";
+                    var targetMessage = $"{_starEmoji} {entry.StarCount}";
                     if (starboardMessage.Content != targetMessage)
                     {
-                        await starboardMessage.ModifyAsync(targetMessage);
+                        await starboardUserMessage.ModifyAsync(e => e.Content = targetMessage);
                     }
                 }
                 else
@@ -260,28 +260,26 @@ namespace Volte.Services
             }
         }
 
-        private async Task<DiscordMessage> PostToStarboardAsync(DiscordMessage message, int starCount)
+        private async Task<IMessage> PostToStarboardAsync(IMessage message, int starCount)
         {
-            var data = _db.GetData(message.Channel.Guild);
+            var data = _db.GetData(((IGuildChannel) message.Channel).GuildId);
             
-            var starboardChannel = message.Channel.Guild.GetChannel(data.Configuration.Starboard.StarboardChannel);
-            if (starboardChannel is null)
-            {
+            var starboardChannel = _client.GetChannel(data.Configuration.Starboard.StarboardChannel);
+            if (!(starboardChannel is SocketTextChannel starboardTextChannel))
                 return null;
-            }
 
             // Discord API limitation: Fetch a full message. The message in OnReactionXXX does not contain an Author
             // field unless it is present in DSharpPlus' message cache.
             message = await message.Channel.GetMessageAsync(message.Id);
 
-            var e = new DiscordEmbedBuilder()
+            var e = new EmbedBuilder()
                 .WithSuccessColor()
                 .WithDescription(message.Content)
                 .WithAuthor(message.Author)
-                .AddField("Original Message", message.JumpLink);
+                .AddField("Original Message", message.GetJumpUrl());
 
-            var result = await starboardChannel.SendMessageAsync($"{_starEmoji} {starCount}", embed: e.Build());
-            await result.CreateReactionAsync(_starEmoji);
+            var result = await starboardTextChannel.SendMessageAsync($"{_starEmoji} {starCount}", embed: e.Build());
+            await result.AddReactionAsync(_starEmoji);
             return result;
         }
     }
