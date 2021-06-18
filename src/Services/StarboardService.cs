@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Gommon;
 using Volte.Core.Helpers;
 using Volte.Core.Entities;
 
@@ -59,23 +60,23 @@ namespace Volte.Services
             return !(starboardChannel is null);
         }
 
-        public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
+        public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (!IsStarReaction(_channel, _reaction, out var starboard, out var starboardChannel))
+            if (!IsStarReaction(channel, reaction, out var starboard, out var starboardChannel))
                 return;
 
-            var guildId = ((IGuildChannel) _channel).Guild.Id;
-            var messageId = _message.Id;
-            var starrerId = _reaction.UserId;
+            var guildId = channel.Cast<IGuildChannel>().Guild.Id;
+            var messageId = cachedMessage.Id;
+            var starrerId = reaction.UserId;
 
-            var message = await _message.GetOrDownloadAsync();
+            var message = await cachedMessage.GetOrDownloadAsync();
 
             if (_db.TryGetStargazers(guildId, messageId, out var entry))
             {
                 using (await _starboardReadWriteLock.LockAsync(entry.StarredMessageId))
                 {
                     // Add the star to the database
-                    if (entry.Stargazers.TryAdd(starrerId, _channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
+                    if (entry.Stargazers.TryAdd(starrerId, channel == starboardChannel ? StarTarget.StarboardMessage : StarTarget.OriginalMessage))
                     {
                         // Update message star count
                         await UpdateOrPostToStarboardAsync(starboard, message, entry);
@@ -87,12 +88,12 @@ namespace Volte.Services
                         // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
                         if (starboard.DeleteInvalidStars)
                         {
-                            await message.RemoveReactionAsync(_starEmoji, _reaction.UserId, new RequestOptions { AuditLogReason = "Star reaction is invalid: User has already starred!" });
+                            await message.RemoveReactionAsync(_starEmoji, reaction.UserId, new RequestOptions { AuditLogReason = "Star reaction is invalid: User has already starred!" });
                         }
                     }
                 }
             }
-            else if (_channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
+            else if (channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
             {
                 using (await _starboardReadWriteLock.LockAsync(messageId))
                 {
@@ -118,16 +119,16 @@ namespace Volte.Services
             }
         }
 
-        public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel, SocketReaction _reaction)
+        public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (!IsStarReaction(_channel, _reaction, out var starboard, out _))
+            if (!IsStarReaction(channel, reaction, out var starboard, out _))
                 return;
 
-            var guildId = ((IGuildChannel) _channel).Guild.Id;
-            var messageId = _message.Id;
-            var starrerId = _reaction.UserId;
+            var guildId = channel.Cast<IGuildChannel>().Guild.Id;
+            var messageId = cachedMessage.Id;
+            var starrerId = reaction.UserId;
 
-            var message = await _message.GetOrDownloadAsync();
+            var message = await cachedMessage.GetOrDownloadAsync();
 
             if (_db.TryGetStargazers(guildId, messageId, out var entry))
             {
@@ -152,13 +153,13 @@ namespace Volte.Services
             }
         }
 
-        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> _message, ISocketMessageChannel _channel)
+        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel socketMessageChannel)
         {
             // Ignore reactions cleared in DMs
-            if (!(_channel is IGuildChannel channel)) return;
+            if (!(socketMessageChannel is IGuildChannel channel)) return;
 
             var guildId = channel.Guild.Id;
-            var messageId = _message.Id;
+            var messageId = cachedMessage.Id;
 
             var data = _db.GetData(guildId);
             var starboard = data.Configuration.Starboard;
@@ -192,7 +193,7 @@ namespace Volte.Services
                         {
                             _db.RemoveStargazers(entry);
 
-                            var message = await _message.GetOrDownloadAsync();
+                            var message = await cachedMessage.GetOrDownloadAsync();
                             await UpdateOrPostToStarboardAsync(starboard, message, entry);
                         }
                         else
@@ -262,7 +263,7 @@ namespace Volte.Services
 
         private async Task<IMessage> PostToStarboardAsync(IMessage message, int starCount)
         {
-            var data = _db.GetData(((IGuildChannel) message.Channel).GuildId);
+            var data = _db.GetData(message.Channel.Cast<IGuildChannel>().GuildId);
             
             var starboardChannel = _client.GetChannel(data.Configuration.Starboard.StarboardChannel);
             if (!(starboardChannel is SocketTextChannel starboardTextChannel))
