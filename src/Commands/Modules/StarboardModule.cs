@@ -12,7 +12,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Channel", "Ch")]
         [Description("Sets the channel to be used by starboard when a message is starred.")]
-        public Task<ActionResult> StarboardChannelAsync(SocketChannel channel)
+        public Task<ActionResult> StarboardChannelAsync(SocketTextChannel channel)
         {
             Context.Modify(data =>
             {
