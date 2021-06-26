@@ -77,8 +77,20 @@ namespace Volte.Services
                             $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                         .ReplyToAsync(args.Message);
                 }
-                else
-                    await _quoteService.CheckMessageAsync(args);
+                else if (!await _quoteService.CheckMessageAsync(args))
+                {
+                    if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
+                    {
+                        var tag = args.Context.GuildData.Extras.Tags.FirstOrDefault(t =>
+                            t.Name.EqualsIgnoreCase(tagName));
+                        if (tag is null) return;
+                        if (args.Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
+                            await tag.AsEmbed(args.Context).SendToAsync(args.Message.Channel);
+                        else
+                            await args.Message.Channel.SendMessageAsync(tag.FormatContent(args.Context));
+
+                    }
+                }
             }
         }
 

@@ -107,8 +107,7 @@ namespace Volte.Core.Helpers
 
         public static bool TryGetSpotifyStatus(this IGuildUser user, out SpotifyGame spotify)
         {
-            spotify = user.Activity?.Cast<SpotifyGame>() ??
-                      user.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
+            spotify = user.Activities.FirstOrDefault(x => x is SpotifyGame).Cast<SpotifyGame>();
             return spotify != null;
         }
 
@@ -184,24 +183,24 @@ namespace Volte.Core.Helpers
         }
 
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
-            c.SendMessageAsync(embed: e.Build());
+            c.SendMessageAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
 
         public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
-            c.SendMessageAsync(embed: e);
+            c.SendMessageAsync(embed: e, allowedMentions: AllowedMentions.None);
 
         public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) =>
-            msg.ReplyAsync(embed: e.Build());
+            msg.ReplyAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
 
         public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) =>
-            msg.ReplyAsync(embed: e);
+            msg.ReplyAsync(embed: e, allowedMentions: AllowedMentions.None);
 
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
         public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(embed: e.Build());
+            await (await u.CreateDMChannelAsync()).SendMessageAsync(embed: e.Build());
 
         public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
-            await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync(embed: e);
+            await (await u.CreateDMChannelAsync()).SendMessageAsync(embed: e);
 
         public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 

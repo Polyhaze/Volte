@@ -21,14 +21,14 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Colorful.Console" Version="1.2.15" />
-        <PackageReference Include="Discord.Net.WebSocket" Version="2.3.1" />
-        <PackageReference Include="Gommon" Version="1.4.0" />
-        <PackageReference Include="Humanizer.Core" Version="2.8.26" />
+        <PackageReference Include="Discord.Net.WebSocket" Version="3.0.0-dev-20210601.2" />
+        <PackageReference Include="Gommon" Version="1.4.2" />
+        <PackageReference Include="Humanizer.Core" Version="2.10.1" />
         <PackageReference Include="LiteDB" Version="5.0.10" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.10.0-2.final" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.3.21201.4" />        
-        <PackageReference Include="Qmmands" Version="4.0.1-nightly-00256" />        
-        <PackageReference Include="Sentry" Version="3.3.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.10.0-3.final" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.4.21253.7" />        
+        <PackageReference Include="Qmmands" Version="4.0.1-nightly-00257" />        
+        <PackageReference Include="Sentry" Version="3.4.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
     </ItemGroup>
 </Project>

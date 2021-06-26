@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     public sealed partial class UtilityModule
     {
         [Command("Tree")]
-        [Description("Shows all categories in this guild and their children channels.")]
+        [Description("Shows all categories in this guild and their children channels in a paginator.")]
         public Task<ActionResult> TreeAsync()
         {
             var uncategorized = Context.CreateEmbedBuilder();

@@ -12,11 +12,11 @@ namespace Volte.Commands
     public class OkResult : ActionResult
     {
         public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
-            Callback func = null, bool awaitCallback = true)
+            MessageCallback func = null, bool awaitCallback = true)
         {
             _message = text;
             _shouldEmbed = shouldEmbed;
-            _callback = func;
+            _messageCallback = func;
             _embed = embed;
             _runFuncAsync = awaitCallback;
         }
@@ -56,7 +56,7 @@ namespace Volte.Commands
         private readonly string _message;
         private readonly bool _shouldEmbed;
         private readonly PaginatedMessage.Builder _pager;
-        private readonly Callback _callback;
+        private readonly MessageCallback _messageCallback;
         private readonly AsyncFunction _separateLogic;
         private readonly EmbedBuilder _embed;
         private readonly PollInfo _poll;
@@ -90,8 +90,8 @@ namespace Volte.Commands
                         ? await ctx.CreateEmbed(_message).ReplyToAsync(ctx.Message)
                         : await ctx.CreateEmbed(_message).SendToAsync(ctx.Channel)
                     : data.Configuration.ReplyInline
-                        ? await ctx.Message.ReplyAsync(_message)
-                        : await ctx.Channel.SendMessageAsync(_message)
+                        ? await ctx.Message.ReplyAsync(_message, allowedMentions: AllowedMentions.None)
+                        : await ctx.Channel.SendMessageAsync(_message, allowedMentions: AllowedMentions.None)
                 : data.Configuration.ReplyInline
                     ? await _embed.ReplyToAsync(ctx.Message)
                     : await _embed.SendToAsync(ctx.Channel);
@@ -116,12 +116,12 @@ namespace Volte.Commands
                 message = await _embed.SendToAsync(ctx.Channel);*/
 
 
-            if (_callback != null)
+            if (_messageCallback != null)
             {
                 if (_runFuncAsync)
-                    await _callback(message);
+                    await _messageCallback(message);
                 else
-                    _ = _callback(message);
+                    _ = _messageCallback(message);
             }
 
 

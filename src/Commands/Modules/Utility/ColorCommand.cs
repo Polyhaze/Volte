@@ -21,22 +21,24 @@ namespace Volte.Commands.Modules
             if (roleTypeParse.IsSuccessful)
             {
                 var role = roleTypeParse.Value;
-                if (!role.HasColor()) return BadRequest("Role does not have a color.");
 
-                return Ok(async () =>
-                {
-                    await using var stream = role.Color.ToRgba32().CreateColorImage();
-                    await stream.SendFileToAsync(Context.Channel, "role.png", string.Empty, false, new EmbedBuilder()
-                            .WithColor(role.Color)
-                            .WithTitle($"{role.Name}'s Color")
-                            .WithDescription(new StringBuilder()
-                                .AppendLine($"**Hex:** {role.Color.ToString().ToUpper()}")
-                                .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"))
-                            .WithImageUrl("attachment://role.png")
-                            .WithCurrentTimestamp()
-                            .Build(),
-                        reference: new MessageReference(Context.Message.Id));
-                });
+                return !role.HasColor()
+                    ? BadRequest("Role does not have a color.")
+                    : Ok(async () =>
+                    {
+                        await using var stream = role.Color.ToRgba32().CreateColorImage();
+                        await stream.SendFileToAsync(Context.Channel, "role.png", string.Empty, false,
+                            new EmbedBuilder()
+                                .WithColor(role.Color)
+                                .WithTitle($"{role.Name}'s Color")
+                                .WithDescription(new StringBuilder()
+                                    .AppendLine($"**Hex:** {role.Color.ToString().ToUpper()}")
+                                    .AppendLine($"**RGB:** {role.Color.R}, {role.Color.G}, {role.Color.B}"))
+                                .WithImageUrl("attachment://role.png")
+                                .WithCurrentTimestamp()
+                                .Build(),
+                            reference: new MessageReference(Context.Message.Id));
+                    });
             }
 
             var colorTypeParse = await CommandService.GetTypeParser<Color>().ParseAsync(null, colorOrRole, Context);

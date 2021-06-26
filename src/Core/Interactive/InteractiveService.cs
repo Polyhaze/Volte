@@ -167,7 +167,7 @@ namespace Volte.Services
 
 
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> message,
-            ISocketMessageChannel channel,
+            Cacheable<IMessageChannel, ulong> _,
             SocketReaction reaction)
         {
             if (reaction.UserId == _client.CurrentUser.Id) return;

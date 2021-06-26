@@ -13,6 +13,6 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> ChooseAsync(
             [Remainder, Description("The options you want to choose from; separated by `|`.")]
             string options)
-            => Ok($"I choose {Format.Code(options.Split('|', StringSplitOptions.RemoveEmptyEntries).Random())}.");
+            => Ok($"I choose {Format.Code(options.Split('|', StringSplitOptions.RemoveEmptyEntries).GetRandomElement())}.");
     }
 }

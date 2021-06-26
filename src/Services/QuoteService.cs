@@ -26,24 +26,24 @@ namespace Volte.Services
             @"(?<Prelink>\S+\s+\S*)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<Postlink>\S*\s+\S+)?",
             Options);
 
-        public async Task CheckMessageAsync(MessageReceivedEventArgs args)
+        public async Task<bool> CheckMessageAsync(MessageReceivedEventArgs args)
         {
-            if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return;
+            if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return false;
             var match = JumpUrlPattern.Match(args.Message.Content);
-            if (!match.Success) return;
-            
+            if (!match.Success) return false;
+
             if (!ulong.TryParse(match.Groups["GuildId"].Value, out var guildId) ||
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
-                !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return;
+                !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return false;
 
             var g = await _client.Rest.GetGuildAsync(guildId);
-            if (g is null) return;
+            if (g is null) return false;
             var c = await g.GetTextChannelAsync(channelId);
-            if (c is null) return;
+            if (c is null) return false;
 
             var m = await c.GetMessageAsync(messageId);
-            if (m is null) return;
-            if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return;
+            if (m is null) return false;
+            if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return false;
 
             await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
                 .ContinueWith(async _ =>
@@ -51,6 +51,7 @@ namespace Volte.Services
                     if (match.Groups["Prelink"].Value.IsNullOrEmpty() && match.Groups["Postlink"].Value.IsNullOrEmpty())
                         await args.Message.TryDeleteAsync();
                 });
+            return true;
         }
 
         private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx)

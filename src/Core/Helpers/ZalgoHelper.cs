@@ -82,13 +82,13 @@ namespace Volte.Core.Helpers
                 sb.Append(c);
                 if (includeChars.HasFlag(IncludeChars.Up))
                     for (var ind = 0; ind < up; ind++)
-                        sb.Append(UpChars.Random());
+                        sb.Append(UpChars.GetRandomElement());
                 if (includeChars.HasFlag(IncludeChars.Middle))
                     for (var ind = 0; ind < mid; ind++)
-                        sb.Append(MidChars.Random());
+                        sb.Append(MidChars.GetRandomElement());
                 if (includeChars.HasFlag(IncludeChars.Down))
                     for (var ind = 0; ind < down; ind++)
-                        sb.Append(DownChars.Random());
+                        sb.Append(DownChars.GetRandomElement());
             })).ToString();
     }
 }

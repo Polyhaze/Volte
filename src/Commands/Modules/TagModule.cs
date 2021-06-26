@@ -67,12 +67,12 @@ namespace Volte.Commands.Modules
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
-                .AddField("Name", tag.Name)
+                .AddField("Name", tag.Name, true)
+                .AddField("Creator", Context.User.Mention, true)
                 .AddField("Response",
                     tag.Response.Length > EmbedFieldBuilder.MaxFieldValueLength
                         ? "<Cannot display; too large.>"
-                        : tag.Response)
-                .AddField("Creator", Context.User.Mention));
+                        : tag.Response));
         }
 
         [Command("Edit", "Ed", "E")]
@@ -99,7 +99,7 @@ namespace Volte.Commands.Modules
             Db.Save(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
                       $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +
-                      $"**{"use".ToQuantity(tag.Uses)}**.");
+                      $"{Format.Bold("use".ToQuantity(tag.Uses))}.");
         }
     }
 }
