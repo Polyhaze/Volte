@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
@@ -16,7 +17,8 @@ namespace Volte.Commands.Modules
         public WelcomeService Service { get; set; }
 
         [Command, DummyCommand, Description("The command group for modifying the Welcome system.")]
-        public Task<ActionResult> BaseAsync() => None();
+        public async Task<ActionResult> BaseAsync() =>
+            Ok(await CommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 
         [Command("Channel", "C")]
         [Description("Sets the channel used for welcoming new users for this guild.")]

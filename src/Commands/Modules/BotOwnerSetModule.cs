@@ -8,6 +8,7 @@ using Discord;
 using Gommon;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -19,7 +20,8 @@ namespace Volte.Commands.Modules
 
         [Command, DummyCommand,
          Description("The command group for modifying certain parts of the currently logged in bot account.")]
-        public Task<ActionResult> BaseAsync() => None();
+        public async Task<ActionResult> BaseAsync() =>
+            Ok(await CommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 
         [Command("Game")]
         [Description("Sets the bot's game (presence).")]

@@ -6,6 +6,7 @@ using Gommon;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -13,9 +14,10 @@ namespace Volte.Commands.Modules
     public class SelfRoleModule : VolteModule
     {
         [Command, DummyCommand, Description("The command group for modifying SelfRoles.")]
-        public Task<ActionResult> BaseAsync() => None();
+        public async Task<ActionResult> BaseAsync() =>
+            Ok(await CommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 
-        [Command("List", "L")]
+        [Command("List", "Ls", "L")]
         [Description("Gets a list of self roles available for this guild.")]
         public Task<ActionResult> SelfRoleListAsync()
         {

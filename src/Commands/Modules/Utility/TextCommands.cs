@@ -48,7 +48,7 @@ namespace Volte.Commands.Modules
         [Description("Bot replies with the argument value reversed.")]
         public Task<ActionResult> ReverseAsync([Remainder, Description("What to reverse.")]
             string content)
-            => Ok(Format.Code(new string(content.Reverse())));
+            => Ok(Format.Code(content.Reverse()));
 
         [Command("Zalgo")]
         [Description("Generate Zalgo text.")]
