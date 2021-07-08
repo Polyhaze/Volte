@@ -95,20 +95,16 @@ namespace Volte.Core.Helpers
                 {
                     static string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
                         $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
-                    
-                    switch (attr.VolteUnixCommand)
+
+                    static string GetArgs(VolteUnixCommand unixCommand) => unixCommand switch
                     {
-                        case VolteUnixCommand.Announce:
-                            embed.AddField("Unix Arguments",
-                                AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"));
-                            break;
-                        case VolteUnixCommand.Zalgo:
-                            embed.AddField("Unix Arguments",
-                                UtilityModule.ZalgoNamedArguments.Select(FormatUnixArgs).Join("\n"));
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                        VolteUnixCommand.Announce => AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"),
+                        VolteUnixCommand.Zalgo => UtilityModule.ZalgoNamedArguments.Select(FormatUnixArgs).Join("\n"),
+                        VolteUnixCommand.UnixBan => ModerationModule.UnixBanNamedArguments.Select(FormatUnixArgs).Join("\n"),
+                        _ => throw new ArgumentOutOfRangeException(nameof(unixCommand))
+                    };
+
+                    embed.AddField("Unix Arguments", GetArgs(attr.VolteUnixCommand));
                 }
             }
 
@@ -129,7 +125,7 @@ namespace Volte.Core.Helpers
 
             return new StringBuilder($"{ctx.GuildData.Configuration.CommandPrefix}{cmd.FullAliases.First().ToLower()} ")
                 .Append(cmd.Parameters.Select(FormatUsageParameter).Join(" "))
-                .ToString();
+                .ToString().Trim();
         }
 
         private static async Task<string> FormatCheckAsync(CheckAttribute cba, VolteContext context)

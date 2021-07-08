@@ -6,6 +6,7 @@ using Humanizer;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -13,7 +14,8 @@ namespace Volte.Commands.Modules
     public class TagModule : VolteModule
     {
         [Command, DummyCommand, Description("The command group for modifying and creating tags.")]
-        public Task<ActionResult> BaseAsync() => None();
+        public async Task<ActionResult> BaseAsync() =>
+            Ok(await CommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 
         [Command("Stats")]
         [Description("Shows stats for a tag.")]
@@ -29,7 +31,7 @@ namespace Volte.Commands.Modules
                 .AddField("Uses", $"**{tag.Uses}**", true));
         }
 
-        [Command("List")]
+        [Command("List", "Ls")]
         [Description("Lists all available tags in the current guild.")]
         public Task<ActionResult> TagsAsync()
             => Ok(Context.CreateEmbedBuilder(
@@ -67,12 +69,12 @@ namespace Volte.Commands.Modules
 
             return Ok(Context.CreateEmbedBuilder()
                 .WithTitle("Tag Created!")
-                .AddField("Name", tag.Name)
+                .AddField("Name", tag.Name, true)
+                .AddField("Creator", Context.User.Mention, true)
                 .AddField("Response",
                     tag.Response.Length > EmbedFieldBuilder.MaxFieldValueLength
                         ? "<Cannot display; too large.>"
-                        : tag.Response)
-                .AddField("Creator", Context.User.Mention));
+                        : tag.Response));
         }
 
         [Command("Edit", "Ed", "E")]
@@ -99,7 +101,7 @@ namespace Volte.Commands.Modules
             Db.Save(Context.GuildData);
             return Ok($"Deleted the tag **{tag.Name}**, created by " +
                       $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +
-                      $"**{"use".ToQuantity(tag.Uses)}**.");
+                      $"{Format.Bold("use".ToQuantity(tag.Uses))}.");
         }
     }
 }

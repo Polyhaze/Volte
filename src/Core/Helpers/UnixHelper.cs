@@ -59,6 +59,11 @@ namespace Volte.Core.Helpers
                         result.Add(argName, true.ToString());
                         argName = string.Empty;
                         break;
+                    case '-' when state is ParsingState.ArgumentValue:
+                        state = ParsingState.Neutral;
+                        result.Add(argName, true.ToString());
+                        argName = string.Empty;
+                        break;
                     case '-':
                         state = ParsingState.ArgumentName;
                         break;

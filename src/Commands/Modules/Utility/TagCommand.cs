@@ -17,8 +17,7 @@ namespace Volte.Commands.Modules
             Db.Save(Context.GuildData);
 
             return Context.GuildData.Configuration.EmbedTagsAndShowAuthor
-                ? Ok(Context.CreateEmbedBuilder(tag.FormatContent(Context)).WithAuthor(author: null)
-                    .WithFooter($"Requested by {Context.User}."))
+                ? Ok(tag.AsEmbed(Context))
                 : Ok(tag.FormatContent(Context), shouldEmbed: false);
         }
     }

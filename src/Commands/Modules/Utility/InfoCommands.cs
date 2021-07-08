@@ -41,13 +41,13 @@ namespace Volte.Commands.Modules
         {
             user ??= Context.User;
             
-            string GetRelevantActivity() => user.Activity switch
+            string GetRelevantActivity() => user.Activities.FirstOrDefault() switch
             {
                 //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive (and ugly) embed field value
                 CustomStatusGame {Emote: Emoji _} csg => $"{csg.Emote} {csg.State}",
                 CustomStatusGame csg => $"{csg.State}",
                 SpotifyGame _ => "Listening to Spotify",
-                _ => user.Activity?.Name
+                _ => user.Activities.FirstOrDefault()?.Name
             } ?? "Nothing";
 
             return Ok(Context.CreateEmbedBuilder()

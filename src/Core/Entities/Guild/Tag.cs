@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Discord;
 using Volte.Commands;
 using Volte.Core.Helpers;
 
@@ -31,6 +32,11 @@ namespace Volte.Core.Entities
                 .Replace("{UserMention}", ctx.User.Mention)
                 .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
                 .Replace("{UserTag}", ctx.User.Discriminator);
+
+        public EmbedBuilder AsEmbed(VolteContext ctx) 
+            => ctx.CreateEmbedBuilder(FormatContent(ctx)).WithAuthor(author: null)
+                .WithFooter($"Requested by {ctx.User}.", ctx.User.GetEffectiveAvatarUrl());
+
         
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

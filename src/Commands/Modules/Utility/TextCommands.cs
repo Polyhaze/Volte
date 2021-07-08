@@ -48,7 +48,7 @@ namespace Volte.Commands.Modules
         [Description("Bot replies with the argument value reversed.")]
         public Task<ActionResult> ReverseAsync([Remainder, Description("What to reverse.")]
             string content)
-            => Ok(Format.Code(new string(content.ToCharArray().Apply(Array.Reverse))));
+            => Ok(Format.Code(content.Reverse()));
 
         [Command("Zalgo")]
         [Description("Generate Zalgo text.")]
@@ -82,7 +82,16 @@ namespace Volte.Commands.Modules
             if (includeChars is 0)
                 return BadRequest("No up/middle/down characters were allowed.");
 
-            return Ok(ZalgoHelper.GenerateZalgo(content, intensity, includeChars));
+            var zalgo = ZalgoHelper.GenerateZalgo(content, intensity, includeChars);
+            if (zalgo.Length > 2000)
+                return BadRequest("The result was too large to show in a Discord message.");
+            
+            return options.TryGetValue("plain", out _)
+                ? Ok(async () =>
+                {
+                    await Context.Channel.SendMessageAsync(zalgo, allowedMentions: AllowedMentions.None);
+                })
+                : Ok(zalgo);
         }
 
         [Command("Nato")]
@@ -99,22 +108,16 @@ namespace Volte.Commands.Modules
 
             // ReSharper disable once (Im) PossibleNullReferenceException
             //this legit cant happen because of the if statement above
-            try
-            {
-                return Ok(Context.CreateEmbedBuilder()
-                    .AddField("Input", Format.Code(input))
-                    .AddField("Output", Format.Code(input.ToCharArray()
-                        .Where(x => !char.IsWhiteSpace(x))
-                        .Select(x => GetNato(char.ToLower(x)))
-                        .Join(" "))
-                    )
-                );
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                return BadRequest(
-                    $"There is not a NATO word for the character `{e.ParamName}`. Only standard English letters and numbers are valid.");
-            }
+            return Lambda.TryCatch<ActionResult, ArgumentOutOfRangeException>(() =>
+                    Ok(Context.CreateEmbedBuilder()
+                        .AddField("Input", Format.Code(input))
+                        .AddField("Output", Format.Code(input.ToCharArray()
+                            .Where(x => !char.IsWhiteSpace(x))
+                            .Select(x => GetNato(char.ToLower(x)))
+                            .Join(" "))
+                        )),
+                (e) 
+                    => BadRequest($"There is not a NATO word for the character `{e.ParamName}`. Only standard English letters and numbers are valid."));
         }
     }
 }

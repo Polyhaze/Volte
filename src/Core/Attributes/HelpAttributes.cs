@@ -8,7 +8,8 @@ namespace Volte.Core.Entities
     public enum VolteUnixCommand
     {
         Announce,
-        Zalgo
+        Zalgo,
+        UnixBan
     }
     
     /// <summary>
@@ -24,12 +25,9 @@ namespace Volte.Core.Entities
     [AttributeUsage(AttributeTargets.Method)]
     public class ShowUnixArgumentsInHelpAttribute : Attribute
     {
-        public VolteUnixCommand VolteUnixCommand;
+        public VolteUnixCommand VolteUnixCommand { get; }
 
-        public ShowUnixArgumentsInHelpAttribute(VolteUnixCommand command)
-        {
-            VolteUnixCommand = command;
-        }
+        public ShowUnixArgumentsInHelpAttribute(VolteUnixCommand command) => VolteUnixCommand = command;
     }
     
     /// <summary>

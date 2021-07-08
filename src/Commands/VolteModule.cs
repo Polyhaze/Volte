@@ -19,7 +19,7 @@ namespace Volte.Commands
         
         protected ActionResult Ok(
             string text, 
-            Callback afterCompletion = null,
+            MessageCallback afterCompletion = null,
             bool shouldEmbed = true) 
             => new OkResult(text, shouldEmbed, null, afterCompletion);
 
@@ -28,8 +28,8 @@ namespace Volte.Commands
             bool awaitLogic = true) 
             => new OkResult(logic, awaitLogic);
 
-        protected ActionResult Ok(StringBuilder text, Callback callback = null, bool shouldEmbed = true)
-            => Ok(text.ToString(), callback, shouldEmbed);
+        protected ActionResult Ok(StringBuilder text, MessageCallback messageCallback = null, bool shouldEmbed = true)
+            => Ok(text.ToString(), messageCallback, shouldEmbed);
         protected ActionResult Ok(PaginatedMessage.Builder pager) => new OkResult(pager);
         protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds);
 
@@ -37,7 +37,7 @@ namespace Volte.Commands
 
         protected ActionResult Ok(
             EmbedBuilder embed, 
-            Callback afterCompletion = null) 
+            MessageCallback afterCompletion = null) 
             => new OkResult(null, true, embed, afterCompletion);
 
         protected ActionResult Ok(string text) 

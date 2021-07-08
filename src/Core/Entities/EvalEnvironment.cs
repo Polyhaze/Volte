@@ -48,6 +48,7 @@ namespace Volte.Core.Entities
                 ? message.Cast<SocketSystemMessage>()
                 : throw new InvalidOperationException(
                     $"The ID provided didn't lead to a valid system message, it lead to a(n) {Context.Channel.GetCachedMessage(id)?.Source} message.");
+
         public SocketUserMessage Message(ulong id) =>
             Context.Channel.CachedMessages.AnyGet(m => m.Id == id && m is SocketUserMessage, out var message)
                 ? message.Cast<SocketUserMessage>()
@@ -61,7 +62,7 @@ namespace Volte.Core.Entities
             return m is IUserMessage result
                 ? result
                 : throw new InvalidOperationException(
-                $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
+                    $"The ID provided didn't lead to a valid user-created message, it lead to a(n) {m.Source} message.");
         }
 
         public SocketGuild Guild(ulong id) => Context.Client.GetGuild(id);
@@ -183,8 +184,7 @@ namespace Volte.Core.Entities
         public string ReadValue(PropertyInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
 
         private string ReadValue(object prop, object obj)
-        {
-            try
+            => Lambda.TryCatch(() =>
             {
                 var value = prop switch
                 {
@@ -208,16 +208,15 @@ namespace Volte.Core.Entities
                     IEnumerable e when !(value is string) => GetEnumerableStr(e),
                     _ => value + $" [{value.GetType().AsPrettyString()}]"
                 };
-            }
-            catch (Exception e)
-            {
-                return $"[[{e.GetType().Name} thrown, message: \"{e.Message}\"]]";
-            }
-        }
+            }, e => $"[[{e.GetType().Name} thrown, message: \"{e.Message}\"]]");
 
-        public void Throw()
+        public void Throw<TException>() where TException : Exception
         {
-            throw new Exception("Test exception.");
+            var ctor = typeof(TException).GetConstructors().FirstOrDefault(x => x.GetParameters().IsEmpty());
+            if (ctor != null)
+                throw ctor.Invoke(Array.Empty<object>()).Cast<TException>();
+            throw new InvalidOperationException(
+                "Specified exception type didn't have a discoverable zero-parameter constructor.");
         }
     }
 }

@@ -124,6 +124,14 @@ namespace Volte.Commands.Modules
     public sealed partial class ModerationModule : VolteModule
     {
         public InteractiveService Interactive { get; set; }
+        
+        public static readonly Dictionary<string[], string> UnixBanNamedArguments = new Dictionary<string[], string>
+        {
+            {new[] {"deleteDays", "days"}, "The amount of days of messages to delete. Note that Discord is strict with this value, and it can only be 0-7."},
+            {new[] {"reason"}, "The reason for the ban. If this is not provided, the reason will be \"Banned by a Moderator.\""},
+            {new[] {"shadow"}, "If this option is present, the banned member will not be made aware of who actually banned them via the embed author. This option takes no value."},
+            {new[] {"soft", "softly"}, "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."}
+        };
 
         public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member,
             DatabaseService db, string reason)

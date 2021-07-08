@@ -5,6 +5,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -13,7 +14,8 @@ namespace Volte.Commands.Modules
     public class BlacklistModule : VolteModule
     {
         [Command, DummyCommand, Description("Command group for modifying this guild's phrase Blacklist.")]
-        public Task<ActionResult> BaseAsync() => None();
+        public async Task<ActionResult> BaseAsync() =>
+            Ok(await CommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 
         [Command("Add", "A")]
         [Description("Adds a given word/phrase to the blacklist for this guild.")]
@@ -60,7 +62,7 @@ namespace Volte.Commands.Modules
                 : Ok($"Set {action} as the action performed when a member uses a blacklisted word/phrase.");
         }
 
-        [Command("List", "L")]
+        [Command("List", "Ls", "L")]
         [Description("Lists every single word/phrase inside of the blacklist.")]
         public Task<ActionResult> BlacklistListAsync()
             => Ok(Context.CreateEmbedBuilder()

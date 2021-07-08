@@ -16,19 +16,28 @@ namespace Volte.Core.Helpers
         /// </summary>
         /// <param name="content">The content to send.</param>
         /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>.</param>
-        /// <param name="fileExtension">The file extension {including .} for the resulting URL.</param>
+        /// <param name="fileExtension">The file extension {WITHOUT PRECEDING PERIOD} for the resulting URL.</param>
         /// <returns>The URL of the successful paste.</returns>
         /// <exception cref="InvalidOperationException">If <paramref name="provider"/> doesn't have an <see cref="HttpClient"/> in it.</exception>
         public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider, string fileExtension = null)
         {
-            var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
-            var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{fileExtension}";
+            try
+            {
+                var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
+                var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? "" : $".{fileExtension}")}}}";
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureException(e);
+                return string.Empty;
+            }
+
         }
         
         /// <summary>
         ///     Gets a collection of allowed paste sites from https://paste.greemdev.net/volteAllowedPasteSites with the <see cref="HttpClient"/> from <paramref name="provider"/>.
-        ///     If any error occurs it is captured via Sentry.
+        ///     If any error occurs it is captured via Sentry, and the method returns an empty array.
         /// </summary>
         /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>.</param>
         /// <returns>An array of strings where each one represents a valid site, or empty if any errors occurred.</returns>
