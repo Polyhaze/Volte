@@ -38,7 +38,7 @@ namespace Volte.Services
         /// <param name="starboardChannel">Will be assigned to the <see cref="SocketChannel"/> for the starboard channel</param>
         /// <returns>True if the reaction is valid, false otherwise</returns>
         private bool IsStarReaction(
-            ISocketMessageChannel channel, SocketReaction reaction,
+            IMessageChannel channel, SocketReaction reaction,
             out StarboardOptions starboard, out SocketChannel starboardChannel)
         {
             starboard = default;
@@ -60,8 +60,10 @@ namespace Volte.Services
             return !(starboardChannel is null);
         }
 
-        public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel channel, SocketReaction reaction)
+        public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
         {
+            var channel = await cachedChannel.GetOrDownloadAsync();
+            
             if (!IsStarReaction(channel, reaction, out var starboard, out var starboardChannel))
                 return;
 
@@ -119,8 +121,10 @@ namespace Volte.Services
             }
         }
 
-        public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel channel, SocketReaction reaction)
+        public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
         {
+            var channel = await cachedChannel.GetOrDownloadAsync();
+
             if (!IsStarReaction(channel, reaction, out var starboard, out _))
                 return;
 
@@ -153,10 +157,12 @@ namespace Volte.Services
             }
         }
 
-        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> cachedMessage, ISocketMessageChannel socketMessageChannel)
+        public async Task HandleReactionsClearAsync(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel)
         {
+            var messageChannel = await cachedChannel.GetOrDownloadAsync();
+
             // Ignore reactions cleared in DMs
-            if (!(socketMessageChannel is IGuildChannel channel)) return;
+            if (!(messageChannel is IGuildChannel channel)) return;
 
             var guildId = channel.Guild.Id;
             var messageId = cachedMessage.Id;
