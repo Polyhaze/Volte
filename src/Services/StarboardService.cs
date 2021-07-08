@@ -145,9 +145,9 @@ namespace Volte.Services
                         if (entry.StarCount < starboard.StarsRequiredToPost)
                         {
                             _db.RemoveStargazers(entry);
-                            
-                            await UpdateOrPostToStarboardAsync(starboard, message, entry);
                         }
+
+                        await UpdateOrPostToStarboardAsync(starboard, message, entry);
                     }
                 }
             }
@@ -192,14 +192,14 @@ namespace Volte.Services
                         if (entry.StarCount < starboard.StarsRequiredToPost)
                         {
                             _db.RemoveStargazers(entry);
-
-                            var message = await cachedMessage.GetOrDownloadAsync();
-                            await UpdateOrPostToStarboardAsync(starboard, message, entry);
                         }
                         else
                         {
                             _db.UpdateStargazers(entry);
                         }
+
+                        var message = await cachedMessage.GetOrDownloadAsync();
+                        await UpdateOrPostToStarboardAsync(starboard, message, entry);
                     }
                 }
             }
