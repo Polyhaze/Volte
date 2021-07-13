@@ -19,6 +19,6 @@ namespace Volte
         private static int Major => 3;
         private static int Minor => 6;
         private static int Patch => 3;
-        private static int Hotfix => 0;
+        private static int Hotfix => 1;
     }
 }

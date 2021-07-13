@@ -59,56 +59,71 @@ namespace Volte.Core.Helpers
             var embed = ctx.CreateEmbedBuilder()
                 .WithTitle(command.Name)
                 .WithDescription(command.Description ?? "No description provided.");
+            var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
 
-            if (command.Attributes.Any(x => x is DummyCommandAttribute))
+            async Task AddSubcommandsFieldAsync()
             {
                 embed.AddField("Subcommands", (await command.Module.Commands.WhereAccessibleAsync(ctx)
                         .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute)).ToListAsync())
                     .Select(x => FormatCommandShort(x, false))
                     .Join(", "));
             }
-            else
+
+
+            if (command.Attributes.Any(x => x is DummyCommandAttribute))
             {
-                if (command.Remarks != null)
-                    embed.AppendDescription($" {command.Remarks}");
-
-                if (!command.FullAliases.IsEmpty())
-                    embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).Join(", "), true);
-
-                if (!command.Parameters.IsEmpty())
-                    embed.AddField("Parameters", command.Parameters.Select(FormatParameter).Join("\n"));
-
-                if (command.CustomArgumentParserType is null)
-                    embed.AddField("Usage", FormatUsage(ctx, command));
-
-                if (command.Attributes.Any(x => x is ShowPlaceholdersInHelpAttribute))
-                    embed.AddField("Placeholders",
-                        WelcomeOptions.ValidPlaceholders
-                            .Select(x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
-                            .Join("\n"));
-
-                if (command.Attributes.Any(x => x is ShowTimeFormatInHelpAttribute))
-                    embed.AddField("Example Valid Time",
-                        $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
-
-                if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var unixAttr) && unixAttr is ShowUnixArgumentsInHelpAttribute attr)
-                {
-                    static string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
-                        $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
-
-                    static string GetArgs(VolteUnixCommand unixCommand) => unixCommand switch
-                    {
-                        VolteUnixCommand.Announce => AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs).Join("\n"),
-                        VolteUnixCommand.Zalgo => UtilityModule.ZalgoNamedArguments.Select(FormatUnixArgs).Join("\n"),
-                        VolteUnixCommand.UnixBan => ModerationModule.UnixBanNamedArguments.Select(FormatUnixArgs).Join("\n"),
-                        _ => throw new ArgumentOutOfRangeException(nameof(unixCommand))
-                    };
-
-                    embed.AddField("Unix Arguments", GetArgs(attr.VolteUnixCommand));
-                }
+                await AddSubcommandsFieldAsync();
+                return !checks.IsEmpty()
+                    ? embed.AddField("Checks",
+                        (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).Join("\n"))
+                    : embed;
             }
 
-            var checks = CommandUtilities.EnumerateAllChecks(command).ToList();
+            if (command.Remarks != null)
+                embed.AppendDescription($" {command.Remarks}");
+
+            if (!command.FullAliases.IsEmpty())
+                embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).Join(", "), true);
+
+            if (!command.Parameters.IsEmpty())
+                embed.AddField("Parameters", command.Parameters.Select(FormatParameter).Join("\n"));
+
+            if (command.CustomArgumentParserType is null)
+                embed.AddField("Usage", FormatUsage(ctx, command));
+
+            if (command.Attributes.Any(x => x is ShowPlaceholdersInHelpAttribute))
+                embed.AddField("Placeholders",
+                    WelcomeOptions.ValidPlaceholders
+                        .Select(x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
+                        .Join("\n"));
+
+            if (command.Attributes.Any(x => x is ShowTimeFormatInHelpAttribute))
+                embed.AddField("Example Valid Time",
+                    $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
+
+            if (command.Attributes.Any(x => x is ShowSubcommandsInHelpOverrideAttribute))
+                await AddSubcommandsFieldAsync();
+
+            if (command.Attributes.AnyGet(x => x is ShowUnixArgumentsInHelpAttribute, out var unixAttr) &&
+                unixAttr is ShowUnixArgumentsInHelpAttribute attr)
+            {
+                static string FormatUnixArgs(KeyValuePair<string[], string> kvp) =>
+                    $"{Format.Bold(kvp.Key.Select(name => $"-{name}").Join(" or "))}: {kvp.Value}";
+
+                static string GetArgs(VolteUnixCommand unixCommand) => unixCommand switch
+                {
+                    VolteUnixCommand.Announce => AdminUtilityModule.AnnounceNamedArguments.Select(FormatUnixArgs)
+                        .Join("\n"),
+                    VolteUnixCommand.Zalgo => UtilityModule.ZalgoNamedArguments.Select(FormatUnixArgs).Join("\n"),
+                    VolteUnixCommand.UnixBan => ModerationModule.UnixBanNamedArguments.Select(FormatUnixArgs)
+                        .Join("\n"),
+                    _ => throw new ArgumentOutOfRangeException(nameof(unixCommand))
+                };
+
+                embed.AddField("Unix Arguments", GetArgs(attr.VolteUnixCommand));
+            }
+
+
             return !checks.IsEmpty()
                 ? embed.AddField("Checks",
                     (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).Join("\n"))
@@ -179,7 +194,7 @@ namespace Volte.Core.Helpers
                 // ReSharper disable twice PossibleNullReferenceException
                 // cant happen
                 method.Invoke(service,
-                    new[] {parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive});
+                    new[] { parserObj, parser.GetCustomAttribute<InjectTypeParserAttribute>().OverridePrimitive });
                 yield return parser;
             }
         }

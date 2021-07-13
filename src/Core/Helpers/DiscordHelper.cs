@@ -51,6 +51,11 @@ namespace Volte.Core.Helpers
         public static RequestOptions CreateRequestOptions(Action<RequestOptions> initializer) 
             => new RequestOptions().Apply(initializer);
         
+        /// <summary>
+        ///     Gets the recommended shard count from Discord by logging into a <see cref="DiscordRestClient"/> via the value in <see cref="Config"/>.<see cref="Config.Token"/>.
+        ///     This method assumes that the value in the config has already been validated and is usable with Discord.
+        /// </summary>
+        /// <returns></returns>
         public static async ValueTask<int> GetRecommendedShardCountAsync()
         {
             using var client = new DiscordRestClient();

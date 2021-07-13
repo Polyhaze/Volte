@@ -171,9 +171,9 @@ namespace Volte.Services
 
             var data = _db.GetData(guildId);
             var starboard = data.Configuration.Starboard;
-            
+
             if (!starboard.Enabled) return;
-            
+
             var starboardChannel = _client.GetChannel(starboard.StarboardChannel);
             if (starboardChannel is null) return;
 
@@ -216,7 +216,7 @@ namespace Volte.Services
         }
         
         /// <summary>
-        ///     Updates or posts a message to the starboard in a guild.
+        ///     Updates, posts, or deletes a message in the starboard in a guild.
         ///     Calls to this method should be synchronized to _messageWriteLock beforehand!
         /// </summary>
         /// <param name="starboard">The guild's starboard configuration</param>
@@ -258,9 +258,7 @@ namespace Volte.Services
                     // Update existing message
                     var targetMessage = $"{_starEmoji} {entry.StarCount}";
                     if (starboardMessage.Content != targetMessage)
-                    {
                         await starboardUserMessage.ModifyAsync(e => e.Content = targetMessage);
-                    }
                 }
                 else
                 {
@@ -273,7 +271,7 @@ namespace Volte.Services
 
         private async Task<IMessage> PostToStarboardAsync(IMessage message, int starCount)
         {
-            var data = _db.GetData(message.Channel.Cast<IGuildChannel>().GuildId);
+            var data = await _db.GetDataAsync(message.Channel.Cast<IGuildChannel>().GuildId);
             
             var starboardChannel = _client.GetChannel(data.Configuration.Starboard.StarboardChannel);
             if (!(starboardChannel is SocketTextChannel starboardTextChannel))
