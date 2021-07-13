@@ -56,6 +56,8 @@ namespace Volte.Services
             var data = _db.GetData(guildChannel.Guild.Id);
             starboard = data.Configuration.Starboard;
 
+            if (!starboard.Enabled) return false;
+
             starboardChannel = _client.GetChannel(starboard.StarboardChannel);
             return !(starboardChannel is null);
         }
@@ -169,6 +171,8 @@ namespace Volte.Services
 
             var data = _db.GetData(guildId);
             var starboard = data.Configuration.Starboard;
+            
+            if (!starboard.Enabled) return;
             
             var starboardChannel = _client.GetChannel(starboard.StarboardChannel);
             if (starboardChannel is null) return;
