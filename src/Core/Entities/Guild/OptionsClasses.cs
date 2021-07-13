@@ -119,9 +119,9 @@ namespace Volte.Core.Entities
         
         [JsonPropertyName("starboard_enabled")]
         public bool Enabled { get; set; }
-        
+
         [JsonPropertyName("number_of_required_stars")]
-        public int StarsRequiredToPost { get; set; }
+        public int StarsRequiredToPost { get; set; } = 1;
         
         [JsonPropertyName("delete_invalid_stars")]
         public bool DeleteInvalidStars { get; set; }

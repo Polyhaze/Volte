@@ -28,6 +28,11 @@ namespace Volte.Commands.Modules
         [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
         public Task<ActionResult> StarsRequiredToPostAsync(int amount)
         {
+            if (amount < 1)
+            {
+                return BadRequest("Amount must be larger than zero.");
+            }
+
             Context.Modify(data =>
             {
                 data.Configuration.Starboard.StarsRequiredToPost = amount;
