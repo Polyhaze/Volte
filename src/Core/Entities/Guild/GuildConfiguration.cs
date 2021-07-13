@@ -9,6 +9,7 @@ namespace Volte.Core.Entities
         {
             Moderation = new ModerationOptions();
             Welcome = new WelcomeOptions();
+            Starboard = new StarboardOptions();
         }
 
         [JsonPropertyName("autorole")]
@@ -22,6 +23,9 @@ namespace Volte.Core.Entities
 
         [JsonPropertyName("moderation_options")]
         public ModerationOptions Moderation { get; set; }
+
+        [JsonPropertyName("starboard_options")]
+        public StarboardOptions Starboard { get; set; }
 
         [JsonPropertyName("reply_inline")]
         public bool ReplyInline { get; set; }
