@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
     public sealed class ReminderModule : VolteModule
     {
         [Command]
-        [ShowTimeFormatInHelp]
+        [ShowTimeFormatInHelp, ShowSubcommandsInHelpOverride]
         [Description("Creates a reminder.")]
         public Task<ActionResult> BaseAsync(
             [Description("The time, from now, to set the reminder for.")]

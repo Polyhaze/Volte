@@ -45,4 +45,11 @@ namespace Volte.Core.Entities
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class ShowTimeFormatInHelpAttribute : Attribute { }
+    
+    /// <summary>
+    ///     Signals the <see cref="HelpModule"/> to show the parent module's subcommands inside of the help embed of a command.
+    ///     Don't use on any commands unless they are in a module with subcommands and it makes sense to use it.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class ShowSubcommandsInHelpOverrideAttribute : Attribute {}
 }
