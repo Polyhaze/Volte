@@ -152,6 +152,10 @@ namespace Volte.Services
                         {
                             _db.RemoveStargazers(entry);
                         }
+                        else
+                        {
+                            _db.UpdateStargazers(entry);
+                        }
 
                         await UpdateOrPostToStarboardAsync(starboard, message, entry);
                     }
