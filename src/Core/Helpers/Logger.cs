@@ -34,7 +34,7 @@ namespace Volte.Core.Helpers
             if (_hasPrinted) return;
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             new Figlet().ToAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries)
-                .ForEach(asciiLine => Info(LogSource.Volte, asciiLine));
+                .ForEach(ln => Info(LogSource.Volte, ln));
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
             _hasPrinted = true;
@@ -135,8 +135,10 @@ namespace Volte.Core.Helpers
             Console.Write(Environment.NewLine);
             content.AppendLine();
             if (Config.EnabledFeatures.LogToFile)
-                File.AppendAllText(LogFile, content.ToString());
+                File.AppendAllText(NormalizeLogFilePath(DateTime.Now), content.ToString());
         }
+
+        private static string NormalizeLogFilePath(DateTime date) => LogFile.Replace("Volte", $"{date.Month}-{date.Day}-{date.Year}");
 
         private static void Append(string m, Color c)
         {
