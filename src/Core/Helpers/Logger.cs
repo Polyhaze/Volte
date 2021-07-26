@@ -5,7 +5,6 @@ using Colorful;
 using Discord;
 using Gommon;
 using Sentry;
-using Sentry.Infrastructure;
 using Volte.Core.Entities;
 using Volte.Services;
 using Color = System.Drawing.Color;
@@ -18,7 +17,7 @@ namespace Volte.Core.Helpers
         static Logger()
         {
             Lock = new object();
-            LogFile = $"{Config.DataDirectory}/Volte.log";
+            LogFile = $"{Config.DataDirectory}/logs/Volte.log";
         }
         
         private static readonly object Lock;
@@ -44,7 +43,7 @@ namespace Volte.Core.Helpers
         {
             lock (Lock)
             {
-                if (s is LogSeverity.Debug && !(Config.EnableDebugLogging || Version.IsDevelopment))
+                if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
                     return;
 
                 Execute(s, from, message, e);

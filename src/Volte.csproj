@@ -11,7 +11,7 @@
         <PackageProjectUrl>https://greemdev.net/Volte</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Ultz/Volte</RepositoryUrl>
         <Copyright>MIT</Copyright>
-        <Version>3.6.2</Version>
+        <Version>3.7.0-DEV</Version>
         <Platforms>AnyCPU;x64</Platforms>
         <ApplicationIcon>Volte.ico</ApplicationIcon>
         <PlatformTarget>x64</PlatformTarget>
