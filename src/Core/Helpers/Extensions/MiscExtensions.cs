@@ -34,12 +34,19 @@ namespace Gommon
             BlacklistAction.Warn => member.WarnAsync(ctx, $"Used blacklisted phrase \"{word}\""),
             BlacklistAction.Kick => member.KickAsync($"Used blacklisted phrase \"{word}\""),
             BlacklistAction.Ban => member.BanAsync(7, $"Used blacklisted phrase \"{word}\""),
-            BlacklistAction.Nothing => new Task(() => Logger.Debug(LogSource.Service, $"Guild {member.Guild} had BlacklistAction set to {nameof(BlacklistAction.Nothing)}.")),
+            BlacklistAction.Nothing => Task.Run(() => Logger.Debug(LogSource.Service, $"Guild {member.Guild} had BlacklistAction set to {nameof(BlacklistAction.Nothing)}.")),
             _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
         };
 
         public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
             => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
                 ctx.Services.GetRequiredService<DatabaseService>(), reason);
+
+        public static T Lock<T>(this object @lock, Func<T> action)
+        {
+            lock (@lock)
+                return action();
+        }
+        
     }
 }

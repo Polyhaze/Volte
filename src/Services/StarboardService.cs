@@ -66,7 +66,7 @@ namespace Volte.Services
         {
             var channel = await cachedChannel.GetOrDownloadAsync();
             
-            if (!IsStarReaction(channel, reaction, out var starboard, out var starboardChannel))
+            if (!IsStarReaction(channel, reaction, out var starboard, out var starboardChannel) || reaction.User.IsSpecified && reaction.User.Value.IsBot)
                 return;
 
             var guildId = channel.Cast<IGuildChannel>().Guild.Id;
@@ -87,14 +87,11 @@ namespace Volte.Services
 
                         _db.UpdateStargazers(entry);
                     }
-                    else
-                    {
+                    else if (starboard.DeleteInvalidStars)
                         // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
-                        if (starboard.DeleteInvalidStars)
-                        {
-                            await message.RemoveReactionAsync(_starEmoji, reaction.UserId, new RequestOptions { AuditLogReason = "Star reaction is invalid: User has already starred!" });
-                        }
-                    }
+                        await message.RemoveReactionAsync(_starEmoji, reaction.UserId,
+                            DiscordHelper.CreateRequestOptions(x =>
+                                x.AuditLogReason = "Star reaction is invalid: User has already starred!"));
                 }
             }
             else if (channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
@@ -149,13 +146,10 @@ namespace Volte.Services
                     {
                         // Update message star count
                         if (entry.StarCount < starboard.StarsRequiredToPost)
-                        {
                             _db.RemoveStargazers(entry);
-                        }
                         else
-                        {
                             _db.UpdateStargazers(entry);
-                        }
+                        
 
                         await UpdateOrPostToStarboardAsync(starboard, message, entry);
                     }
@@ -172,9 +166,8 @@ namespace Volte.Services
 
             var guildId = channel.Guild.Id;
             var messageId = cachedMessage.Id;
-
-            var data = _db.GetData(guildId);
-            var starboard = data.Configuration.Starboard;
+            
+            var starboard = (await _db.GetDataAsync(guildId)).Configuration.Starboard;
 
             if (!starboard.Enabled) return;
 
@@ -197,20 +190,15 @@ namespace Volte.Services
                     // Remove the stars from the database
                     if (clearList.Length > 0)
                     {
-                        foreach (var userId in clearList)
-                        {
-                            entry.Stargazers.Remove(userId);
-                        }
+                        clearList.ForEach(userId => entry.Stargazers.Remove(userId));
+                            
 
                         // Update message star count
                         if (entry.StarCount < starboard.StarsRequiredToPost)
-                        {
                             _db.RemoveStargazers(entry);
-                        }
                         else
-                        {
                             _db.UpdateStargazers(entry);
-                        }
+                        
 
                         var message = await cachedMessage.GetOrDownloadAsync();
                         await UpdateOrPostToStarboardAsync(starboard, message, entry);
@@ -251,7 +239,7 @@ namespace Volte.Services
                 }
                 catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) 
                 {
-                    // Ignore, maybe log to console
+                    Logger.Debug(LogSource.Service, "Could not retrieve original star message in channel.");
                     return;
                 }
 
@@ -266,7 +254,7 @@ namespace Volte.Services
                 }
                 else
                 {
-                    // Unstarred below the limit so delete the message if any
+                    // Star count below the limit so delete the message if any
                     await starboardMessage.DeleteAsync();
                     entry.StarboardMessageId = 0;
                 }
@@ -282,14 +270,15 @@ namespace Volte.Services
                 return null;
 
             // Discord API limitation: Fetch a full message. The message in OnReactionXXX does not contain an Author
-            // field unless it is present in DSharpPlus' message cache.
+            // field unless it is present in Discord.Net's message cache.
             message = await message.Channel.GetMessageAsync(message.Id);
 
             var e = new EmbedBuilder()
                 .WithSuccessColor()
                 .WithDescription(message.Content)
+                .WithCurrentTimestamp()
                 .WithAuthor(message.Author)
-                .AddField("Original Message", message.GetJumpUrl());
+                .AddField("Posted", Format.Bold(Format.Url($"#{message.Channel.Name}", message.GetJumpUrl())));
 
             var result = await starboardTextChannel.SendMessageAsync($"{_starEmoji} {starCount}", embed: e.Build());
             await result.AddReactionAsync(_starEmoji);

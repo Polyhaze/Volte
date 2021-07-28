@@ -33,15 +33,16 @@ namespace Volte.Core.Entities
         public DatabaseService Database { get; set; }
         public EvalEnvironment Environment { get; }
 
-        public SocketGuildUser User(ulong id) => Context.Guild.GetUser(id);
-
-        public SocketGuildUser User(string username) => Context.Guild.Users.FirstOrDefault(a =>
+        public SocketGuildUser Member(ulong id) => Context.Guild.GetUser(id);
+        public SocketUser User(ulong id) => Context.Client.GetUser(id);
+        public SocketGuildUser Member(string username) => Context.Guild.Users.FirstOrDefault(a =>
             a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
-
         public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
         public SocketVoiceChannel VoiceChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketVoiceChannel>();
         public SocketNewsChannel NewsChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketNewsChannel>();
         public SocketDMChannel DmChannel(ulong id) => Context.Client.GetDMChannelAsync(id).Cast<SocketDMChannel>();
+        public SocketRole Role(ulong id) => Context.Guild.GetRole(id);
+        public SocketSelfUser SelfUser() => Context.Client.CurrentUser;
 
         public SocketSystemMessage SystemMessage(ulong id) =>
             Context.Channel.CachedMessages.AnyGet(m => m.Id == id && m is SocketSystemMessage, out var message)
@@ -213,6 +214,7 @@ namespace Volte.Core.Entities
         public void Throw<TException>() where TException : Exception
         {
             var ctor = typeof(TException).GetConstructors().FirstOrDefault(x => x.GetParameters().IsEmpty());
+
             if (ctor != null)
                 throw ctor.Invoke(Array.Empty<object>()).Cast<TException>();
             throw new InvalidOperationException(

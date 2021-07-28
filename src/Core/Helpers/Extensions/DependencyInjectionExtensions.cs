@@ -63,7 +63,7 @@ namespace Gommon
             => serviceCollection.Apply(coll =>
             {
                 //get all the classes that inherit IVolteService, and aren't abstract.
-                var l = typeof(Program).Assembly.GetTypes()
+                var l = typeof(VolteBot).Assembly.GetTypes()
                     .Where(IsEligibleService).Apply(ls => ls.ForEach(coll.TryAddSingleton));
                 Logger.Info(LogSource.Volte, $"Injected {l.Count()} services into the provider.");
             });

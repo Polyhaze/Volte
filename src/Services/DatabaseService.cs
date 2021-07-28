@@ -5,28 +5,40 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using LiteDB;
 using Volte.Core;
 using Volte.Core.Entities;
+// ReSharper disable ReturnTypeCanBeEnumerable.Global
 
 namespace Volte.Services
 {
     public sealed class DatabaseService : IVolteService, IDisposable
     {
         public static readonly LiteDatabase Database = new LiteDatabase($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
-        private const string GuildsCollection = "guilds";
-        private const string RemindersCollection = "reminders";
 
         private readonly DiscordShardedClient _client;
-        
+        private readonly object _lock;
+
+        private readonly ILiteCollection<GuildData> _guildData;
+        private readonly ILiteCollection<Reminder> _reminderData;
         private readonly ILiteCollection<StarboardEntryBase> _starboardData;
 
         public DatabaseService(DiscordShardedClient discordShardedClient)
         {
             _client = discordShardedClient;
-            
+            _lock = new object();
+            _guildData = Database.GetCollection<GuildData>("guilds");
+            _reminderData = Database.GetCollection<Reminder>("reminders");
             _starboardData = Database.GetCollection<StarboardEntryBase>("starboard");
             _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardEntryBase.GuildId)} + '_' + $.{nameof(StarboardEntryBase.Key)}");
+        }
+
+        private void LockedCollection<T>(ILiteCollection<T> coll, Action<ILiteCollection<T>> action)
+        {
+            lock (_lock)
+                action(coll);
+            
         }
 
         public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
@@ -35,88 +47,52 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            var coll = Database.GetCollection<GuildData>(GuildsCollection);
-            var conf = coll.FindOne(g => g.Id == id);
-            if (conf != null) return conf;
-            var newConf = Create(_client.GetGuild(id));
-            coll.Insert(newConf);
-            return newConf;
+            return _lock.Lock(() =>
+            {
+                var conf = _guildData.FindOne(g => g.Id == id);
+                if (conf != null) return conf;
+                var newConf = GuildData.CreateFrom(_client.GetGuild(id));
+                _guildData.Insert(newConf);
+                return newConf;
+            });
         }
 
         public HashSet<Reminder> GetReminders(IUser user, IGuild guild = null) => GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
 
-        public HashSet<Reminder> GetReminders(ulong id, ulong guild = 0) 
-            => GetAllReminders().Where(r => r.CreatorId == id && (guild is 0 || r.GuildId == guild)).ToHashSet();
+        public HashSet<Reminder> GetReminders(ulong creator, ulong guild = 0)
+            => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
 
-        public bool TryDeleteReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Delete(reminder.Id);
+        public bool TryDeleteReminder(Reminder reminder) => _lock.Lock(() => _reminderData.Delete(reminder.Id));
 
-        public HashSet<Reminder> GetAllReminders() => Database.GetCollection<Reminder>(RemindersCollection).FindAll().ToHashSet();
+        public HashSet<Reminder> GetAllReminders() => _lock.Lock(() => _reminderData.FindAll().ToHashSet());
         
-        public void CreateReminder(Reminder reminder) => Database.GetCollection<Reminder>(RemindersCollection).Insert(reminder);
+        public void CreateReminder(Reminder reminder) => _lock.Lock(() => _reminderData.Insert(reminder));
 
         public void Modify(ulong guildId, DataEditor modifier)
         {
-            var data = GetData(guildId);
-            modifier(data);
-            Save(data);
+            LockedCollection(_guildData, coll =>
+            {
+                var data = GetData(guildId);
+                modifier(data);
+                Save(data);
+            });
         }
 
         public void Save(GuildData newConfig)
         {
-            var collection = Database.GetCollection<GuildData>(GuildsCollection);
-            collection.EnsureIndex(s => s.Id, true);
-            collection.Update(newConfig);
-        }
-
-        private static GuildData Create(IGuild guild)
-            => new GuildData
+            LockedCollection(_guildData, coll =>
             {
-                Id = guild.Id,
-                OwnerId = guild.OwnerId,
-                Configuration = new GuildConfiguration
-                {
-                    Autorole = default,
-                    CommandPrefix = Config.CommandPrefix,
-                    Moderation = new ModerationOptions
-                    {
-                        AdminRole = default,
-                        Antilink = default,
-                        Blacklist = new HashSet<string>(),
-                        MassPingChecks = default,
-                        ModActionLogChannel = default,
-                        ModRole = default,
-                        CheckAccountAge = false,
-                        VerifiedRole = default,
-                        UnverifiedRole = default,
-                        BlacklistAction = BlacklistAction.Nothing,
-                        ShowResponsibleModerator = true
-                    },
-                    Welcome = new WelcomeOptions
-                    {
-                        LeavingMessage = string.Empty,
-                        WelcomeChannel = default,
-                        WelcomeColor = new Color(0x7000FB).RawValue,
-                        WelcomeMessage = string.Empty
-                    }
-                },
-                Extras = new GuildExtras
-                {
-                    ModActionCaseNumber = default,
-                    SelfRoles = new HashSet<string>(),
-                    Tags = new HashSet<Tag>(),
-                    Warns = new HashSet<Warn>()
-                }
-            };
+                _guildData.EnsureIndex(s => s.Id, true);
+                _guildData.Update(newConfig);
+            });
+        }
 
         private StarboardEntryBase GetStargazersInternal(ulong guildId, ulong messageId)
-        {
-            return _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId);
-        }
-
+            => _lock.Lock(() => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId));
+        
         public StarboardEntry GetStargazers(ulong guildId, ulong messageId)
-        {
-            return GetStargazersInternal(guildId, messageId)?.Value;
-        }
+            => GetStargazersInternal(guildId, messageId)?.Value;
+        
 
         public bool TryGetStargazers(ulong guildId, ulong messageId, [NotNullWhen(true)] out StarboardEntry entry)
         {
@@ -126,25 +102,31 @@ namespace Volte.Services
 
         public void UpdateStargazers(StarboardEntry entry)
         {
-            _starboardData.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardEntryBase
+            LockedCollection(_starboardData, coll =>
             {
-                GuildId = entry.GuildId,
-                Key = entry.StarboardMessageId,
-                Value = entry
-            });
+                coll.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardEntryBase
+                {
+                    GuildId = entry.GuildId,
+                    Key = entry.StarboardMessageId,
+                    Value = entry
+                });
 
-            _starboardData.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardEntryBase
-            {
-                GuildId = entry.GuildId,
-                Key = entry.StarredMessageId,
-                Value = entry
+                coll.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardEntryBase
+                {
+                    GuildId = entry.GuildId,
+                    Key = entry.StarredMessageId,
+                    Value = entry
+                });
             });
         }
 
         public void RemoveStargazers(StarboardEntry entry)
         {
-            _starboardData.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
-            _starboardData.Delete($"{entry.GuildId}_{entry.StarredMessageId}");
+            LockedCollection(_starboardData, coll =>
+            {
+                coll.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
+                coll.Delete($"{entry.GuildId}_{entry.StarredMessageId}");
+            });
         }
 
         public void Dispose() 

@@ -11,7 +11,7 @@ namespace Volte.Core.Helpers
     public static class HttpHelper
     {
         /// <summary>
-        ///     Posts the string <paramref name="content"/> to https://paste.greemdev.net with the <see cref="HttpClient"/> from <paramref name="provider"/>.
+        ///     POSTs the string <paramref name="content"/> to https://paste.greemdev.net with the <see cref="HttpClient"/> from <paramref name="provider"/>.
         ///     This method will throw if there is no <see cref="HttpClient"/> in the <paramref name="provider"/> given.
         /// </summary>
         /// <param name="content">The content to send.</param>
@@ -23,8 +23,7 @@ namespace Volte.Core.Helpers
         {
             try
             {
-                var response = await provider.Get<HttpClient>().PostAsync("https://paste.greemdev.net/documents", new StringContent(content, Encoding.UTF8, "text/plain"));
-                var jdoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, "https://paste.greemdev.net/documents", content)).Content.ReadAsStringAsync());
                 return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? "" : $".{fileExtension}")}}}";
             }
             catch (Exception e)
@@ -34,6 +33,17 @@ namespace Volte.Core.Helpers
             }
 
         }
+
+        /// <summary>
+        ///     POSTs the specified string <paramref name="content"/> to <paramref name="url"/> with the <see cref="HttpClient"/> from <paramref name="provider"/>.
+        /// </summary>
+        /// <param name="provider">The <see cref="IServiceProvider"/> containing the <see cref="HttpClient"/>.</param>
+        /// <param name="url">The URL to POST to.</param>
+        /// <param name="content">The content to POST.</param>
+        /// <returns>The resulting <see cref="HttpResponseMessage"/>.</returns>
+        public static Task<HttpResponseMessage> PostStringAsync(IServiceProvider provider, string url, string content) 
+            => provider.Get<HttpClient>().PostAsync(url, new StringContent(content, Encoding.UTF8, "text/plain"));
+        
         
         /// <summary>
         ///     Gets a collection of allowed paste sites from https://paste.greemdev.net/volteAllowedPasteSites with the <see cref="HttpClient"/> from <paramref name="provider"/>.

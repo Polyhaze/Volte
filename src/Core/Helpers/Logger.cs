@@ -16,13 +16,13 @@ namespace Volte.Core.Helpers
     {
         static Logger()
         {
-            Lock = new object();
-            LogFile = $"{Config.DataDirectory}/logs/Volte.log";
+            if (!Directory.Exists("logs"))
+                Directory.CreateDirectory("logs");
         }
-        
-        private static readonly object Lock;
-        private static readonly string LogFile;
-        private static bool _hasPrinted;
+    
+        private static readonly object Lock = new object();
+        private const string LogFile = "logs/Volte.log";
+        private static bool _headerPrinted;
 
         public static void HandleLogEvent(LogEventArgs args) =>
             Log(args.LogMessage.Severity, args.LogMessage.Source,
@@ -30,13 +30,13 @@ namespace Volte.Core.Helpers
 
         internal static void PrintHeader()
         {
-            if (_hasPrinted) return;
+            if (_headerPrinted) return;
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             new Figlet().ToAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries)
                 .ForEach(ln => Info(LogSource.Volte, ln));
             Info(LogSource.Volte, CommandsService.Separator.Trim());
             Info(LogSource.Volte, $"Currently running Volte V{Version.FullVersion}.");
-            _hasPrinted = true;
+            _headerPrinted = true;
         }
 
         private static void Log(LogSeverity s, LogSource from, string message, Exception e = null)

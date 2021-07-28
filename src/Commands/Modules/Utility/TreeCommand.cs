@@ -28,7 +28,7 @@ namespace Volte.Commands.Modules
             else
                 foreach (var c in toIterate)
                     uncategorized.AppendDescriptionLine(
-                        $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()?.Mention)}");
+                        $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()!.Mention)}");
             
             foreach (var category in Context.Guild.CategoryChannels.OrderBy(x => x.Position))
             {

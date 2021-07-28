@@ -100,7 +100,7 @@ namespace Volte.Core
             }
         }
 
-        public static (ActivityType Type, string Name, string Streamer) ParseConfigActivity()
+        public static (ActivityType Type, string Name, string Streamer) ParseActivity()
         {
             var split = Game.Split(" ");
             var title = split.Skip(1).Join(" ");

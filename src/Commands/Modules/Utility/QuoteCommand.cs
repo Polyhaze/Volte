@@ -31,7 +31,7 @@ namespace Volte.Commands.Modules
                     .WithFooter(m.Timestamp.Humanize()).Apply(e =>
                     {
                         if (!m.Attachments.IsEmpty())
-                            e.WithImageUrl(m.Attachments.FirstOrDefault()?.Url);
+                            e.WithImageUrl(m.Attachments.First().Url);
                     }))
                 : BadRequest("A message with that ID doesn't exist in this channel.");
         }

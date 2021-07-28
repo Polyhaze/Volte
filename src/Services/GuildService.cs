@@ -39,7 +39,7 @@ namespace Volte.Services
                     .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin; however")
                     .AppendLine("if you're wondering why you're getting permission errors, that's *probably* why.")
                     .ToString())
-                .AddField("Support Server", "[Join my support Discord here](https://discord.gg/H8bcFr2)");
+                .AddField("Support Server", "https://discord.gg/H8bcFr2");
 
             Logger.Debug(LogSource.Volte,
                 "Attempting to send the guild owner the introduction message.");
@@ -78,10 +78,9 @@ namespace Volte.Services
                 .AddField("Users", users.Length, true)
                 .AddField("Bots", bots.Length, true);
 
-            if (bots.Length > users.Length)
+            if (bots.Length > users.Length && !(bots.Length > 5))
                 await channel.SendMessageAsync(
-                    $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", 
-                    embed: e.WithSuccessColor().Build());
+                    $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", embed: e.WithSuccessColor().Build());
             else
                 await e.WithSuccessColor().SendToAsync(channel);
         }

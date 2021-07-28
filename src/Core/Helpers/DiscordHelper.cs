@@ -8,6 +8,7 @@ using Discord.Net;
 using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
+using Humanizer;
 using Volte.Commands;
 using Volte.Core.Entities;
 using Volte.Services;
@@ -147,16 +148,15 @@ namespace Volte.Core.Helpers
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
             var welcome = provider.Get<WelcomeService>();
-            var evt = provider.Get<EventService>();
             var autorole = provider.Get<AutoroleService>();
             var mod = provider.Get<ModerationService>();
             var starboard = provider.Get<StarboardService>();
 
             client.Log += async m =>
             {
-                await Task.Yield();
-                Logger.HandleLogEvent(new LogEventArgs(m));
+                await Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
             };
+
             if (provider.TryGet<GuildService>(out var guild))
             {
                 client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
@@ -171,12 +171,64 @@ namespace Volte.Core.Helpers
                     Config.EnabledFeatures.ModLog)
                     await mod.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
             };
+
             client.UserLeft += async user =>
             {
                 if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(new UserLeftEventArgs(user));
             };
 
-            client.ShardReady += async c => await evt.OnShardReadyAsync(new ShardReadyEventArgs(c, client));
+            client.ShardReady += async c =>
+            {
+                var guilds = c.Guilds.Count;
+                var users = c.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
+                var channels = c.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
+
+                Logger.PrintHeader();
+                Logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
+                Logger.Info(LogSource.Volte, $"{c.GetInviteUrl()}");
+                Logger.Info(LogSource.Volte, $"Logged in as {c.CurrentUser}, shard {c.ShardId}");
+                Logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
+                Logger.Info(LogSource.Volte, "Connected to:");
+                Logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
+                Logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
+                Logger.Info(LogSource.Volte, $"     {"channel".ToQuantity(channels)}");
+
+                var (type, name, streamer) = Config.ParseActivity();
+
+                if (streamer is null && type != ActivityType.CustomStatus)
+                {
+                    await c.SetGameAsync(name, null, type);
+                    Logger.Info(LogSource.Volte, $"Set {c.CurrentUser.Username}'s game to \"{Config.Game}\".");
+                }
+                else if (type != ActivityType.CustomStatus)
+                {
+                    await c.SetGameAsync(name, Config.FormattedStreamUrl, type);
+                    Logger.Info(LogSource.Volte,
+                        $"Set {c.CurrentUser.Username}'s activity to \"{type}: {name}\", at Twitch user {Config.Streamer}.");
+                }
+
+                _ = Executor.ExecuteAsync(async () =>
+                {
+                    foreach (var guild in c.Guilds)
+                    {
+                        if (Config.BlacklistedOwners.Contains(guild.OwnerId))
+                            await guild.LeaveAsync().ContinueWith(async _ => Logger.Warn(LogSource.Volte,
+                                $"Left guild \"{guild.Name}\" owned by blacklisted owner {await c.Rest.GetUserAsync(guild.OwnerId)}."));
+                        else provider.Get<DatabaseService>().GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
+                        }
+                });
+
+                if (Config.GuildLogging.TryValidate(client, out var channel))
+                {
+                    await new EmbedBuilder()
+                        .WithSuccessColor()
+                        .WithAuthor(c.GetOwner())
+                        .WithDescription(
+                            $"Volte {Version.FullVersion} is starting {DateTime.Now.FormatBoldString()}!")
+                        .SendToAsync(channel);
+                }
+            };
+
             client.MessageReceived += async socketMessage =>
             {
                 if (socketMessage.ShouldHandle(out var msg))
@@ -184,7 +236,7 @@ namespace Volte.Core.Helpers
                     if (msg.Channel is IDMChannel dm)
                         await dm.SendMessageAsync("Currently, I do not support commands via DM.");
                     else
-                        await evt.HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
+                        await provider.Get<CommandsService>().HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
                 }
             };
             

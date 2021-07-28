@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
@@ -25,7 +24,7 @@ namespace Volte.Core.Helpers
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new List<string>
+        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new []
         {
             "System", "System.IO", "System.Linq", "System.Text", "System.Threading", "System.Threading.Tasks",
             "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
@@ -46,9 +45,8 @@ namespace Volte.Core.Helpers
             try
             {
                 if (Pattern.IsMatch(code, out var match))
-                {
                     code = match.Groups[1].Value;
-                }
+                
 
                 return ExecuteScriptAsync(code, ctx);
             }

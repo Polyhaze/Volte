@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -14,14 +17,76 @@ namespace Volte.Services
 {
     public sealed class CommandsService : IVolteService
     {
+        private readonly AntilinkService _antilink;
+        private readonly BlacklistService _blacklist;
+        private readonly PingChecksService _pingchecks;
+        private readonly CommandService _commandService;
+        private readonly QuoteService _quoteService;
+
         public ulong SuccessfulCommandCalls { get; private set; }
         public ulong FailedCommandCalls { get; private set; }
 
-
-        public CommandsService()
+        public CommandsService(AntilinkService antilinkService,
+            BlacklistService blacklistService,
+            PingChecksService pingChecksService,
+            CommandService commandService,
+            QuoteService quoteService)
         {
+            _antilink = antilinkService;
+            _blacklist = blacklistService;
+            _pingchecks = pingChecksService;
+            _commandService = commandService;
+            _quoteService = quoteService;
             SuccessfulCommandCalls = 0;
             FailedCommandCalls = 0;
+        }
+
+        public async Task HandleMessageAsync(MessageReceivedEventArgs args)
+        {
+            if (Config.EnabledFeatures.Blacklist) await _blacklist.CheckMessageAsync(args);
+            if (Config.EnabledFeatures.Antilink) await _antilink.CheckMessageAsync(args);
+            if (Config.EnabledFeatures.PingChecks) await _pingchecks.CheckMessageAsync(args);
+
+            var prefixes = new List<string>
+            {
+                args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
+                $"<@!{args.Context.Client.CurrentUser.Id}> "
+            };
+
+            if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
+                out var cmd))
+            {
+                var sw = Stopwatch.StartNew();
+                var result = await _commandService.ExecuteAsync(cmd, args.Context);
+                sw.Stop();
+                if (!(result is CommandNotFoundResult))
+                    await OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
+            }
+            else
+            {
+                if (args.Message.Content.EqualsAnyIgnoreCase($"<@{args.Context.Client.CurrentUser.Id}>",
+                    $"<@!{args.Context.Client.CurrentUser.Id}>"))
+                {
+                    await args.Context.CreateEmbed(
+                            $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                            $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
+                        .ReplyToAsync(args.Message);
+                }
+                else if (!await _quoteService.CheckMessageAsync(args))
+                {
+                    if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
+                    {
+                        var tag = args.Context.GuildData.Extras.Tags.FirstOrDefault(t =>
+                            t.Name.EqualsIgnoreCase(tagName));
+                        if (tag is null) return;
+                        if (args.Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
+                            await tag.AsEmbed(args.Context).SendToAsync(args.Message.Channel);
+                        else
+                            await args.Message.Channel.SendMessageAsync(tag.FormatContent(args.Context));
+
+                    }
+                }
+            }
         }
 
         public async Task OnCommandAsync(CommandCalledEventArgs args)

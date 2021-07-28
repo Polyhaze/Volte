@@ -21,6 +21,8 @@ namespace Volte.Core
 {
     public class VolteBot
     {
+        internal static async Task Main() => await StartAsync();
+
         public static Task StartAsync()
         {
             Console.Title = "Volte";
@@ -63,7 +65,7 @@ namespace Volte.Core
             var l = commandService.AddTypeParsers();
             sw.Stop();
             Logger.Info(LogSource.Volte,
-                $"Loaded TypeParsers: [{l.Select(x => x.SanitizeParserName()).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
+                $"Loaded TypeParsers: [{l.Select(x => x.Name.Replace("Parser", string.Empty)).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
             sw = Stopwatch.StartNew();
             var loaded = commandService.AddModules(GetType().Assembly);
             sw.Stop();
