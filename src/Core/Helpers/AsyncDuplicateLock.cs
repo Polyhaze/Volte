@@ -63,9 +63,9 @@ namespace Volte.Core.Helpers
 
             public T Key { get; }
 
-            public Releaser(T key, Dictionary<T, RefCounted<SemaphoreSlim>> semaphoreSlims)
+            public Releaser(T key, Dictionary<T, RefCounted<SemaphoreSlim>> semaphores)
             {
-                _semaphores = semaphoreSlims;
+                _semaphores = semaphores;
                 Key = key;
             }
 
@@ -76,8 +76,7 @@ namespace Volte.Core.Helpers
                 {
                     item = _semaphores[Key];
                     --item.RefCount;
-                    if (item.RefCount == 0)
-                        _semaphores.Remove(Key);
+                    if (item.RefCount is 0) _semaphores.Remove(Key);
                 }
 
                 item.Value.Release();
