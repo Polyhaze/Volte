@@ -3,6 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
@@ -10,12 +11,14 @@ namespace Volte.Commands.Modules
     [RequireGuildAdmin]
     public sealed class StarboardModule : VolteModule
     {
+        public StarboardService Service { get; set; }
+        
         [Command, DummyCommand, Description("The set of commands used to modify how the Starboard works in your guild.")]
         public Task<ActionResult> BaseAsync() => None();
         
         [Command("Channel", "Ch")]
         [Description("Sets the channel to be used by starboard when a message is starred.")]
-        public Task<ActionResult> StarboardChannelAsync(SocketTextChannel channel)
+        public Task<ActionResult> ChannelAsync(SocketTextChannel channel)
         {
             Context.Modify(data =>
             {
@@ -26,7 +29,7 @@ namespace Volte.Commands.Modules
 
         [Command("Amount", "Count")]
         [Description("Sets the amount of stars required on a message for it to be posted to the Starboard.")]
-        public Task<ActionResult> StarsRequiredToPostAsync(int amount)
+        public Task<ActionResult> AmountAsync(int amount)
         {
             if (amount < 1)
             {
@@ -42,7 +45,7 @@ namespace Volte.Commands.Modules
 
         [Command("Enable")]
         [Description("Enable or disable the Starboard in this guild.")]
-        public Task<ActionResult> StarboardEnableAsync(bool enabled)
+        public Task<ActionResult> EnableAsync(bool enabled)
         {
             Context.Modify(data =>
             {

@@ -12,7 +12,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Ban")]
         [Description("Bans a member.")]
-        [RequireBotGuildPermission(GuildPermission.BanMembers)]
         public async Task<ActionResult> BanAsync([CheckHierarchy, EnsureNotSelf, Description("The member to ban.")]
             SocketGuildUser member,
             [Remainder, Description("The reason for the ban.")]

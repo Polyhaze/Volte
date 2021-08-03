@@ -18,27 +18,18 @@ namespace Volte.Services
         public static readonly LiteDatabase Database = new LiteDatabase($"filename={Config.DataDirectory}/Volte.db;upgrade=true;connection=direct");
 
         private readonly DiscordShardedClient _client;
-        private readonly object _lock;
 
         private readonly ILiteCollection<GuildData> _guildData;
         private readonly ILiteCollection<Reminder> _reminderData;
-        private readonly ILiteCollection<StarboardEntryBase> _starboardData;
+        private readonly ILiteCollection<StarboardDbEntry> _starboardData;
 
         public DatabaseService(DiscordShardedClient discordShardedClient)
         {
             _client = discordShardedClient;
-            _lock = new object();
             _guildData = Database.GetCollection<GuildData>("guilds");
             _reminderData = Database.GetCollection<Reminder>("reminders");
-            _starboardData = Database.GetCollection<StarboardEntryBase>("starboard");
-            _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardEntryBase.GuildId)} + '_' + $.{nameof(StarboardEntryBase.Key)}");
-        }
-
-        private void LockedCollection<T>(ILiteCollection<T> coll, Action<ILiteCollection<T>> action)
-        {
-            lock (_lock)
-                action(coll);
-            
+            _starboardData = Database.GetCollection<StarboardDbEntry>("starboard");
+            _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
         }
 
         public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
@@ -47,7 +38,7 @@ namespace Volte.Services
 
         public GuildData GetData(ulong id)
         {
-            return _lock.Lock(() =>
+            return _guildData.ValueLock(() =>
             {
                 var conf = _guildData.FindOne(g => g.Id == id);
                 if (conf != null) return conf;
@@ -62,15 +53,15 @@ namespace Volte.Services
         public HashSet<Reminder> GetReminders(ulong creator, ulong guild = 0)
             => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
 
-        public bool TryDeleteReminder(Reminder reminder) => _lock.Lock(() => _reminderData.Delete(reminder.Id));
+        public bool TryDeleteReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
 
-        public HashSet<Reminder> GetAllReminders() => _lock.Lock(() => _reminderData.FindAll().ToHashSet());
+        public HashSet<Reminder> GetAllReminders() => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
         
-        public void CreateReminder(Reminder reminder) => _lock.Lock(() => _reminderData.Insert(reminder));
+        public void CreateReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
 
         public void Modify(ulong guildId, DataEditor modifier)
         {
-            LockedCollection(_guildData, coll =>
+            _guildData.LockedRef(coll =>
             {
                 var data = GetData(guildId);
                 modifier(data);
@@ -80,15 +71,15 @@ namespace Volte.Services
 
         public void Save(GuildData newConfig)
         {
-            LockedCollection(_guildData, coll =>
+            _guildData.LockedRef(coll =>
             {
                 _guildData.EnsureIndex(s => s.Id, true);
                 _guildData.Update(newConfig);
             });
         }
 
-        private StarboardEntryBase GetStargazersInternal(ulong guildId, ulong messageId)
-            => _lock.Lock(() => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId));
+        private StarboardDbEntry GetStargazersInternal(ulong guildId, ulong messageId)
+            => _reminderData.ValueLock(() => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId));
         
         public StarboardEntry GetStargazers(ulong guildId, ulong messageId)
             => GetStargazersInternal(guildId, messageId)?.Value;
@@ -102,16 +93,16 @@ namespace Volte.Services
 
         public void UpdateStargazers(StarboardEntry entry)
         {
-            LockedCollection(_starboardData, coll =>
+            _starboardData.LockedRef(coll =>
             {
-                coll.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardEntryBase
+                coll.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardDbEntry
                 {
                     GuildId = entry.GuildId,
                     Key = entry.StarboardMessageId,
                     Value = entry
                 });
 
-                coll.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardEntryBase
+                coll.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardDbEntry
                 {
                     GuildId = entry.GuildId,
                     Key = entry.StarredMessageId,
@@ -122,7 +113,7 @@ namespace Volte.Services
 
         public void RemoveStargazers(StarboardEntry entry)
         {
-            LockedCollection(_starboardData, coll =>
+            _starboardData.LockedRef(coll =>
             {
                 coll.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
                 coll.Delete($"{entry.GuildId}_{entry.StarredMessageId}");

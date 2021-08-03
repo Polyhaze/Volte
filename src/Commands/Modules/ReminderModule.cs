@@ -22,7 +22,7 @@ namespace Volte.Commands.Modules
             string reminder)
         {
             var end = Context.Now.Add(timeFromNow);
-            Db.CreateReminder(Reminder.FromContext(Context, end, reminder));
+            Db.CreateReminder(Reminder.CreateFrom(Context, end, reminder));
             return Ok(
                 $"I'll remind you {end.FormatBoldString()} ({end.Humanize(dateToCompareAgainst: Context.Now)}).");
         }

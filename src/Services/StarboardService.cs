@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -261,6 +262,24 @@ namespace Volte.Services
             }
         }
 
+        public EmbedBuilder GetStarboardEmbed(IMessage message)
+        {
+            var e = new EmbedBuilder()
+                .WithSuccessColor()
+                .WithCurrentTimestamp()
+                .WithAuthor(message.Author)
+                .AddField("Posted", Format.Bold(Format.Url($"#{message.Channel.Name}", message.GetJumpUrl())));
+
+            if (Uri.IsWellFormedUriString(message.Content, UriKind.RelativeOrAbsolute))
+                e.WithImageUrl(message.Content);
+            else if (!message.Attachments.IsEmpty())
+                e.WithImageUrl(message.Attachments.First().Url);
+
+            if (message.Attachments.IsEmpty())
+                e.WithDescription(message.Content);
+            return e;
+        }
+
         private async Task<IMessage> PostToStarboardAsync(IMessage message, int starCount)
         {
             var data = await _db.GetDataAsync(message.Channel.Cast<IGuildChannel>().GuildId);
@@ -273,14 +292,8 @@ namespace Volte.Services
             // field unless it is present in Discord.Net's message cache.
             message = await message.Channel.GetMessageAsync(message.Id);
 
-            var e = new EmbedBuilder()
-                .WithSuccessColor()
-                .WithDescription(message.Content)
-                .WithCurrentTimestamp()
-                .WithAuthor(message.Author)
-                .AddField("Posted", Format.Bold(Format.Url($"#{message.Channel.Name}", message.GetJumpUrl())));
-
-            var result = await starboardTextChannel.SendMessageAsync($"{_starEmoji} {starCount}", embed: e.Build());
+            var result = await starboardTextChannel.SendMessageAsync($"{_starEmoji} {starCount}", 
+                embed: GetStarboardEmbed(message).Build());
             await result.AddReactionAsync(_starEmoji);
             return result;
         }

@@ -34,7 +34,8 @@ namespace Gommon
             BlacklistAction.Warn => member.WarnAsync(ctx, $"Used blacklisted phrase \"{word}\""),
             BlacklistAction.Kick => member.KickAsync($"Used blacklisted phrase \"{word}\""),
             BlacklistAction.Ban => member.BanAsync(7, $"Used blacklisted phrase \"{word}\""),
-            BlacklistAction.Nothing => Task.Run(() => Logger.Debug(LogSource.Service, $"Guild {member.Guild} had BlacklistAction set to {nameof(BlacklistAction.Nothing)}.")),
+            BlacklistAction.Nothing => Task.Run(() => Logger.Debug(LogSource.Service,
+                $"Guild {member.Guild} had BlacklistAction set to {nameof(BlacklistAction.Nothing)}.")),
             _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
         };
 
@@ -42,11 +43,22 @@ namespace Gommon
             => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
                 ctx.Services.GetRequiredService<DatabaseService>(), reason);
 
-        public static T Lock<T>(this object @lock, Func<T> action)
+        public static T ValueLock<T>(this object @lock, Func<T> action)
         {
             lock (@lock)
                 return action();
         }
-        
+
+        public static void Lock(this object @lock, Action action)
+        {
+            lock (@lock)
+                action();
+        }
+
+        public static void LockedRef<T>(this T obj, Action<T> action)
+        {
+            lock (obj)
+                action(obj);
+        }
     }
 }

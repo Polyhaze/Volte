@@ -14,7 +14,6 @@ namespace Volte.Commands.Modules
     {
         [Command("Purge", "Clear", "Clean")]
         [Description("Purges the last x messages, or the last x messages by a given user.")]
-        [RequireBotChannelPermission(ChannelPermission.ManageMessages)]
         public async Task<ActionResult> PurgeAsync([Description("The amount of messages to purge.")]
             int count, [Description("If provided, will only delete messages by this user within `count` messages.")]
             RestUser targetAuthor = null)

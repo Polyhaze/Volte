@@ -9,3 +9,4 @@ src/data/Volte.db
 *.vssscc
 *.log
 src/data/config.json
+global.json

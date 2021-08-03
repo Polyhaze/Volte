@@ -35,8 +35,10 @@ namespace Volte.Core.Entities
 
         public SocketGuildUser Member(ulong id) => Context.Guild.GetUser(id);
         public SocketUser User(ulong id) => Context.Client.GetUser(id);
+
         public SocketGuildUser Member(string username) => Context.Guild.Users.FirstOrDefault(a =>
             a.Username.EqualsIgnoreCase(username) || (a.Nickname != null && a.Nickname.EqualsIgnoreCase(username)));
+
         public SocketTextChannel TextChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketTextChannel>();
         public SocketVoiceChannel VoiceChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketVoiceChannel>();
         public SocketNewsChannel NewsChannel(ulong id) => Context.Client.GetChannel(id).Cast<SocketNewsChannel>();
@@ -100,7 +102,7 @@ namespace Volte.Core.Entities
 
             var sb = new StringBuilder().AppendLine($"Inheritance tree for type [{type.FullName}]").AppendLine();
 
-            foreach (var baseType in baseTypes)
+            baseTypes.ForEach(baseType =>
             {
                 sb.Append($"[{baseType.AsPrettyString()}]");
                 var inheritors = baseType.GetInterfaces().ToList();
@@ -114,7 +116,7 @@ namespace Volte.Core.Entities
                     sb.Append($": {string.Join(", ", inheritors.Select(x => x.AsPrettyString()))}");
 
                 sb.AppendLine();
-            }
+            });
 
             return sb.ToString();
         }
@@ -143,7 +145,8 @@ namespace Volte.Core.Entities
 
                     var sep = new string(' ', columnWidth - prop.Name.Length);
 
-                    inspection.Append(prop.Name).Append(sep).Append(prop.CanRead ? ReadValue(prop, obj) : "Unreadable")
+                    inspection.Append(prop.Name)
+                        .Append(sep).Append(prop.CanRead ? ReadValue(prop, obj) : "Unreadable")
                         .AppendLine();
                 }
             }
@@ -153,10 +156,8 @@ namespace Volte.Core.Entities
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 // same here wtf
                 if (props.Count != 0)
-                {
-                    inspection.AppendLine();
-                    inspection.AppendLine("<< Fields >>");
-                }
+                    inspection.AppendLine().AppendLine("<< Fields >>");
+                
 
                 var columnWidth = fields.Max(ab => ab.Name.Length) + 5;
                 foreach (var prop in fields)
@@ -213,12 +214,11 @@ namespace Volte.Core.Entities
 
         public void Throw<TException>() where TException : Exception
         {
-            var ctor = typeof(TException).GetConstructors().FirstOrDefault(x => x.GetParameters().IsEmpty());
-
-            if (ctor != null)
-                throw ctor.Invoke(Array.Empty<object>()).Cast<TException>();
-            throw new InvalidOperationException(
-                "Specified exception type didn't have a discoverable zero-parameter constructor.");
+            var ctor = typeof(TException).GetConstructors()
+                           .FirstOrDefault(x => x.GetParameters().IsEmpty())
+                       ?? throw new InvalidOperationException(
+                           "Specified exception type didn't have a discoverable zero-parameter constructor.");
+            throw ctor.Invoke(Array.Empty<object>()).Cast<TException>();
         }
     }
 }

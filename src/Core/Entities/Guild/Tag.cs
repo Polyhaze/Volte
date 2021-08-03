@@ -10,21 +10,25 @@ namespace Volte.Core.Entities
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }
+
         [JsonPropertyName("content")]
         public string Response { get; set; }
+
         [JsonPropertyName("creator")]
         public ulong CreatorId { get; set; }
+
         [JsonPropertyName("guild")]
         public ulong GuildId { get; set; }
+
         [JsonPropertyName("uses")]
         public long Uses { get; set; }
 
-        public string SanitizeContent() 
+        public string SanitizeContent()
             => Response
                 .Replace("@everyone", $"@{DiscordHelper.Zws}everyone")
                 .Replace("@here", $"@{DiscordHelper.Zws}here");
 
-        public string FormatContent(VolteContext ctx) 
+        public string FormatContent(VolteContext ctx)
             => SanitizeContent()
                 .Replace("{ServerName}", ctx.Guild.Name)
                 .Replace("{GuildName}", ctx.Guild.Name)
@@ -33,11 +37,11 @@ namespace Volte.Core.Entities
                 .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
                 .Replace("{UserTag}", ctx.User.Discriminator);
 
-        public EmbedBuilder AsEmbed(VolteContext ctx) 
-            => ctx.CreateEmbedBuilder(FormatContent(ctx)).WithAuthor(author: null)
-                .WithFooter($"Requested by {ctx.User}.", ctx.User.GetEffectiveAvatarUrl());
+        public EmbedBuilder AsEmbed(VolteContext ctx) => ctx.CreateEmbedBuilder(FormatContent(ctx))
+            .WithAuthor(author: null)
+            .WithFooter($"Requested by {ctx.User}.", ctx.User.GetEffectiveAvatarUrl());
 
-        
+
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);
     }

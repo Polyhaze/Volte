@@ -9,7 +9,6 @@ namespace Volte.Commands.Modules
     {
         [Command("ChannelName", "Cn")]
         [Description("Sets the name of the current channel.")]
-        [RequireBotChannelPermission(ChannelPermission.ManageChannels)]
         public async Task<ActionResult> ChannelNameAsync(
             [Remainder, Description("The name to change the channel to. Automatically replaces spaces with -.")]
             string name)

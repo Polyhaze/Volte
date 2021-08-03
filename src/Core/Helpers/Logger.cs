@@ -14,12 +14,8 @@ namespace Volte.Core.Helpers
 {
     public static class Logger
     {
-        static Logger()
-        {
-            if (!Directory.Exists("logs"))
-                Directory.CreateDirectory("logs");
-        }
-    
+        static Logger() => Directory.CreateDirectory("logs");
+        
         private static readonly object Lock = new object();
         private const string LogFile = "logs/Volte.log";
         private static bool _headerPrinted;
@@ -41,13 +37,10 @@ namespace Volte.Core.Helpers
 
         private static void Log(LogSeverity s, LogSource from, string message, Exception e = null)
         {
-            lock (Lock)
-            {
-                if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
-                    return;
-
-                Execute(s, from, message, e);
-            }
+            if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
+                return;
+            
+            Lock.Lock(() => Execute(s, from, message, e));
         }
 
         /// <summary>
@@ -114,8 +107,8 @@ namespace Volte.Core.Helpers
             var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
             Append($"{value}:".PadRight(10), color);
-            var dto = DateTimeOffset.Now.ToLocalTime();
-            content.Append($"[{dto.FormatDate()} | {dto.FormatFullTime()}] {value} -> ");
+            var dt = DateTime.Now.ToLocalTime();
+            content.Append($"[{dt.FormatDate()} | {dt.FormatFullTime()}] {value} -> ");
 
             (color, value) = VerifySource(src);
             Append($"[{value}]".PadRight(10), color);

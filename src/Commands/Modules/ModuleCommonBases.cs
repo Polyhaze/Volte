@@ -150,10 +150,8 @@ namespace Volte.Commands.Modules
                 .ApplyConfig(data);
 
             if (!await member.TrySendMessageAsync(embed: e.Build()))
-            {
-                Logger.Warn(LogSource.Module,
-                    $"encountered a 403 when trying to message {member}!");
-            }
+                Logger.Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+            
         }
     }
 

@@ -35,7 +35,7 @@ namespace Volte.Core.Entities
             var collection = choices as string[] ?? choices.ToArray();
             if (collection.Length - 1 > 10)
                 return FromInvalid("More than 9 options specified.");
-            else if (collection.Length is 1)
+            if (collection.Length is 1)
                 return FromInvalid("No options specified.");
             var fields = new List<(object Name, object Value)>();
             collection.ForEachIndexed((entry, index) =>
@@ -46,16 +46,14 @@ namespace Volte.Core.Entities
             return FromFields(fields);
         }
         
-        public EmbedBuilder Apply(EmbedBuilder embedBuilder)
-        {
-            foreach (var (key, value) in Fields)
-                embedBuilder.AddField(key, value, true);
-
-            embedBuilder.WithTitle(Prompt);
-            embedBuilder.WithFooter(Footer);
-
-            return embedBuilder;
-        }
+        public EmbedBuilder Apply(EmbedBuilder embedBuilder) 
+            => embedBuilder.Apply(eb =>
+            {
+                Fields.ForEach(x => eb.AddField(x.Key, x.Value, true));
+                eb.WithTitle(Prompt);
+                eb.WithFooter(Footer);
+            });
+        
 
         public static PollInfo FromInvalid(string reason)
             => new PollInfo
@@ -83,11 +81,8 @@ namespace Volte.Core.Entities
         public PollInfo AddFields(IEnumerable<(object Name, object Value)> fields)
         {
             foreach (var (name, value) in fields.Select(x => (x.Name.ToString(), x.Value.ToString())))
-            {
-                if (name.IsNullOrEmpty() || value is null) continue;
-                Fields.Add(name, value);
-            }
-
+                if (!(name.IsNullOrEmpty() || value is null)) Fields.Add(name, value);
+            
             return this;
         }
     }

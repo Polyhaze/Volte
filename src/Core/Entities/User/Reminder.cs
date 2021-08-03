@@ -1,13 +1,14 @@
 using System;
-using System.Text.Json;
+using JsonParser = System.Text.Json.JsonSerializer; // same class in namespace LiteDB
 using System.Text.Json.Serialization;
 using Volte.Commands;
+using LiteDB;
 
 namespace Volte.Core.Entities
 {
     public sealed class Reminder
     {
-        public static Reminder FromContext(VolteContext ctx, DateTime end, string reminder) => new Reminder
+        public static Reminder CreateFrom(VolteContext ctx, DateTime end, string reminder) => new Reminder
         {
             TargetTime = end,
             CreationTime = ctx.Now,
@@ -18,7 +19,7 @@ namespace Volte.Core.Entities
             ReminderText = reminder
         };
         
-        [JsonPropertyName("id"), LiteDB.BsonId]
+        [BsonId, JsonPropertyName("id")]
         public long Id { get; set; }
         [JsonPropertyName("target_timestamp")]
         public DateTime TargetTime { get; set; }
@@ -36,6 +37,6 @@ namespace Volte.Core.Entities
         public string ReminderText { get; set; }
 
         public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+            => JsonParser.Serialize(this, Config.JsonOptions);
     }
 }

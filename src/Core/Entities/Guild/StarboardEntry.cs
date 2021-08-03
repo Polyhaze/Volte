@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Volte.Core.Entities
 {
-    public class StarboardEntryBase
+    public class StarboardDbEntry
     {
         [JsonPropertyName("guild_id")]
         public ulong GuildId { get; set; }

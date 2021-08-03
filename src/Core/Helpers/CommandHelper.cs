@@ -48,10 +48,8 @@ namespace Volte.Core.Helpers
             VolteContext ctx)
         {
             foreach (var cmd in commands)
-            {
                 if (await CanShowCommandAsync(ctx, cmd))
                     yield return cmd;
-            }
         }
 
         public static async ValueTask<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
@@ -153,10 +151,6 @@ namespace Volte.Core.Helpers
         private static string GetCheckFriendlyMessage(VolteContext ctx, CheckAttribute cba)
             => cba switch
             {
-                RequireBotChannelPermissionAttribute rbcp =>
-                    $"I require the channel permission(s) {rbcp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
-                RequireBotGuildPermissionAttribute rbgp =>
-                    $"I require the guild permission(s) {rbgp.Permissions.Select(x => x.ToString().Humanize(LetterCasing.Title)).Humanize()}.",
                 RequireGuildAdminAttribute _ => "You need to have the Admin role.",
                 RequireGuildModeratorAttribute _ => "You need to have the Moderator role.",
                 RequireBotOwnerAttribute _ => $"Only usable by **{ctx.Client.GetOwner()}** (bot owner).",

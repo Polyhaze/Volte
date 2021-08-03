@@ -141,9 +141,7 @@ namespace Volte.Core.Helpers
             => client.GetUser(Config.Owner);
 
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
-            =>
-                client.GetGuild(
-                    405806471578648588); //yes hardcoded, the functions that use this guild are not meant for volte selfhosters anyways
+            => client.GetGuild(405806471578648588); //yes hardcoded, the functions that use this guild are not meant for volte selfhosters anyways
 
         public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
@@ -152,10 +150,7 @@ namespace Volte.Core.Helpers
             var mod = provider.Get<ModerationService>();
             var starboard = provider.Get<StarboardService>();
 
-            client.Log += async m =>
-            {
-                await Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
-            };
+            client.Log += m => Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
 
             if (provider.TryGet<GuildService>(out var guild))
             {
@@ -209,13 +204,13 @@ namespace Volte.Core.Helpers
 
                 _ = Executor.ExecuteAsync(async () =>
                 {
-                    foreach (var guild in c.Guilds)
+                    foreach (var g in c.Guilds)
                     {
-                        if (Config.BlacklistedOwners.Contains(guild.OwnerId))
-                            await guild.LeaveAsync().ContinueWith(async _ => Logger.Warn(LogSource.Volte,
-                                $"Left guild \"{guild.Name}\" owned by blacklisted owner {await c.Rest.GetUserAsync(guild.OwnerId)}."));
-                        else provider.Get<DatabaseService>().GetData(guild); //ensuring all guilds have data available to prevent exceptions later on 
-                        }
+                        if (Config.BlacklistedOwners.Contains(g.OwnerId))
+                            await g.LeaveAsync().ContinueWith(async _ => Logger.Warn(LogSource.Volte,
+                                $"Left guild \"{g.Name}\" owned by blacklisted owner {await c.Rest.GetUserAsync(g.OwnerId)}."));
+                        else provider.Get<DatabaseService>().GetData(g); //ensuring all guilds have data available to prevent exceptions later on 
+                    }
                 });
 
                 if (Config.GuildLogging.TryValidate(client, out var channel))
