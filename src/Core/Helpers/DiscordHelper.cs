@@ -150,7 +150,12 @@ namespace Volte.Core.Helpers
             var mod = provider.Get<ModerationService>();
             var starboard = provider.Get<StarboardService>();
 
-            client.Log += m => Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
+            client.Log += async m =>
+            {
+                if (!(m.Message.ContainsIgnoreCase("unknown dispatch") &&
+                      m.Message.ContainsIgnoreCase("application_command")))
+                    await Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
+            };
 
             if (provider.TryGet<GuildService>(out var guild))
             {

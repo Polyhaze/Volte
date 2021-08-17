@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
+using Discord.Rest;
 using Gommon;
 using Volte.Commands;
 using Volte.Core.Entities;
@@ -32,17 +33,9 @@ namespace Volte.Services
             var match = JumpUrlPattern.Match(args.Message.Content);
             if (!match.Success) return false;
 
-            if (!ulong.TryParse(match.Groups["GuildId"].Value, out var guildId) ||
-                !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
-                !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return false;
-
-            var g = await _client.Rest.GetGuildAsync(guildId);
-            if (g is null) return false;
-            var c = await g.GetTextChannelAsync(channelId);
-            if (c is null) return false;
-
-            var m = await c.GetMessageAsync(messageId);
+            var m = await GetMatchMessageAsync(match);
             if (m is null) return false;
+            
             if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return false;
 
             await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
@@ -52,6 +45,20 @@ namespace Volte.Services
                         await args.Message.TryDeleteAsync();
                 });
             return true;
+        }
+
+        private async Task<RestMessage> GetMatchMessageAsync(Match match)
+        {
+            if (!ulong.TryParse(match.Groups["GuildId"].Value, out var guildId) ||
+                !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
+                !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return null;
+
+            var g = await _client.Rest.GetGuildAsync(guildId);
+            if (g is null) return null;
+            var c = await g.GetTextChannelAsync(channelId);
+            if (c is null) return null;
+
+            return await c.GetMessageAsync(messageId);
         }
 
         private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx)

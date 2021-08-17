@@ -10,7 +10,6 @@ using Humanizer;
 using Volte.Core;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
-using Volte.Interactive;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -23,15 +22,13 @@ namespace Volte.Commands
         // ReSharper disable once SuggestBaseTypeForParameter
         private VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
         {
-            if (provider.TryGet<DiscordShardedClient>(out var client))
-                Client = client;
+            Client = provider.Get<DiscordShardedClient>();
             Guild = msg.Channel.Cast<SocketTextChannel>()?.Guild;
             Interactive = provider.Get<InteractiveService>();
             Channel = msg.Channel.Cast<SocketTextChannel>();
             User = msg.Author.Cast<SocketGuildUser>();
             Message = msg.Cast<SocketUserMessage>();
-            if (provider.TryGet<DatabaseService>(out var db))
-                GuildData = db.GetData(Guild);
+            GuildData = provider.Get<DatabaseService>().GetData(Guild);
             Now = DateTime.Now;
         }
 
@@ -44,7 +41,12 @@ namespace Volte.Commands
         public SocketUserMessage Message { get; }
         public GuildData GuildData { get; }
         public DateTime Now { get; }
+        
+        public Embed CreateEmbed(StringBuilder content) => CreateEmbed(content.ToString());
 
+        public Embed CreateEmbed(Action<EmbedBuilder> action) 
+            => CreateEmbedBuilder().Apply(action).Build();
+        
         public Embed CreateEmbed(string content) => CreateEmbedBuilder(content).Build();
 
         public EmbedBuilder CreateEmbedBuilder(string content = null) => new EmbedBuilder()

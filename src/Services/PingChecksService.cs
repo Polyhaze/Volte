@@ -13,8 +13,7 @@ namespace Volte.Services
             {
                 Logger.Debug(LogSource.Service,
                     "Received a message to check for ping threshold violations.");
-                if (args.Message.MentionedEveryone ||
-                    args.Message.MentionedUsers.Count > 10)
+                if (args.Message.MentionedEveryone || args.Message.MentionedUsers.Count > 10)
                 {
                     await args.Message.DeleteAsync();
                     Logger.Debug(LogSource.Service,
