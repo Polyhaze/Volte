@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -58,9 +59,9 @@ namespace Volte.Commands.Modules
                 .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
                 .AddField("Role Hierarchy", user.Hierarchy, true)
                 .AddField("Account Created",
-                    $"{user.CreatedAt.FormatBoldString()}")
+                    $"{user.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
                 .AddField("Joined This Guild",
-                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.FormatBoldString() : DiscordHelper.Zws)}")
+                    $"{(user.JoinedAt.HasValue ? user.JoinedAt.Value.GetDiscordTimestamp(TimestampType.LongDateTime) : DiscordHelper.Zws)}")
                 .WithThumbnailUrl(user.GetEffectiveAvatarUrl(size: 512)));
         }
 
@@ -69,7 +70,7 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> GuildInfoAsync()
             => Ok(Context.CreateEmbedBuilder()
                 .WithTitle(Context.Guild.Name)
-                .AddField("Created", $"{Context.Guild.CreatedAt.FormatBoldString()}")
+                .AddField("Created", $"{Context.Guild.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
                 .AddField("Owner", Context.Guild.Owner)
                 .AddField("Region", Context.Guild.VoiceRegionId)
                 .AddField("Members", Context.Guild.Users.Count, true)

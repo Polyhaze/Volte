@@ -38,7 +38,7 @@ namespace Volte.Services
                     .WithTitle("Possible Malicious User")
                     .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
-                    .AddField("Account Created", $"{args.User.CreatedAt.FormatBoldString()}")
+                    .AddField("Account Created", $"{args.User.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
                     .WithFooter($"Account Created {unit.ToQuantity(time)} ago.")
                     .SendToAsync(c);
             }
@@ -217,6 +217,6 @@ namespace Volte.Services
             : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
         private string Time(ModActionEventArgs args) 
-            => $"**Time:** {args.Time.FormatFullTime()}, {args.Time.FormatDate()}";
+            => $"**Time:** {args.Time.GetDiscordTimestamp(TimestampType.LongDateTime)}";
     }
 }

@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
             => emoteIn switch
             {
                 Emote emote => Context.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url))
-                    .AddField("Created", emote.CreatedAt.FormatBoldString(), true)
+                    .AddField("Created", emote.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime), true)
                     .AddField("Animated?", emote.Animated ? "Yes" : "No")
                     .WithImageUrl(emote.Url)
                     .WithAuthor($":{emote.Name}:", emote.Url),

@@ -6,6 +6,7 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Core.Entities;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -23,8 +24,7 @@ namespace Volte.Commands.Modules
         {
             var end = Context.Now.Add(timeFromNow);
             Db.CreateReminder(Reminder.CreateFrom(Context, end, reminder));
-            return Ok(
-                $"I'll remind you {end.FormatBoldString()} ({end.Humanize(dateToCompareAgainst: Context.Now)}).");
+            return Ok($"I'll remind you {end.FormatBoldString()} ({end.GetDiscordTimestamp(TimestampType.Relative)}).");
         }
 
         [Command("List", "Ls")]
@@ -37,9 +37,9 @@ namespace Volte.Commands.Modules
             var pages = Db.GetReminders(Context.User.Id, onlyCurrentGuild ? Context.Guild.Id : 0)
                 .Select(x => Context.CreateEmbedBuilder()
                     .WithTitle(x.TargetTime.Humanize(false, Context.Now))
-                    .AddField("Internal ID", x.Id)
+                    .AddField("Unique ID", x.Id)
                     .AddField("Reminder", Format.Code(x.ReminderText))
-                    .AddField("Created", x.CreationTime.FormatBoldString())
+                    .AddField("Created", x.CreationTime.GetDiscordTimestamp(TimestampType.LongDateTime))
                     .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
                 .ToList();
             if (pages.IsEmpty())
@@ -51,15 +51,16 @@ namespace Volte.Commands.Modules
 
         [Command("Delete")]
         [Description("Deletes a reminder by its internal ID.")]
+        [Remarks("You may only delete reminders you made. Obviously.")]
         public Task<ActionResult> DeleteAsync(
             [Description(
-                "Internal Volte ID for the reminder you want to delete. You can find the ID via the Reminder list command.")]
-            long internalId)
+                "Reminder's Unique ID for the reminder you want to delete. You can find the ID via the Reminder list command.")]
+            long uniqueId)
         {
             var reminder = Db.GetAllReminders()
-                .FirstOrDefault(x => x.Id == internalId && x.CreatorId == Context.User.Id);
+                .FirstOrDefault(x => x.Id == uniqueId && x.CreatorId == Context.User.Id);
             return reminder != null && Db.TryDeleteReminder(reminder)
-                ? Ok($"Deleted reminder #{internalId}; {Format.Code(reminder.ReminderText)}.")
+                ? Ok($"Deleted reminder #{uniqueId}; {Format.Code(reminder.ReminderText)}.")
                 : BadRequest("Reminder couldn't be deleted.");
         }
     }
