@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Qmmands;
 using Volte.Core.Helpers;
 
@@ -12,11 +13,11 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> InviteAsync()
             => Ok(new StringBuilder()
                 .AppendLine(
-                    "Do you like Volte? If you do, that's awesome! If not then I'm sorry (please tell me what you don't like [here](https://forms.gle/CJ9XtKmKf2Q2mQwb7)!) :( ")
+                    $"Do you like Volte? If you do, that's awesome! If not then I'm sorry (please tell me what you don't like {Format.Url("here", "https://forms.gle/CJ9XtKmKf2Q2mQwb7")}!) :( ")
                 .AppendLine()
-                .AppendLine("[GitHub](https://github.com/Ultz/Volte)")
-                .AppendLine($"[Invite Me]({Context.Client.GetInviteUrl()})")
-                .AppendLine("[Support Server](https://discord.gg/H8bcFr2)")
+                .AppendLine(Format.Url("GitHub", "https://github.com/Ultz/Volte"))
+                .AppendLine(Format.Url("Invite Me", Context.Client.GetInviteUrl()))
+                .AppendLine(Format.Url("Support Server", "https://discord.gg/H8bcFr2"))
                 .AppendLine()
                 .AppendLine("And again, thanks for using me!")
                 .ToString());

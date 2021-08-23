@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
                 if (entry.Definition.Length > 1024)
                 {
                     var oldDefLeng = entry.Definition.Length;
-                    entry.Definition = string.Join("", entry.Definition.Take(980)) +
+                    entry.Definition = string.Join(string.Empty, entry.Definition.Take(980)) +
                                        Format.Bold(
                                            $"\n...and {oldDefLeng - 980} more {"character".ToQuantity(oldDefLeng - 980).Split(" ").Last()}.");
                 }
@@ -49,7 +49,7 @@ namespace Volte.Commands.Modules
                 ? BadRequest("That word didn't have a definition of Urban Dictionary.")
                 : pages.Count is 1
                     ? Ok(pages.First())
-                    : Ok(PaginatedMessage.Builder.New
+                    : Ok(PaginatedMessage.NewBuilder()
                         .WithPages(pages)
                         .WithTitle(word)
                         .WithDefaults(Context));

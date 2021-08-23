@@ -36,10 +36,7 @@ namespace Volte.Services
         /// </summary>
         public void Initialize()
         {
-            if (_checker != null)
-                return;
-
-            _checker = new Timer(
+            _checker ??= new Timer(
                 _ => Check(),
                 null,
                 5.Seconds(),
@@ -52,7 +49,8 @@ namespace Volte.Services
             Logger.Debug(LogSource.Service, "Checking all reminders.");
             _db.GetAllReminders().ForEachIndexedAsync(async (reminder, index) =>
             {
-                Logger.Debug(LogSource.Service, $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");
+                Logger.Debug(LogSource.Service,
+                    $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");
                 if (reminder.TargetTime.Ticks <= DateTime.Now.Ticks)
                     await SendAsync(reminder);
             });
@@ -84,20 +82,21 @@ namespace Volte.Services
 
             var message = await channel.GetMessageAsync(reminder.MessageId);
             var timestamp = message != null
-                ? Format.Url(reminder.CreationTime.Humanize(false), message.GetJumpUrl())
-                : reminder.CreationTime.Humanize(false);
+                ? Format.Url(reminder.CreationTime.GetDiscordTimestamp(TimestampType.Relative), message.GetJumpUrl())
+                : reminder.CreationTime.GetDiscordTimestamp(TimestampType.Relative);
 
             await channel.SendMessageAsync(author.Mention, embed: new EmbedBuilder()
                 .WithTitle("Reminder")
                 .WithRelevantColor(author)
                 .WithDescription(IsMessageUrl(reminder)
                     ? $"You asked me {timestamp} to remind you about {Format.Url("this message", reminder.ReminderText)}."
-                    : $"You asked me {timestamp} to remind you about: {Format.Code(reminder.ReminderText, string.Empty)}").Build());
+                    : $"You asked me {timestamp} to remind you about:\n{"-".Repeat(20)} {reminder.ReminderText}")
+                .Build());
             _db.TryDeleteReminder(reminder);
         }
 
         private bool IsMessageUrl(Reminder reminder) => JumpUrl.IsMatch(reminder.ReminderText, out var match) &&
-                                                                (match.Groups["GuildId"].Value is "@me" ||
-                                                                 ulong.TryParse(match.Groups["GuildId"].Value, out _));
+                                                        (match.Groups["GuildId"].Value is "@me" ||
+                                                         ulong.TryParse(match.Groups["GuildId"].Value, out _));
     }
 }

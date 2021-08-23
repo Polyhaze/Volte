@@ -118,11 +118,13 @@ namespace Volte.Core.Helpers
             return spotify != null;
         }
 
+        internal static char GetTimestampFlagInternal(this TimestampType type) => (char)type;
+        
         internal static string GetDiscordTimestampInternal(long unixSeconds, char timestampType)
             => $"<t:{unixSeconds}:{timestampType}>";
         
         public static string GetDiscordTimestamp(this DateTimeOffset dto, TimestampType type) =>
-            GetDiscordTimestampInternal(dto.ToUnixTimeSeconds(), type.Flag);
+            GetDiscordTimestampInternal(dto.ToUnixTimeSeconds(), type.GetTimestampFlagInternal());
 
         public static string GetDiscordTimestamp(this DateTime date, TimestampType type) => 
             new DateTimeOffset(date).GetDiscordTimestamp(type);
@@ -348,41 +350,16 @@ namespace Volte.Core.Helpers
         public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb)
             => e.WithDescription(sb.ToString());
     }
-    
-    public class TimestampType
-    {
-        /// <summary>
-        ///     Short time (16:20)
-        /// </summary>
-        public static TimestampType ShortTime = new TimestampType('t');
-        /// <summary>
-        ///     Long time (16:20:30)
-        /// </summary>
-        public static TimestampType LongTime = new TimestampType('T');
-        /// <summary>
-        ///     Short date (20/04/21)
-        /// </summary>
-        public static TimestampType ShortDate = new TimestampType('d');
-        /// <summary>
-        ///     Long date (20 April 2021)
-        /// </summary>
-        public static TimestampType LongDate = new TimestampType('D');
-        /// <summary>
-        ///     Short date/time (20 April 2021 16:20)
-        /// </summary>
-        public static TimestampType ShortDateTime = new TimestampType('f');
-        /// <summary>
-        ///     Long date/time (Tuesday, 20 April 2021 16:20)
-        /// </summary>
-        public static TimestampType LongDateTime = new TimestampType('F');
-        /// <summary>
-        ///     Relative (2 months ago)
-        /// </summary>
-        public static TimestampType Relative = new TimestampType('R');
 
-        public char Flag { get; } 
-        
-        private TimestampType(char flag) => Flag = flag;
-        
+    public enum TimestampType : sbyte
+    {
+        ShortTime = (sbyte)'t',
+        LongTime = (sbyte)'T',
+        ShortDate = (sbyte)'d',
+        LongDate = (sbyte)'D',
+        ShortDateTime = (sbyte)'f',
+        LongDateTime = (sbyte)'F',
+        Relative = (sbyte)'R'
     }
+    
 }

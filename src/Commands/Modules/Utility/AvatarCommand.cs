@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Qmmands;
 using Volte.Core.Helpers;
 
@@ -15,10 +18,17 @@ namespace Volte.Commands.Modules
             SocketGuildUser user = null)
         {
             user ??= Context.User;
-            return Ok(Context.CreateEmbedBuilder($"{Format.Url("128", user.GetEffectiveAvatarUrl(size: 128))} " +
-                                                 $"| {Format.Url("256", user.GetEffectiveAvatarUrl(size: 256))} " +
-                                                 $"| {Format.Url("512", user.GetEffectiveAvatarUrl(size: 512))} " +
-                                                 $"| {Format.Url("1024", user.GetEffectiveAvatarUrl(size: 1024))}")
+
+            string FormatEmbedString(params ushort[] sizes) => new StringBuilder().Apply(sb =>
+            {
+                sb.Append(sizes.Take(1)
+                    .Select(x => $"{Format.Url(x.ToString(), user.GetEffectiveAvatarUrl(size: x))} ").First());
+                sb.Append(sizes.Skip(1)
+                    .Select(x => $"| {Format.Url(x.ToString(), user.GetEffectiveAvatarUrl(size: x))} ").Join(string.Empty));
+            }).ToString().Trim();
+
+
+            return Ok(Context.CreateEmbedBuilder(FormatEmbedString(128, 256, 512, 1024))
                 .WithAuthor(user)
                 .WithImageUrl(user.GetEffectiveAvatarUrl()));
         }

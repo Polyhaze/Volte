@@ -35,7 +35,7 @@ namespace Volte.Services
                 var time = diff.Days > 0 ? diff.Days : diff.Hours > 0 ? diff.Hours : diff.Minutes;
                 await new EmbedBuilder()
                     .WithColor(Color.Red)
-                    .WithTitle("Possible Malicious User")
+                    .WithTitle("Possibly Malicious User")
                     .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
                     .AddField("Account Created", $"{args.User.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
@@ -68,7 +68,7 @@ namespace Volte.Services
                     await e.WithDescription(sb
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
-                            .AppendLine(Count(args))
+                            .AppendLine(MessagesCleared(args))
                             .AppendLine(Channel(args))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
@@ -203,7 +203,7 @@ namespace Volte.Services
         private string Moderator(ModActionEventArgs args) => $"**Moderator:** {args.Moderator} ({args.Moderator.Id})";
         private string Channel(ModActionEventArgs args) => $"**Channel:** {args.Context.Channel.Mention}";
         private string Case(ModActionEventArgs args) => $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
-        private string Count(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
+        private string MessagesCleared(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
 
         private async Task<string> TargetRestUser(ModActionEventArgs args)
         {

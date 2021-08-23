@@ -76,7 +76,7 @@ namespace Volte.Services
             if (!message.Content.IsNullOrEmpty() && message.HasAttachments())
                 e.WithDescription(message.Content).WithImageUrl(message.Attachments.First().Url);
 
-            e.AddField("Original Message", $"[Click here]({message.GetJumpUrl()})");
+            e.AddField("Original Message", Format.Url("Click here", message.GetJumpUrl()));
 
             return e.Build();
         }

@@ -11,6 +11,9 @@ namespace Volte.Interactive
 {
     public class PaginatedMessage
     {
+
+        public static Builder NewBuilder() => Builder.New;
+        
         public class Builder
         {
             public IEnumerable<object> Pages { get; private set; }
@@ -91,6 +94,9 @@ namespace Volte.Interactive
                     Title = Title,
                     Options = Options
                 };
+            
+            private Builder() {}
+            
         }
         
         private PaginatedMessage() {}

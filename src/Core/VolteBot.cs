@@ -40,7 +40,7 @@ namespace Volte.Core
                 .BuildServiceProvider();
 
         private VolteBot()
-            => Console.CancelKeyPress += (_, __) => _cts.Cancel();
+            => Console.CancelKeyPress += (_, __) => _cts?.Cancel();
 
         private async Task LoginAsync()
         {

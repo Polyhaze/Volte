@@ -13,7 +13,7 @@ namespace Volte.Commands.Modules
 {
     public sealed partial class UtilityModule
     {
-        [Command("Quote"), Priority(0)]
+        [Command("Quote")]
         [Description("Quotes a user from a given message's ID.")]
         public async Task<ActionResult> QuoteAsync([Description("The ID of the message to quote.")]
             ulong messageId, [Description("The channel to get the message from. Defaults to the current channel.")]
@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
                         if (!m.Attachments.IsEmpty())
                             e.WithImageUrl(m.Attachments.First().Url);
                     }))
-                : BadRequest("A message with that ID doesn't exist in this channel.");
+                : BadRequest($"A message with that ID doesn't exist in {(channel.Id == Context.Channel.Id ? "this channel" : channel.Mention)}.");
         }
     }
 }

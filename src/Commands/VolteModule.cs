@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Gommon;
 using Qmmands;
 using Volte.Commands;
 using Volte.Core.Entities;
@@ -27,6 +28,10 @@ namespace Volte.Commands
             AsyncFunction logic, 
             bool awaitLogic = true) 
             => new OkResult(logic, awaitLogic);
+
+        protected ActionResult Ok(Action<StringBuilder> textBuilder, MessageCallback messageCallback = null,
+            bool shouldEmbed = true)
+            => Ok(new StringBuilder().Apply(textBuilder), messageCallback, shouldEmbed);
 
         protected ActionResult Ok(StringBuilder text, MessageCallback messageCallback = null, bool shouldEmbed = true)
             => Ok(text.ToString(), messageCallback, shouldEmbed);

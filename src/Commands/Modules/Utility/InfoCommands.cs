@@ -18,9 +18,10 @@ namespace Volte.Commands.Modules
             => Ok(Context.CreateEmbedBuilder()
                 .AddField("Version", Version.FullVersion, true)
                 .AddField("Author",
-                    $"{await Context.Client.Rest.GetUserAsync(168548441939509248)}, contributors on [GitHub](https://github.com/Ultz/Volte), and members of the Ultz organization.",
+                    $"{await Context.Client.Rest.GetUserAsync(168548441939509248)}, contributors on {Format.Url("GitHub", "https://github.com/Ultz/Volte")}, and members of the Ultz organization.",
                     true)
                 .AddField("Language/Library", $"C# 8, Discord.Net {Version.DiscordNetVersion}", true)
+                .AddField("Discord Application Created", (await Context.Client.GetApplicationInfoAsync()).CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime))
                 .AddField("Guilds", Context.Client.Guilds.Count, true)
                 .AddField("Shards", Context.Client.Shards.Count, true)
                 .AddField("Channels",

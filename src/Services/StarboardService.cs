@@ -266,7 +266,7 @@ namespace Volte.Services
         {
             var e = new EmbedBuilder()
                 .WithSuccessColor()
-                .WithCurrentTimestamp()
+                .WithTitle(message.CreatedAt.GetDiscordTimestamp(TimestampType.Relative))
                 .WithAuthor(message.Author)
                 .AddField("Posted", Format.Bold(Format.Url($"#{message.Channel.Name}", message.GetJumpUrl())));
 

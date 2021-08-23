@@ -16,17 +16,18 @@ namespace Volte.Commands.Modules
             SocketGuildUser target = null)
         {
             target ??= Context.User;
-            if (target.TryGetSpotifyStatus(out var spotify))
-            {
-                return Ok(Context.CreateEmbedBuilder()
+            
+            return target.TryGetSpotifyStatus(out var spotify)
+                ? Ok(Context.CreateEmbedBuilder()
                     .WithAuthor(target)
-                    .AppendDescriptionLine($"**Track:** [{spotify.TrackTitle}]({spotify.TrackUrl})")
+                    .AppendDescriptionLine($"**Track:** {Format.Url(spotify.TrackTitle, spotify.TrackUrl)}")
                     .AppendDescriptionLine($"**Album:** {spotify.AlbumTitle}")
-                    .AppendDescriptionLine($"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "No duration provided.")}")
+                    .AppendDescriptionLine($"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "<not provided>")}")
                     .AppendDescriptionLine($"**Artist(s):** {spotify.Artists.Join(", ")}")
-                    .WithThumbnailUrl(spotify.AlbumArtUrl));
-            }
-            return BadRequest("Target user isn't listening to Spotify!");
+                    .AppendDescriptionLine($"**Started At:** {spotify.StartedAt?.GetDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}")
+                    .AppendDescriptionLine($"**Ends At:** {spotify.EndsAt?.GetDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}")
+                    .WithThumbnailUrl(spotify.AlbumArtUrl))
+                : BadRequest("Target user isn't listening to Spotify!");
         }
     }
 }

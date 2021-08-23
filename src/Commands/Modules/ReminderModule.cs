@@ -24,7 +24,7 @@ namespace Volte.Commands.Modules
         {
             var end = Context.Now.Add(timeFromNow);
             Db.CreateReminder(Reminder.CreateFrom(Context, end, reminder));
-            return Ok($"I'll remind you {end.FormatBoldString()} ({end.GetDiscordTimestamp(TimestampType.Relative)}).");
+            return Ok($"I'll remind you {end.GetDiscordTimestamp(TimestampType.LongDateTime)} ({end.GetDiscordTimestamp(TimestampType.Relative)}).");
         }
 
         [Command("List", "Ls")]
@@ -36,7 +36,7 @@ namespace Volte.Commands.Modules
         {
             var pages = Db.GetReminders(Context.User.Id, onlyCurrentGuild ? Context.Guild.Id : 0)
                 .Select(x => Context.CreateEmbedBuilder()
-                    .WithTitle(x.TargetTime.Humanize(false, Context.Now))
+                    .WithTitle(x.TargetTime.GetDiscordTimestamp(TimestampType.Relative))
                     .AddField("Unique ID", x.Id)
                     .AddField("Reminder", Format.Code(x.ReminderText))
                     .AddField("Created", x.CreationTime.GetDiscordTimestamp(TimestampType.LongDateTime))

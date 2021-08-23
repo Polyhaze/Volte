@@ -99,7 +99,7 @@ namespace Volte.Commands.Modules
         {
             Context.GuildData.Extras.Tags.Remove(tag);
             Db.Save(Context.GuildData);
-            return Ok($"Deleted the tag **{tag.Name}**, created by " +
+            return Ok($"Deleted the tag {Format.Bold(tag.Name)}, created by " +
                       $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +
                       $"{Format.Bold("use".ToQuantity(tag.Uses))}.");
         }

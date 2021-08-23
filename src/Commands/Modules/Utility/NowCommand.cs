@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Gommon;
 using Qmmands;
+using Volte.Core.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -11,9 +12,6 @@ namespace Volte.Commands.Modules
         [Command("Now")]
         [Description("Shows the current date and time.")]
         public Task<ActionResult> NowAsync()
-            => Ok(new EmbedBuilder().WithDescription(new StringBuilder()
-                .AppendLine($"**Date**: {Context.Now.FormatDate()}")
-                .AppendLine($"**Time**: {Context.Now.FormatFullTime()}")
-                .ToString()).WithCurrentTimestamp());
+            => Ok(new EmbedBuilder().WithTitle(Context.Now.GetDiscordTimestamp(TimestampType.LongDateTime)));
     }
 }

@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Gommon;
 using Humanizer;
 using Qmmands;
 
@@ -19,12 +21,13 @@ namespace Volte.Commands.Modules
                 .Where(x => x.RoleIds.Contains(role.Id))
                 .ToArray();
 
-            var result =
-                $"There {"is".ToQuantity(users.Length).Split(" ")[1]} {"member".ToQuantity(users.Length)} in the role {role.Mention}";
-
-            return Ok(users.Any(x => x.Id == Context.User.Id)
-                ? $"{result}; including you."
-                : $"{result}.");
+            return Ok(sb =>
+            {
+                sb.Append($"There {"is".ToQuantity(users.Length).Split(" ")[1]} {"member".ToQuantity(users.Length)} in the role {role.Mention}");
+                sb.Append(users.Any(x => x.Id == Context.User.Id)
+                    ? "; including you."
+                    : ".");
+            });
         }
     }
 }
