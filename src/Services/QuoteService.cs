@@ -38,8 +38,9 @@ namespace Volte.Services
             
             if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return false;
 
-            await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
-                .ContinueWith(async _ =>
+            await GenerateQuoteEmbed(m, args.Context)
+                .SendToAsync(args.Context.Channel)
+                .Then(async () =>
                 {
                     if (match.Groups["Prelink"].Value.IsNullOrEmpty() && match.Groups["Postlink"].Value.IsNullOrEmpty())
                         await args.Message.TryDeleteAsync();

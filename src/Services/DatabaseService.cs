@@ -32,17 +32,18 @@ namespace Volte.Services
             _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
         }
 
-        public GuildData GetData(SocketGuild guild) => GetData(guild.Id);
+        public GuildData GetData(SocketGuild guild) => GetData(guild?.Id);
 
         public ValueTask<GuildData> GetDataAsync(ulong id) => new ValueTask<GuildData>(GetData(id));
 
-        public GuildData GetData(ulong id)
+        public GuildData GetData(ulong? id)
         {
+            if (id is null) return null;
             return _guildData.ValueLock(() =>
             {
                 var conf = _guildData.FindOne(g => g.Id == id);
                 if (conf != null) return conf;
-                var newConf = GuildData.CreateFrom(_client.GetGuild(id));
+                var newConf = GuildData.CreateFrom(_client.GetGuild(id.Value));
                 _guildData.Insert(newConf);
                 return newConf;
             });
@@ -59,7 +60,7 @@ namespace Volte.Services
         
         public void CreateReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
 
-        public void Modify(ulong guildId, DataEditor modifier)
+        public void Modify(ulong guildId, Action<GuildData> modifier)
         {
             _guildData.LockedRef(coll =>
             {

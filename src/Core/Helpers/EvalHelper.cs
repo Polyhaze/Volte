@@ -115,12 +115,11 @@ namespace Volte.Core.Helpers
                                 .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
                                 .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
                                 .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build()),
-                        false => msg.DeleteAsync().ContinueWith(_ => env.ReactAsync(DiscordHelper.BallotBoxWithCheck))
-                        
+                        false => msg.DeleteAsync().Then(() => env.ReactAsync(DiscordHelper.BallotBoxWithCheck))
                     });
                 }
                 else
-                    await msg.DeleteAsync().ContinueWith(_ => env.ReactAsync(DiscordHelper.BallotBoxWithCheck));
+                    await msg.DeleteAsync().Then(() => env.ReactAsync(DiscordHelper.BallotBoxWithCheck));
             }
             catch (Exception ex)
             {

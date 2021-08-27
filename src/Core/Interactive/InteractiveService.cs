@@ -139,7 +139,7 @@ namespace Volte.Services
             _ = Executor.ExecuteAsync(async () =>
             {
                 _ = await context.Message.TryDeleteAsync("Poll invocation message.");
-                await DiscordHelper.GetPollEmojis().GetRange(0, pollInfo.Fields.Count)
+                await DiscordHelper.GetPollEmojis()[..pollInfo.Fields.Count]
                     .ForEachAsync(async emoji =>
                 {
                     await m.AddReactionAsync(emoji);

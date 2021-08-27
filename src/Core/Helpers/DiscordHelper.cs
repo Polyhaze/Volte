@@ -42,8 +42,8 @@ namespace Volte.Core.Helpers
         public static string Question => "\u2753";
         public static string Star => "\u2B50";
 
-        public static List<Emoji> GetPollEmojis()
-            => new List<Emoji>
+        public static Emoji[] GetPollEmojis()
+            => new []
             {
                 One.ToEmoji(), Two.ToEmoji(), Three.ToEmoji(), Four.ToEmoji(), Five.ToEmoji(),
                 Six.ToEmoji(), Seven.ToEmoji(), Eight.ToEmoji(), Nine.ToEmoji()
@@ -109,8 +109,8 @@ namespace Volte.Core.Helpers
         }
 
         public static SocketRole GetHighestRole(this SocketGuildUser member, bool requireColor = true)
-            => member.Roles.Where(x => !requireColor || x.HasColor())
-                .OrderByDescending(x => x.Position).FirstOrDefault();
+            => member?.Roles?.Where(x => !requireColor || x.HasColor())?
+                .OrderByDescending(x => x.Position)?.FirstOrDefault();
 
         public static bool TryGetSpotifyStatus(this IGuildUser user, out SpotifyGame spotify)
         {
@@ -145,8 +145,8 @@ namespace Volte.Core.Helpers
 
         public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
             => withAdmin
-                ? $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=8"
-                : $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot&permissions=402992246";
+                ? $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot+applications.commands&permissions=8"
+                : $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot+applications.commands&permissions=402992246";
 
         public static SocketUser GetOwner(this BaseSocketClient client)
             => client.GetUser(Config.Owner);
@@ -198,7 +198,7 @@ namespace Volte.Core.Helpers
                 Logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
                 Logger.Info(LogSource.Volte, $"{c.GetInviteUrl()}");
                 Logger.Info(LogSource.Volte, $"Logged in as {c.CurrentUser}, shard {c.ShardId}");
-                Logger.Info(LogSource.Volte, $"Default command prefix is: \"{Config.CommandPrefix}\"");
+                Logger.Info(LogSource.Volte, $"Default text command prefix is: \"{Config.CommandPrefix}\"");
                 Logger.Info(LogSource.Volte, "Connected to:");
                 Logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
                 Logger.Info(LogSource.Volte, $"     {"user".ToQuantity(users)}");
@@ -223,7 +223,8 @@ namespace Volte.Core.Helpers
                     foreach (var g in c.Guilds)
                     {
                         if (Config.BlacklistedOwners.Contains(g.OwnerId))
-                            await g.LeaveAsync().ContinueWith(async _ => Logger.Warn(LogSource.Volte,
+                            await g.LeaveAsync()
+                                .Then(async () => Logger.Warn(LogSource.Volte,
                                 $"Left guild \"{g.Name}\" owned by blacklisted owner {await c.Rest.GetUserAsync(g.OwnerId)}."));
                         else provider.Get<DatabaseService>().GetData(g); //ensuring all guilds have data available to prevent exceptions later on 
                     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Gommon;
@@ -29,8 +30,8 @@ namespace Volte.Core.Entities
         [JsonPropertyName("warns")]
         public HashSet<Warn> Warns { get; set; }
 
-        public void AddTag(TagInitializer initializer) => Tags.Add(new Tag().Apply(t => initializer(t)));
-        public void AddWarn(WarnInitializer initializer) => Warns.Add(new Warn().Apply(w => initializer(w)));
+        public void AddTag(Action<Tag> initializer) => Tags.Add(new Tag().Apply(initializer));
+        public void AddWarn(Action<Warn> initializer) => Warns.Add(new Warn().Apply(initializer));
         
         
         public override string ToString()

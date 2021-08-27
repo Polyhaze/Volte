@@ -15,6 +15,23 @@ namespace Gommon
     /// </summary>
     public static partial class Extensions
     {
+        public static Task Then(this Task task, Func<Task> continuation) 
+            => task.ContinueWith(async _ => await continuation());
+
+        public static async Task Then<T>(this Task<T> task, Func<T, Task> continuation)
+        {
+            var result = await task;
+            await continuation(result);
+
+        }
+
+        public static async Task Then<T>(this ValueTask<T> task, Func<T, Task> continuation)
+        {
+            var result = await task;
+            await continuation(result);
+        }
+        
+        
         public static bool ContainsAnyIgnoreCase(this string str, params string[] possibleContents) 
             => possibleContents.Any(str.ContainsIgnoreCase);
         

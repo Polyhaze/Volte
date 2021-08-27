@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,13 @@ namespace Volte.Core
 {
     public class VolteBot
     {
-        internal static async Task Main() => await StartAsync();
+        internal static async Task Main(string[] args)
+        {
+            if (!args.IsEmpty() && args.First().EndsWith("updateCommands"))
+                SlashCommandService.UpdateCommandsOnStart = true;
+            
+            await StartAsync();
+        }
 
         public static Task StartAsync()
         {
@@ -55,7 +60,7 @@ namespace Volte.Core
             _cts = _provider.Get<CancellationTokenSource>();
 
             AdminUtilityModule.AllowedPasteSites = await HttpHelper.GetAllowedPasteSitesAsync(_provider);
-            
+
             await _client.LoginAsync(TokenType.Bot, Config.Token);
             await _client.StartAsync();
 
@@ -73,8 +78,10 @@ namespace Volte.Core
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
             _client.RegisterVolteEventHandlers(_provider);
 
+            // initializing addons is extremely long-running (because each addon is evaluated sequentially), so don't await
             Executor.Execute(async () => await _provider.Get<AddonService>().InitAsync());
             _provider.Get<ReminderService>().Initialize();
+            await _provider.Get<SlashCommandService>().InitAsync();
 
             try
             {
