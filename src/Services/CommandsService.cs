@@ -41,6 +41,8 @@ namespace Volte.Services
             FailedCommandCalls = 0;
         }
 
+        public VolteTypeParser<T> GetTypeParser<T>() => _commandService.GetTypeParser<T>().Cast<VolteTypeParser<T>>();
+
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
             if (Config.EnabledFeatures.Blacklist) await _blacklist.CheckMessageAsync(args);

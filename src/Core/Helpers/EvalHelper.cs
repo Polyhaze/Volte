@@ -14,6 +14,7 @@ using Qmmands;
 using Qommon.Collections;
 using Sentry;
 using Volte.Commands;
+using Volte.Commands.Interaction;
 using Volte.Core.Entities;
 using Volte.Services;
 
@@ -40,7 +41,7 @@ namespace Volte.Core.Helpers
             .WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                 .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
 
-        public static Task EvaluateAsync(VolteContext ctx, string code)
+        public static Task EvaluateAsync(object ctx, string code)
         {
             try
             {
@@ -73,17 +74,39 @@ namespace Volte.Core.Helpers
                 Commands = ctx.Services.Get<CommandService>()
             };
 
-        private static async Task ExecuteScriptAsync(string code, VolteContext ctx)
+        private static EvalEnvironment.InteractionBased CreateInteractionEvalEnvironment(MessageCommandContext ctx) =>
+            new EvalEnvironment.InteractionBased
+            {
+                Context = ctx,
+                Database = ctx.Services.Get<DatabaseService>(),
+                Client = ctx.Client.GetShardFor(ctx.Guild),
+                Data = ctx.Services.Get<DatabaseService>().GetData(ctx.Guild),
+                SlashCommands = ctx.Services.Get<SlashCommandService>()
+            };
+
+        private static async Task ExecuteScriptAsync(string code, object ctx)
         {
-            var embed = ctx.CreateEmbedBuilder();
-            var msg = await embed.WithTitle("Evaluating").WithDescription(Format.Code(code, "cs"))
-                .SendToAsync(ctx.Channel);
+            var embed = (ctx is VolteContext vctx)
+                ? vctx.CreateEmbedBuilder()
+                : ctx.Cast<MessageCommandContext>().CreateEmbedBuilder();
+
+            var channel = (ctx is VolteContext)
+                ? ctx.Cast<VolteContext>().Channel
+                : ctx.Cast<MessageCommandContext>().TextChannel;
+            
             try
             {
-                var env = CreateEvalEnvironment(ctx);
+                var env = (ctx is VolteContext)
+                    ? CreateEvalEnvironment(ctx.Cast<VolteContext>())
+                    : CreateInteractionEvalEnvironment(ctx.Cast<MessageCommandContext>()).Cast<object>();
+
+                
                 var sw = Stopwatch.StartNew();
                 var state = await CSharpScript.RunAsync(code, Options, env);
                 sw.Stop();
+                
+                
+                
                 var shouldReply = true;
                 if (state.ReturnValue != null)
                 {
@@ -91,47 +114,79 @@ namespace Volte.Core.Helpers
                     {
                         case EmbedBuilder eb:
                             shouldReply = false;
-                            await env.ReplyAsync(eb);
+                            await (env is EvalEnvironment.InteractionBased ienv1
+                                ? eb.SendToAsync(ienv1.Context.Channel)
+                                : eb.SendToAsync(env.Cast<EvalEnvironment>().Context.Channel));
                             break;
                         case Embed e:
                             shouldReply = false;
-                            await env.ReplyAsync(e);
+                            await (env is EvalEnvironment.InteractionBased ienv2
+                                ? e.SendToAsync(ienv2.Context.Channel)
+                                : e.SendToAsync(env.Cast<EvalEnvironment>().Context.Channel));
                             break;
                     }
-                    
+
                     var res = state.ReturnValue switch
                     {
                         bool b => b.ToString().ToLower(),
-                        IEnumerable enumerable when !(state.ReturnValue is string) => enumerable.Cast<object>().ToReadableString(),
+                        IEnumerable enumerable when !(state.ReturnValue is string) => enumerable.Cast<object>()
+                            .ToReadableString(),
                         IUser user => $"{user} ({user.Id})",
-                        ITextChannel channel => $"#{channel.Name} ({channel.Id})",
-                        IMessage message => env.Inspect(message),
+                        ITextChannel tc => $"#{tc.Name} ({tc.Id})",
                         _ => state.ReturnValue.ToString()
                     };
-                    await (shouldReply switch
+
+                    Task task;
+                    switch (env)
                     {
-                        true => msg.ModifyAsync(m =>
-                            m.Embed = embed.WithTitle("Eval")
-                                .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
-                                .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
-                                .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")).Build()),
-                        false => msg.DeleteAsync().Then(() => env.ReactAsync(DiscordHelper.BallotBoxWithCheck))
-                    });
+                        case EvalEnvironment.InteractionBased ienv:
+                            task = shouldReply
+                                ? ienv.Context.CreateReplyBuilder(true)
+                                    .WithEmbeds(embed.WithTitle("Eval")
+                                        .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                                        .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
+                                        .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini")))
+                                    .RespondAsync()
+                                : ienv.Context.CreateReplyBuilder(true)
+                                    .WithEmbedFrom("Eval succeeded.")
+                                    .RespondAsync();
+                            break;
+                        case EvalEnvironment tenv:
+                            task = shouldReply
+                                ? tenv.Context.CreateEmbedBuilder().WithTitle("Eval")
+                                    .AddField("Elapsed Time", $"{sw.Elapsed.Humanize()}", true)
+                                    .AddField("Return Type", state.ReturnValue.GetType().AsPrettyString(), true)
+                                    .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini"))
+                                    .SendToAsync(tenv.Context.Channel)
+                                : tenv.ReactAsync(DiscordHelper.BallotBoxWithCheck);
+                            break;
+                    }
                 }
-                else
-                    await msg.DeleteAsync().Then(() => env.ReactAsync(DiscordHelper.BallotBoxWithCheck));
             }
             catch (Exception ex)
             {
                 SentrySdk.AddBreadcrumb("This exception comes from an eval.");
+
+                switch (ctx)
+                {
+                    case VolteContext vctx2:
+                        await embed
+                            .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
+                            .AddField("Message", ex.Message, true)
+                            .WithTitle("Error")
+                            .SendToAsync(vctx2.Channel);
+                        break;
+                    case MessageCommandContext mctx:
+                        await mctx.CreateReplyBuilder(true)
+                            .WithEmbeds(embed
+                                .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
+                                .AddField("Message", ex.Message, true)
+                                .WithTitle("Error"))
+                            .RespondAsync();
+                        break;
+                }
+                
                 SentrySdk.CaptureException(ex);
-                await msg.ModifyAsync(m =>
-                    m.Embed = embed
-                        .AddField("Exception Type", ex.GetType().AsPrettyString(), true)
-                        .AddField("Message", ex.Message, true)
-                        .WithTitle("Error")
-                        .Build()
-                );
             }
         }
     }

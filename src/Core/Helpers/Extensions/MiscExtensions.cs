@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
@@ -42,6 +43,8 @@ namespace Gommon
         public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
             => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
                 ctx.Services.GetRequiredService<DatabaseService>(), reason);
+
+        public static List<T> AsSingletonList<T>(this T @this) => new List<T> { @this };
 
         public static T ValueLock<T>(this object @lock, Func<T> action)
         {

@@ -39,6 +39,7 @@ namespace Volte.Core.Helpers
         public static string WhiteSquare => "⏹";
         public static string OctagonalSign => "🛑";
         public static string E1234 => "🔢";
+        public static string SpaceInvader = "\uD83D\uDC7E";
         public static string Question => "\u2753";
         public static string Star => "\u2B50";
 
@@ -143,10 +144,10 @@ namespace Volte.Core.Helpers
             }
         }
 
-        public static string GetInviteUrl(this IDiscordClient client, bool withAdmin = true)
+        public static string GetInviteUrl(this DiscordShardedClient client, bool withAdmin = true)
             => withAdmin
-                ? $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot+applications.commands&permissions=8"
-                : $"https://discord.com/oauth2/authorize?client_id={client.CurrentUser.Id}&scope=bot+applications.commands&permissions=402992246";
+                ? $"https://discord.com/oauth2/authorize?client_id={client.Rest.CurrentUser.Id}&scope=bot+applications.commands&permissions=8"
+                : $"https://discord.com/oauth2/authorize?client_id={client.Rest.CurrentUser.Id}&scope=bot+applications.commands&permissions=402992246";
 
         public static SocketUser GetOwner(this BaseSocketClient client)
             => client.GetUser(Config.Owner);
@@ -196,8 +197,8 @@ namespace Volte.Core.Helpers
 
                 Logger.PrintHeader();
                 Logger.Info(LogSource.Volte, "Use this URL to invite me to your guilds:");
-                Logger.Info(LogSource.Volte, $"{c.GetInviteUrl()}");
-                Logger.Info(LogSource.Volte, $"Logged in as {c.CurrentUser}, shard {c.ShardId}");
+                Logger.Info(LogSource.Volte, $"{client.GetInviteUrl()}");
+                Logger.Info(LogSource.Volte, $"Logged in as {client.CurrentUser}, shard {c.ShardId}");
                 Logger.Info(LogSource.Volte, $"Default text command prefix is: \"{Config.CommandPrefix}\"");
                 Logger.Info(LogSource.Volte, "Connected to:");
                 Logger.Info(LogSource.Volte, $"     {"guild".ToQuantity(guilds)}");
@@ -271,11 +272,9 @@ namespace Volte.Core.Helpers
 
 
         // ReSharper disable twice UnusedMethodReturnValue.Global
-        public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
-            await (await u.CreateDMChannelAsync()).SendMessageAsync(embed: e.Build());
+        public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IUser u) => u.SendMessageAsync(embed: e.Build());
 
-        public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
-            await (await u.CreateDMChannelAsync()).SendMessageAsync(embed: e);
+        public static Task<IUserMessage> SendToAsync(this Embed e, IUser u) => u.SendMessageAsync(embed: e);
 
         public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 

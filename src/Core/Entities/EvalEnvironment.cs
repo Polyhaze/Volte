@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Volte.Commands;
+using Volte.Commands.Interaction;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
@@ -19,11 +21,24 @@ using Volte.Services;
 
 namespace Volte.Core.Entities
 {
+
     public sealed class EvalEnvironment
     {
-        internal EvalEnvironment()
+        public class InteractionBased
         {
-            Environment = this;
+            public MessageCommandContext Context { get; set; }
+            public DiscordSocketClient Client { get; set; }
+            public GuildData Data { get; set; }
+            public SlashCommandService SlashCommands { get; set; }
+            public DatabaseService Database { get; set; }
+            public InteractionBased Environment => this;
+            
+            public string Inheritance<T>() => Inheritance(typeof(T));
+            public string Inheritance(object obj) => Inheritance(obj.GetType());
+            public string Inheritance(Type type) => InheritanceInternal(type);
+            public string Inspect(object obj) => InspectInternal(obj);
+
+            public T Service<T>() where T : notnull => Context.Services.GetRequiredService<T>();
         }
 
         public VolteContext Context { get; set; }
@@ -31,7 +46,7 @@ namespace Volte.Core.Entities
         public GuildData Data { get; set; }
         public CommandService Commands { get; set; }
         public DatabaseService Database { get; set; }
-        public EvalEnvironment Environment { get; }
+        public EvalEnvironment Environment => this;
 
         public SocketGuildUser Member(ulong id) => Context.Guild.GetUser(id);
         public SocketUser User(ulong id) => Context.Client.GetUser(id);
@@ -88,8 +103,9 @@ namespace Volte.Core.Entities
 
         public string Inheritance<T>() => Inheritance(typeof(T));
         public string Inheritance(object obj) => Inheritance(obj.GetType());
-
-        public string Inheritance(Type type)
+        public string Inheritance(Type type) => InheritanceInternal(type);
+        
+        internal static string InheritanceInternal(Type type)
         {
             var baseTypes = new List<Type> {type};
             var latestType = type.BaseType;
@@ -120,8 +136,10 @@ namespace Volte.Core.Entities
 
             return sb.ToString();
         }
+        
+        public string Inspect(object obj) => InspectInternal(obj);
 
-        public string Inspect(object obj)
+        private static string InspectInternal(object obj)
         {
             var type = obj.GetType();
 
@@ -181,11 +199,11 @@ namespace Volte.Core.Entities
             return inspection.ToString();
         }
 
-        public string ReadValue(FieldInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
+        public static string ReadValue(FieldInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
 
-        public string ReadValue(PropertyInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
+        public static string ReadValue(PropertyInfo prop, object obj) => ReadValue(prop.Cast<object>(), obj);
 
-        private string ReadValue(object prop, object obj)
+        private static string ReadValue(object prop, object obj)
             => Lambda.TryCatch(() =>
             {
                 var value = prop switch
@@ -212,7 +230,7 @@ namespace Volte.Core.Entities
                 };
             }, e => $"[[{e.GetType().Name} thrown, message: \"{e.Message}\"]]");
 
-        public void Throw<TException>() where TException : Exception
+        public static void Throw<TException>() where TException : Exception
         {
             var ctor = typeof(TException).GetConstructors()
                            .FirstOrDefault(x => x.GetParameters().IsEmpty())

@@ -11,7 +11,7 @@ using Volte.Core.Entities;
 using Volte.Core.Helpers;
 using Volte.Services;
 
-namespace Volte.Commands.Slash
+namespace Volte.Commands.Interaction
 {
     public abstract class InteractionContext<TBacking> where TBacking : SocketInteraction
     {
@@ -27,6 +27,9 @@ namespace Volte.Commands.Slash
         public SocketTextChannel TextChannel => Channel.Cast<SocketTextChannel>();
         public SocketDMChannel DmChannel => Channel.Cast<SocketDMChannel>();
         public ISocketMessageChannel Channel => Backing.Channel;
+        
+        public InteractionReplyBuilder<TBacking> CreateReplyBuilder(bool ephemeral = false) 
+            => new InteractionReplyBuilder<TBacking>(this).WithEphemeral(ephemeral);
 
         public Task DeferAsync(bool ephemeral = false, RequestOptions options = null)
             => Backing.DeferAsync(ephemeral, options);
@@ -38,10 +41,8 @@ namespace Volte.Commands.Slash
             bool ephemeral = false,
             AllowedMentions allowedMentions = null,
             RequestOptions options = null,
-            MessageComponent component = null,
-            Embed embed = null)
-            => Backing.RespondAsync(text, embeds?.ToArray(), isTts, ephemeral, allowedMentions, options, component,
-                embed);
+            MessageComponent component = null)
+            => Backing.RespondAsync(text, embeds?.ToArray(), isTts, ephemeral, allowedMentions, options, component);
         
         public Task<RestFollowupMessage> FollowupAsync(
             string text = null,
@@ -50,10 +51,8 @@ namespace Volte.Commands.Slash
             bool ephemeral = false,
             AllowedMentions allowedMentions = null,
             RequestOptions options = null,
-            MessageComponent component = null,
-            Embed embed = null)
-            => Backing.FollowupAsync(text, embeds?.ToArray(), isTts, ephemeral, allowedMentions, options, component,
-                embed);
+            MessageComponent component = null)
+            => Backing.FollowupAsync(text, embeds?.ToArray(), isTts, ephemeral, allowedMentions, options, component);
 
         public void ModifyGuildSettings(Action<GuildData> modifier)
             => Db.Save(GuildSettings.Apply(modifier));

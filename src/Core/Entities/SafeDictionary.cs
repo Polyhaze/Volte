@@ -26,6 +26,6 @@ namespace Volte.Core.Entities
     {
         public static SafeDictionary<TKey, TValue> AsSafe<TKey, TValue>(this Dictionary<TKey, TValue> current)
             where TValue : class =>
-            new SafeDictionary<TKey, TValue>(current);
+            new SafeDictionary<TKey, TValue>(current ?? new Dictionary<TKey, TValue>());
     }
 }

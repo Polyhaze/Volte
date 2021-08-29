@@ -49,10 +49,12 @@ namespace Volte.Services
             });
         }
 
-        public HashSet<Reminder> GetReminders(IUser user, IGuild guild = null) => GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
+        public Reminder GetReminder(long databaseId) => GetAllReminders().FirstOrDefault(x => x.Id == databaseId);
 
-        public HashSet<Reminder> GetReminders(ulong creator, ulong guild = 0)
-            => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
+        public HashSet<Reminder> GetReminders(IUser user) => GetReminders(user.Id).ToHashSet();
+
+        public HashSet<Reminder> GetReminders(ulong creator)
+            => GetAllReminders().Where(r => r.CreatorId == creator).ToHashSet();
 
         public bool TryDeleteReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
 

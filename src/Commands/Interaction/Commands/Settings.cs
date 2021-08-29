@@ -1,25 +1,25 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Core.Helpers;
 
-namespace Volte.Commands.Slash.Commands
+namespace Volte.Commands.Interaction.Commands
 {
-    public class SettingsCommand : SlashCommand
+    public class SettingsCommand : ApplicationCommand
     {
         public SettingsCommand() : base("settings", "See or modify your guild's settings.") { }
 
-        public override async Task HandleAsync(SlashCommandContext ctx)
+        public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
             var reply = ctx.CreateReplyBuilder().WithEphemeral();
             var subcommandGroup =
                 ctx.Backing.Data.Options.First(); //setting to inspect/modify, or individual subcommands
             var subcommand = subcommandGroup.Options?.FirstOrDefault(); //get or set
-            var argument =
-                subcommand?.Options?.FirstOrDefault()
+            var argument = subcommand?.Options?.FirstOrDefault()
                     ?.Value; //null if subcommand = get; value present if subcommand = set.
 
             switch (subcommandGroup.Name)
@@ -113,15 +113,116 @@ namespace Volte.Commands.Slash.Commands
                                 data.Configuration.Moderation.ModActionLogChannel = newChannel.Id);
                         }
                     }
-
+                    break;
+                case "mass-mention-checks":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(ctx.GuildSettings.Configuration.Moderation.MassPingChecks
+                            ? "Mass mention checks are currently enabled."
+                            : "Mass mention checks are currently disabled.");
+                    else
+                    {
+                        var newSetting = argument.Cast<bool>();
+                        reply.WithEmbedFrom(newSetting
+                            ? "Enabled mass mention checks."
+                            : "Disabled mass mention checks.");
+                        ctx.ModifyGuildSettings(data => data.Configuration.Moderation.MassPingChecks = newSetting);
+                    }
+                    break;
+                case "prefix":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(
+                            $"The text command prefix for this guild is {ctx.GuildSettings.Configuration.CommandPrefix}.");
+                    else
+                    {
+                        var newPrefix = argument!.ToString();
+                        reply.WithEmbedFrom($"The new text command prefix for this guild is {Format.Bold(newPrefix)}.");
+                        ctx.ModifyGuildSettings(data => data.Configuration.CommandPrefix = newPrefix);
+                    }
+                    break;
+                case "auto-quote":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(ctx.GuildSettings.Extras.AutoParseQuoteUrls
+                            ? "Automatic quoting is currently enabled."
+                            : "Automatic quoting is currently disabled.");
+                    else
+                    {
+                        var newSetting = argument.Cast<bool>();
+                        reply.WithEmbedFrom(newSetting
+                            ? "Enabled automatic quoting."
+                            : "Disabled automatic quoting.");
+                        ctx.ModifyGuildSettings(data => data.Extras.AutoParseQuoteUrls = newSetting);
+                    }
+                    break;
+                case "reply-inline":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(ctx.GuildSettings.Configuration.ReplyInline
+                            ? "Text command inline replying is currently enabled."
+                            : "Text command inline replying is currently disabled.");
+                    else
+                    {
+                        var newSetting = argument.Cast<bool>();
+                        reply.WithEmbedFrom(newSetting
+                            ? "Enabled text command inline replying."
+                            : "Disabled text command inline replying.");
+                        ctx.ModifyGuildSettings(data => data.Configuration.ReplyInline = newSetting);
+                    }
+                    break;
+                case "show-moderator":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(ctx.GuildSettings.Configuration.Moderation.ShowResponsibleModerator
+                            ? "Punishment DMs will now have the responsible moderator as the embed author."
+                            : "Punishment DMs will keep the responsible moderator's identity private.");
+                    else
+                    {
+                        var newSetting = argument.Cast<bool>();
+                        reply.WithEmbedFrom(newSetting
+                            ? "Enabled showing responsible moderator."
+                            : "Disabled showing responsible moderator.");
+                        ctx.ModifyGuildSettings(data => data.Configuration.Moderation.ShowResponsibleModerator = newSetting);
+                    }
+                    break;
+                case "account-age-warnings":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(ctx.GuildSettings.Configuration.Moderation.CheckAccountAge
+                            ? "New account warnings are currently enabled."
+                            : "New account warnings are currently disabled.");
+                    else
+                    {
+                        var newSetting = argument.Cast<bool>();
+                        reply.WithEmbedFrom(newSetting
+                            ? "Enabled new account warnings."
+                            : "Disabled new account warnings.");
+                        ctx.ModifyGuildSettings(data => data.Configuration.Moderation.CheckAccountAge = newSetting);
+                    }
+                    break;
+                
+                case "verification-role":
+                    if (subcommand?.Name is "get")
+                        reply.WithEmbedFrom(new StringBuilder()
+                            .AppendLine($"Verified: {ctx.Guild.GetRole(ctx.GuildSettings.Configuration.Moderation.VerifiedRole)?.Mention ?? "not set."}")
+                            .AppendLine($"Unverified: {ctx.Guild.GetRole(ctx.GuildSettings.Configuration.Moderation.UnverifiedRole)?.Mention?? "not set."}")
+                            .ToString());
+                    else
+                    {
+                        var newRole = subcommand.GetOptionOfValue<SocketRole>("role");
+                        if (subcommand.GetOptionOfValue<string>("type") == "v")
+                        {
+                            reply.WithEmbedFrom($"The new Verified user role for this guild is {newRole.Mention}.");
+                            ctx.ModifyGuildSettings(data => data.Configuration.Moderation.VerifiedRole = newRole.Id);
+                        } 
+                        else 
+                        {
+                            reply.WithEmbedFrom($"The new Unverified user role for this guild is {newRole.Mention}.");
+                            ctx.ModifyGuildSettings(data => data.Configuration.Moderation.UnverifiedRole = newRole.Id);
+                        }
+                    }
                     break;
             }
-
-
+            
             await reply.RespondAsync();
         }
 
-        public override SlashCommandBuilder GetCommandBuilder(IServiceProvider provider)
+        public override SlashCommandBuilder GetSlashBuilder(IServiceProvider provider)
             => new SlashCommandBuilder()
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("dump")

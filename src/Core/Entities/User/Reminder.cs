@@ -3,19 +3,25 @@ using JsonParser = System.Text.Json.JsonSerializer; // same class in namespace L
 using System.Text.Json.Serialization;
 using Volte.Commands;
 using LiteDB;
+using Volte.Commands.Interaction;
 
 namespace Volte.Core.Entities
 {
     public sealed class Reminder
     {
+        public static Reminder CreateFrom(SlashCommandContext ctx, DateTime end, string reminder) => new Reminder
+        {
+            TargetTime = end,
+            CreationTime = DateTime.Now,
+            CreatorId = ctx.User.Id,
+            ReminderText = reminder
+        };
+        
         public static Reminder CreateFrom(VolteContext ctx, DateTime end, string reminder) => new Reminder
         {
             TargetTime = end,
             CreationTime = ctx.Now,
             CreatorId = ctx.User.Id,
-            GuildId = ctx.Guild.Id,
-            ChannelId = ctx.Channel.Id,
-            MessageId = ctx.Message.Id,
             ReminderText = reminder
         };
         
@@ -27,12 +33,6 @@ namespace Volte.Core.Entities
         public DateTime CreationTime { get; set; }
         [JsonPropertyName("creator")]
         public ulong CreatorId { get; set; }
-        [JsonPropertyName("guild")]
-        public ulong GuildId { get; set; }
-        [JsonPropertyName("channel")]
-        public ulong ChannelId { get; set; }
-        [JsonPropertyName("message")]
-        public ulong MessageId { get; set; }
         [JsonPropertyName("reminder_for")]
         public string ReminderText { get; set; }
 

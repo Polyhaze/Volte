@@ -3,9 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
-using Humanizer;
 using Qmmands;
-using Volte.Commands.Slash;
 using Volte.Core.Entities;
 using Volte.Core.Helpers;
 
@@ -36,13 +34,12 @@ namespace Volte.Commands.Modules
                 "Whether or not to only include reminders made in this current guild; or all of your reminders bot-wide.")]
             bool onlyCurrentGuild = true)
         {
-            var pages = Db.GetReminders(Context.User.Id, onlyCurrentGuild ? Context.Guild.Id : 0)
+            var pages = Db.GetReminders(Context.User.Id)
                 .Select(x => Context.CreateEmbedBuilder()
                     .WithTitle(x.TargetTime.GetDiscordTimestamp(TimestampType.Relative))
                     .AddField("Unique ID", x.Id)
                     .AddField("Reminder", Format.Code(x.ReminderText))
-                    .AddField("Created", x.CreationTime.GetDiscordTimestamp(TimestampType.LongDateTime))
-                    .AddField("Channel", MentionUtils.MentionChannel(x.ChannelId)))
+                    .AddField("Created", x.CreationTime.GetDiscordTimestamp(TimestampType.LongDateTime)))
                 .ToList();
             if (pages.IsEmpty())
                 return Ok(

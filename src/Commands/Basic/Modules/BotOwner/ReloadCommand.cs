@@ -31,22 +31,43 @@ namespace Volte.Commands.Modules
         {
             try
             {
-                var commands = await SlashCommands.UpdateCommandsAsync();
-                return Ok(Context.CreateEmbedBuilder(commands.Select(cmd => cmd.Name).ToReadableString())
-                        .WithTitle("Commands update successful.").Apply(eb =>
+                var restCommands = await SlashCommands.UpdateCommandsAsync();
+                var (slashCommands, userCommands, messageCommands) = (
+                    restCommands.Where(x => x.Type is ApplicationCommandType.Slash).ToArray(),
+                    restCommands.Where(x => x.Type is ApplicationCommandType.User).ToArray(),
+                    restCommands.Where(x => x.Type is ApplicationCommandType.Message).ToArray()
+                );
+                return Ok(Context.CreateEmbedBuilder().WithTitle("Commands update successful.")
+                        .Apply(eb =>
                         {
+                            if (!slashCommands.IsEmpty())
+                                eb.AddField("Slash Commands", slashCommands.Select(x => x.Name).ToReadableString(), true);
+                            if (!userCommands.IsEmpty())
+                                eb.AddField("User Commands", userCommands.Select(x => x.Name).ToReadableString(), true);
+                            if (!messageCommands.IsEmpty())
+                                eb.AddField("Message Commands", messageCommands.Select(x => x.Name).ToReadableString(), true);
+
+                            if (eb.Fields.IsEmpty())
+                            {
+                                eb.WithDescription("There were no commands updated.");
+                                return;
+                            }
+                            
                             // ReSharper disable once ConditionIsAlwaysTrueOrFalse IsExpressionAlwaysTrue
                             // it's not; SlashCommandService has 2 possible UpdateCommandsAsync, one dev, one prod
                             eb.WithFooter(
-                                commands is IReadOnlyCollection<RestGuildCommand>
-                                    ? "NOTE: DEBUG: Global commands wiped, all commands made guild commands for the Volte guild."
-                                    : "NOTE: Commands may take up to an hour to propagate.");
+#if DEBUG
+                                    "NOTE: DEBUG: Global commands wiped, all commands made guild commands for the Volte guild."
+#else
+                                    "NOTE: Commands may take up to an hour to propagate."
+#endif
+                            );
                         }));
             }
             catch (Exception e)
             {
                 return BadRequest(Context.CreateEmbedBuilder().WithTitle("Command update failed.")
-                    .WithDescription(e.InnerException?.Message ?? e.Message));
+                    .WithDescription(e.GetInnermostException().Message));
             }
         }
     }

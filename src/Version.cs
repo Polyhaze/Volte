@@ -11,10 +11,12 @@ namespace Volte
         }
         
         public static bool IsDevelopment => ReleaseType is DevelopmentStage.Development;
+
+        public static DevelopmentStage ReleaseType
 #if DEBUG
-        public static DevelopmentStage ReleaseType => DevelopmentStage.Development;
+            => DevelopmentStage.Development;
 #else
-        public static DevelopmentStage ReleaseType => DevelopmentStage.Release;
+            => DevelopmentStage.Release;
 #endif
         public static string FullVersion => $"{Major}.{Minor}.{Patch}.{Hotfix}-{ReleaseType}";
         public static string DiscordNetVersion => Discord.DiscordConfig.Version;

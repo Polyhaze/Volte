@@ -8,7 +8,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 
-namespace Volte.Commands.Slash
+namespace Volte.Commands.Interaction
 {
     public class InteractionReplyBuilder<TInteraction> where TInteraction : SocketInteraction
     {
@@ -19,7 +19,9 @@ namespace Volte.Commands.Slash
         public bool IsTts { get; private set; }
         public bool IsEphemeral { get; private set; }
         public AllowedMentions AllowedMentions { get; private set; } = AllowedMentions.None;
-        public MessageComponent Component { get; private set; }
+        public Task UpdateOrNoopTask => _updateTask ?? Task.CompletedTask;
+        private Task _updateTask;
+        public HashSet<ActionRowBuilder> ActionRows { get; } = new HashSet<ActionRowBuilder>();
 
         public InteractionReplyBuilder(InteractionContext<TInteraction> ctx) => _context = ctx;
 
@@ -74,17 +76,23 @@ namespace Volte.Commands.Slash
             return this;
         }
 
+        public InteractionReplyBuilder<TInteraction> WithComponentMessageUpdate(Action<MessageProperties> modifier)
+        {
+            if (_context is MessageComponentContext mctx)
+                _updateTask = mctx.Backing.Message.ModifyAsync(modifier);
+            
+            return this;
+        }
+
         public InteractionReplyBuilder<TInteraction> WithComponent(ComponentBuilder builder)
         {
-            Component = builder.Build();
+            WithActionRows(builder.ActionRows);
             return this;
         }
         
         public InteractionReplyBuilder<TInteraction> WithActionRows(params ActionRowBuilder[] actionRows)
         {
-            Component = new ComponentBuilder()
-                .AddActionRows(actionRows)
-                .Build();
+            actionRows.ForEach(row => ActionRows.Add(row));
             return this;
         }
         
@@ -93,20 +101,30 @@ namespace Volte.Commands.Slash
 
         public InteractionReplyBuilder<TInteraction> WithButtons(IEnumerable<ButtonBuilder> buttons) 
             => WithActionRows(buttons.Select(x => x.Build()).AsActionRow());
+        
+        public InteractionReplyBuilder<TInteraction> WithButtons(params ButtonBuilder[] buttons) 
+            => WithActionRows(buttons.Select(x => x.Build()).AsActionRow());
 
 
         public InteractionReplyBuilder<TInteraction> WithSelectMenu(SelectMenuBuilder menu)
         {
-            Component = new ComponentBuilder().WithSelectMenu(menu).Build();
+            ActionRows.Add(new ActionRowBuilder().AddComponent(menu.Build()));
             return this;
         }
 
-        public Task RespondAsync(RequestOptions options = null)
-            => _context.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
-                AllowedMentions, options, Component);
+        public async Task RespondAsync(RequestOptions options = null)
+        {
+            await _context.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+                AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
+            await UpdateOrNoopTask;
+        }
 
-        public Task<RestFollowupMessage> FollowupAsync(RequestOptions options = null)
-            => _context.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
-                AllowedMentions, options, Component);
+        public async Task<RestFollowupMessage> FollowupAsync(RequestOptions options = null)
+        {
+            var result = await _context.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+                AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
+            await UpdateOrNoopTask;
+            return result;
+        }
     }
 }

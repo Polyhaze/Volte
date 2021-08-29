@@ -51,6 +51,18 @@ namespace Gommon
             => channel.SendFileAsync(stream, filename, text, isTts, embed, options, isSpoiler, allowedMentions,
                 reference);
 
+        public static Exception GetInnermostException(this Exception exception)
+        {
+            var current = exception.InnerException;
+            while (current != null)
+            {
+                if (current?.InnerException is null)
+                    break;
+                current = current.InnerException;
+            }
+            return current ?? exception;
+        }
+
         public static string FormatBoldString(this DateTime dt)
             => dt.FormatPrettyString().Split(" ").Apply(arr =>
             {
