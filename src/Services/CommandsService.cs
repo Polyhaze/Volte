@@ -9,9 +9,9 @@ using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {

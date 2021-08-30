@@ -6,8 +6,8 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
-using Volte.Core.Helpers;
-using Volte.Core.Entities;
+using Volte.Helpers;
+using Volte.Entities;
 
 namespace Volte.Services
 {

@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {

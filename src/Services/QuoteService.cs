@@ -6,8 +6,8 @@ using Discord;
 using Discord.Rest;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {

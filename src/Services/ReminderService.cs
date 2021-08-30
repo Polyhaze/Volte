@@ -6,8 +6,8 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {
@@ -37,10 +37,10 @@ namespace Volte.Services
         public void Initialize()
         {
             _checker ??= new Timer(
-                _ => Executor.Execute(() =>
+                _ => Executor.Execute(async () =>
                 {
                     Logger.Debug(LogSource.Service, "Checking all reminders.");
-                    _db.GetAllReminders().ForEachIndexedAsync(async (reminder, index) =>
+                    await _db.AllReminders.ForEachIndexedAsync(async (reminder, index) =>
                     {
                         Logger.Debug(LogSource.Service,
                             $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");

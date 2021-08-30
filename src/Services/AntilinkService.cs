@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Gommon;
 using Humanizer;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {

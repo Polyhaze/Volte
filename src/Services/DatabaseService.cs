@@ -7,8 +7,8 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using LiteDB;
-using Volte.Core;
-using Volte.Core.Entities;
+using Volte;
+using Volte.Entities;
 // ReSharper disable ReturnTypeCanBeEnumerable.Global
 
 namespace Volte.Services
@@ -31,6 +31,10 @@ namespace Volte.Services
             _starboardData = Database.GetCollection<StarboardDbEntry>("starboard");
             _starboardData.EnsureIndex("composite_id", $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
         }
+        
+        public HashSet<Reminder> AllReminders => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
+        public HashSet<GuildData> AllGuilds => _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
+
 
         public GuildData GetData(SocketGuild guild) => GetData(guild?.Id);
 
@@ -49,17 +53,15 @@ namespace Volte.Services
             });
         }
 
-        public Reminder GetReminder(long databaseId) => GetAllReminders().FirstOrDefault(x => x.Id == databaseId);
+        public Reminder GetReminder(long databaseId) => AllReminders.FirstOrDefault(x => x.Id == databaseId);
 
         public HashSet<Reminder> GetReminders(IUser user) => GetReminders(user.Id).ToHashSet();
 
         public HashSet<Reminder> GetReminders(ulong creator)
-            => GetAllReminders().Where(r => r.CreatorId == creator).ToHashSet();
+            => AllReminders.Where(r => r.CreatorId == creator).ToHashSet();
 
         public bool TryDeleteReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
 
-        public HashSet<Reminder> GetAllReminders() => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
-        
         public void CreateReminder(Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
 
         public void Modify(ulong guildId, Action<GuildData> modifier)
