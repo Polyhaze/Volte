@@ -20,8 +20,8 @@ namespace Volte.Commands.Application
         {
             var reply = ctx.CreateReplyBuilder(true);
             var subcommand = ctx.Options.First().Value;
-            var timeFromNow = subcommand.GetOptionOfValue<string>("time-from-now");
-            var reminderContent = subcommand.GetOptionOfValue<string>("content");
+            var timeFromNow = subcommand.GetOption("time-from-now")?.GetAsString();
+            var reminderContent = subcommand.GetOption("time-from-now")?.GetAsString();
             if (subcommand.Name is "create")
             {
                 var reminders = ctx.Db.GetReminders(ctx.User);
@@ -79,37 +79,35 @@ namespace Volte.Commands.Application
             {
                 case "delete":
                     var reply = ctx.CreateReplyBuilder(true);
-                    var fields = ctx.Backing.Message.Embeds.First().Fields;
+                    var fields = ctx.Interaction.Message.Embeds.First().Fields;
                     if (fields.IsEmpty())
                         reply.WithEmbed(x => x.WithTitle("Please select a reminder from the list!"));
                     else
                     {
                         var reminderId = long.Parse(
-                            ctx.Backing.Message.Embeds.First().Fields.First(f => f.Name is "Unique ID").Value);
+                            ctx.Interaction.Message.Embeds.First().Fields.First(f => f.Name is "Unique ID").Value);
                         var targetReminder = ctx.Db.GetReminder(reminderId);
 
                         if (ctx.Db.TryDeleteReminder(targetReminder))
-                            await ctx.Backing.UpdateAsync(x =>
+                        {
+                            var reminders = ctx.Db.GetReminders(ctx.User.Id);
+                            await ctx.UpdateAsync(x =>
                             {
-                                var reminders = ctx.Db.GetReminders(ctx.User.Id);
-                                if (reminders.IsEmpty())
-                                {
-                                    x.Components = new ComponentBuilder().Build();
-                                    x.Embed = ctx.CreateEmbedBuilder()
-                                        .WithTitle("You've deleted all of your reminders.").Build();
-                                }
-                                else
-                                {
-                                    x.Components = new ComponentBuilder()
-                                        .WithSelectMenu(_getReminderMenu(ctx.Db.GetReminders(ctx.User.Id)))
+                                x.Components = reminders.IsEmpty() 
+                                    ? new ComponentBuilder().Build() 
+                                    : new ComponentBuilder()
+                                        .WithSelectMenu(_getReminderMenu(reminders))
                                         .Build();
-                                    x.Embed = ctx.CreateEmbedBuilder()
-                                        .WithTitle("Please select a reminder from the list.").Build();
-                                }
 
+                                x.Embed = ctx.CreateEmbedBuilder(reminders.IsEmpty()
+                                    ? "You've deleted all of your reminders."
+                                    : "Please select a reminder from the list.")
+                                    .Build();
                             });
-                        else
-                            await reply.WithEmbedFrom("Reminder couldn't be deleted").RespondAsync();
+                            return;
+                        }
+                        
+                        reply.WithEmbedFrom("Reminder couldn't be deleted");
                         
                         return;
                     }
@@ -117,9 +115,8 @@ namespace Volte.Commands.Application
                     await reply.RespondAsync();
                     break;
                 case "menu":
-                    var reminders = ctx.Db.GetReminders(ctx.User.Id);
-                    var reminder = reminders.First(x => x.Id == long.Parse(ctx.Backing.Data.Values.First()));
-                    await ctx.Backing.UpdateAsync(x =>
+                    var reminder = ctx.Db.GetReminder(long.Parse(ctx.SelectedMenuOptions.First()));
+                    await ctx.Interaction.UpdateAsync(x =>
                     {
                         x.Embed = ctx.CreateEmbedBuilder()
                             .WithTitle(reminder.TargetTime.GetDiscordTimestamp(TimestampType.Relative))
@@ -129,33 +126,25 @@ namespace Volte.Commands.Application
                             .Build();
                         x.Components = new ComponentBuilder()
                             .WithButton(_deleteButton)
-                            .WithSelectMenu(_getReminderMenu(reminders))
+                            .WithSelectMenu(_getReminderMenu(ctx.Db.GetReminders(ctx.User.Id)))
                             .Build();
                     });
                     break;
             }
         }
+        
 
-
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("create")
-                    .WithDescription("Create a reminder.")
-                    .WithType(ApplicationCommandOptionType.SubCommand)
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("time-from-now")
-                        .WithDescription("When do you want to be reminded? i.e. 2d4h, 2 days 4 hours.")
-                        .WithType(ApplicationCommandOptionType.String)
-                        .WithRequired(true))
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("content")
-                        .WithDescription("What do you want to reminded of?")
-                        .WithType(ApplicationCommandOptionType.String)
-                        .WithRequired(true)))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("view")
-                    .WithDescription("View and/or delete reminders; selectable via dropdown menu.")
-                    .WithType(ApplicationCommandOptionType.SubCommand));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command(o =>
+                {
+                    o.Subcommand("view", "View and/or delete reminders; selectable via dropdown menu.");
+                    
+                    o.Subcommand("create", "Create a reminder.", x =>
+                        {
+                            x.RequiredString("time-from-now", "When do you want to be reminded? i.e. 2d6h2s, 2 days 6 hours 2 seconds.");
+                            x.RequiredString("content", "What do you want to be reminded of?");
+                        });
+                    
+                });
     }
 }

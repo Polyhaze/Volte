@@ -6,7 +6,7 @@ using Gommon;
 namespace Volte.Entities
 {
     /// <summary>
-    ///     A <see cref="Dictionary{TKey,TValue}"/> implementation that solely provides nullable indexing.
+    ///     Mutable <see cref="Dictionary{TKey,TValue}"/> implementation that solely provides nullable indexing.
     /// </summary>
     /// <typeparam name="TKey">Entry key</typeparam>
     /// <typeparam name="TValue">Entry value</typeparam>
@@ -17,7 +17,7 @@ namespace Volte.Entities
 
         public new TValue this[TKey key]
         {
-            get => base.TryGetValue(key, out var value) ? value : null;
+            get => TryGetValue(key, out var value) ? value : null;
             set => base[key] = value;
         }
     }

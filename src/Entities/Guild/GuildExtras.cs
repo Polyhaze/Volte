@@ -11,7 +11,7 @@ namespace Volte.Entities
     {
         internal GuildExtras()
         {
-            SelfRoles = new HashSet<string>();
+            SelfRoleIds = new HashSet<ulong>();
             Tags = new HashSet<Tag>();
             Warns = new HashSet<Warn>();
         }
@@ -23,7 +23,7 @@ namespace Volte.Entities
         public bool AutoParseQuoteUrls { get; set; }
 
         [JsonPropertyName("self_roles")]
-        public HashSet<string> SelfRoles { get; set; }
+        public HashSet<ulong> SelfRoleIds { get; set; }
 
         [JsonPropertyName("tags")]
         public HashSet<Tag> Tags { get; set; }
@@ -33,7 +33,6 @@ namespace Volte.Entities
 
         public void AddTag(Action<Tag> initializer) => Tags.Add(new Tag().Apply(initializer));
         public void AddWarn(Action<Warn> initializer) => Warns.Add(new Warn().Apply(initializer));
-        
         
         public override string ToString()
             => JsonSerializer.Serialize(this, Config.JsonOptions);

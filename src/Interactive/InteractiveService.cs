@@ -10,6 +10,7 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Entities;
 using Volte.Helpers;
+using Volte.Interactions;
 using Volte.Interactive;
 
 namespace Volte.Services
@@ -134,11 +135,11 @@ namespace Volte.Services
         public async ValueTask<IUserMessage> StartPollAsync(VolteContext context,
             PollInfo pollInfo)
         {
-            var m = await pollInfo.Apply(context.CreateEmbedBuilder()).SendToAsync(context.Channel);
+            var m = await context.CreateEmbedBuilder().Apply(pollInfo.Apply).SendToAsync(context.Channel);
 
             _ = Executor.ExecuteAsync(async () =>
             {
-                _ = await context.Message.TryDeleteAsync("Poll invocation message.");
+                await context.Message.TryDeleteAsync("Poll invocation message.");
                 await DiscordHelper.GetPollEmojis()[..pollInfo.Fields.Count]
                     .ForEachAsync(async emoji =>
                 {

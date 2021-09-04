@@ -46,7 +46,7 @@ namespace Volte.Entities
             return FromFields(fields);
         }
         
-        public EmbedBuilder Apply(EmbedBuilder embedBuilder) 
+        public void Apply(EmbedBuilder embedBuilder) 
             => embedBuilder.Apply(eb =>
             {
                 Fields.ForEach(x => eb.AddField(x.Key, x.Value, true));

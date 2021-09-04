@@ -8,13 +8,17 @@ namespace Volte.Commands.Application
 {
     public sealed class EvalCommand : ApplicationCommand
     {
-        public EvalCommand() : base("Bot Owner Code Eval", ApplicationCommandType.Message) { }
+        public EvalCommand() : base("Code Eval", ApplicationCommandType.Message) { }
 
-        public override Task HandleMessageCommandAsync(MessageCommandContext ctx)
+        public override Task<bool> RunMessageChecksAsync(MessageCommandContext ctx) 
+            => Task.FromResult(ctx.GuildUser.IsBotOwner());
+
+        public override async Task HandleMessageCommandAsync(MessageCommandContext ctx)
         {
-            Executor.Execute(async () => await EvalHelper.EvaluateAsync(ctx, ctx.UserMessage.Content));
-            return Task.CompletedTask;
+            if (!await RunMessageChecksAsync(ctx))
+                await ctx.CreateReplyBuilder(true).WithEmbed(x => x.WithTitle("You can't use this.").WithErrorColor()).RespondAsync();
+            else
+                Executor.Execute(async () => await EvalHelper.EvaluateAsync(ctx, ctx.UserMessage.Content));
         }
-
     }
 }

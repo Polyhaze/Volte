@@ -12,6 +12,7 @@ using Humanizer;
 using Volte.Commands;
 using Volte;
 using Volte.Entities;
+using Volte.Interactions;
 using Volte.Services;
 
 namespace Volte.Helpers
@@ -40,7 +41,8 @@ namespace Volte.Helpers
         public static string WhiteSquare => "⏹";
         public static string OctagonalSign => "🛑";
         public static string E1234 => "🔢";
-        public static string SpaceInvader = "\uD83D\uDC7E";
+        public static string ArrowBackwards => "\u25C0";
+        public static string SpaceInvader => "\uD83D\uDC7E";
         public static string Question => "\u2753";
         public static string Star => "\u2B50";
 
@@ -88,12 +90,21 @@ namespace Volte.Helpers
             => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) 
                || ctx.IsAdmin(user) 
                || IsGuildOwner(user);
+        
+        public static bool IsModerator<T>(this InteractionContext<T> ctx, SocketGuildUser user) where T : SocketInteraction
+            => user.HasRole(ctx.GuildSettings.Configuration.Moderation.ModRole) 
+               || ctx.IsAdmin(user) 
+               || IsGuildOwner(user);
 
         public static bool HasRole(this SocketGuildUser user, ulong roleId)
             => user.Roles.Select(x => x.Id).Contains(roleId);
 
         public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user)
             => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) 
+               || IsGuildOwner(user);
+        
+        public static bool IsAdmin<T>(this InteractionContext<T> ctx, SocketGuildUser user) where T : SocketInteraction
+            => user.HasRole(ctx.GuildSettings.Configuration.Moderation.AdminRole)
                || IsGuildOwner(user);
 
         public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,

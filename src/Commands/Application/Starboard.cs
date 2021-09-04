@@ -6,68 +6,59 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Volte.Helpers;
+using Volte.Interactions;
 
-namespace Volte.Interactions.Commands
+namespace Volte.Commands.Application
 {
     public sealed class StarboardCommand : ApplicationCommand
     {
         public StarboardCommand() : base("starboard", "See or modify this guild's starboard settings.", true) { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("config")
-                    .WithDescription("Enable/disable, or automatically setup the starboard system.")
-                    .WithType(ApplicationCommandOptionType.SubCommand))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("minimum-stars")
-                    .WithDescription(
-                        "The amount of stars required on a message before it is sent to the starboard channel.")
-                    .WithType(ApplicationCommandOptionType.SubCommandGroup)
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("get")
-                        .WithDescription("Show the current minimum star requirement.")
-                        .WithType(ApplicationCommandOptionType.SubCommand))
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("set")
-                        .WithDescription("Change the minimum star requirement.")
-                        .WithType(ApplicationCommandOptionType.SubCommand)
-                        .AddOption(new SlashCommandOptionBuilder()
-                            .WithName("amount")
-                            .WithDescription("The new minimum star requirement.")
-                            .WithType(ApplicationCommandOptionType.Integer)
-                            .WithRequired(true))))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("channel")
-                    .WithDescription("The channel to send starboard messages to.")
-                    .WithType(ApplicationCommandOptionType.SubCommandGroup)
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("get")
-                        .WithDescription("Show the current starboard channel.")
-                        .WithType(ApplicationCommandOptionType.SubCommand))
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("set")
-                        .WithDescription("Change the starboard channel.")
-                        .WithType(ApplicationCommandOptionType.SubCommand)
-                        .AddOption(new SlashCommandOptionBuilder()
-                            .WithName("channel")
-                            .WithDescription("The new starboard channel.")
-                            .WithType(ApplicationCommandOptionType.Channel)
-                            .WithRequired(true))));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command()
+                .Options(opts =>
+                {
+                    opts.SubcommandGroup("minimum-stars", "The amount of stars required on a message before it is sent to the starboard channel.",
+                        subOpts =>
+                        {
+                            subOpts.Subcommand("get", "Show the current minimum star requirement.");
+                            
+                            subOpts.Subcommand("set", "Change the minimum star requirement.", x 
+                                => x.RequiredInteger("amount", "The new minimum star requirement."));
+                        });
+                    
+                    opts.SubcommandGroup("channel", "The channel to send starboard messages to.",
+                        subOpts =>
+                        {
+                            subOpts.Subcommand("get", "Show the current starboard channel.");
+                            
+                            subOpts.Subcommand("set", "Change the starboard channel.", x 
+                                => x.RequiredChannel("channel", "The new starboard channel."));
+                        });
+                    opts.Subcommand("config", "Enable/disable, or automatically setup the starboard system.");
+                    
+                });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
             var reply = ctx.CreateReplyBuilder().WithEphemeral();
+            
+            if (!await RunSlashChecksAsync(ctx))
+            {
+                await reply.WithEmbed(x => x.WithTitle("You are not a server administrator.").WithErrorColor())
+                    .RespondAsync();
+                return;
+            }
+            
             var subcommandGroup =
                 ctx.Options.Values.First(); //setting to inspect/modify, or individual subcommands
-            var subcommand = subcommandGroup.Options?.FirstOrDefault(); //get or set
-            var argument = subcommand?.Options?.FirstOrDefault()
-                ?.Value; //null if subcommand = get; value present if subcommand = set.
+            var subcommand = subcommandGroup.Options.FirstOrDefault(); //get or set
+            var argument = subcommand?.Options.FirstOrDefault(); //null if subcommand = get; value present if subcommand = set.
 
             switch (subcommandGroup.Name)
             {
                 case "channel":
-                    if (subcommand?.Name is "get")
+                    if (subcommand!.Name is "get")
                     {
                         var channel =
                             ctx.Guild.GetTextChannel(ctx.GuildSettings.Configuration.Starboard.StarboardChannel);
@@ -77,7 +68,7 @@ namespace Volte.Interactions.Commands
                     }
                     else
                     {
-                        var newChannel = argument.Cast<SocketChannel>();
+                        var newChannel = argument!.GetAsGuildChannel();
                         if (!(newChannel is SocketTextChannel textChannel))
                             reply.WithEmbedFrom("You can only use text channels.");
                         else
@@ -90,12 +81,12 @@ namespace Volte.Interactions.Commands
 
                     break;
                 case "minimum-stars":
-                    if (subcommand?.Name is "get")
+                    if (subcommand!.Name is "get")
                         reply.WithEmbedFrom(
                             $"The current minimum star requirement is **{ctx.GuildSettings.Configuration.Starboard.StarsRequiredToPost}**.");
                     else
                     {
-                        var newRequirement = int.Parse(argument?.ToString()!);
+                        var newRequirement = argument!.GetAsInteger();
                         reply.WithEmbedFrom($"The new minimum star requirement is **{newRequirement}**.");
                         ctx.ModifyGuildSettings(data =>
                             data.Configuration.Starboard.StarsRequiredToPost = newRequirement);
@@ -110,39 +101,47 @@ namespace Volte.Interactions.Commands
                             .AppendDescriptionLine($"{DiscordHelper.SpaceInvader}: Setup the starboard. " +
                                                    "This will create a channel, named `starboard`, with read-only permissions for the `@everyone` role, as well as enabling the starboard feature.")
                             .AppendDescriptionLine("**NOTE**: This will overwrite your current starboard channel."))
-                        .WithActionRows(GetConfigCommandButtons().AsActionRow());
+                        .WithActionRows(GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
                     break;
             }
 
             await reply.RespondAsync();
         }
 
-        private IEnumerable<IMessageComponent> GetConfigCommandButtons()
+        private IEnumerable<IMessageComponent> GetConfigCommandButtons(bool enabled)
             => new[]
-                {
-                    ButtonBuilder.CreateSuccessButton("Enable", "starboard:config:on",
-                        DiscordHelper.BallotBoxWithCheck.ToEmoji()),
-                    ButtonBuilder.CreateDangerButton("Disable", "starboard:config:off",
-                        DiscordHelper.OctagonalSign.ToEmoji()),
-                    ButtonBuilder.CreateSecondaryButton("Setup", "starboard:config:setup",
-                        DiscordHelper.SpaceInvader.ToEmoji())
-                }.Select(x => x.Build());
-        
+            {
+                ButtonBuilder.CreateSuccessButton("Enable", "starboard:config:on",
+                    DiscordHelper.BallotBoxWithCheck.ToEmoji()).WithDisabled(enabled),
+                ButtonBuilder.CreateDangerButton("Disable", "starboard:config:off",
+                    DiscordHelper.OctagonalSign.ToEmoji()).WithDisabled(!enabled),
+                ButtonBuilder.CreateSecondaryButton("Setup", "starboard:config:setup",
+                    DiscordHelper.SpaceInvader.ToEmoji())
+            }.Select(x => x.Build());
+
 
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
-            var reply = ctx.CreateReplyBuilder().WithEphemeral()
-                .WithActionRows(GetConfigCommandButtons().AsActionRow());
-
+            var messageUpdate = ctx.CreateReplyBuilder().WithEphemeral()
+                .WithActionRows(GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
+            
             if (ctx.CustomIdParts[1] is "config")
                 switch (ctx.CustomIdParts[2])
                 {
                     case "on":
-                        reply.WithEmbedFrom("Starboard has been enabled.");
+                        await messageUpdate.WithComponentMessageUpdate(props =>
+                        {
+                            props.Components = new ComponentBuilder()
+                                .AddActionRows(GetConfigCommandButtons(true).AsActionRow()).Build();
+                        }).UpdateOrNoopTask;
                         ctx.ModifyGuildSettings(data => data.Configuration.Starboard.Enabled = true);
                         break;
                     case "off":
-                        reply.WithEmbedFrom("Starboard has been disabled.");
+                        await messageUpdate.WithComponentMessageUpdate(props =>
+                        {
+                            props.Components = new ComponentBuilder()
+                                .AddActionRows(GetConfigCommandButtons(false).AsActionRow()).Build();
+                        }).UpdateOrNoopTask;
                         ctx.ModifyGuildSettings(data => data.Configuration.Starboard.Enabled = false);
                         break;
                     case "setup":
@@ -162,12 +161,11 @@ namespace Volte.Interactions.Commands
                             data.Configuration.Starboard.Enabled = true;
                             data.Configuration.Starboard.StarboardChannel = channel.Id;
                         });
-                        reply.WithEmbedFrom(
-                            $"Successfully configured the Starboard functionality, and any starred messages will go to {channel.Mention}.");
+                        await ctx.CreateReplyBuilder().WithEphemeral().WithEmbedFrom(
+                                $"Successfully configured the Starboard functionality, and any starred messages will go to {channel.Mention}.")
+                            .RespondAsync();
                         break;
                 }
-
-            await reply.RespondAsync();
         }
     }
 }

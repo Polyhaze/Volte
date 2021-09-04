@@ -90,10 +90,6 @@ namespace Volte.Helpers
                 ? vctx.CreateEmbedBuilder()
                 : ctx.Cast<MessageCommandContext>().CreateEmbedBuilder();
 
-            var channel = (ctx is VolteContext)
-                ? ctx.Cast<VolteContext>().Channel
-                : ctx.Cast<MessageCommandContext>().TextChannel;
-            
             try
             {
                 var env = (ctx is VolteContext)
@@ -136,7 +132,8 @@ namespace Volte.Helpers
                         _ => state.ReturnValue.ToString()
                     };
 
-#pragma warning disable 8509 | only 2 possible types for this variable.
+#pragma warning disable 8509 
+                    //only 2 possible types for this variable.
                     await (env switch
 #pragma warning restore 8509
                     {

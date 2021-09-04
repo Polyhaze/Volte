@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Discord;
+using Gommon;
 using Volte.Commands;
 using Volte;
 using Volte.Helpers;
@@ -24,19 +25,18 @@ namespace Volte.Entities
         [JsonPropertyName("uses")]
         public long Uses { get; set; }
 
-        public string SanitizeContent()
-            => Response
+        public string SanitizedContent => Response
                 .Replace("@everyone", $"@{DiscordHelper.Zws}everyone")
                 .Replace("@here", $"@{DiscordHelper.Zws}here");
 
         public string FormatContent(VolteContext ctx)
-            => SanitizeContent()
-                .Replace("{ServerName}", ctx.Guild.Name)
-                .Replace("{GuildName}", ctx.Guild.Name)
-                .Replace("{UserName}", ctx.User.Username)
-                .Replace("{UserMention}", ctx.User.Mention)
-                .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
-                .Replace("{UserTag}", ctx.User.Discriminator);
+            => SanitizedContent
+                .ReplaceIgnoreCase("{ServerName}", ctx.Guild.Name)
+                .ReplaceIgnoreCase("{GuildName}", ctx.Guild.Name)
+                .ReplaceIgnoreCase("{UserName}", ctx.User.Username)
+                .ReplaceIgnoreCase("{UserMention}", ctx.User.Mention)
+                .ReplaceIgnoreCase("{OwnerMention}", ctx.Guild.Owner.Mention)
+                .ReplaceIgnoreCase("{UserTag}", ctx.User.Discriminator);
 
         public EmbedBuilder AsEmbed(VolteContext ctx) => ctx.CreateEmbedBuilder(FormatContent(ctx))
             .WithAuthor(author: null)

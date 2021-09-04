@@ -31,7 +31,7 @@ namespace Volte.Commands.Modules
             {new[] {"intensity"}, "`high`, `med`, or `low`"}
         };
 
-        private readonly Dictionary<char, string> _nato = new Dictionary<char, string>
+        private static readonly Dictionary<char, string> _nato = new Dictionary<char, string>
         {
             {'a', "Alfa"}, {'b', "Bravo"}, {'c', "Charlie"}, {'d', "Delta"},
             {'e', "Echo"}, {'f', "Foxtrot"}, {'g', "Golf"}, {'h', "Hotel"},
@@ -44,8 +44,8 @@ namespace Volte.Commands.Modules
             {'7', "Seven"}, {'8', "Eight"}, {'9', "Nine"}, {'0', "Zero"}
         };
 
-        private string GetNato(char i) =>
-            _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
+        public static string GetNato(char i) =>
+            _nato.TryGetValue(char.ToLower(i), out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
 
         /// <summary>
         ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.

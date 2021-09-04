@@ -62,7 +62,7 @@ namespace Volte.Commands.Modules
                 }
             });
             
-            return Ok(e);
+            return Ok(e.WithFooter("Commands missing? Many of my commands have been converted to slash commands. Type / to see them all!"));
         }
 
         //module without aliases: regular module

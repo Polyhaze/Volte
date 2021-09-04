@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Discord;
-using Volte;
 
 namespace Volte.Entities
 {
@@ -13,6 +12,7 @@ namespace Volte.Entities
             {
                 Id = guild.Id,
                 OwnerId = guild.OwnerId,
+                HasGuildOnlyCommands = false,
                 Configuration = new GuildConfiguration
                 {
                     Autorole = default,
@@ -42,7 +42,7 @@ namespace Volte.Entities
                 Extras = new GuildExtras
                 {
                     ModActionCaseNumber = default,
-                    SelfRoles = new HashSet<string>(),
+                    SelfRoleIds = new HashSet<ulong>(),
                     Tags = new HashSet<Tag>(),
                     Warns = new HashSet<Warn>()
                 }

@@ -59,14 +59,13 @@ namespace Volte.Commands.Modules
 
             var reason = modifications.TryGetValue("reason", out result) ? result : "Banned by a Moderator.";
 
-            var e = Context
-                .CreateEmbedBuilder(
+            var e = Context.CreateEmbedBuilder(
                     $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
 
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator ||
                 modifications.TryGetValue("shadow", out _))
             {
-                e = e.WithAuthor(author: null).WithSuccessColor();
+                e.WithAuthor(author: null).WithSuccessColor();
             }
             
             if (!await member.TrySendMessageAsync(embed: e.Build()))

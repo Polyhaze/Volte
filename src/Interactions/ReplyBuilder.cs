@@ -7,12 +7,14 @@ using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
+// ReSharper disable UnusedMethodReturnValue.Global
+// "unused" return value is for chaining convenience.
 
 namespace Volte.Interactions
 {
     public class ReplyBuilder<TInteraction> where TInteraction : SocketInteraction
     {
-        private readonly InteractionContext<TInteraction> _context;
+        private readonly InteractionContext<TInteraction> _ctx;
 
         public string Content { get; private set; }
         public HashSet<Embed> Embeds { get; } = new HashSet<Embed>();
@@ -23,7 +25,7 @@ namespace Volte.Interactions
         private Task _updateTask;
         public HashSet<ActionRowBuilder> ActionRows { get; } = new HashSet<ActionRowBuilder>();
 
-        public ReplyBuilder(InteractionContext<TInteraction> ctx) => _context = ctx;
+        public ReplyBuilder(InteractionContext<TInteraction> ctx) => _ctx = ctx;
 
         public ReplyBuilder<TInteraction> WithContent(string content)
         {
@@ -33,7 +35,7 @@ namespace Volte.Interactions
 
         public ReplyBuilder<TInteraction> WithEmbed(Action<EmbedBuilder> modifier)
         {
-            Embeds.Add(_context.CreateEmbedBuilder().Apply(modifier).Build());
+            Embeds.Add(_ctx.CreateEmbedBuilder().Apply(modifier).Build());
             return this;
         }
 
@@ -59,7 +61,7 @@ namespace Volte.Interactions
 
         public ReplyBuilder<TInteraction> WithEmbedFrom(string content)
         {
-            Embeds.Add(_context.CreateEmbedBuilder(content).Build());
+            Embeds.Add(_ctx.CreateEmbedBuilder(content).Build());
             return this;
         }
 
@@ -81,10 +83,10 @@ namespace Volte.Interactions
             return this;
         }
 
-        public ReplyBuilder<TInteraction> WithComponentMessageUpdate(Action<MessageProperties> modifier)
+        public ReplyBuilder<TInteraction> WithComponentMessageUpdate(Action<MessageProperties> modifier, RequestOptions options = null)
         {
-            if (_context is MessageComponentContext mctx)
-                _updateTask = mctx.Backing.Message.ModifyAsync(modifier);
+            if (_ctx is MessageComponentContext mctx)
+                _updateTask = mctx.Interaction.UpdateAsync(modifier, options);
             
             return this;
         }
@@ -105,7 +107,7 @@ namespace Volte.Interactions
             => WithActionRows(actionRows.ToArray());
 
         public ReplyBuilder<TInteraction> WithButtons(IEnumerable<ButtonBuilder> buttons) 
-            => WithActionRows(buttons.Select(x => x.Build()).AsActionRow());
+            => WithButtons(buttons.ToArray());
         
         public ReplyBuilder<TInteraction> WithButtons(params ButtonBuilder[] buttons) 
             => WithActionRows(buttons.Select(x => x.Build()).AsActionRow());
@@ -119,14 +121,14 @@ namespace Volte.Interactions
 
         public async Task RespondAsync(RequestOptions options = null)
         {
-            await _context.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+            await _ctx.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
                 AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
             await UpdateOrNoopTask;
         }
 
         public async Task<RestFollowupMessage> FollowupAsync(RequestOptions options = null)
         {
-            var result = await _context.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+            var result = await _ctx.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
                 AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
             await UpdateOrNoopTask;
             return result;

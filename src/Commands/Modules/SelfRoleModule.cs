@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Commands;
 using Volte.Entities;
 using Volte.Helpers;
 
@@ -21,13 +20,14 @@ namespace Volte.Commands.Modules
         [Description("Gets a list of self roles available for this guild.")]
         public Task<ActionResult> SelfRoleListAsync()
         {
-            if (Context.GuildData.Extras.SelfRoles.IsEmpty())
+            if (Context.GuildData.Extras.SelfRoleIds.IsEmpty())
                 return BadRequest("No roles available to self-assign in this guild.");
 
-            var roles = Context.GuildData.Extras.SelfRoles.Select(x => 
-                Context.Guild.Roles.AnyGet(r => r.Name.EqualsIgnoreCase(x), out var role)
-                    ? Format.Bold(role.Name)
-                    : string.Empty).Where(x => !x.IsNullOrEmpty()).Join("\n");
+            var roles = Context.GuildData.Extras.SelfRoleIds.Select(x =>
+                    Context.Guild.GetRole(x)?.Name ?? string.Empty)
+                .Where(x => !x.IsNullOrEmpty())
+                .Select(Format.Bold)
+                .Join("\n");
 
             return Ok(Context.CreateEmbedBuilder(roles).WithTitle("Roles available to self-assign in this guild:"));
         }
@@ -35,14 +35,13 @@ namespace Volte.Commands.Modules
         [Command("Add", "A")]
         [Description("Adds a role to the list of self roles for this guild.")]
         [RequireGuildAdmin]
-        public Task<ActionResult> SelfRoleAddAsync([Remainder, Description("The role to add to the SelfRoles list.")]
-            SocketRole role)
+        public Task<ActionResult> SelfRoleAddAsync(
+            [Remainder, Description("The role to add to the SelfRoles list.")] SocketRole role)
         {
-            var target = Context.GuildData.Extras.SelfRoles.FirstOrDefault(x => x.EqualsIgnoreCase(role.Name));
-            if (target is { })
-                return BadRequest(
-                    $"A role with the name **{role.Name}** is already in the Self Roles list for this guild!");
-            Context.Modify(data => data.Extras.SelfRoles.Add(role.Name));
+            if (Context.GuildData.Extras.SelfRoleIds.Contains(role.Id))
+                return BadRequest($"The role **{role.Name}** is already in the Self Roles list for this guild!");
+
+            Context.Modify(data => data.Extras.SelfRoleIds.Add(role.Id));
             return Ok($"Successfully added **{role.Name}** to the Self Roles list for this guild.");
         }
 
@@ -53,12 +52,10 @@ namespace Volte.Commands.Modules
             [Remainder, Description("The role to remove from the SelfRoles list.")]
             SocketRole role)
         {
-            if (!Context.GuildData.Extras.SelfRoles.ContainsIgnoreCase(role.Name))
+            if (!Context.GuildData.Extras.SelfRoleIds.Contains(role.Id))
                 return BadRequest($"The Self Roles list for this guild doesn't contain **{role.Name}**.");
 
-            Context.Modify(data => data.Extras.SelfRoles.Remove(role.Name));
-            Context.GuildData.Extras.SelfRoles.Remove(role.Name);
-            Db.Save(Context.GuildData);
+            Context.Modify(data => data.Extras.SelfRoleIds.Remove(role.Id));
             return Ok($"Removed **{role.Name}** from the Self Roles list for this guild.");
         }
 
@@ -67,7 +64,7 @@ namespace Volte.Commands.Modules
         [RequireGuildAdmin]
         public Task<ActionResult> SelfRoleClearAsync()
         {
-            Context.Modify(data => data.Extras.SelfRoles.Clear());
+            Context.Modify(data => data.Extras.SelfRoleIds.Clear());
             return Ok("Successfully cleared all Self Roles for this guild.");
         }
     }

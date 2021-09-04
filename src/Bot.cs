@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -13,6 +12,7 @@ using Sentry;
 using Volte.Commands.Modules;
 using Volte.Entities;
 using Volte.Helpers;
+using Volte.Interactions;
 using Volte.Services;
 using Console = Colorful.Console;
 
@@ -20,9 +20,16 @@ namespace Volte
 {
     public class Bot
     {
-        internal static async Task Main() => await StartAsync();
+        internal static async Task Main(string[] args)
+        {
+#if DEBUG
+            if (args.ContainsIgnoreCase("--force-command-update")) 
+                CommandUpdatingService.ForceUpdateAllCommands = true;
+#endif
+            
+            await StartAsync();
+        }
         
-
         public static Task StartAsync()
         {
             Console.Title = $"Volte V{Version.FullVersion}";

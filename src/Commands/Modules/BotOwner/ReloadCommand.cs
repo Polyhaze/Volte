@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Gommon;
@@ -32,7 +33,7 @@ namespace Volte.Commands.Modules
                 
                 return Ok(Context.CreateEmbedBuilder().WithTitle("Commands update successful.")
                     .AddField("New global commands", globalCommands.Count)
-                    .AddField("Guilds with new commands", newGuildCommands));
+                    .AddField("Guilds with new commands", newGuildCommands.Sum(x => x.Count)));
             }
             catch (Exception e)
             {

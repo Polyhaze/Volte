@@ -9,112 +9,26 @@ using Gommon;
 using Humanizer;
 using Volte.Entities;
 using Volte.Helpers;
+using Volte.Interactions;
 using Volte.Services;
 
-namespace Volte.Interactions.Commands
+namespace Volte.Commands.Application
 {
-    public sealed class IamCommand : ApplicationCommand
-    {
-        public IamCommand() : base("iam", "Give yourself Self Roles via dropdown menu.", true) { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider) => new SlashCommandBuilder();
-
-        public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
-        {
-            var roles = ctx.GuildSettings.Extras.SelfRoles
-                .Select(x => ctx.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x)))
-                .Where(x => x != null)
-                .Where(x => !ctx.GuildUser.HasRole(x.Id))
-                .ToList();
-
-            var reply = ctx.CreateReplyBuilder(true);
-
-
-            if (roles.IsEmpty())
-                reply.WithEmbedFrom("This guild has no more roles available for self-assigning.");
-            else
-                reply.WithEmbedFrom("What roles would you like?")
-                    .WithSelectMenu(new SelectMenuBuilder()
-                        .WithCustomId("iam:menu")
-                        .WithMaxValues(roles.Count)
-                        .WithPlaceholder("Choose a role...")
-                        .AddOptions(roles.Select(r => new SelectMenuOptionBuilder()
-                            .WithLabel(r.Name)
-                            .WithValue(r.Id.ToString()))
-                        )
-                    );
-
-            await reply.RespondAsync();
-        }
-
-        public override async Task HandleComponentAsync(MessageComponentContext ctx)
-        {
-            await ctx.DeferAsync(true);
-            if (ctx.CustomId.Split(':')[1] != "menu") return;
-
-            await ctx.GuildUser.AddRolesAsync(ctx.SelectedMenuOptions.Select(x => ctx.Guild.GetRole(ulong.Parse(x))));
-        }
-    }
-
-    public sealed class IamNotCommand : ApplicationCommand
-    {
-        public IamNotCommand() : base("iamnot", "Take away Self Roles from yourself via dropdown menu.", true) { }
-
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider) => new SlashCommandBuilder();
-
-        public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
-        {
-            var roles = ctx.GuildSettings.Extras.SelfRoles
-                .Select(x => ctx.Guild.Roles.FirstOrDefault(r => r.Name.EqualsIgnoreCase(x)))
-                .Where(x => x != null)
-                .Where(x => ctx.GuildUser.HasRole(x.Id))
-                .ToList();
-
-            var reply = ctx.CreateReplyBuilder(true);
-
-
-            if (roles.IsEmpty())
-                reply.WithEmbedFrom("You don't have any self roles.");
-            else
-                reply.WithEmbedFrom("What roles would you like taken away?")
-                    .WithSelectMenu(new SelectMenuBuilder()
-                        .WithCustomId("iamnot:menu")
-                        .WithMaxValues(roles.Count)
-                        .AddOptions(roles.Select(r => new SelectMenuOptionBuilder()
-                            .WithLabel(r.Name)
-                            .WithValue(r.Id.ToString()))
-                        )
-                    );
-
-            await reply.RespondAsync();
-        }
-
-        public override async Task HandleComponentAsync(MessageComponentContext ctx)
-        {
-            await ctx.DeferAsync(true);
-            if (ctx.CustomId.Split(':')[1] != "menu") return;
-
-            await ctx.GuildUser.RemoveRolesAsync(
-                ctx.SelectedMenuOptions.Select(x => ctx.Guild.GetRole(ulong.Parse(x))));
-        }
-    }
 
     public class CountMembersCommand : ApplicationCommand
     {
         public CountMembersCommand() : base("count-members",
             "Counts the amount of members in the current guild have the provided role.", true) { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("role")
-                    .WithDescription("The role to count members in.")
-                    .WithType(ApplicationCommandOptionType.Role)
-                    .WithRequired(true));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command().Options(o =>
+                o.RequiredRole("role", "The role to count members of.")
+            );
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
-            var role = ctx.ValuedOptions["role"].Cast<SocketRole>();
+            var role = ctx.Options["role"].GetAsRole();
 
             var users = (await ctx.Guild.GetUsersAsync().FlattenAsync())
                 .Where(x => x.RoleIds.Contains(role.Id))
@@ -140,8 +54,6 @@ namespace Volte.Interactions.Commands
     {
         public UptimeCommand() : base("uptime", "Shows the bot's uptime.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider) => new SlashCommandBuilder();
-
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
             => await ctx.CreateReplyBuilder(true)
                 .WithEmbed(e => e.WithTitle(Process.GetCurrentProcess().CalculateUptime()))
@@ -152,19 +64,16 @@ namespace Volte.Interactions.Commands
     {
         public AvatarCommand() : base("avatar", "Gets the avatar of the desired user or yourself.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider _)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithType(ApplicationCommandOptionType.User)
-                    .WithName("user")
-                    .WithDescription("The user's avatar you want to see.")
-                    .WithRequired(false));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command().Options(o =>
+                o.OptionalUser("user", "The user's avatar you want to see.")
+            );
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
-            var user = ctx.Options["user"].GetValueOr<SocketGuildUser>(ctx.User);
+            var user = ctx.Options["user"]?.GetAsGuildUser() ?? ctx.GuildUser;
             var buttons = new ushort[] { 128, 256, 512, 1024 }
-                .Select(x => ButtonBuilder.CreateLinkButton($"{x}x{x}", user.GetEffectiveAvatarUrl(size: x)).Build())
+                .Select(x => ButtonBuilder.CreateLinkButton($"{x}x{x}", user.GetEffectiveAvatarUrl(size: x)))
                 .ToArray();
 
             await ctx.CreateReplyBuilder()
@@ -172,10 +81,9 @@ namespace Volte.Interactions.Commands
                     .WithAuthor(user)
                     .WithImageUrl(user.GetEffectiveAvatarUrl()))
                 .WithEphemeral()
-                .WithActionRows(
-                    buttons.Take(2).AsActionRow(),
-                    buttons.Skip(2).AsActionRow()
-                ).RespondAsync();
+                .WithButtons(buttons.Take(2))
+                .WithButtons(buttons.Skip(2))
+                .RespondAsync();
         }
     }
 
@@ -184,12 +92,10 @@ namespace Volte.Interactions.Commands
     {
         public PingCommand() : base("ping", "Show the Gateway and REST latency from my servers to Discord.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider) => new SlashCommandBuilder();
-
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
             var sw = Stopwatch.StartNew();
-            await ctx.Backing.DeferAsync(true)
+            await ctx.Interaction.DeferAsync(true)
                 .Then(async () =>
                 {
                     sw.Stop();
@@ -207,34 +113,38 @@ namespace Volte.Interactions.Commands
     {
         public PollCommand() : base("poll", "Create a poll.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("question")
-                    .WithDescription("What would you like to ask?")
-                    .WithType(ApplicationCommandOptionType.String)
-                    .WithRequired(true))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("options")
-                    .WithDescription("The options you want on the poll, separated by a semicolon (;). Limit 9.")
-                    .WithType(ApplicationCommandOptionType.String)
-                    .WithRequired(true));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command(o =>
+            {
+                o.RequiredString("question", "What would you like to ask?");
+                o.RequiredString("options", "The options you want on the poll, separated by a semicolon (;). Limit 9.");
+                o.OptionalMentionable("mention", "The user or role to notify about the newly created poll.");
+            });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
-            var question = ctx.ValuedOptions["question"].Cast<string>();
-            var options = ctx.ValuedOptions["options"].Cast<string>();
+            var question = ctx.Options["question"].GetAsString();
+            var options = ctx.Options["options"].GetAsString();
+            var mention = ctx.Options["mention"];
+            var mentionStr = mention != null
+                ? mention.GetAsRole()?.Mention ?? mention.GetAsUser()?.Mention
+                : string.Empty;
 
             if (PollInfo.TryParse($"{question};{options}", out var pollInfo))
             {
-                await ctx.Backing.DeferAsync(true);
+                await ctx.DeferAsync(true);
                 Executor.Execute(async () =>
                 {
-                    await ctx.Backing.FollowupAsync(embed: pollInfo.Apply(ctx.CreateEmbedBuilder()).Build())
-                        .Then(async m =>
+                    await ctx.CreateReplyBuilder(true)
+                        .WithEmbeds(ctx.CreateEmbedBuilder().Apply(pollInfo.Apply))
+                        .FollowupAsync().Then(async m =>
+                        {
+                            if (mentionStr != null)
+                                await ctx.Channel.SendMessageAsync(mentionStr);
+                            
                             await DiscordHelper.GetPollEmojis()[..pollInfo.Fields.Count]
-                                .ForEachAsync(async emoji => await m.AddReactionAsync(emoji))
-                        );
+                                .ForEachAsync(async emoji => await m.AddReactionAsync(emoji));
+                        });
                 });
             }
             else
@@ -250,19 +160,17 @@ namespace Volte.Interactions.Commands
     public sealed class SpotifyCommand : ApplicationCommand
     {
         public SpotifyCommand() : base("spotify",
-            "Shows what you're listening to on Spotify, if you're listening to something.") { }
+            "Shows what you or someone else is listening to on Spotify, if they are.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("user")
-                    .WithDescription("The member whose Spotify status you want to see. Defaults to yourself.")
-                    .WithType(ApplicationCommandOptionType.User)
-                    .WithRequired(false));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command(o =>
+            {
+                o.OptionalUser("user", "The member whose Spotify status you want to see. Defaults to yourself.");
+            });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
-            var target = ctx.Options["user"].GetValueOr<SocketGuildUser>(ctx.User);
+            var target = ctx.Options["user"].GetAsGuildUser() ?? ctx.GuildUser;
 
             if (!target.TryGetSpotifyStatus(out var spotify))
                 await ctx.CreateReplyBuilder()
@@ -297,7 +205,7 @@ namespace Volte.Interactions.Commands
             {
                 Emote emote => ctx.CreateEmbedBuilder(Format.Url("Direct Link", emote.Url))
                     .AddField("Created", emote.CreatedAt.GetDiscordTimestamp(TimestampType.Relative), true)
-                    .AddField("Animated?", emote.Animated ? "Yes" : "No")
+                    .AddField("Animated?", emote.Animated ? "Yes" : "No", true)
                     .WithImageUrl(emote.Url)
                     .WithAuthor($":{emote.Name}:", emote.Url),
                 Emoji emoji => ctx.CreateEmbedBuilder(Format.Url("Direct Link", emoji.GetUrl()))
@@ -305,7 +213,7 @@ namespace Volte.Interactions.Commands
                     .WithImageUrl(emoji.GetUrl()),
                 _ => throw new ArgumentException("GenerateEmbed's parameter must be an Emote or an Emoji.")
             };
-        
+
         public BigEmojiCommand() : base("Show All Emojis", ApplicationCommandType.Message) { }
 
         public override async Task HandleMessageCommandAsync(MessageCommandContext ctx)
@@ -321,7 +229,7 @@ namespace Volte.Interactions.Commands
                 reply.WithEmbedFrom("Message contained no recognized emojis or accessible emotes.");
             else
                 reply.WithEmbeds(emojis.Select(x => GenerateEmbed(x, ctx)));
-            
+
             await reply.RespondAsync();
         }
     }
@@ -331,27 +239,19 @@ namespace Volte.Interactions.Commands
         public SnowflakeCommand() : base("snowflake",
             "Shows when the object with the given Snowflake ID was created.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider provider)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("snowflake")
-                    .WithDescription("The Discord snowflake you want to see.")
-                    .WithType(ApplicationCommandOptionType.String)
-                    .WithRequired(true));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command(o =>
+            {
+                o.RequiredString("snowflake", "The Discord snowflake you want to see.");
+            });
 
-        public override Task HandleSlashCommandAsync(SlashCommandContext ctx)
+        public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
-            var id = ctx.ValuedOptions["snowflake"].Cast<string>();
-            var reply = ctx.CreateReplyBuilder(true);
-
-            if (!ulong.TryParse(id.Trim(), out var snowflake))
-                reply.WithEmbeds(ctx.CreateEmbedBuilder().WithTitle("Input must be a number."));
-            else
-                reply.WithEmbeds(ctx.CreateEmbedBuilder()
-                    .WithTitle(SnowflakeUtils.FromSnowflake(snowflake)
-                        .GetDiscordTimestamp(TimestampType.LongDateTime)));
-
-            return reply.RespondAsync();
+            await ctx.CreateReplyBuilder(true)
+                .WithEmbeds(ctx.CreateEmbedBuilder()
+                    .WithTitle(SnowflakeUtils.FromSnowflake(ctx.Options["snowflake"].GetAsLong())
+                        .GetDiscordTimestamp(TimestampType.LongDateTime)))
+                .RespondAsync();
         }
     }
 
@@ -379,32 +279,19 @@ namespace Volte.Interactions.Commands
                     .RespondAsync();
             }
         }
-        
+
         public InfoCommand() : base("info", "Gets information for Discord things.") { }
 
-        public override SlashCommandBuilder GetCommandSignature(IServiceProvider _)
-            => new SlashCommandBuilder()
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("guild")
-                    .WithDescription("Show information about the current guild.")
-                    .WithType(ApplicationCommandOptionType.SubCommand))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("invite")
-                    .WithDescription("Get useful links for Volte such as the GitHub and Invite URL.")
-                    .WithType(ApplicationCommandOptionType.SubCommand))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("bot")
-                    .WithDescription("Show information about the current instance of Volte.")
-                    .WithType(ApplicationCommandOptionType.SubCommand))
-                .AddOption(new SlashCommandOptionBuilder()
-                    .WithName("user")
-                    .WithDescription("Show information about a user, or yourself.")
-                    .WithType(ApplicationCommandOptionType.SubCommand)
-                    .AddOption(new SlashCommandOptionBuilder()
-                        .WithName("target")
-                        .WithDescription("The user to show information for.")
-                        .WithType(ApplicationCommandOptionType.User)
-                        .WithRequired(false)));
+        public override SlashCommandSignature GetSignature(IServiceProvider provider)
+            => SlashCommandSignature.Command(o =>
+            {
+                o.Subcommand("guild", "Show information about the current guild.");
+                o.Subcommand("invite", "Get useful links for Volte such as the GitHub and Invite URL.");
+                o.Subcommand("bot", "Show information about the current instance of Volte.");
+                o.Subcommand("user", "Show information about a user, or yourself.", x =>
+                    x.OptionalUser("target", "The user to show information for")
+                );
+            });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -462,8 +349,7 @@ namespace Volte.Interactions.Commands
                         .WithThumbnailUrl(ctx.Client.CurrentUser.GetEffectiveAvatarUrl(size: 512)));
                     break;
                 case "user":
-                    var target = (subcommand.Options ?? Array.Empty<SocketSlashCommandDataOption>()).FirstOrDefault()
-                        .GetValueOr<SocketGuildUser>(ctx.User)!;
+                    var target = subcommand.GetOption("target").GetAsGuildUser(ctx.GuildUser);
 
                     reply.WithEmbeds(ctx.CreateEmbedBuilder()
                         .WithTitle(target.ToString())

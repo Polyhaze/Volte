@@ -21,41 +21,36 @@ namespace Volte.Interactions
             return menu;
         }
 
-        public static ApplicationCommandProperties[] GetCommandBuilders(this IEnumerable<ApplicationCommand> set, IServiceProvider provider = null)
-        {
-            return set.Select<ApplicationCommand, ApplicationCommandProperties>(x =>
-            {
-                return x.CommandType switch
+        public static ApplicationCommandProperties[] GetCommandBuilders(this IEnumerable<ApplicationCommand> set,
+            IServiceProvider provider = null)
+            => set.Select<ApplicationCommand, ApplicationCommandProperties>(x => x.CommandType switch
                 {
-                    ApplicationCommandType.Slash => x.GetCommandSignature(provider)
-                        .WithName(x.Name)
-                        .WithDescription(x.Description)
-                        .Build(),
+                    ApplicationCommandType.Slash => x.GetSignature(provider).Apply(s =>
+                        {
+                            s.Builder.WithName(x.Name);
+                            s.Builder.WithDescription(x.Description);
+                        }),
                     ApplicationCommandType.Message => new MessageCommandBuilder().WithName(x.Name).Build(),
                     ApplicationCommandType.User => new UserCommandBuilder().WithName(x.Name).Build(),
                     _ => null
-                };
-            }).Where(x => x != null).ToArray();
-        }
+                }
+            ).Where(x => x != null).ToArray();
 
 
-        public static SafeDictionary<string, object> GetOptionsWithValues(this SocketSlashCommandDataOption dataOpt)
-            => dataOpt.GetOptions().ToDictionary(x => x.Key, x => x.Value.Value).AsSafe();
+        public static ApplicationCommandOptionData GetOptio(this SocketSlashCommandDataOption dataOpt, string name)
+            => dataOpt.GetOptions()[name];
 
-        public static T GetOptionOfValue<T>(this SocketSlashCommandDataOption dataOpt, string name)
-            => dataOpt.GetOptionsWithValues()[name].Cast<T>();
-
-        public static SafeDictionary<string, SocketSlashCommandDataOption> GetOptions(
+        public static SafeDictionary<string, ApplicationCommandOptionData> GetOptions(
             this SocketSlashCommandDataOption dataOpt)
             => dataOpt.Options is null
-                ? new SafeDictionary<string, SocketSlashCommandDataOption>()
-                : dataOpt.Options.ToDictionary(x => x.Name).AsSafe();
+                ? new SafeDictionary<string, ApplicationCommandOptionData>()
+                : dataOpt.Options.ToDictionary(x => x.Name, x => new ApplicationCommandOptionData(x)).AsSafe();
 
-        public static SafeDictionary<string, SocketSlashCommandDataOption> GetOptions(
+        public static SafeDictionary<string, ApplicationCommandOptionData> GetOptions(
             this SocketSlashCommandData data)
             => data.Options is null
-                ? new SafeDictionary<string, SocketSlashCommandDataOption>()
-                : data.Options.ToDictionary(x => x.Name).AsSafe();
+                ? new SafeDictionary<string, ApplicationCommandOptionData>()
+                : data.Options.ToDictionary(x => x.Name, x => new ApplicationCommandOptionData(x)).AsSafe();
 
         public static ActionRowBuilder AsActionRow(this IEnumerable<IMessageComponent> components)
             => new ActionRowBuilder().AddComponents(components);
