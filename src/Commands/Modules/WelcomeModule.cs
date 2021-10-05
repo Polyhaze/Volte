@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -6,10 +7,54 @@ using Qmmands;
 using Volte.Commands;
 using Volte.Entities;
 using Volte.Helpers;
+using Volte.Interactions;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
 {
+    public sealed class WelcomeCommand : ApplicationCommand
+    {
+        public WelcomeCommand() : base("welcome", "Modify this guild's welcome system.", true) => Signature(o =>
+        {
+            o.SubcommandGroup("color", "Get or set the current guild's welcome embed color.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's welcome embed color.");
+                x.Subcommand("set", "Set the current guild's welcome embed color.",
+                    opts => opts.RequiredString("color", "The new welcome embed color. #HEX or R, G, B"));
+            });
+            o.SubcommandGroup("channel", "Get or set the current guild's welcome channel.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's welcome channel.");
+                x.Subcommand("set", "Set the current guild's welcome channel.",
+                    opts => opts.RequiredString("channel",
+                        "The new welcome channel. Omitting this will disable the welcome system."));
+            });
+            o.SubcommandGroup("message", "Get or set the current guild's welcome or farewell message.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's welcome or farewell message.", opts =>
+                {
+                    opts.RequiredString("welcome-message-type", "The type of welcome message to get.",
+                        choices: new Choices(
+                            ("On member join", "j"),
+                            ("On member join DM", "dm"),
+                            ("On member leave", "l")
+                        ));
+                });
+                x.Subcommand("set", "Set the current guild's welcome channel.", opts =>
+                {
+                    opts.RequiredString("welcome-message-type", "The type of welcome message to set.",
+                        choices: new Choices(
+                            ("On member join", "j"),
+                            ("On member join DM", "dm"),
+                            ("On member leave", "l")
+                        ));
+                    opts.RequiredString("new-message", "The new welcome or farewell message.");
+                });
+            });
+        });
+    }
+
+
     [Group("Welcome", "W")]
     [RequireGuildAdmin]
     public class WelcomeModule : VolteModule
@@ -36,7 +81,8 @@ namespace Volte.Commands.Modules
         public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
         {
             if (message is null)
-                return Ok($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}");
+                return Ok(
+                    $"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage, string.Empty)}");
 
             Context.Modify(data => data.Configuration.Welcome.WelcomeMessage = message);
             var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
@@ -49,7 +95,7 @@ namespace Volte.Commands.Modules
                     .AppendLine($"Set this guild's welcome message to: {Format.Code(message, string.Empty)}")
                     .AppendLine()
                     .AppendLine($"{sendingTest}"),
-                _ =>  Service.JoinAsync(new UserJoinedEventArgs(Context.User)));
+                _ => Service.JoinAsync(new UserJoinedEventArgs(Context.User)));
         }
 
         [Command("Color", "Colour", "Cl")]

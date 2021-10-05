@@ -21,13 +21,15 @@ namespace Volte.Interactions
         ///     When <see cref="CommandType"/> is <see cref="ApplicationCommandType.Slash"/>,
         ///     this property's value will have spaces replaced with hyphens and be all lowercase.
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; }
 
         /// <summary>
         ///     The description of this <see cref="ApplicationCommand"/>, for use in Slash commands.<br/>
         ///     This property's value will be null if <see cref="CommandType"/> is anything but <see cref="ApplicationCommandType.Slash"/>.
         /// </summary>
-        public string Description { get; protected set; }
+        public string Description { get; }
+        
+        internal SlashCommandSignature Sig { get; set; } = SlashCommandSignature.Command();
 
         public bool IsLockedToGuild { get; }
 
@@ -63,8 +65,13 @@ namespace Volte.Interactions
             IsLockedToGuild = guildOnly;
         }
 
-        //virtual to allow for ignoring the need to override this for commands that only require name and description.
-        public virtual SlashCommandSignature GetSignature(IServiceProvider provider) => SlashCommandSignature.Command();
+        protected void Signature(Action<Options> optionProducer) => Sig 
+            = SlashCommandSignature.Command(optionProducer).Apply(sig =>
+            {
+                sig.Builder.WithName(Name);
+                sig.Builder.WithDescription(Description);
+            });
+        
 
         public virtual Task HandleSlashCommandAsync(SlashCommandContext ctx)
             => Task.CompletedTask;

@@ -14,17 +14,12 @@ using Volte.Services;
 
 namespace Volte.Commands.Application
 {
-
-
     public class CountMembersCommand : ApplicationCommand
     {
         public CountMembersCommand() : base("count-members",
-            "Counts the amount of members in the current guild have the provided role.", true) { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command().Options(o =>
-                o.RequiredRole("role", "The role to count members of.")
-            );
+            "Counts the amount of members in the current guild have the provided role.", true) =>
+            Signature(o =>
+                o.RequiredRole("role", "The role to count members of."));
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -62,12 +57,9 @@ namespace Volte.Commands.Application
 
     public class AvatarCommand : ApplicationCommand
     {
-        public AvatarCommand() : base("avatar", "Gets the avatar of the desired user or yourself.") { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command().Options(o =>
-                o.OptionalUser("user", "The user's avatar you want to see.")
-            );
+        public AvatarCommand() : base("avatar", "Gets the avatar of the desired user or yourself.") =>
+            Signature(o =>
+                o.OptionalUser("user", "The user's avatar you want to see."));
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -111,15 +103,12 @@ namespace Volte.Commands.Application
 
     public class PollCommand : ApplicationCommand
     {
-        public PollCommand() : base("poll", "Create a poll.") { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-            {
-                o.RequiredString("question", "What would you like to ask?");
-                o.RequiredString("options", "The options you want on the poll, separated by a semicolon (;). Limit 9.");
-                o.OptionalMentionable("mention", "The user or role to notify about the newly created poll.");
-            });
+        public PollCommand() : base("poll", "Create a poll.") => Signature(o =>
+        {
+            o.RequiredString("question", "What would you like to ask?");
+            o.RequiredString("options", "The options you want on the poll, separated by a semicolon (;). Limit 9.");
+            o.OptionalMentionable("mention", "The user or role to notify about the newly created poll.");
+        });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -141,7 +130,7 @@ namespace Volte.Commands.Application
                         {
                             if (mentionStr != null)
                                 await ctx.Channel.SendMessageAsync(mentionStr);
-                            
+
                             await DiscordHelper.GetPollEmojis()[..pollInfo.Fields.Count]
                                 .ForEachAsync(async emoji => await m.AddReactionAsync(emoji));
                         });
@@ -160,13 +149,8 @@ namespace Volte.Commands.Application
     public sealed class SpotifyCommand : ApplicationCommand
     {
         public SpotifyCommand() : base("spotify",
-            "Shows what you or someone else is listening to on Spotify, if they are.") { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-            {
-                o.OptionalUser("user", "The member whose Spotify status you want to see. Defaults to yourself.");
-            });
+            "Shows what you or someone else is listening to on Spotify, if they are.") => Signature(o =>
+            o.OptionalUser("user", "The member whose Spotify status you want to see. Defaults to yourself."));
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -237,13 +221,8 @@ namespace Volte.Commands.Application
     public sealed class SnowflakeCommand : ApplicationCommand
     {
         public SnowflakeCommand() : base("snowflake",
-            "Shows when the object with the given Snowflake ID was created.") { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-            {
-                o.RequiredString("snowflake", "The Discord snowflake you want to see.");
-            });
+            "Shows when the object with the given Snowflake ID was created.") => Signature(o =>
+            o.RequiredString("snowflake", "The Discord snowflake you want to see."));
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -280,18 +259,15 @@ namespace Volte.Commands.Application
             }
         }
 
-        public InfoCommand() : base("info", "Gets information for Discord things.") { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-            {
-                o.Subcommand("guild", "Show information about the current guild.");
-                o.Subcommand("invite", "Get useful links for Volte such as the GitHub and Invite URL.");
-                o.Subcommand("bot", "Show information about the current instance of Volte.");
-                o.Subcommand("user", "Show information about a user, or yourself.", x =>
-                    x.OptionalUser("target", "The user to show information for")
-                );
-            });
+        public InfoCommand() : base("info", "Gets information for Discord things.") => Signature(o =>
+        {
+            o.Subcommand("guild", "Show information about the current guild.");
+            o.Subcommand("invite", "Get useful links for Volte such as the GitHub and Invite URL.");
+            o.Subcommand("bot", "Show information about the current instance of Volte.");
+            o.Subcommand("user", "Show information about a user, or yourself.", x =>
+                x.OptionalUser("target", "The user to show information for")
+            );
+        });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {

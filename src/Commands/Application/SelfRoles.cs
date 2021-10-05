@@ -11,7 +11,7 @@ using Volte.Interactions;
 
 namespace Volte.Commands.Application
 {
-        public sealed class IamCommand : ApplicationCommand
+    public sealed class IamCommand : ApplicationCommand
     {
         public IamCommand() : base("iam", "Give yourself Self Roles via dropdown menu.", true) { }
 
@@ -19,7 +19,7 @@ namespace Volte.Commands.Application
         {
             var roles = ctx.GuildSettings.Extras.SelfRoleIds
                 .Select(x => ctx.Guild.GetRole(x))
-                .Where(x => x != null)
+                .WhereNotNull()
                 .Where(x => !ctx.GuildUser.HasRole(x.Id))
                 .ToList();
 
@@ -98,13 +98,11 @@ namespace Volte.Commands.Application
                 ctx.SelectedMenuOptions.Select(x => ctx.Guild.GetRole(ulong.Parse(x))));
         }
     }
-    
+
     public class SelfRoleCommand : ApplicationCommand
     {
-        public SelfRoleCommand() : base("self-roles", "Modify the current guild's list of self roles.", true) { }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
+        public SelfRoleCommand() : base("self-roles", "Modify the current guild's list of self roles.", true) =>
+            Signature(o =>
             {
                 o.Subcommand("add", "Add a role to the list of self roles for this guild.", x =>
                     x.RequiredRole("role", "The role to add to the list of self roles.")
@@ -112,8 +110,7 @@ namespace Volte.Commands.Application
                 o.Subcommand("remove", "Remove roles from the list of self roles via dropdown menu.");
             });
 
-        private readonly Func<IEnumerable<SocketRole>, SelectMenuBuilder> _getSelfRoleRemoveMenu = rs
-            =>
+        private readonly Func<IEnumerable<SocketRole>, SelectMenuBuilder> _getSelfRoleRemoveMenu = rs =>
         {
             var roles = rs as SocketRole[] ?? rs.ToArray();
             return new SelectMenuBuilder()
@@ -127,8 +124,9 @@ namespace Volte.Commands.Application
                     .ToList())
                 .WithPlaceholder($"Choose up to {"role".ToQuantity(roles.Length)}...");
         };
-        
-        public override Task<bool> RunSlashChecksAsync(SlashCommandContext ctx) => Task.FromResult(ctx.IsAdmin(ctx.GuildUser));
+
+        public override Task<bool> RunSlashChecksAsync(SlashCommandContext ctx) =>
+            Task.FromResult(ctx.IsAdmin(ctx.GuildUser));
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -141,7 +139,7 @@ namespace Volte.Commands.Application
                     .RespondAsync();
                 return;
             }
-            
+
             switch (subcommand.Name)
             {
                 case "add":
@@ -162,7 +160,9 @@ namespace Volte.Commands.Application
                     break;
                 case "remove":
                     reply.WithEmbedFrom("What roles would you like to remove from the self role list?")
-                        .WithSelectMenu(_getSelfRoleRemoveMenu(ctx.GuildSettings.Extras.SelfRoleIds.Select(x => ctx.Guild.GetRole(x))));
+                        .WithSelectMenu(
+                            _getSelfRoleRemoveMenu(
+                                ctx.GuildSettings.Extras.SelfRoleIds.Select(x => ctx.Guild.GetRole(x))));
                     break;
             }
 
@@ -177,19 +177,19 @@ namespace Volte.Commands.Application
                     .Select(ulong.Parse)
                     .Select(x => ctx.Guild.GetRole(x))
                     .ToArray();
-                
+
                 ctx.ModifyGuildSettings(data =>
                     data.Extras.SelfRoleIds.RemoveWhere(x => selectedRoles.Any(r => r.Id == x))
                 );
 
                 await ctx.CreateReplyBuilder()
-                        .WithEphemeral()
-                        .WithEmbed(x =>
-                        {
-                            x.WithTitle($"Removed the following {"role".ToQuantity(selectedRoles.Length)}");
-                            x.WithDescription(selectedRoles.Select(r => r.Mention).Join(",\n"));
-                        })
-                        .RespondAsync();
+                    .WithEphemeral()
+                    .WithEmbed(x =>
+                    {
+                        x.WithTitle($"Removed the following {"role".ToQuantity(selectedRoles.Length)}");
+                        x.WithDescription(selectedRoles.Select(r => r.Mention).Join(",\n"));
+                    })
+                    .RespondAsync();
             }
         }
     }

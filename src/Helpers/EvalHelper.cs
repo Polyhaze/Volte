@@ -25,7 +25,7 @@ namespace Volte.Helpers
         private static readonly Regex Pattern = new Regex("[\t\n\r]*`{3}(?:cs)?[\n\r]+((?:.|\n|\t\r)+)`{3}",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new []
+        public static readonly ReadOnlyList<string> Imports = new ReadOnlyList<string>(new[]
         {
             "System", "System.IO", "System.Linq", "System.Text", "System.Threading", "System.Threading.Tasks",
             "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
@@ -36,10 +36,14 @@ namespace Volte.Helpers
 
             "Humanizer", "Gommon", "Qmmands"
         });
-        
-        public static readonly ScriptOptions Options = ScriptOptions.Default.WithImports(Imports)
-            .WithReferences(AppDomain.CurrentDomain.GetAssemblies()
-                .Where(x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()));
+
+        public static readonly ScriptOptions Options
+            = ScriptOptions.Default.WithReferences(
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(
+                            x => !x.IsDynamic && !x.Location.IsNullOrWhitespace()
+                        ))
+                .WithImports(Imports);
 
         public static Task EvaluateAsync(object ctx, string code)
         {
@@ -47,7 +51,7 @@ namespace Volte.Helpers
             {
                 if (Pattern.IsMatch(code, out var match))
                     code = match.Groups[1].Value;
-                
+
 
                 return ExecuteScriptAsync(code, ctx);
             }
@@ -96,13 +100,12 @@ namespace Volte.Helpers
                     ? CreateEvalEnvironment(ctx.Cast<VolteContext>())
                     : CreateInteractionEvalEnvironment(ctx.Cast<MessageCommandContext>()).Cast<object>();
 
-                
+
                 var sw = Stopwatch.StartNew();
                 var state = await CSharpScript.RunAsync(code, Options, env);
                 sw.Stop();
-                
-                
-                
+
+
                 var shouldReply = true;
                 if (state.ReturnValue != null)
                 {
@@ -132,7 +135,7 @@ namespace Volte.Helpers
                         _ => state.ReturnValue.ToString()
                     };
 
-#pragma warning disable 8509 
+#pragma warning disable 8509
                     //only 2 possible types for this variable.
                     await (env switch
 #pragma warning restore 8509
@@ -144,7 +147,7 @@ namespace Volte.Helpers
                                 .WithDescription(Format.Code(res, res.IsNullOrEmpty() ? string.Empty : "ini"))
                                 .SendToAsync(tenv.Context.Channel)
                             : tenv.ReactAsync(DiscordHelper.BallotBoxWithCheck),
-                        
+
                         EvalEnvironment.InteractionBased ienv => shouldReply
                             ? ienv.Context.CreateReplyBuilder(true)
                                 .WithEmbeds(embed.WithTitle("Eval")
@@ -180,7 +183,7 @@ namespace Volte.Helpers
                             .RespondAsync();
                         break;
                 }
-                
+
                 SentrySdk.CaptureException(ex);
             }
         }

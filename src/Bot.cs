@@ -22,11 +22,9 @@ namespace Volte
     {
         internal static async Task Main(string[] args)
         {
-#if DEBUG
             if (args.ContainsIgnoreCase("--force-command-update")) 
                 CommandUpdatingService.ForceUpdateAllCommands = true;
-#endif
-            
+
             await StartAsync();
         }
         
@@ -67,13 +65,11 @@ namespace Volte
             await _client.StartAsync();
 
             var commandService = _provider.Get<CommandService>();
-
-            var sw = Stopwatch.StartNew();
+            
             var l = commandService.AddTypeParsers();
-            sw.Stop();
             Logger.Info(LogSource.Volte,
-                $"Loaded TypeParsers: [{l.Select(x => x.Name.Replace("Parser", string.Empty)).Join(", ")}] in {sw.ElapsedMilliseconds}ms.");
-            sw = Stopwatch.StartNew();
+                $"Loaded TypeParsers: [{l.Select(x => x.Name.Replace("Parser", string.Empty)).Join(", ")}]");
+            var sw = Stopwatch.StartNew();
             var loaded = commandService.AddModules(GetType().Assembly);
             sw.Stop();
             Logger.Info(LogSource.Volte,

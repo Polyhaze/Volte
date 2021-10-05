@@ -14,14 +14,24 @@ namespace Volte.Commands.Application
 {
     public sealed class ReminderCommand : ApplicationCommand
     {
-        public ReminderCommand() : base("reminder", "Create, view & delete reminders.") { }
+        public ReminderCommand() : base("reminder", "Create, view & delete reminders.") => Signature(o =>
+        {
+            o.Subcommand("view", "View and/or delete reminders; selectable via dropdown menu.");
+
+            o.Subcommand("create", "Create a reminder.", x =>
+            {
+                x.RequiredString("time-from-now",
+                    "When do you want to be reminded? i.e. 2d6h2s, 2 days 6 hours 2 seconds.");
+                x.RequiredString("content", "What do you want to be reminded of?");
+            });
+        });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
             var reply = ctx.CreateReplyBuilder(true);
             var subcommand = ctx.Options.First().Value;
             var timeFromNow = subcommand.GetOption("time-from-now")?.GetAsString();
-            var reminderContent = subcommand.GetOption("time-from-now")?.GetAsString();
+            var reminderContent = subcommand.GetOption("content")?.GetAsString();
             if (subcommand.Name is "create")
             {
                 var reminders = ctx.Db.GetReminders(ctx.User);
@@ -37,7 +47,7 @@ namespace Volte.Commands.Application
                         ctx.Db.CreateReminder(Reminder.CreateFrom(ctx, end, reminderContent));
                         reply.WithEmbeds(ctx
                             .CreateEmbedBuilder($"I'll remind you about {Format.Code(reminderContent)}.")
-                            .WithTitle($"In {end.GetDiscordTimestamp(TimestampType.Relative)},"));
+                            .WithTitle($"{end.GetDiscordTimestamp(TimestampType.Relative)},"));
                     }
                     else
                         reply.WithEmbed(eb => eb.WithTitle(timeSpanRes.FailureReason));
@@ -51,10 +61,7 @@ namespace Volte.Commands.Application
                 else
                     reply.WithEmbed(e => e.WithTitle("Choose a reminder below to proceed."))
                         .WithSelectMenu(_getReminderMenu(reminders));
-                
             }
-            
-            Logger.Info(LogSource.Unknown, JsonSerializer.Serialize(reply, Config.JsonOptions));
 
             await reply.RespondAsync();
         }
@@ -66,9 +73,10 @@ namespace Volte.Commands.Application
             => new SelectMenuBuilder()
                 .WithCustomId("reminder:menu")
                 .WithOptions(rs.Take(25)
-                    .Select(r 
+                    .Select(r
                         => new SelectMenuOptionBuilder()
-                            .WithLabel($"{r.Id}: {(r.ReminderText.Length > 25 ? $"{r.ReminderText.Take(25).Select(x => x.ToString()).Join("")}..." : r.ReminderText)}")
+                            .WithLabel(
+                                $"{r.Id}: {(r.ReminderText.Length > 25 ? $"{r.ReminderText.Take(25).Select(x => x.ToString()).Join("")}..." : r.ReminderText)}")
                             .WithValue(r.Id.ToString()))
                     .ToList())
                 .WithPlaceholder("Choose a reminder...");
@@ -93,22 +101,22 @@ namespace Volte.Commands.Application
                             var reminders = ctx.Db.GetReminders(ctx.User.Id);
                             await ctx.UpdateAsync(x =>
                             {
-                                x.Components = reminders.IsEmpty() 
-                                    ? new ComponentBuilder().Build() 
+                                x.Components = reminders.IsEmpty()
+                                    ? new ComponentBuilder().Build()
                                     : new ComponentBuilder()
                                         .WithSelectMenu(_getReminderMenu(reminders))
                                         .Build();
 
                                 x.Embed = ctx.CreateEmbedBuilder(reminders.IsEmpty()
-                                    ? "You've deleted all of your reminders."
-                                    : "Please select a reminder from the list.")
+                                        ? "You've deleted all of your reminders."
+                                        : "Please select a reminder from the list.")
                                     .Build();
                             });
                             return;
                         }
-                        
-                        reply.WithEmbedFrom("Reminder couldn't be deleted");
-                        
+
+                        reply.WithEmbedFrom("Reminder couldn't be deleted.");
+
                         return;
                     }
 
@@ -132,19 +140,5 @@ namespace Volte.Commands.Application
                     break;
             }
         }
-        
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-                {
-                    o.Subcommand("view", "View and/or delete reminders; selectable via dropdown menu.");
-                    
-                    o.Subcommand("create", "Create a reminder.", x =>
-                        {
-                            x.RequiredString("time-from-now", "When do you want to be reminded? i.e. 2d6h2s, 2 days 6 hours 2 seconds.");
-                            x.RequiredString("content", "What do you want to be reminded of?");
-                        });
-                    
-                });
     }
 }

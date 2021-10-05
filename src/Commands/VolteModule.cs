@@ -37,7 +37,8 @@ namespace Volte.Commands
         protected ActionResult Ok(StringBuilder text, Func<IUserMessage, Task> messageCallback = null, bool shouldEmbed = true)
             => Ok(text.ToString(), messageCallback, shouldEmbed);
         protected ActionResult Ok(PaginatedMessage.Builder pager) => new OkResult(pager);
-        protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds);
+
+        protected ActionResult Ok(IEnumerable<EmbedBuilder> embeds) => new OkResult(embeds, ctx: Context);
 
         protected ActionResult Ok(PollInfo pollInfo) => new OkResult(pollInfo);
 

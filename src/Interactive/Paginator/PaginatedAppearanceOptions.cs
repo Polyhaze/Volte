@@ -20,13 +20,13 @@ namespace Volte.Interactive
         public string FooterFormat => "Page {0} / {1}";
 
         public string GenerateFooter(int currentPage, int totalPages) 
-            => FooterFormat.FormatWith(currentPage, totalPages); 
-        public string InformationText => "This is a paginator. React with the various icons to change page and more.";
+            => FooterFormat.FormatWith(currentPage, totalPages);
+
+        public string InformationText { get; set; } =
+            "This is a paginator. Click the buttons with the icons to navigate the pages.";
 
         public JumpDisplayOptions JumpDisplayOptions => JumpDisplayOptions.Always;
         public bool DisplayInformationIcon => true;
-        
-        public TimeSpan InfoTimeout = 30.Seconds();
 
         public int FieldsPerPage => 6;
     }

@@ -6,6 +6,7 @@ using Discord;
 using Qmmands;
 using Gommon;
 using Volte.Helpers;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {

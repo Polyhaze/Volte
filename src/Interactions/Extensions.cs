@@ -25,19 +25,30 @@ namespace Volte.Interactions
             IServiceProvider provider = null)
             => set.Select<ApplicationCommand, ApplicationCommandProperties>(x => x.CommandType switch
                 {
-                    ApplicationCommandType.Slash => x.GetSignature(provider).Apply(s =>
-                        {
-                            s.Builder.WithName(x.Name);
-                            s.Builder.WithDescription(x.Description);
-                        }),
+                    ApplicationCommandType.Slash => x.Sig.Apply(s =>
+                    {
+                        s.Builder.WithName(x.Name);
+                        s.Builder.WithDescription(x.Description);
+                    }),
                     ApplicationCommandType.Message => new MessageCommandBuilder().WithName(x.Name).Build(),
                     ApplicationCommandType.User => new UserCommandBuilder().WithName(x.Name).Build(),
                     _ => null
                 }
             ).Where(x => x != null).ToArray();
 
+        public static ActionRowBuilder AddComponentIf(this ActionRowBuilder builder, bool condition, IMessageComponent component)
+        {
+            if (condition)
+            {
+                if (builder.Components.Count >= 5)
+                    throw new InvalidOperationException("Cannot have more than 5 components in a single Action Row.");
+                
+                builder.Components.Add(component);
+            }
+            return builder;
+        }
 
-        public static ApplicationCommandOptionData GetOptio(this SocketSlashCommandDataOption dataOpt, string name)
+        public static ApplicationCommandOptionData GetOption(this SocketSlashCommandDataOption dataOpt, string name)
             => dataOpt.GetOptions()[name];
 
         public static SafeDictionary<string, ApplicationCommandOptionData> GetOptions(

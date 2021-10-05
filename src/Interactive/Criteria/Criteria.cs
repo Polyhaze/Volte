@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.WebSocket;
 using Volte.Commands;
 
 namespace Volte.Interactive
 {
     public class Criteria<T> : ICriterion<T>
     {
-        public delegate ValueTask<bool> LocalCriteria(VolteContext ctx, T value);
+        public delegate ValueTask<bool> LocalCriteria(SocketUserMessage ctx, T value);
         
         private readonly HashSet<ICriterion<T>> _critiera = new HashSet<ICriterion<T>>();
         private readonly HashSet<LocalCriteria> _localCriteria = new HashSet<LocalCriteria>();
@@ -25,17 +26,17 @@ namespace Volte.Interactive
             return this;
         }
 
-        public async ValueTask<bool> JudgeAsync(VolteContext sourceContext, T parameter)
+        public async ValueTask<bool> JudgeAsync(SocketUserMessage message, T parameter)
         {
             foreach (var criterion in _critiera)
             {
-                var result = await criterion.JudgeAsync(sourceContext, parameter);
+                var result = await criterion.JudgeAsync(message, parameter);
                 if (!result) return false;
             }
 
             foreach (var criteria in _localCriteria)
             {
-                var result = await criteria(sourceContext, parameter);
+                var result = await criteria(message, parameter);
                 if (!result) return false;
             }
             return true;

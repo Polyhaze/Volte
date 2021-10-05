@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Volte.Commands;
 using Volte;
@@ -12,7 +13,7 @@ namespace Volte.Interactive
     public class PaginatedMessage
     {
 
-        public static Builder NewBuilder() => Builder.New;
+        public static Builder NewBuilder() => new Builder();
         
         public class Builder
         {
@@ -22,8 +23,6 @@ namespace Volte.Interactive
             public Color Color { get; private set; } = new Color(Config.SuccessColor);
             public string Title { get; private set; }
             public PaginatedAppearanceOptions Options { get; private set; } = PaginatedAppearanceOptions.New;
-
-            public static Builder New => new Builder();
 
             public Builder WithPages(IEnumerable<object> pages)
             {
@@ -67,6 +66,14 @@ namespace Volte.Interactive
                     .WithAuthor(ctx.User);
             }
 
+            public Builder WithDefaults(SocketUserMessage message)
+            {
+                var u = message.Author.Cast<SocketGuildUser>();
+                return WithColor(u.GetHighestRole()?.Color ?? new Color(Config.SuccessColor))
+                    .WithOptions(PaginatedAppearanceOptions.New.Apply(x => x.InformationText = "This is a paginator. Click the buttons with the icons to navigate the pages."))
+                    .WithAuthor(u);
+            }
+
             public Builder SplitPages(uint perPage) => SplitPages(perPage.Cast<int>());
             
             public Builder SplitPages(int perPage)
@@ -94,9 +101,6 @@ namespace Volte.Interactive
                     Title = Title,
                     Options = Options
                 };
-            
-            private Builder() {}
-            
         }
         
         private PaginatedMessage() {}

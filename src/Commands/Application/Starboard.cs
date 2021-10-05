@@ -12,48 +12,46 @@ namespace Volte.Commands.Application
 {
     public sealed class StarboardCommand : ApplicationCommand
     {
-        public StarboardCommand() : base("starboard", "See or modify this guild's starboard settings.", true) { }
+        public StarboardCommand() : base("starboard", "See or modify this guild's starboard settings.", true) =>
+            Signature(o =>
+            {
+                o.SubcommandGroup("minimum-stars",
+                    "The amount of stars required on a message before it is sent to the starboard channel.",
+                    x =>
+                    {
+                        x.Subcommand("get", "Show the current minimum star requirement.");
 
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command()
-                .Options(opts =>
-                {
-                    opts.SubcommandGroup("minimum-stars", "The amount of stars required on a message before it is sent to the starboard channel.",
-                        subOpts =>
-                        {
-                            subOpts.Subcommand("get", "Show the current minimum star requirement.");
-                            
-                            subOpts.Subcommand("set", "Change the minimum star requirement.", x 
-                                => x.RequiredInteger("amount", "The new minimum star requirement."));
-                        });
-                    
-                    opts.SubcommandGroup("channel", "The channel to send starboard messages to.",
-                        subOpts =>
-                        {
-                            subOpts.Subcommand("get", "Show the current starboard channel.");
-                            
-                            subOpts.Subcommand("set", "Change the starboard channel.", x 
-                                => x.RequiredChannel("channel", "The new starboard channel."));
-                        });
-                    opts.Subcommand("config", "Enable/disable, or automatically setup the starboard system.");
-                    
-                });
+                        x.Subcommand("set", "Change the minimum star requirement.",
+                            opt => opt.RequiredInteger("amount", "The new minimum star requirement."));
+                    });
+
+                o.SubcommandGroup("channel", "The channel to send starboard messages to.",
+                    x =>
+                    {
+                        x.Subcommand("get", "Show the current starboard channel.");
+
+                        x.Subcommand("set", "Change the starboard channel.",
+                            opt => opt.RequiredChannel("channel", "The new starboard channel."));
+                    });
+                o.Subcommand("config", "Enable/disable, or automatically setup the starboard system.");
+            });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
             var reply = ctx.CreateReplyBuilder().WithEphemeral();
-            
+
             if (!await RunSlashChecksAsync(ctx))
             {
                 await reply.WithEmbed(x => x.WithTitle("You are not a server administrator.").WithErrorColor())
                     .RespondAsync();
                 return;
             }
-            
+
             var subcommandGroup =
                 ctx.Options.Values.First(); //setting to inspect/modify, or individual subcommands
             var subcommand = subcommandGroup.Options.FirstOrDefault(); //get or set
-            var argument = subcommand?.Options.FirstOrDefault(); //null if subcommand = get; value present if subcommand = set.
+            var argument =
+                subcommand?.Options.FirstOrDefault(); //null if subcommand = get; value present if subcommand = set.
 
             switch (subcommandGroup.Name)
             {
@@ -101,7 +99,8 @@ namespace Volte.Commands.Application
                             .AppendDescriptionLine($"{DiscordHelper.SpaceInvader}: Setup the starboard. " +
                                                    "This will create a channel, named `starboard`, with read-only permissions for the `@everyone` role, as well as enabling the starboard feature.")
                             .AppendDescriptionLine("**NOTE**: This will overwrite your current starboard channel."))
-                        .WithActionRows(GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
+                        .WithActionRows(GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled)
+                            .AsActionRow());
                     break;
             }
 
@@ -123,8 +122,9 @@ namespace Volte.Commands.Application
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
             var messageUpdate = ctx.CreateReplyBuilder().WithEphemeral()
-                .WithActionRows(GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
-            
+                .WithActionRows(
+                    GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
+
             if (ctx.CustomIdParts[1] is "config")
                 switch (ctx.CustomIdParts[2])
                 {

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +10,114 @@ namespace Volte.Commands.Application
 {
     public class SettingsCommand : ApplicationCommand
     {
-        public SettingsCommand() : base("settings", "See or modify your guild's settings.", true) { }
+        public SettingsCommand() : base("settings", "See or modify your guild's settings.", true) => Signature(o =>
+        {
+            o.SubcommandGroup("admin-role", "Get or set the current guild's Admin role.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's Admin role.");
+                x.Subcommand("set", "Set the current guild's Admin role.", opts =>
+                    opts.RequiredRole("role", "The Admin role you want.")
+                );
+            });
+            o.SubcommandGroup("mod-role", "Get or set the current guild's Moderator role.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's Moderator role.");
+                x.Subcommand("set", "Set the current guild's Moderator role.", opts =>
+                    opts.RequiredRole("role", "The Moderator role you want.")
+                );
+            });
+            o.SubcommandGroup("auto-role", "Get or set the current guild's Autorole.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's Autorole.");
+                x.Subcommand("set", "Set the current guild's Autorole.", opts =>
+                    opts.RequiredRole("role", "The role to be given when new members join this guild.")
+                );
+            });
+            o.SubcommandGroup("anti-link", "Get or set the current guild's Antilink setting.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's Antilink setting.");
+                x.Subcommand("set", "Set the current guild's Antilink setting.", opts =>
+                    opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                );
+            });
+            o.SubcommandGroup("embed-tags", "Get or set the current guild's tag embedding setting.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's tag embedding setting.");
+                x.Subcommand("set", "Set the current guild's tag embedding setting.", opts =>
+                    opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                );
+            });
+            o.SubcommandGroup("mod-log-channel", "Get or set the current guild's modlog channel.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's modlog channel.");
+                x.Subcommand("set", "Set the current guild's modlog channel.", opts =>
+                    opts.OptionalChannel("channel",
+                        "The new modlog channel. Omitting this will disable the modlog.")
+                );
+            });
+            o.SubcommandGroup("mass-mention-checks", "Get or set the current guild's mass mention checks setting.",
+                x =>
+                {
+                    x.Subcommand("get", "Get the current guild's mass mention checks setting.");
+                    x.Subcommand("set", "Set the current guild's mass mention checks setting.", opts =>
+                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                    );
+                });
+            o.SubcommandGroup("prefix", "Get or set the current guild's text command prefix.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's text command prefix.");
+                x.Subcommand("set", "Set the current guild's text command prefix.", opts =>
+                    opts.RequiredString("text", "The new prefix for text commands.")
+                );
+            });
+            o.SubcommandGroup("auto-quote", "Get or set the current guild's Auto-quote setting.", x =>
+            {
+                x.Subcommand("get", "Get the current guild's Auto-quote setting.");
+                x.Subcommand("set", "Set the current guild's Auto-quote setting.", opts =>
+                    opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                );
+            });
+            o.SubcommandGroup("reply-inline",
+                "Get or set the current guild's text command inline replying setting.", x =>
+                {
+                    x.Subcommand("get", "Get the current guild's text command inline replying setting.");
+                    x.Subcommand("set", "Set the current guild's text command inline replying setting.", opts =>
+                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                    );
+                });
+            o.SubcommandGroup("show-moderator",
+                "Get or set the current guild's moderator in punishment DM setting.", x =>
+                {
+                    x.Subcommand("get", "Get the current guild's moderator in punishment DM setting.");
+                    x.Subcommand("set", "Set the current guild's moderator in punishment DM setting.", opts =>
+                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                    );
+                });
+            o.SubcommandGroup("account-age-warnings", "Get or set the current guild's account age warning setting.",
+                x =>
+                {
+                    x.Subcommand("get", "Get the current guild's account age warning setting.");
+                    x.Subcommand("set", "Set the current guild's account age warning setting.", opts =>
+                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
+                    );
+                });
+            o.SubcommandGroup("verification-role",
+                "Get or set the current guild's role-based verification settings.", x =>
+                {
+                    x.Subcommand("get", "Get the current guild's role-based verification settings.");
+                    x.Subcommand("set", "Set the current guild's role-based verification settings.", opts =>
+                        {
+                            opts.RequiredString("type", "The type of verification role you'd like to set.", sco =>
+                            {
+                                sco.AddChoice("Unverified", "u");
+                                sco.AddChoice("Verified", "v");
+                            });
+                            opts.RequiredRole("role", "The role to use.");
+                        }
+                    );
+                });
+            o.Subcommand("dump", "Dumps the current guild configuration for support purposes.");
+        });
         
         public override Task<bool> RunSlashChecksAsync(SlashCommandContext ctx) => Task.FromResult(ctx.IsAdmin(ctx.GuildUser));
 
@@ -242,115 +348,5 @@ namespace Volte.Commands.Application
 
             await reply.RespondAsync();
         }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command(o =>
-            {
-                o.SubcommandGroup("admin-role", "Get or set the current guild's Admin role.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's Admin role.");
-                    x.Subcommand("set", "Set the current guild's Admin role.", opts =>
-                        opts.RequiredRole("role", "The Admin role you want.")
-                    );
-                });
-                o.SubcommandGroup("mod-role", "Get or set the current guild's Moderator role.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's Moderator role.");
-                    x.Subcommand("set", "Set the current guild's Moderator role.", opts =>
-                        opts.RequiredRole("role", "The Moderator role you want.")
-                    );
-                });
-                o.SubcommandGroup("auto-role", "Get or set the current guild's Autorole.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's Autorole.");
-                    x.Subcommand("set", "Set the current guild's Autorole.", opts =>
-                        opts.RequiredRole("role", "The role to be given when new members join this guild.")
-                    );
-                });
-                o.SubcommandGroup("anti-link", "Get or set the current guild's Antilink setting.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's Antilink setting.");
-                    x.Subcommand("set", "Set the current guild's Antilink setting.", opts =>
-                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                    );
-                });
-                o.SubcommandGroup("embed-tags", "Get or set the current guild's tag embedding setting.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's tag embedding setting.");
-                    x.Subcommand("set", "Set the current guild's tag embedding setting.", opts =>
-                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                    );
-                });
-                o.SubcommandGroup("mod-log-channel", "Get or set the current guild's modlog channel.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's modlog channel.");
-                    x.Subcommand("set", "Set the current guild's modlog channel.", opts =>
-                        opts.OptionalChannel("channel",
-                            "The new modlog channel. Omitting this will disable the modlog.")
-                    );
-                });
-                o.SubcommandGroup("mass-mention-checks", "Get or set the current guild's mass mention checks setting.",
-                    x =>
-                    {
-                        x.Subcommand("get", "Get the current guild's mass mention checks setting.");
-                        x.Subcommand("set", "Set the current guild's mass mention checks setting.", opts =>
-                            opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                        );
-                    });
-                o.SubcommandGroup("prefix", "Get or set the current guild's text command prefix.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's text command prefix.");
-                    x.Subcommand("set", "Set the current guild's text command prefix.", opts =>
-                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                    );
-                });
-                o.SubcommandGroup("auto-quote", "Get or set the current guild's Auto-quote setting.", x =>
-                {
-                    x.Subcommand("get", "Get the current guild's Auto-quote setting.");
-                    x.Subcommand("set", "Set the current guild's Auto-quote setting.", opts =>
-                        opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                    );
-                });
-                o.SubcommandGroup("reply-inline",
-                    "Get or set the current guild's text command inline replying setting.", x =>
-                    {
-                        x.Subcommand("get", "Get the current guild's text command inline replying setting.");
-                        x.Subcommand("set", "Set the current guild's text command inline replying setting.", opts =>
-                            opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                        );
-                    });
-                o.SubcommandGroup("show-moderator",
-                    "Get or set the current guild's moderator in punishment DM setting.", x =>
-                    {
-                        x.Subcommand("get", "Get the current guild's moderator in punishment DM setting.");
-                        x.Subcommand("set", "Set the current guild's moderator in punishment DM setting.", opts =>
-                            opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                        );
-                    });
-                o.SubcommandGroup("account-age-warnings", "Get or set the current guild's account age warning setting.",
-                    x =>
-                    {
-                        x.Subcommand("get", "Get the current guild's account age warning setting.");
-                        x.Subcommand("set", "Set the current guild's account age warning setting.", opts =>
-                            opts.RequiredBoolean("enabled", "Whether or not to enable this setting.")
-                        );
-                    });
-                o.SubcommandGroup("verification-role",
-                    "Get or set the current guild's role-based verification settings.", x =>
-                    {
-                        x.Subcommand("get", "Get the current guild's role-based verification settings.");
-                        x.Subcommand("set", "Set the current guild's role-based verification settings.", opts =>
-                            {
-                                opts.RequiredString("type", "The type of verification role you'd like to set.", sco =>
-                                {
-                                    sco.AddChoice("Unverified", "u");
-                                    sco.AddChoice("Verified", "v");
-                                });
-                                opts.RequiredRole("role", "The role to use.");
-                            }
-                        );
-                    });
-                o.Subcommand("dump", "Dumps the current guild configuration for support purposes.");
-            });
     }
 }

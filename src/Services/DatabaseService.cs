@@ -33,7 +33,7 @@ namespace Volte.Services
         }
         
         public HashSet<Reminder> AllReminders => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
-        public HashSet<GuildData> AllGuilds => _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
+        public HashSet<GuildData> AllGuilds => _guildData.ValueLock(() => _guildData.FindAll().Where(x => _client.GetGuild(x.Id) != null).ToHashSet());
 
 
         public GuildData GetData(SocketGuild guild) => GetData(guild?.Id);

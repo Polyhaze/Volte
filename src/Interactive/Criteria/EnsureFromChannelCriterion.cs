@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Volte.Commands;
 
 namespace Volte.Interactive
@@ -11,7 +12,7 @@ namespace Volte.Interactive
         public EnsureFromChannelCriterion(IMessageChannel channel)
             => _channelId = channel.Id;
 
-        public ValueTask<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
+        public ValueTask<bool> JudgeAsync(SocketUserMessage message, IMessage parameter) 
             => new ValueTask<bool>(_channelId == parameter.Channel.Id);
 
     }

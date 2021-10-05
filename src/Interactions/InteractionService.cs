@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Gommon;
+using Volte.Entities;
+using Volte.Helpers;
 using SentrySdk = Sentry.SentrySdk;
 using Volte.Interactions;
 using static Discord.ApplicationCommandType;
@@ -64,16 +66,16 @@ namespace Volte.Services
                     {
                         await (interaction switch
                         {
-                            SocketSlashCommand slashCommand => GetCommand(slashCommand.Data.Name)
+                            SocketSlashCommand slashCommand => GetCommand(slashCommand.Data.Name)?
                                 .HandleSlashCommandAsync(new SlashCommandContext(slashCommand, _provider)),
 
-                            SocketUserCommand userCommand => GetCommand(userCommand.Data.Name)
+                            SocketUserCommand userCommand => GetCommand(userCommand.Data.Name)?
                                 .HandleUserCommandAsync(new UserCommandContext(userCommand, _provider)),
 
-                            SocketMessageCommand messageCommand => GetCommand(messageCommand.Data.Name)
+                            SocketMessageCommand messageCommand => GetCommand(messageCommand.Data.Name)?
                                 .HandleMessageCommandAsync(new MessageCommandContext(messageCommand, _provider)),
 
-                            SocketMessageComponent messageComponent => GetCommand(messageComponent.Data.CustomId.Split(':')[0])
+                            SocketMessageComponent messageComponent => GetCommand(messageComponent.Data.CustomId.Split(':')[0])?
                                 .HandleComponentAsync(new MessageComponentContext(messageComponent, _provider)),
                             
                             _ => null
@@ -82,7 +84,7 @@ namespace Volte.Services
                     catch (Exception e)
                     {
                         SentrySdk.AddBreadcrumb("Error occurred when handling the event of some form of Interaction.");
-                        SentrySdk.CaptureException(e);
+                        Logger.Exception(e);
                     }
                 });
             };
@@ -92,6 +94,6 @@ namespace Volte.Services
 
 
         private ApplicationCommand GetCommand(string name)
-            => AllRegisteredCommands.First(x => x.Name.EqualsIgnoreCase(name));
+            => AllRegisteredCommands.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
     }
 }

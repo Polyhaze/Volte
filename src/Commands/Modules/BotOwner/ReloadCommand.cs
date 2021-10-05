@@ -27,13 +27,13 @@ namespace Volte.Commands.Modules
         {
             try
             {
-                var globalCommands = await Interactions.CommandUpdater.UpsertRegularCommandsAsync();
+                var globalCommands = await Interactions.CommandUpdater.OverwriteGlobalCommandsAsync();
 
-                var newGuildCommands = await Interactions.CommandUpdater.UpsertMissingGuildCommandsAsync();
+                var newGuildCommands = await Interactions.CommandUpdater.ForceUpsertMissingGuildCommandsAsync();
                 
                 return Ok(Context.CreateEmbedBuilder().WithTitle("Commands update successful.")
-                    .AddField("New global commands", globalCommands.Count)
-                    .AddField("Guilds with new commands", newGuildCommands.Sum(x => x.Count)));
+                    .AddField("Total global commands", globalCommands.Count)
+                    .AddField("Total guild commands", newGuildCommands.Sum(x => x.Count)));
             }
             catch (Exception e)
             {

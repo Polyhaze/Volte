@@ -37,7 +37,7 @@ namespace Volte.Commands.Modules
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id)
                 .Select(x => $"{Format.Bold(x.Reason)}, on {Format.Bold(x.Date.FormatDate())}");
-            return Ok(PaginatedMessage.Builder.New
+            return Ok(PaginatedMessage.NewBuilder()
                 .WithPages(warns)
                 .WithTitle($"Warns for {member}")
                 .SplitPages(8)

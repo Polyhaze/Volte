@@ -119,19 +119,17 @@ namespace Volte.Interactions
             return this;
         }
 
-        public async Task RespondAsync(RequestOptions options = null)
-        {
-            await _ctx.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
-                AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
-            await UpdateOrNoopTask;
-        }
+        public Task RespondAsync(RequestOptions options = null) 
+            => _ctx.RespondAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+                    AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build())
+                .Then(() => UpdateOrNoopTask);
 
-        public async Task<RestFollowupMessage> FollowupAsync(RequestOptions options = null)
-        {
-            var result = await _ctx.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
-                AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build());
-            await UpdateOrNoopTask;
-            return result;
-        }
+        
+
+        public Task<RestFollowupMessage> FollowupAsync(RequestOptions options = null) 
+            => _ctx.FollowupAsync(Content, Embeds.ToArray(), IsTts, IsEphemeral,
+                    AllowedMentions, options, new ComponentBuilder().AddActionRows(ActionRows).Build())
+                .Then(_ => UpdateOrNoopTask);
+        
     }
 }

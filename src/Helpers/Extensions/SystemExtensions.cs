@@ -18,19 +18,16 @@ namespace Gommon
         public static Task Then(this Task task, Func<Task> continuation) 
             => task.ContinueWith(async _ => await continuation());
 
-        public static async Task Then<T>(this Task<T> task, Func<T, Task> continuation)
+        public static async Task<T> Then<T>(this Task<T> task, Func<T, Task> continuation)
         {
             var result = await task;
             await continuation(result);
-
+            return result;
         }
 
-        public static async Task Then<T>(this ValueTask<T> task, Func<T, Task> continuation)
-        {
-            var result = await task;
-            await continuation(result);
-        }
-        
+        public static IEnumerable<TSource> WhereNotNull<TSource>(this IEnumerable<TSource> enumerable) => enumerable.Where(x => x != null);
+
+        public static async Task Then<T>(this ValueTask<T> task, Func<T, Task> continuation) => await continuation(await task);
         
         public static bool ContainsAnyIgnoreCase(this string str, params string[] possibleContents) 
             => possibleContents.Any(str.ContainsIgnoreCase);

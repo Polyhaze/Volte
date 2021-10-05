@@ -119,7 +119,24 @@ namespace Volte.Commands.Modules
 
     public sealed class TextCommand : ApplicationCommand
     {
-        public TextCommand() : base("text", "Set of commands for manipulating text.") { }
+        public TextCommand() : base("text", "Set of commands for manipulating text.") => Signature(o =>
+        {
+            o.Subcommand("reverse", "Reverse the provided text content.", x =>
+                x.RequiredString("content", "The text to reverse.")
+            );
+            o.Subcommand("nato", "Convert the provided text's characters into NATO phonetic alphabet.", x =>
+                x.RequiredString("content", "The text to convert.")
+            );
+            o.Subcommand("zalgo", "Zalgo-ify the provided text.", x =>
+            {
+                x.RequiredString("content", "The text to zalgo.");
+                x.OptionalString("intensity", "How intense do you want the zalgo to be? Default is High.",
+                    choices: new Choices(
+                        ("High", "h"),
+                        ("Medium", "m"),
+                        ("Low", "l")));
+            });
+        });
 
         public override async Task HandleSlashCommandAsync(SlashCommandContext ctx)
         {
@@ -171,27 +188,5 @@ namespace Volte.Commands.Modules
                 _ => ctx.DeferAsync(true)
             });
         }
-
-        public override SlashCommandSignature GetSignature(IServiceProvider provider)
-            => SlashCommandSignature.Command()
-                .Options(o =>
-                {
-                    o.Subcommand("reverse", "Reverse the provided text content.", x =>
-                        x.RequiredString("content", "The text to reverse.")
-                    );
-                    o.Subcommand("nato", "Convert the provided text's characters into NATO phonetic alphabet.", x =>
-                        x.RequiredString("content", "The text to convert.")
-                    );
-                    o.Subcommand("zalgo", "Zalgo-ify the provided text.", x =>
-                    {
-                        x.RequiredString("content", "The text to zalgo.");
-                        x.OptionalString("intensity", "How intense do you want the zalgo to be? Default is High.", b =>
-                        {
-                            b.AddChoice("High", "h");
-                            b.AddChoice("Medium", "m");
-                            b.AddChoice("Low", "l");
-                        });
-                    });
-                });
     }
 }

@@ -49,25 +49,29 @@ namespace Volte.Helpers
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
-        public static void Debug(LogSource src, string message)
-            => Log(LogSeverity.Debug, src, message);
+        public static void Debug(LogSource src, string message) => Log(LogSeverity.Debug, src, message);
 
         /// <summary>
-        ///     Prints a <see cref="LogSeverity.Info"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
+        ///     Prints an <see cref="LogSeverity.Info"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
-        public static void Info(LogSource src, string message)
-            => Log(LogSeverity.Info, src, message);
+        public static void Info(LogSource src, string message) => Log(LogSeverity.Info, src, message);
 
         /// <summary>
-        ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
+        ///     Prints an <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Error(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Error, src, message, e);
+        public static void Error(LogSource src, string message, Exception e = null) => Log(LogSeverity.Error, src, message, e);
+        
+        /// <summary>
+        ///     Prints an <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
+        /// </summary>
+        /// <param name="src">Source to print the message from.</param>
+        /// <param name="e">Exception to print.</param>
+        public static void Error(LogSource src, Exception e) => Log(LogSeverity.Error, src, null, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
@@ -75,8 +79,7 @@ namespace Volte.Helpers
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Critical(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Critical, src, message, e);
+        public static void Critical(LogSource src, string message, Exception e = null) => Log(LogSeverity.Critical, src, message, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
@@ -84,24 +87,21 @@ namespace Volte.Helpers
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Warn(LogSource src, string message, Exception e = null)
-            => Log(LogSeverity.Warning, src, message, e);
+        public static void Warn(LogSource src, string message, Exception e = null) => Log(LogSeverity.Warning, src, message, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Verbose"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
         /// </summary>
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
-        public static void Verbose(LogSource src, string message)
-            => Log(LogSeverity.Verbose, src, message);
+        public static void Verbose(LogSource src, string message) => Log(LogSeverity.Verbose, src, message);
 
         /// <summary>
-        ///     Prints a <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
+        ///     Prints an <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="e"/> exception.
         ///     This method calls <see cref="SentrySdk"/>'s CaptureException so it is logged to Sentry.
         /// </summary>
         /// <param name="e">Exception to print.</param>
-        public static void Exception(Exception e)
-            => Execute(LogSeverity.Error, LogSource.Volte, string.Empty, e);
+        public static void Exception(Exception e) => Execute(LogSeverity.Error, LogSource.Volte, string.Empty, e);
 
         private static void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
@@ -121,7 +121,8 @@ namespace Volte.Helpers
             if (e != null)
             {
                 SentrySdk.CaptureException(e);
-                var toWrite = $"{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}";
+                var newlineOrEmpty = message.IsNullOrWhitespace() ? "" : Environment.NewLine;
+                var toWrite = $"{newlineOrEmpty}{e.Message}{Environment.NewLine}{e.StackTrace}";
                 Append(toWrite, Color.IndianRed, ref content);
             }
 

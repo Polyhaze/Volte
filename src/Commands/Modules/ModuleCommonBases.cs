@@ -156,7 +156,7 @@ namespace Volte.Commands.Modules
         }
     }
 
-    [Group("Settings", "Setting", "Options", "Option")]
+    /*[Group("Settings", "Setting", "Options", "Option")]
     [Description("The set of commands used to modify how Volte functions in your guild.")]
     [RequireGuildAdmin]
     public partial class SettingsModule : VolteModule
@@ -165,5 +165,5 @@ namespace Volte.Commands.Modules
 
         [Command, DummyCommand, Description("The set of commands used to modify how Volte functions in your guild.")]
         public Task<ActionResult> BaseAsync() => None();
-    }
+    }*/
 }

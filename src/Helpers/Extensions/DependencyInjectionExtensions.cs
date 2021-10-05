@@ -42,7 +42,6 @@ namespace Gommon
                 }))
                 .AddSingleton(new DiscordShardedClient(new DiscordSocketConfig
                 {
-                    AlwaysAcknowledgeInteractions = false,
                     LogLevel = Severity,
                     GatewayIntents = Intents,
                     AlwaysDownloadUsers = true,

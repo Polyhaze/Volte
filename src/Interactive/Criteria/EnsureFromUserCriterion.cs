@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Volte.Commands;
 
 namespace Volte.Interactive
@@ -16,7 +17,7 @@ namespace Volte.Interactive
         public EnsureFromUserCriterion(ulong id)
             => _id = id;
 
-        public ValueTask<bool> JudgeAsync(VolteContext sourceContext, IMessage parameter) 
+        public ValueTask<bool> JudgeAsync(SocketUserMessage message, IMessage parameter) 
             => new ValueTask<bool>(_id == parameter.Author.Id);
 
     }
