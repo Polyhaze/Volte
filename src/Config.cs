@@ -68,8 +68,7 @@ namespace Volte
             };
             try
             {
-                File.WriteAllText(ConfigFilePath,
-                    JsonSerializer.Serialize(_configuration, JsonOptions));
+                File.WriteAllText(ConfigFilePath, _configuration.AsJson());
             }
             catch (Exception e)
             {
@@ -83,14 +82,14 @@ namespace Volte
         {
             _ = CreateIfAbsent();
             if (IsValidConfig())
-                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath), JsonOptions);                    
+                _configuration = File.ReadAllText(ConfigFilePath).ParseJson<BotConfig>();
         }
 
         public static bool Reload()
         {
             try
             {
-                _configuration = JsonSerializer.Deserialize<BotConfig>(File.ReadAllText(ConfigFilePath));
+                _configuration = File.ReadAllText(ConfigFilePath).ParseJson<BotConfig>();
                 return true;
             }
             catch (JsonException e)

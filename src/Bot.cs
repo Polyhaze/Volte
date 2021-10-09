@@ -74,25 +74,30 @@ namespace Volte
             sw.Stop();
             Logger.Info(LogSource.Volte,
                 $"Loaded {loaded.Count} modules and {loaded.Sum(m => m.Commands.Count)} commands in {sw.ElapsedMilliseconds}ms.");
-            _client.RegisterVolteEventHandlers(_provider);
+            _client.RegisterCoreEventHandlers(_provider);
 
             // initializing addons is extremely long-running (because each addon is evaluated sequentially), so don't await
             Executor.Execute(async () => await _provider.Get<AddonService>().InitAsync());
             _provider.Get<ReminderService>().Initialize();
-            await _provider.Get<InteractionService>().InitAsync();
+            await _provider.Get<InteractionService>().CommandUpdater.InitAsync();
 
             try
             {
                 await Task.Delay(-1, _cts.Token);
             }
-            catch (Exception e)
+            catch
             {
-                SentrySdk.CaptureException(e);
-                await ShutdownAsync(_client, _provider);
+                try
+                {
+                    await ShutdownAsync(_client, _provider);
+                }
+                catch
+                {
+                    // ignored
+                }
             }
         }
-
-        // ReSharper disable SuggestBaseTypeForParameter
+        
         public static async Task ShutdownAsync(DiscordShardedClient client, IServiceProvider provider)
         {
             Logger.Critical(LogSource.Volte,
@@ -102,7 +107,7 @@ namespace Volte
             {
                 await new EmbedBuilder()
                     .WithErrorColor()
-                    .WithAuthor(client.GetOwner())
+                    .WithAuthor(Lambda.TryOrNull(client.GetOwner))
                     .WithDescription(
                         $"Volte {Version.FullVersion} is shutting down {DateTime.Now.FormatBoldString()}. I was online for **{Process.GetCurrentProcess().CalculateUptime()}**!")
                     .SendToAsync(channel);

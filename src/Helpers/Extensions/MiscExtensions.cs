@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Volte;
 using Volte.Commands;
 using Volte.Commands.Modules;
 using Volte.Entities;
@@ -42,11 +43,22 @@ namespace Gommon
             _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
         };
 
+        public static string AsJson<T>(this T value, bool indented = true, JsonSerializerOptions options = null)
+        {
+            options ??= Config.JsonOptions;
+            options.WriteIndented = indented;
+            return JsonSerializer.Serialize(value, options);
+        }
+
+        public static T ParseJson<T>(this string json, JsonSerializerOptions options = null) 
+            => JsonSerializer.Deserialize<T>(json, options ?? Config.JsonOptions);
+        
+
         public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
             => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
                 ctx.Services.GetRequiredService<DatabaseService>(), reason);
 
-        public static List<T> AsSingletonList<T>(this T @this) => new List<T> { @this };
+        public static List<T> AsSingletonList<T>(this T @this) => Collections.NewList(@this);
 
         public static T[] Concat<T>(this T[] current, T[] toConcat) => Enumerable.Concat(current, toConcat).ToArray();
 

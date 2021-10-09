@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Discord.WebSocket;
 using Gommon;
-using Volte;
 
 namespace Volte.Entities
 {
@@ -46,8 +44,7 @@ namespace Volte.Entities
         [JsonPropertyName("blacklist_action")]
         public BlacklistAction BlacklistAction { get; set; }
         
-        public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+        public override string ToString() => this.AsJson();
     }
 
     public sealed class WelcomeOptions
@@ -109,8 +106,7 @@ namespace Volte.Entities
                 .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
                 .ReplaceIgnoreCase("{UserString}", user);
         
-        public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+        public override string ToString() => this.AsJson();
     }
 
     public sealed class StarboardOptions
@@ -126,6 +122,8 @@ namespace Volte.Entities
         
         [JsonPropertyName("delete_invalid_stars")]
         public bool DeleteInvalidStars { get; set; }
+        
+        public override string ToString() => this.AsJson();
     }
 
     public static class BlacklistActions

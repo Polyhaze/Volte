@@ -17,7 +17,7 @@ namespace Volte.Interactive
         public EnsureFromUserCriterion(ulong id)
             => _id = id;
 
-        public ValueTask<bool> JudgeAsync(SocketUserMessage message, IMessage parameter) 
+        public ValueTask<bool> CheckAsync(SocketUserMessage message, IMessage parameter) 
             => new ValueTask<bool>(_id == parameter.Author.Id);
 
     }

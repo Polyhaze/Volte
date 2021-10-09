@@ -11,7 +11,7 @@ using Volte.Services;
 
 namespace Volte.Interactive
 {
-    public class ButtonPaginatorCallback : IButtonCallback
+    public class VolteButtonPaginator
     {
         public SocketUserMessage SourceMessage { get; }
         public InteractiveService Interactive { get; }
@@ -26,7 +26,7 @@ namespace Volte.Interactive
         private int _currentPageIndex = 1;
 
 
-        public ButtonPaginatorCallback(InteractiveService interactive,
+        public VolteButtonPaginator(InteractiveService interactive,
             SocketUserMessage sourceMessage,
             PaginatedMessage pager,
             ICriterion<MessageComponentContext> criterion = null)
@@ -44,42 +44,42 @@ namespace Volte.Interactive
         private MessageComponent BuildComponent() => new ComponentBuilder()
             .AddActionRow(x =>
                 x.AddComponent(new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:back")
+                        .WithCustomId($"pager:back:{SourceMessage.Id}")
                         .WithLabel("Back")
                         .WithEmote(_pager.Options.Back)
                         .WithDisabled(_currentPageIndex < 2)
                         .WithStyle(ButtonStyle.Primary)
                         .Build())
                     .AddComponent(new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:next")
+                        .WithCustomId($"pager:next:{SourceMessage.Id}")
                         .WithLabel("Next")
                         .WithEmote(_pager.Options.Next)
                         .WithDisabled(_currentPageIndex >= _pageCount)
                         .WithStyle(ButtonStyle.Primary)
                         .Build())
                     .AddComponent(new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:stop")
+                        .WithCustomId($"pager:stop:{SourceMessage.Id}")
                         .WithLabel("End")
                         .WithEmote(_pager.Options.Stop)
                         .WithStyle(ButtonStyle.Danger)
                         .Build())
             ).AddActionRow(x => 
                 x.AddComponent(new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:first")
+                        .WithCustomId($"pager:first:{SourceMessage.Id}")
                         .WithLabel("First")
                         .WithEmote(_pager.Options.First)
                         .WithDisabled(_currentPageIndex is 1)
                         .WithStyle(ButtonStyle.Primary)
                         .Build())
                     .AddComponent(new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:last")
+                        .WithCustomId($"pager:last:{SourceMessage.Id}")
                         .WithLabel("Last")
                         .WithEmote(_pager.Options.Last)
                         .WithDisabled(_currentPageIndex == _pageCount)
                         .WithStyle(ButtonStyle.Primary)
                         .Build())
                     .AddComponentIf(_pager.Options.DisplayInformationIcon, new ButtonBuilder()
-                        .WithCustomId($"pager:{SourceMessage.Id}:info")
+                        .WithCustomId($"pager:info:{SourceMessage.Id}")
                         .WithLabel("Info")
                         .WithEmote(_pager.Options.Info)
                         .WithStyle(ButtonStyle.Secondary)
@@ -102,7 +102,7 @@ namespace Volte.Interactive
                 return false;
             }
             
-            switch (button.CustomIdParts[2])
+            switch (button.Id.Action)
             {
                 case "first":
                     _currentPageIndex = 1;

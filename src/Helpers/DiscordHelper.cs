@@ -167,40 +167,21 @@ namespace Volte.Helpers
         public static SocketGuild GetPrimaryGuild(this BaseSocketClient client)
             => client.GetGuild(405806471578648588); //yes hardcoded, the functions that use this guild are not meant for volte selfhosters anyways
 
-        public static void RegisterVolteEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
+        public static void RegisterCoreEventHandlers(this DiscordShardedClient client, IServiceProvider provider)
         {
-            var welcome = provider.Get<WelcomeService>();
-            var autorole = provider.Get<AutoroleService>();
-            var mod = provider.Get<ModerationService>();
-            var starboard = provider.Get<StarboardService>();
-
-            client.Log += async m =>
+            client.Log += m => Logger.HandleLogAsync(new LogEventArgs(m));
+            
+            client.MessageReceived += async socketMessage =>
             {
-                if (!(m.Message.ContainsIgnoreCase("unknown dispatch") &&
-                      m.Message.ContainsIgnoreCase("application_command")))
-                    await Task.Run(() => Logger.HandleLogEvent(new LogEventArgs(m)));
+                if (socketMessage.ShouldHandle(out var msg))
+                {
+                    if (msg.Channel is IDMChannel dm)
+                        await dm.SendMessageAsync("Currently, I do not support commands via DM.");
+                    else
+                        await provider.Get<CommandsService>().HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
+                }
             };
-
-            if (provider.TryGet<GuildService>(out var guild))
-            {
-                client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
-                client.LeftGuild += async g => await guild.OnLeaveAsync(new LeftGuildEventArgs(g));
-            }
-
-            client.UserJoined += async user =>
-            {
-                if (Config.EnabledFeatures.Welcome) await welcome.JoinAsync(new UserJoinedEventArgs(user));
-                if (Config.EnabledFeatures.Autorole) await autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
-                if (provider.Get<DatabaseService>().GetData(user.Guild).Configuration.Moderation.CheckAccountAge &&
-                    Config.EnabledFeatures.ModLog)
-                    await mod.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
-            };
-
-            client.UserLeft += async user =>
-            {
-                if (Config.EnabledFeatures.Welcome) await welcome.LeaveAsync(new UserLeftEventArgs(user));
-            };
-
+            
             client.ShardReady += async c =>
             {
                 var guilds = c.Guilds.Count;
@@ -253,21 +234,6 @@ namespace Volte.Helpers
                         .SendToAsync(channel);
                 }
             };
-
-            client.MessageReceived += async socketMessage =>
-            {
-                if (socketMessage.ShouldHandle(out var msg))
-                {
-                    if (msg.Channel is IDMChannel dm)
-                        await dm.SendMessageAsync("Currently, I do not support commands via DM.");
-                    else
-                        await provider.Get<CommandsService>().HandleMessageAsync(new MessageReceivedEventArgs(socketMessage, provider));
-                }
-            };
-            
-            client.ReactionAdded += starboard.HandleReactionAddAsync;
-            client.ReactionRemoved += starboard.HandleReactionRemoveAsync;
-            client.ReactionsCleared += starboard.HandleReactionsClearAsync;
         }
 
         public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
@@ -319,14 +285,12 @@ namespace Volte.Helpers
 
         public static bool ShouldHandle(this SocketMessage message, out SocketUserMessage userMessage)
         {
-            if (message is SocketUserMessage msg && !msg.Author.IsBot)
-            {
-                userMessage = msg;
-                return true;
-            }
-
             userMessage = null;
-            return false;
+            
+            if (message is SocketUserMessage msg && !msg.Author.IsBot)
+                userMessage = msg;
+
+            return userMessage != null;
         }
 
         public static async Task<bool> TryDeleteAsync(this IDeletable deletable, RequestOptions options = null)
@@ -357,7 +321,7 @@ namespace Volte.Helpers
             => !message.Attachments.IsEmpty();
 
         public static bool HasColor(this IRole role)
-            => role.Color.RawValue != 0;
+            => role.Color.RawValue != uint.MinValue;
 
         public static EmbedBuilder WithDescription(this EmbedBuilder e, StringBuilder sb)
             => e.WithDescription(sb.ToString());

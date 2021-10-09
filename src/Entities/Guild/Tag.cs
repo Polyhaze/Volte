@@ -1,9 +1,7 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Discord;
 using Gommon;
 using Volte.Commands;
-using Volte;
 using Volte.Helpers;
 
 namespace Volte.Entities
@@ -43,7 +41,6 @@ namespace Volte.Entities
             .WithFooter($"Requested by {ctx.User}.", ctx.User.GetEffectiveAvatarUrl());
 
 
-        public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+        public override string ToString() => this.AsJson();
     }
 }

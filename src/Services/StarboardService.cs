@@ -27,6 +27,11 @@ namespace Volte.Services
             _db = databaseService;
             _client = discordShardedClient;
             _starboardReadWriteLock = new AsyncDuplicateLock<ulong>();
+            
+            _client.ReactionAdded += HandleReactionAddAsync;
+            _client.ReactionRemoved += HandleReactionRemoveAsync;
+            _client.ReactionsCleared += HandleReactionsClearAsync;
+            
         }
 
         /// <summary>

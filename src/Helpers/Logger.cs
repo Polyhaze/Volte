@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Colorful;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Sentry;
 using Volte;
@@ -15,15 +17,18 @@ namespace Volte.Helpers
 {
     public static class Logger
     {
+        public static bool CaptureExceptionInSentry { get; set; } = true;
+
         static Logger() => Directory.CreateDirectory("logs");
-        
-        private static readonly object Lock = new object();
+
+        private static readonly object sysoutLock = new object();
         private const string LogFile = "logs/Volte.log";
         private static bool _headerPrinted;
 
-        public static void HandleLogEvent(LogEventArgs args) =>
-            Log(args.LogMessage.Severity, args.LogMessage.Source,
-                args.LogMessage.Message, args.LogMessage.Exception);
+        public static Task HandleLogAsync(LogEventArgs args)
+            => Task.Run(() => Log(
+                args.LogMessage.Severity, args.LogMessage.Source, args.LogMessage.Message, args.LogMessage.Exception
+            ));
 
         internal static void PrintHeader()
         {
@@ -40,8 +45,8 @@ namespace Volte.Helpers
         {
             if (s is LogSeverity.Debug && !Config.EnableDebugLogging)
                 return;
-            
-            Lock.Lock(() => Execute(s, from, message, e));
+
+            sysoutLock.Lock(() => Execute(s, from, message, e));
         }
 
         /// <summary>
@@ -64,8 +69,9 @@ namespace Volte.Helpers
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Error(LogSource src, string message, Exception e = null) => Log(LogSeverity.Error, src, message, e);
-        
+        public static void Error(LogSource src, string message, Exception e = null) =>
+            Log(LogSeverity.Error, src, message, e);
+
         /// <summary>
         ///     Prints an <see cref="LogSeverity.Error"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
         /// </summary>
@@ -79,7 +85,8 @@ namespace Volte.Helpers
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Critical(LogSource src, string message, Exception e = null) => Log(LogSeverity.Critical, src, message, e);
+        public static void Critical(LogSource src, string message, Exception e = null) =>
+            Log(LogSeverity.Critical, src, message, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Critical"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message, with the specified <paramref name="e"/> exception if provided.
@@ -87,7 +94,8 @@ namespace Volte.Helpers
         /// <param name="src">Source to print the message from.</param>
         /// <param name="message">Message to print.</param>
         /// <param name="e">Optional Exception to print.</param>
-        public static void Warn(LogSource src, string message, Exception e = null) => Log(LogSeverity.Warning, src, message, e);
+        public static void Warn(LogSource src, string message, Exception e = null) =>
+            Log(LogSeverity.Warning, src, message, e);
 
         /// <summary>
         ///     Prints a <see cref="LogSeverity.Verbose"/> message to the console from the specified <paramref name="src"/> source, with the given <paramref name="message"/> message.
@@ -105,6 +113,12 @@ namespace Volte.Helpers
 
         private static void Execute(LogSeverity s, LogSource src, string message, Exception e)
         {
+            if (e is GatewayReconnectException)
+            {
+                Error(src, "Discord gateway requested reconnect.");
+                return;
+            }
+
             var content = new StringBuilder();
             var (color, value) = VerifySeverity(s);
             Append($"{value}:".PadRight(10), color);
@@ -120,7 +134,9 @@ namespace Volte.Helpers
 
             if (e != null)
             {
-                SentrySdk.CaptureException(e);
+                if (CaptureExceptionInSentry)
+                    SentrySdk.CaptureException(e);
+
                 var newlineOrEmpty = message.IsNullOrWhitespace() ? "" : Environment.NewLine;
                 var toWrite = $"{newlineOrEmpty}{e.Message}{Environment.NewLine}{e.StackTrace}";
                 Append(toWrite, Color.IndianRed, ref content);
@@ -132,7 +148,8 @@ namespace Volte.Helpers
                 File.AppendAllText(NormalizeLogFilePath(DateTime.Now), content.ToString());
         }
 
-        private static string NormalizeLogFilePath(DateTime date) => LogFile.Replace("Volte", $"{date.Month}-{date.Day}-{date.Year}");
+        private static string NormalizeLogFilePath(DateTime date) =>
+            LogFile.Replace("Volte", $"{date.Month}-{date.Day}-{date.Year}");
 
         private static void Append(string m, Color c)
         {

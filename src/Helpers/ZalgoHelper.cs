@@ -10,14 +10,15 @@ namespace Volte.Helpers
     {
         Up,
         Middle,
-        Down
+        Down,
+        All = Up | Middle | Down
     }
 
-    public enum ZalgoIntensity
+    public enum ZalgoIntensity : sbyte
     {
-        Low,
-        Medium,
-        High
+        Low = (sbyte)'l',
+        Medium = (sbyte)'m',
+        High = (sbyte)'h'
     }
 
     public static class ZalgoHelper

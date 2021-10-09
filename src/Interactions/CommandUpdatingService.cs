@@ -61,7 +61,7 @@ namespace Volte.Interactions
 
                             Logger.Info(LogSource.Rest,
                                 commandStr + regularCommands.Select(x => x.Name).ToReadableString());
-                            
+
                             await _db.AllGuilds.Where(x => !x.HasGuildOnlyCommands)
                                 .ForEachAsync(data => UpsertMissingCommandsAsync(data.Id));
 
@@ -71,7 +71,6 @@ namespace Volte.Interactions
                         {
                             Logger.Error(LogSource.Rest, $"{e.GetType().AsPrettyString()}: {e.Message}", e);
                         }
-
                     });
                 }
 
@@ -84,34 +83,29 @@ namespace Volte.Interactions
         public async Task<IEnumerable<IApplicationCommand>> UpsertMissingCommandsAsync(ulong guildId)
         {
             var data = await _db.GetDataAsync(guildId);
-            if (!data.HasGuildOnlyCommands)
-            {
-                var cmds = await OverwriteGuildCommandsAsync(guildId);
-                data.HasGuildOnlyCommands = true;
-                _db.Save(data);
-                return cmds;
-            }
+            if (data.HasGuildOnlyCommands)
+                return Array.Empty<IApplicationCommand>();
 
-            return Array.Empty<IApplicationCommand>();
+            var cmds = await OverwriteGuildCommandsAsync(guildId);
+            data.HasGuildOnlyCommands = true;
+            _db.Save(data);
+            return cmds;
         }
 
 
         public Task<IReadOnlyCollection<RestGlobalCommand>> OverwriteGlobalCommandsAsync()
             => _client.Rest.BulkOverwriteGlobalCommands(
-                _interaction.AllRegisteredCommands
-                    .Where(x => !x.IsLockedToGuild)
-                    .GetCommandBuilders(_provider)
+                _interaction.AllRegisteredGlobalCommands.GetCommandBuilders(_provider)
             );
 
 
-        public Task<IReadOnlyCollection<RestGuildCommand>> OverwriteGuildCommandsAsync(ulong guildId) =>
-            _client.Rest.BulkOverwriteGuildCommands(
-                _interaction.AllRegisteredCommands
-                    .Where(x => x.IsLockedToGuild)
-                    .GetCommandBuilders(_provider), guildId
+        public Task<IReadOnlyCollection<RestGuildCommand>> OverwriteGuildCommandsAsync(ulong guildId) 
+            => _client.Rest.BulkOverwriteGuildCommands(
+                _interaction.AllRegisteredGuildCommands.GetCommandBuilders(_provider), 
+                guildId
             );
 
-        public Task<IReadOnlyCollection<RestGuildCommand>[]> ForceUpsertMissingGuildCommandsAsync()
+        public Task<IReadOnlyCollection<RestGuildCommand>[]> ForceOverwriteAllGuildCommandsAsync()
             => Task.WhenAll(_client.Guilds.Select(x => x.Id).Select(OverwriteGuildCommandsAsync));
     }
 }

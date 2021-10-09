@@ -15,21 +15,27 @@ namespace Volte.Services
     public class ModerationService : IVolteService
     {
         private readonly DatabaseService _db;
-        private readonly DiscordSocketRestClient _client;
+        private readonly DiscordShardedClient _client;
 
         public ModerationService(DatabaseService databaseService, IServiceProvider provider)
         {
             _db = databaseService;
-            _client = provider.Get<DiscordShardedClient>().Rest;
+            _client = provider.Get<DiscordShardedClient>();
+
+            _client.UserJoined += u =>
+                _db.GetData(u.Guild).Configuration.Moderation.CheckAccountAge && Config.EnabledFeatures.ModLog
+                    ? CheckAccountAgeAsync(new UserJoinedEventArgs(u))
+                    : Task.CompletedTask;
         }
 
         public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
         {
             if (args.User.IsBot) return;
-            
+
             Logger.Debug(LogSource.Volte, "Attempting to post a VerifyAge message.");
-            
-            var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation.ModActionLogChannel);
+
+            var c = args.User.Guild.GetTextChannel(_db.GetData(args.Guild).Configuration.Moderation
+                .ModActionLogChannel);
             if (c is null) return;
             Logger.Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
             var diff = DateTimeOffset.Now - args.User.CreatedAt;
@@ -43,13 +49,14 @@ namespace Volte.Services
                     .WithTitle("Possibly Malicious User")
                     .WithThumbnailUrl("https://img.greemdev.net/WWElGbcQHC/3112312312.png")
                     .AddField("User", args.User.ToString(), true)
-                    .AddField("Account Created", $"{args.User.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
+                    .AddField("Account Created",
+                        $"{args.User.CreatedAt.GetDiscordTimestamp(TimestampType.LongDateTime)}")
                     .WithFooter($"Account Created {unit.ToQuantity(time)} ago.")
                     .SendToAsync(c);
             }
         }
 
-        public async Task OnModActionCompleteAsync(ModActionEventArgs args, 
+        public async Task OnModActionCompleteAsync(ModActionEventArgs args,
             EmbedBuilder embedBuilder, GuildData data, ITextChannel channel)
         {
             if (!Config.EnabledFeatures.ModLog) return;
@@ -174,7 +181,7 @@ namespace Volte.Services
                             .AppendLine(Action(args))
                             .AppendLine(Moderator(args))
                             .AppendLine(Case(data))
-                            .AppendLine(await TargetRestUser(args, _client))
+                            .AppendLine(await TargetRestUser(args, _client.Rest))
                             .AppendLine(Time(args)))
                         .SendToAsync(c);
                     Logger.Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
@@ -218,11 +225,12 @@ namespace Volte.Services
                 ? $"**User:** {args.TargetId}"
                 : $"**User:** {u} ({args.TargetId})";
         }
+
         private string Target(ModActionEventArgs args, bool isOnMessageDelete) => isOnMessageDelete
             ? $"**Message Deleted:** {args.TargetId}"
             : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
 
-        private string Time(ModActionEventArgs args) 
+        private string Time(ModActionEventArgs args)
             => $"**Time:** {args.Time.GetDiscordTimestamp(TimestampType.LongDateTime)}";
     }
 }

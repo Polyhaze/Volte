@@ -29,7 +29,7 @@ namespace Volte.Commands.Modules
             {
                 var globalCommands = await Interactions.CommandUpdater.OverwriteGlobalCommandsAsync();
 
-                var newGuildCommands = await Interactions.CommandUpdater.ForceUpsertMissingGuildCommandsAsync();
+                var newGuildCommands = await Interactions.CommandUpdater.ForceOverwriteAllGuildCommandsAsync();
                 
                 return Ok(Context.CreateEmbedBuilder().WithTitle("Commands update successful.")
                     .AddField("Total global commands", globalCommands.Count)

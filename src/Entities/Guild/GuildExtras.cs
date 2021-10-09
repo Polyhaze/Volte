@@ -34,7 +34,6 @@ namespace Volte.Entities
         public void AddTag(Action<Tag> initializer) => Tags.Add(new Tag().Apply(initializer));
         public void AddWarn(Action<Warn> initializer) => Warns.Add(new Warn().Apply(initializer));
         
-        public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+        public override string ToString() => this.AsJson();
     }
 }

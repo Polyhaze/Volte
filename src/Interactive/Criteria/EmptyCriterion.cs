@@ -7,7 +7,7 @@ namespace Volte.Interactive
 {
     public class EmptyCriterion<TParameter> : ICriterion<TParameter>
     {
-        public ValueTask<bool> JudgeAsync(SocketUserMessage _, TParameter __)
+        public ValueTask<bool> CheckAsync(SocketUserMessage _, TParameter __)
             => new ValueTask<bool>(true);
     }
 }

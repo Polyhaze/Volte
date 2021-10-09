@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Volte.Entities;
 using Volte.Helpers;
@@ -10,8 +11,16 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public WelcomeService(DatabaseService databaseService) 
-            => _db = databaseService;
+        public WelcomeService(DiscordShardedClient client, DatabaseService databaseService)
+        {
+            _db = databaseService;
+
+            client.UserJoined += u =>
+                Config.EnabledFeatures.Welcome ? JoinAsync(new UserJoinedEventArgs(u)) : Task.CompletedTask;
+
+            client.UserLeft += u =>
+                Config.EnabledFeatures.Welcome ? LeaveAsync(new UserLeftEventArgs(u)) : Task.CompletedTask;
+        }
 
         public async Task JoinAsync(UserJoinedEventArgs args)
         {

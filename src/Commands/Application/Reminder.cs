@@ -83,7 +83,7 @@ namespace Volte.Commands.Application
 
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
-            switch (ctx.CustomIdParts[1])
+            switch (ctx.Id.Action)
             {
                 case "delete":
                     var reply = ctx.CreateReplyBuilder(true);

@@ -45,7 +45,7 @@ namespace Volte.Commands.Application
 
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
-            if (ctx.CustomId.Split(':')[1] is "menu")
+            if (ctx.Id.Action is "menu")
             {
                 var roles = ctx.SelectedMenuOptions.Select(x => ctx.Guild.GetRole(ulong.Parse(x))).ToArray();
                 await ctx.GuildUser.AddRolesAsync(roles);
@@ -66,7 +66,7 @@ namespace Volte.Commands.Application
         {
             var roles = ctx.GuildSettings.Extras.SelfRoleIds
                 .Select(x => ctx.Guild.GetRole(x))
-                .Where(x => x != null)
+                .WhereNotNull()
                 .Where(x => ctx.GuildUser.HasRole(x.Id))
                 .ToList();
 
@@ -92,7 +92,7 @@ namespace Volte.Commands.Application
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
             await ctx.DeferAsync(true);
-            if (ctx.CustomId.Split(':')[1] != "menu") return;
+            if (ctx.Id.Action != "menu") return;
 
             await ctx.GuildUser.RemoveRolesAsync(
                 ctx.SelectedMenuOptions.Select(x => ctx.Guild.GetRole(ulong.Parse(x))));
@@ -171,7 +171,7 @@ namespace Volte.Commands.Application
 
         public override async Task HandleComponentAsync(MessageComponentContext ctx)
         {
-            if (ctx.CustomIdParts[1] is "remove")
+            if (ctx.Id.Action is "remove")
             {
                 var selectedRoles = ctx.SelectedMenuOptions
                     .Select(ulong.Parse)

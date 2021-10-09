@@ -15,6 +15,13 @@ namespace Gommon
     /// </summary>
     public static partial class Extensions
     {
+        public static bool TryGetValue<TKey, TValue, TNewValue>(this Dictionary<TKey, TValue> dict, TKey key, out TNewValue value) where TValue : class
+        {
+            value = Lambda.TryOrNull(() => dict[key]).Cast<TNewValue>();
+            
+            return value != null;
+        }
+        
         public static Task Then(this Task task, Func<Task> continuation) 
             => task.ContinueWith(async _ => await continuation());
 

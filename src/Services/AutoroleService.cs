@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord.WebSocket;
 using Volte.Entities;
 using Volte.Helpers;
 
@@ -8,8 +9,14 @@ namespace Volte.Services
     {
         private readonly DatabaseService _db;
 
-        public AutoroleService(DatabaseService databaseService) 
-            => _db = databaseService;
+        public AutoroleService(DiscordShardedClient client, DatabaseService databaseService)
+        {
+            _db = databaseService;
+            client.UserJoined += u =>
+                Config.EnabledFeatures.Autorole
+                    ? ApplyRoleAsync(new UserJoinedEventArgs(u))
+                    : Task.CompletedTask;
+        }
 
         public async Task ApplyRoleAsync(UserJoinedEventArgs args)
         {

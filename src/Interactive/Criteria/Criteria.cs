@@ -25,12 +25,24 @@ namespace Volte.Interactive
             _localCriteria.Add(criteria);
             return this;
         }
+        
+        public Criteria<T> AddCriterionIf(bool condition, ICriterion<T> criterion)
+        {
+            if (condition) _critiera.Add(criterion);
+            return this;
+        }
 
-        public async ValueTask<bool> JudgeAsync(SocketUserMessage message, T parameter)
+        public Criteria<T> AddCriterionIf(bool condition, LocalCriteria criteria)
+        {
+            if (condition) _localCriteria.Add(criteria);
+            return this;
+        }
+
+        public async ValueTask<bool> CheckAsync(SocketUserMessage message, T parameter)
         {
             foreach (var criterion in _critiera)
             {
-                var result = await criterion.JudgeAsync(message, parameter);
+                var result = await criterion.CheckAsync(message, parameter);
                 if (!result) return false;
             }
 

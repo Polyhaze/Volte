@@ -29,12 +29,12 @@ namespace Volte.Interactions
                     {
                         s.Builder.WithName(x.Name);
                         s.Builder.WithDescription(x.Description);
-                    }),
+                    }).Builder.Build(),
                     ApplicationCommandType.Message => new MessageCommandBuilder().WithName(x.Name).Build(),
                     ApplicationCommandType.User => new UserCommandBuilder().WithName(x.Name).Build(),
                     _ => null
                 }
-            ).Where(x => x != null).ToArray();
+            ).WhereNotNull().ToArray();
 
         public static ActionRowBuilder AddComponentIf(this ActionRowBuilder builder, bool condition, IMessageComponent component)
         {

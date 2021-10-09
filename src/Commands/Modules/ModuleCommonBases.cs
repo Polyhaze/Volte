@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
             {new[] {"down"}, "Include downward characters. This option takes no value."},
             {new[] {"intensity"}, "`high`, `med`, or `low`"}
         };
-
+        
         private static readonly Dictionary<char, string> _nato = new Dictionary<char, string>
         {
             {'a', "Alfa"}, {'b', "Bravo"}, {'c', "Charlie"}, {'d', "Delta"},
@@ -48,10 +48,10 @@ namespace Volte.Commands.Modules
             _nato.TryGetValue(char.ToLower(i), out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
 
         /// <summary>
-        ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
+        ///     Sends a <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
         /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
-        /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
+        /// <returns><see cref="IEnumerable{UrbanEntry}"/> of Urban Dictionary definitions; <see langword="null"/> if the request failed.</returns>
         public async Task<IReadOnlyList<UrbanEntry>> RequestUrbanDefinitionsAsync(string word)
         {
             var get = await Http.GetAsync(
@@ -60,7 +60,7 @@ namespace Volte.Commands.Modules
 
             get.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
+            return (await get.Content.ReadAsStringAsync()).ParseJson<UrbanApiResponse>().Entries;
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>

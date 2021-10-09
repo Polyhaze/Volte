@@ -21,30 +21,40 @@ namespace Volte.Interactions
 
     public class MessageCommandContext : InteractionContext<SocketMessageCommand>
     {
-        public MessageCommandContext(SocketMessageCommand interaction, IServiceProvider provider) :
-            base(interaction, provider) { }
+        public MessageCommandContext(SocketMessageCommand interaction, IServiceProvider provider) 
+            : base(interaction, provider) { }
 
         public SocketUserMessage UserMessage => Interaction.Data.Message.Cast<SocketUserMessage>();
     }
 
     public class UserCommandContext : InteractionContext<SocketUserCommand>
     {
-        public UserCommandContext(SocketUserCommand interaction, IServiceProvider provider) : base(interaction, provider) { }
+        public UserCommandContext(SocketUserCommand interaction, IServiceProvider provider) 
+            : base(interaction, provider) { }
 
         public SocketGuildUser TargetedGuildUser => Interaction.Data.Member.Cast<SocketGuildUser>();
     }
 
     public class MessageComponentContext : InteractionContext<SocketMessageComponent>
     {
-        public MessageComponentContext(SocketMessageComponent interaction, IServiceProvider provider) : base(interaction,
-            provider) { }
+        public MessageComponentContext(SocketMessageComponent interaction, IServiceProvider provider)
+            : base(interaction, provider)
+        {
+            CustomIdParts = CustomId.Split(MessageComponentId.Separator);
+            SelectedMenuOptions = Interaction.Data.Values?.ToHashSet() ?? new HashSet<string>();
+            Id = interaction.Data.CustomId;
+        }
+
 
         public string CustomId => Interaction.Data.CustomId;
-        public string[] CustomIdParts => CustomId.Split(':');
+        public string[] CustomIdParts { get; }
+    
         public SocketUserMessage Message => Interaction.Message;
 
-        public IEnumerable<string> SelectedMenuOptions
-            => Interaction.Data.Values?.ToHashSet() ?? new HashSet<string>();
+        public IEnumerable<string> SelectedMenuOptions { get; }
+
+        public MessageComponentId Id { get; }
+
     }
 
     public abstract class InteractionContext<TInteraction> where TInteraction : SocketInteraction
@@ -94,10 +104,8 @@ namespace Volte.Interactions
             MessageComponent component = null)
             => Interaction.FollowupAsync(text, embeds?.ToArray(), isTts, ephemeral, allowedMentions, options, component);
 
-        public void ModifyGuildSettings(Action<GuildData> modifier)
-            => Db.Save(GuildSettings.Apply(modifier));
-
-
+        public void ModifyGuildSettings(Action<GuildData> modifier) => Db.Save(GuildSettings.Apply(modifier));
+        
         public EmbedBuilder CreateEmbedBuilder(string content = null)
             => new EmbedBuilder()
                 .WithColor(GuildUser.GetHighestRole()?.Color ?? Config.SuccessColor)

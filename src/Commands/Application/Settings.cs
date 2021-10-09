@@ -249,7 +249,7 @@ namespace Volte.Commands.Application
                 case "prefix":
                     if (subcommand?.Name is "get")
                         reply.WithEmbedFrom(
-                            $"The text command prefix for this guild is {ctx.GuildSettings.Configuration.CommandPrefix}.");
+                            $"The text command prefix for this guild is **{ctx.GuildSettings.Configuration.CommandPrefix}**.");
                     else
                     {
                         var newPrefix = argument!.GetAsString();

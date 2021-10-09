@@ -13,9 +13,15 @@ namespace Volte.Services
     public sealed class GuildService : IVolteService
     {
         private readonly DiscordShardedClient _client;
+        private readonly InteractionService _interactions;
 
-        public GuildService(DiscordShardedClient discordShardedClient) 
-            => _client = discordShardedClient;
+        public GuildService(DiscordShardedClient discordShardedClient, InteractionService interactionService)
+        {
+            _client = discordShardedClient;
+            _interactions = interactionService;
+            _client.JoinedGuild += async g => await OnJoinAsync(new JoinedGuildEventArgs(g));
+            _client.LeftGuild += async g => await OnLeaveAsync(new LeftGuildEventArgs(g));
+        }
 
         public async Task OnJoinAsync(JoinedGuildEventArgs args)
         {
@@ -33,7 +39,7 @@ namespace Volte.Services
                 .WithAuthor(await _client.Rest.GetUserAsync(Config.Owner))
                 .WithColor(Config.SuccessColor)
                 .WithDescription("Thanks for inviting me! Here's some basic instructions on how to set me up.")
-                .AddField("Set your staff roles", "$setup", true)
+                .AddField("Set your staff roles", "Run `/settings admin-role` or `/settings mod-role` in your server!", true)
                 .AddField("Permissions", new StringBuilder()
                     .AppendLine("It is recommended to give me the Administrator permission to avoid any permission errors that may happen.")
                     .AppendLine("You *can* get away with just send messages, ban members, kick members, and the like if you don't want to give me admin; however")
@@ -84,6 +90,9 @@ namespace Volte.Services
                     $"{_client.GetOwner().Mention}: Joined a guild with more bots than users.", embed: e.WithSuccessColor().Build());
             else
                 await e.WithSuccessColor().SendToAsync(channel);
+
+            await _interactions.CommandUpdater.UpsertMissingCommandsAsync(args.Guild.Id);
+
         }
 
         public async Task OnLeaveAsync(LeftGuildEventArgs args)

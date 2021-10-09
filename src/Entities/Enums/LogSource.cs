@@ -1,3 +1,5 @@
+using System;
+
 namespace Volte.Entities
 {
     public class LogSources

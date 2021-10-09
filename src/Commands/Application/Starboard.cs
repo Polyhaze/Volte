@@ -125,8 +125,8 @@ namespace Volte.Commands.Application
                 .WithActionRows(
                     GetConfigCommandButtons(ctx.GuildSettings.Configuration.Starboard.Enabled).AsActionRow());
 
-            if (ctx.CustomIdParts[1] is "config")
-                switch (ctx.CustomIdParts[2])
+            if (ctx.Id.Action is "config")
+                switch (ctx.Id.Value)
                 {
                     case "on":
                         await messageUpdate.WithComponentMessageUpdate(props =>

@@ -7,7 +7,7 @@ namespace Volte.Interactive
 {
     public class EnsureSourceUserCriterion : ICriterion<IMessage>
     {
-        public ValueTask<bool> JudgeAsync(SocketUserMessage message, IMessage parameter) 
+        public ValueTask<bool> CheckAsync(SocketUserMessage message, IMessage parameter) 
             => new ValueTask<bool>(message.Author.Id == parameter.Author.Id);
     }
 }

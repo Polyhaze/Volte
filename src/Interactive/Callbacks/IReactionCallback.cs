@@ -15,12 +15,4 @@ namespace Volte.Interactive
 
         ValueTask<bool> HandleAsync(SocketReaction reaction);
     }
-
-    public interface IButtonCallback
-    {
-        RunMode RunMode { get; }
-        ICriterion<MessageComponentContext> Criterion { get; }
-
-        ValueTask<bool> HandleAsync(MessageComponentContext context);
-    }
 }

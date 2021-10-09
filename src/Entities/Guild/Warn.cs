@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Volte;
+using Gommon;
 
 namespace Volte.Entities
 {
@@ -16,7 +15,6 @@ namespace Volte.Entities
         [JsonPropertyName("timestamp")]
         public DateTimeOffset Date { get; set; }
 
-        public override string ToString()
-            => JsonSerializer.Serialize(this, Config.JsonOptions);
+        public override string ToString() => this.AsJson();
     }
 }
