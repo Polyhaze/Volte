@@ -21,13 +21,16 @@ namespace Volte.Core.Helpers
         /// <exception cref="InvalidOperationException">If <paramref name="provider"/> doesn't have an <see cref="HttpClient"/> in it.</exception>
         public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider, string fileExtension = null)
         {
+            const string url = "https://paste.greemdev.net/documents;
             try
             {
-                var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, "https://paste.greemdev.net/documents", content)).Content.ReadAsStringAsync());
+                var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, url", content)).Content.ReadAsStringAsync());
                 return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? "" : $".{fileExtension}")}}}";
             }
             catch (Exception e)
             {
+                e.Data["url"] = url;
+                e.Data["fileExtension"] = fileExtension; // Useful in case the exception was thrown on the return line
                 SentrySdk.CaptureException(e);
                 return string.Empty;
             }
@@ -55,11 +58,13 @@ namespace Volte.Core.Helpers
         {
             try
             {
-                return (await (await provider.Get<HttpClient>().GetAsync("https://paste.greemdev.net/raw/volteAllowedPasteSites")).Content
+                const string url = "https://paste.greemdev.net/raw/volteAllowedPasteSites";
+                return (await (await provider.Get<HttpClient>().GetAsync(url)).Content
                     .ReadAsStringAsync()).Split(" ");
             }
             catch (Exception e)
             {
+                e.Data["url"] = url;
                 SentrySdk.CaptureException(e);
                 return Array.Empty<string>();
             }
