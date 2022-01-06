@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <RestoreSources>$(RestoreSources);https://www.myget.org/F/quahu/api/v3/index.json;https://www.myget.org/F/discord-net/api/v3/index.json</RestoreSources>
+  </PropertyGroup>
+</Project>
