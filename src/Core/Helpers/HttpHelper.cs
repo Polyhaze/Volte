@@ -21,10 +21,10 @@ namespace Volte.Core.Helpers
         /// <exception cref="InvalidOperationException">If <paramref name="provider"/> doesn't have an <see cref="HttpClient"/> in it.</exception>
         public static async Task<string> PostToGreemPasteAsync(string content, IServiceProvider provider, string fileExtension = null)
         {
-            const string url = "https://paste.greemdev.net/documents;
+            const string url = "https://paste.greemdev.net/documents";
             try
             {
-                var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, url", content)).Content.ReadAsStringAsync());
+                var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, url, content)).Content.ReadAsStringAsync());
                 return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? "" : $".{fileExtension}")}}}";
             }
             catch (Exception e)
