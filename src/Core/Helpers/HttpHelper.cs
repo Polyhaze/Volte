@@ -56,9 +56,9 @@ namespace Volte.Core.Helpers
         /// <returns>An array of strings where each one represents a valid site, or empty if any errors occurred.</returns>
         public static async Task<string[]> GetAllowedPasteSitesAsync(IServiceProvider provider)
         {
+            const string url = "https://paste.greemdev.net/raw/volteAllowedPasteSites";
             try
             {
-                const string url = "https://paste.greemdev.net/raw/volteAllowedPasteSites";
                 return (await (await provider.Get<HttpClient>().GetAsync(url)).Content
                     .ReadAsStringAsync()).Split(" ");
             }
