@@ -4,7 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core.Helpers;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -27,8 +27,8 @@ namespace Volte.Commands.Modules
                     : Ok(async () =>
                     {
                         await using var stream = role.Color.ToRgba32().CreateColorImage();
-                        await stream.SendFileToAsync(Context.Channel, "role.png", string.Empty, false,
-                            new EmbedBuilder()
+                        await stream.SendFileToAsync(Context.Channel, "role.png",
+                            embed: new EmbedBuilder()
                                 .WithColor(role.Color)
                                 .WithTitle($"{role.Name}'s Color")
                                 .WithDescription(new StringBuilder()

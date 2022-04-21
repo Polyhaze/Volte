@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Discord;
 using Qmmands;
 using Gommon;
-using Volte.Core.Helpers;
+using Volte.Helpers;
+using Volte.Interactive;
 
 namespace Volte.Commands.Modules
 {
@@ -36,28 +37,33 @@ namespace Volte.Commands.Modules
                 .WithDescription(
                     $"You can use {Format.Code(CommandHelper.FormatUsage(Context, CommandService.GetCommand("Help")))} for more details on a command or group.");
 
-            var cmds = await GetAllRegularCommandsAsync().ToListAsync();
-            var groupCmds = await GetAllGroupCommandsAsync().ToListAsync();
-
-            try
+            await GetAllRegularCommandsAsync().ToListAsync().Then(async cmds =>
             {
-                if (!cmds.IsEmpty()) e.AddField("Regular Commands", cmds.Join(", "));
-            }
-            catch (ArgumentException)
+                await Task.Yield();
+                try
+                {
+                    if (!cmds.IsEmpty()) e.AddField("Regular Commands", cmds.Join(", "));
+                }
+                catch (ArgumentException)
+                {
+                    e.AppendDescriptionLine().AppendDescriptionLine(cmds.Join(", "));
+                }
+            });
+            
+            await GetAllGroupCommandsAsync().ToListAsync().Then(async groupCmds =>
             {
-                e.AppendDescriptionLine().AppendDescriptionLine(cmds.Join(", "));
-            }
-
-            try
-            {
-                if (!groupCmds.IsEmpty()) e.AddField("Group Commands", groupCmds.Join(", "));
-            }
-            catch (ArgumentException)
-            {
-                e.AppendDescriptionLine().AppendDescriptionLine(groupCmds.Join(", "));
-            }
-
-            return Ok(e);
+                await Task.Yield();
+                try
+                {
+                    if (!groupCmds.IsEmpty()) e.AddField("Group Commands", groupCmds.Join(", "));
+                }
+                catch (ArgumentException)
+                {
+                    e.AppendDescriptionLine().AppendDescriptionLine(groupCmds.Join(", "));
+                }
+            });
+            
+            return Ok(e.WithFooter("Commands missing? Many of my commands have been converted to slash commands. Type / to see them all!"));
         }
 
         //module without aliases: regular module

@@ -27,7 +27,7 @@ namespace Volte.Commands.Modules
                     .ToList();
 
                 if (addonEmbeds.Count is 1) return Ok(addonEmbeds.First());
-                return Ok(PaginatedMessage.Builder.New
+                return Ok(PaginatedMessage.NewBuilder()
                     .WithDefaults(Context)
                     .WithPages(addonEmbeds)
                     .WithTitle("All installed addons"));

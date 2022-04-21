@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Entities;
+using Volte.Entities;
 
 namespace Volte.Commands.Modules
 {
@@ -21,7 +21,7 @@ namespace Volte.Commands.Modules
                         .WithDefaultsFromContext(Context)
                         .WithActionType(ModActionType.IdBan)
                         .WithTarget(user)
-                        .WithReason(reason))
+                        .WithReason(reason), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
             );
         }
     }

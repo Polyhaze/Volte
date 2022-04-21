@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Discord;
+using Gommon;
 using Qmmands;
-using Volte.Core;
-using Volte.Core.Helpers;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -16,6 +19,27 @@ namespace Volte.Commands.Modules
             return Config.Reload()
                 ? Ok("Config and AllowedPasteSites reloaded!")
                 : BadRequest("Something bad happened. Check console for more detailed information.");
+        }
+
+        [Command("UpdateCommands", "Uc")]
+        [Description("Registers all of the known Slash Commands to Discord.")]
+        public async Task<ActionResult> UpdateCommandsAsync()
+        {
+            try
+            {
+                var globalCommands = await Interactions.CommandUpdater.OverwriteGlobalCommandsAsync();
+
+                var newGuildCommands = await Interactions.CommandUpdater.ForceOverwriteAllGuildCommandsAsync();
+                
+                return Ok(Context.CreateEmbedBuilder().WithTitle("Commands update successful.")
+                    .AddField("Total global commands", globalCommands.Count)
+                    .AddField("Total guild commands", newGuildCommands.Sum(x => x.Count)));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(Context.CreateEmbedBuilder().WithTitle("Command update failed.")
+                    .WithDescription(e.GetInnermostException().Message));
+            }
         }
     }
 }

@@ -7,9 +7,9 @@ using Discord.WebSocket;
 using Qmmands;
 using Gommon;
 using Humanizer;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte;
+using Volte.Entities;
+using Volte.Helpers;
 using Volte.Services;
 
 namespace Volte.Commands
@@ -82,7 +82,7 @@ namespace Volte.Commands
             return (default, false);
         }
 
-        public void Modify(DataEditor modifier)
+        public void Modify(Action<GuildData> modifier)
         {
             modifier(GuildData);
             if (Services.TryGet<DatabaseService>(out var db))

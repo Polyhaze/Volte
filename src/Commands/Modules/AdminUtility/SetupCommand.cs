@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Helpers;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {

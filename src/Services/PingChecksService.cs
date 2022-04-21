@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {

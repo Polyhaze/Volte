@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -40,7 +40,7 @@ namespace Volte.Commands.Modules
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Verify)
-                    .WithTarget(member))
+                    .WithTarget(member), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
             );
         }
     }

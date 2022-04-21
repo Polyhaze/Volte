@@ -8,9 +8,9 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Gommon;
 using Qmmands;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -63,7 +63,7 @@ namespace Volte.Commands.Modules
                 //must be a URL
                 if (Uri.IsWellFormedUriString(WebUtility.UrlEncode(result), UriKind.RelativeOrAbsolute)
                     //must be a website/paste service that has support for raw paste viewing via a URL; feel free to PR more or to message me on discord to add some
-                    && result.ContainsAnyIgnoreCase(AllowedPasteSites) 
+                    && result.ContainsAnyIgnoreCase(AllowedPasteSites)
                     //must be a url that leads to plaintext (aka raw on most websites) so it's not a bunch of HTML as the result.
                     && result.ContainsIgnoreCase("raw"))
                 {
@@ -72,9 +72,11 @@ namespace Volte.Commands.Modules
                         var m = await Http.GetAsync(WebUtility.UrlEncode(result));
                         result = await m.Content.ReadAsStringAsync();
                     }
-                    catch { /* ignored */ }
+                    catch
+                    { /* ignored */
+                    }
                 }
-                
+
                 embed.WithDescription(result);
             }
 
@@ -109,27 +111,20 @@ namespace Volte.Commands.Modules
 
             return Ok(async () =>
             {
-                async Task<RestUserMessage> SendResultAsync()
-                {
-                    try
+                await Lambda.TryCatch<Task<IUserMessage>, HttpException>(
+                        () => embed.Build().SendToAsync(Context.Channel),
+                        (_) => embed.WithTitle("You need to modify the embed in some way.").Build()
+                            .SendToAsync(Context.Channel)
+                    )
+                    .Then(async m =>
                     {
-                        return await Context.Channel.SendMessageAsync(mention, embed: embed.Build());
-                    }
-                    catch (HttpException)
-                    {
-                        return await Context.Channel.SendMessageAsync(
-                            embed: embed.WithTitle("You need to modify the embed in some way.").Build());
-                    }
-                }
-
-                var m = await SendResultAsync();
-                
-                if (!(options.TryGetValue("keepmessage", out _) || options.TryGetValue("keepmsg", out _))
-                    && Context.Guild.CurrentUser.GetPermissions(Context.Channel).ManageMessages)
-                    await Context.Message.TryDeleteAsync();
-                if ((options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _))
-                    && Context.Channel is INewsChannel)
-                    await m.CrosspostAsync();
+                        if (!(options.TryGetValue("keepmessage", out _) || options.TryGetValue("keepmsg", out _))
+                            && Context.Guild.CurrentUser.GetPermissions(Context.Channel).ManageMessages)
+                            await Context.Message.TryDeleteAsync();
+                        if ((options.TryGetValue("publish", out _) || options.TryGetValue("crosspost", out _))
+                            && Context.Channel is INewsChannel)
+                            await m.CrosspostAsync();
+                    });
             });
         }
     }

@@ -2,8 +2,8 @@
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -30,7 +30,7 @@ namespace Volte.Commands.Modules
                         .WithDefaultsFromContext(Context)
                         .WithActionType(ModActionType.Kick)
                         .WithTarget(user)
-                        .WithReason(reason))
+                        .WithReason(reason), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
                 );
             }
             catch

@@ -5,7 +5,7 @@ using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Entities;
+using Volte.Entities;
 using Volte.Interactive;
 
 namespace Volte.Commands.Modules

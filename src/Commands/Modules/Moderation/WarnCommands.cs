@@ -5,8 +5,8 @@ using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 using Volte.Interactive;
 
 namespace Volte.Commands.Modules
@@ -26,7 +26,7 @@ namespace Volte.Commands.Modules
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Warn)
                     .WithTarget(member)
-                    .WithReason(reason))
+                    .WithReason(reason), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
             );
         }
 
@@ -37,7 +37,7 @@ namespace Volte.Commands.Modules
         {
             var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id)
                 .Select(x => $"{Format.Bold(x.Reason)}, on {Format.Bold(x.Date.FormatDate())}");
-            return Ok(PaginatedMessage.Builder.New
+            return Ok(PaginatedMessage.NewBuilder()
                 .WithPages(warns)
                 .WithTitle($"Warns for {member}")
                 .SplitPages(8)
@@ -65,7 +65,7 @@ namespace Volte.Commands.Modules
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.ClearWarns)
-                    .WithTarget(member))
+                    .WithTarget(member), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
             );
         }
     }

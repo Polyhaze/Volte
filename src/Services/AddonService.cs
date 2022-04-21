@@ -9,9 +9,9 @@ using Gommon;
 using Humanizer;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using static Gommon.Lambda;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {
@@ -79,8 +79,7 @@ namespace Volte.Services
                 {
                     try
                     {
-                        meta = JsonSerializer.Deserialize<VolteAddonMeta>(File.ReadAllText(file),
-                            Config.JsonOptions);
+                        meta = File.ReadAllText(file).ParseJson<VolteAddonMeta>();
                         if (meta.Name.EqualsIgnoreCase("list"))
                             throw new InvalidOperationException(
                                 $"Addon with name {meta.Name} is being ignored because it is using a reserved name. Please change the name or remove the addon.");

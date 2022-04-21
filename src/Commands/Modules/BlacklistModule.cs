@@ -4,8 +4,8 @@ using Discord;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {

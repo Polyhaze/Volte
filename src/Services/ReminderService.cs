@@ -6,8 +6,8 @@ using Discord;
 using Discord.WebSocket;
 using Gommon;
 using Humanizer;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {
@@ -18,7 +18,7 @@ namespace Volte.Services
                 @"https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>.+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?",
                 RegexOptions.Compiled);
 
-        private const int PollRate = 30; //seconds
+        private static readonly TimeSpan PollRate = 30.Seconds();
         private static Timer _checker;
         private readonly DatabaseService _db;
         private readonly DiscordShardedClient _client;
@@ -37,61 +37,44 @@ namespace Volte.Services
         public void Initialize()
         {
             _checker ??= new Timer(
-                _ => Check(),
+                _ => Executor.Execute(async () =>
+                {
+                    Logger.Debug(LogSource.Service, "Checking all reminders.");
+                    await _db.AllReminders.ForEachIndexedAsync(async (reminder, index) =>
+                    {
+                        Logger.Debug(LogSource.Service,
+                            $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");
+                        if (reminder.TargetTime.Ticks <= DateTime.Now.Ticks)
+                            await SendAsync(reminder);
+                    });
+                }),
                 null,
                 5.Seconds(),
-                PollRate.Seconds()
+                PollRate
             );
-        }
-
-        private void Check()
-        {
-            Logger.Debug(LogSource.Service, "Checking all reminders.");
-            _db.GetAllReminders().ForEachIndexedAsync(async (reminder, index) =>
-            {
-                Logger.Debug(LogSource.Service,
-                    $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");
-                if (reminder.TargetTime.Ticks <= DateTime.Now.Ticks)
-                    await SendAsync(reminder);
-            });
         }
 
         private async Task SendAsync(Reminder reminder)
         {
-            var guild = _client.GetGuild(reminder.GuildId);
-            var channel = guild?.GetTextChannel(reminder.ChannelId);
-            if (channel is null)
-            {
-                if (_db.TryDeleteReminder(reminder))
-                    Logger.Debug(LogSource.Service,
-                        "Reminder deleted from the database as Volte no longer has access to the channel it was created in.");
-                Logger.Debug(LogSource.Service,
-                    "Reminder's target channel was no longer accessible in the guild; aborting.");
-                return;
-            }
-
-            var author = guild.GetUser(reminder.CreatorId);
+            var author = _client.GetUser(reminder.CreatorId);
             if (author is null)
             {
                 if (_db.TryDeleteReminder(reminder))
                     Logger.Debug(LogSource.Service,
-                        "Reminder deleted from the database as its creator is no longer in the guild it was made.");
+                        "Reminder deleted from the database as its creator .");
                 Logger.Debug(LogSource.Service, "Reminder's creator was no longer present in the guild; aborting.");
                 return;
             }
+            
+            var timestamp = reminder.CreationTime.GetDiscordTimestamp(TimestampType.Relative);
 
-            var message = await channel.GetMessageAsync(reminder.MessageId);
-            var timestamp = message != null
-                ? Format.Url(reminder.CreationTime.GetDiscordTimestamp(TimestampType.Relative), message.GetJumpUrl())
-                : reminder.CreationTime.GetDiscordTimestamp(TimestampType.Relative);
-
-            await channel.SendMessageAsync(author.Mention, embed: new EmbedBuilder()
+            await new EmbedBuilder()
                 .WithTitle("Reminder")
-                .WithRelevantColor(author)
+                .WithSuccessColor()
                 .WithDescription(IsMessageUrl(reminder)
                     ? $"You asked me {timestamp} to remind you about {Format.Url("this message", reminder.ReminderText)}."
-                    : $"You asked me {timestamp} to remind you about:\n{"-".Repeat(20)} {reminder.ReminderText}")
-                .Build());
+                    : $"You asked me {timestamp} to remind you about:\n{"-".Repeat(50)}\n\n {reminder.ReminderText}")
+                .SendToAsync(author);
             _db.TryDeleteReminder(reminder);
         }
 

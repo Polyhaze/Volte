@@ -11,8 +11,8 @@ using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 using Volte.Services;
 
 namespace Volte.Commands.Modules
@@ -30,8 +30,8 @@ namespace Volte.Commands.Modules
             {new[] {"down"}, "Include downward characters. This option takes no value."},
             {new[] {"intensity"}, "`high`, `med`, or `low`"}
         };
-
-        private readonly Dictionary<char, string> _nato = new Dictionary<char, string>
+        
+        private static readonly Dictionary<char, string> _nato = new Dictionary<char, string>
         {
             {'a', "Alfa"}, {'b', "Bravo"}, {'c', "Charlie"}, {'d', "Delta"},
             {'e', "Echo"}, {'f', "Foxtrot"}, {'g', "Golf"}, {'h', "Hotel"},
@@ -44,14 +44,14 @@ namespace Volte.Commands.Modules
             {'7', "Seven"}, {'8', "Eight"}, {'9', "Nine"}, {'0', "Zero"}
         };
 
-        private string GetNato(char i) =>
-            _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
+        public static string GetNato(char i) =>
+            _nato.TryGetValue(char.ToLower(i), out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
 
         /// <summary>
-        ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
+        ///     Sends a <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
         /// </summary>
         /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
-        /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
+        /// <returns><see cref="IEnumerable{UrbanEntry}"/> of Urban Dictionary definitions; <see langword="null"/> if the request failed.</returns>
         public async Task<IReadOnlyList<UrbanEntry>> RequestUrbanDefinitionsAsync(string word)
         {
             var get = await Http.GetAsync(
@@ -60,7 +60,7 @@ namespace Volte.Commands.Modules
 
             get.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
+            return (await get.Content.ReadAsStringAsync()).ParseJson<UrbanApiResponse>().Entries;
         }
 
         private (IOrderedEnumerable<(string Name, bool Value)> Allowed, IOrderedEnumerable<(string Name, bool Value)>
@@ -116,6 +116,7 @@ namespace Volte.Commands.Modules
     public sealed partial class BotOwnerModule : VolteModule
     {
         public HttpClient Http { get; set; }
+        public InteractionService Interactions { get; set; }
         public CancellationTokenSource Cts { get; set; }
         public AddonService Addon { get; set; }
     }
@@ -155,7 +156,7 @@ namespace Volte.Commands.Modules
         }
     }
 
-    [Group("Settings", "Setting", "Options", "Option")]
+    /*[Group("Settings", "Setting", "Options", "Option")]
     [Description("The set of commands used to modify how Volte functions in your guild.")]
     [RequireGuildAdmin]
     public partial class SettingsModule : VolteModule
@@ -164,5 +165,5 @@ namespace Volte.Commands.Modules
 
         [Command, DummyCommand, Description("The set of commands used to modify how Volte functions in your guild.")]
         public Task<ActionResult> BaseAsync() => None();
-    }
+    }*/
 }

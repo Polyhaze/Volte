@@ -6,8 +6,8 @@ using Discord;
 using Discord.Rest;
 using Gommon;
 using Volte.Commands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {
@@ -38,8 +38,9 @@ namespace Volte.Services
             
             if (m.Content.IsNullOrWhitespace() && !m.Embeds.IsEmpty()) return false;
 
-            await GenerateQuoteEmbed(m, args.Context).SendToAsync(args.Context.Channel)
-                .ContinueWith(async _ =>
+            await GenerateQuoteEmbed(m, args.Context)
+                .SendToAsync(args.Context.Channel)
+                .Then(async () =>
                 {
                     if (match.Groups["Prelink"].Value.IsNullOrEmpty() && match.Groups["Postlink"].Value.IsNullOrEmpty())
                         await args.Message.TryDeleteAsync();
@@ -53,12 +54,20 @@ namespace Volte.Services
                 !ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId) ||
                 !ulong.TryParse(match.Groups["MessageId"].Value, out var messageId)) return null;
 
-            var g = await _client.Rest.GetGuildAsync(guildId);
-            if (g is null) return null;
-            var c = await g.GetTextChannelAsync(channelId);
-            if (c is null) return null;
+            try
+            {
 
-            return await c.GetMessageAsync(messageId);
+                var g = await _client.Rest.GetGuildAsync(guildId);
+                if (g is null) return null;
+                var c = await g.GetTextChannelAsync(channelId);
+                if (c is null) return null;
+
+                return await c.GetMessageAsync(messageId);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private Embed GenerateQuoteEmbed(IMessage message, VolteContext ctx)

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Entities;
+using Volte.Entities;
 
 namespace Volte.Commands.Modules
 {
@@ -9,8 +9,7 @@ namespace Volte.Commands.Modules
     {
         [Command("Tag")]
         [Description("Gets a tag's contents if it exists.")]
-        public Task<ActionResult> TagAsync([Remainder, Description("The tag to show.")]
-            Tag tag)
+        public Task<ActionResult> TagAsync([Remainder, Description("The tag to show.")] Tag tag)
         {
             tag.Uses++;
             Db.Save(Context.GuildData);

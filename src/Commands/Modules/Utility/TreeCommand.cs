@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Helpers;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -27,8 +27,7 @@ namespace Volte.Commands.Modules
                 uncategorized = null;
             else
                 foreach (var c in toIterate)
-                    uncategorized.AppendDescriptionLine(
-                        $"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()!.Mention)}");
+                    uncategorized.AppendDescriptionLine($"- {(c is IVoiceChannel ? c.Name : c.Cast<ITextChannel>()!.Mention)}");
             
             foreach (var category in Context.Guild.CategoryChannels.OrderBy(x => x.Position))
             {
@@ -47,12 +46,9 @@ namespace Volte.Commands.Modules
                 categories.Add(embedBuilder);
             }
 
-            var res = new List<EmbedBuilder>();
-            if (uncategorized != null)
-                res.Add(uncategorized.WithTitle("Uncategorized"));
-
-            if (!categories.IsEmpty())
-                res.AddRange(categories);
+            var res = uncategorized != null
+                ? uncategorized.WithTitle("Uncategorized").AsSingletonList()
+                : categories.ToList();
 
             return res.Count is 1 ? Ok(res[0]) : Ok(res);
         }

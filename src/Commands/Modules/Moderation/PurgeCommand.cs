@@ -5,8 +5,8 @@ using Discord;
 using Discord.Rest;
 using Humanizer;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -43,7 +43,7 @@ namespace Volte.Commands.Modules
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.New
                     .WithDefaultsFromContext(Context)
                     .WithActionType(ModActionType.Purge)
-                    .WithCount(count));
+                    .WithCount(count), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel);
             }, false);
         }
     }

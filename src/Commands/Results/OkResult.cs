@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 using Volte.Interactive;
 using Volte.Services;
 
@@ -12,7 +14,7 @@ namespace Volte.Commands
     public class OkResult : ActionResult
     {
         public OkResult(string text, bool shouldEmbed = true, EmbedBuilder embed = null,
-            MessageCallback func = null, bool awaitCallback = true)
+            Func<IUserMessage, Task> func = null, bool awaitCallback = true)
         {
             _message = text;
             _shouldEmbed = shouldEmbed;
@@ -21,29 +23,34 @@ namespace Volte.Commands
             _runFuncAsync = awaitCallback;
         }
 
+        public OkResult(IEnumerable<EmbedBuilder> pages, uint pageSplit = 0, Color? color = null,
+            IGuildUser author = null,
+            VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null) : this(pages,
+            pageSplit, color, author, ctx?.Message, title, options) { }
+
         public OkResult(IEnumerable<EmbedBuilder> pages, uint pageSplit = 0, Color? color = null, IGuildUser author = null,
-            VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null)
+            SocketUserMessage sourceMessage = null, string title = null, PaginatedAppearanceOptions options = null)
         {
-            _pager = PaginatedMessage.Builder.New
+            _pager = PaginatedMessage.NewBuilder()
                 .WithPages(pages);
 
             if (color.HasValue)
                 _pager.WithColor(color.Value);
-            if (author != null)
-                _pager.WithAuthor(author);
-            if (ctx != null)
-                _pager.WithDefaults(ctx);
+            if (sourceMessage != null)
+                _pager.WithDefaults(sourceMessage);
             if (title != null)
                 _pager.WithTitle(title);
             if (options != null)
                 _pager.WithOptions(options);
             if (pageSplit > 0)
                 _pager.SplitPages(pageSplit);
+            if (author != null)
+                _pager.WithAuthor(author);
         }
 
         public OkResult(PaginatedMessage.Builder pager) => _pager = pager;
 
-        public OkResult(AsyncFunction logic, bool awaitFunc = true)
+        public OkResult(Func<Task> logic, bool awaitFunc = true)
         {
             _separateLogic = logic;
             _runFuncAsync = awaitFunc;
@@ -56,8 +63,8 @@ namespace Volte.Commands
         private readonly string _message;
         private readonly bool _shouldEmbed;
         private readonly PaginatedMessage.Builder _pager;
-        private readonly MessageCallback _messageCallback;
-        private readonly AsyncFunction _separateLogic;
+        private readonly Func<IUserMessage, Task> _messageCallback;
+        private readonly Func<Task> _separateLogic;
         private readonly EmbedBuilder _embed;
         private readonly PollInfo _poll;
 
@@ -67,10 +74,12 @@ namespace Volte.Commands
 
             if (_poll != null)
                 return new ResultCompletionData(await ctx.Interactive.StartPollAsync(ctx, _poll));
-            
+
             if (_pager != null)
+            {
                 return new ResultCompletionData(
-                    await ctx.Interactive.SendPaginatedMessageAsync(ctx, _pager.WithDefaults(ctx).Build()));
+                    await ctx.Interactive.StartPagerAsync(ctx.Message, _pager.WithDefaults(ctx).Build()));
+            }
 
             if (_separateLogic != null)
             {

@@ -6,8 +6,8 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Gommon;
-using Volte.Core.Helpers;
-using Volte.Core.Entities;
+using Volte.Helpers;
+using Volte.Entities;
 
 namespace Volte.Services
 {
@@ -27,6 +27,11 @@ namespace Volte.Services
             _db = databaseService;
             _client = discordShardedClient;
             _starboardReadWriteLock = new AsyncDuplicateLock<ulong>();
+            
+            _client.ReactionAdded += HandleReactionAddAsync;
+            _client.ReactionRemoved += HandleReactionRemoveAsync;
+            _client.ReactionsCleared += HandleReactionsClearAsync;
+            
         }
 
         /// <summary>

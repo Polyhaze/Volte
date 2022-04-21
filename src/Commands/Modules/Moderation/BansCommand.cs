@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Qmmands;
-using Volte.Core.Entities;
+using Volte.Entities;
 using Gommon;
 
 namespace Volte.Commands.Modules

@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 using Gommon;
 using Humanizer;
 using Qmmands;
 using Volte.Commands;
-using Volte.Core;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Services
 {
@@ -41,17 +42,19 @@ namespace Volte.Services
             FailedCommandCalls = 0;
         }
 
+        public VolteTypeParser<T> GetTypeParser<T>() => _commandService.GetTypeParser<T>().Cast<VolteTypeParser<T>>();
+
         public async Task HandleMessageAsync(MessageReceivedEventArgs args)
         {
             if (Config.EnabledFeatures.Blacklist) await _blacklist.CheckMessageAsync(args);
             if (Config.EnabledFeatures.Antilink) await _antilink.CheckMessageAsync(args);
             if (Config.EnabledFeatures.PingChecks) await _pingchecks.CheckMessageAsync(args);
 
-            var prefixes = new List<string>
-            {
-                args.Data.Configuration.CommandPrefix, $"<@{args.Context.Client.CurrentUser.Id}> ",
+            var prefixes = Collections.NewArray(
+                args.Data.Configuration.CommandPrefix, 
+                $"<@{args.Context.Client.CurrentUser.Id}> ",
                 $"<@!{args.Context.Client.CurrentUser.Id}> "
-            };
+            );
 
             if (CommandUtilities.HasAnyPrefix(args.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out _,
                 out var cmd))
@@ -62,29 +65,25 @@ namespace Volte.Services
                 if (!(result is CommandNotFoundResult))
                     await OnCommandAsync(new CommandCalledEventArgs(result, args.Context, sw));
             }
-            else
+            else if (args.Message.Content.EqualsAnyIgnoreCase($"<@{args.Context.Client.CurrentUser.Id}>",
+                $"<@!{args.Context.Client.CurrentUser.Id}>"))
             {
-                if (args.Message.Content.EqualsAnyIgnoreCase($"<@{args.Context.Client.CurrentUser.Id}>",
-                    $"<@!{args.Context.Client.CurrentUser.Id}>"))
+                await args.Context.CreateEmbed(
+                        $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                        $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
+                    .ReplyToAsync(args.Message);
+            }
+            else if (!await _quoteService.CheckMessageAsync(args))
+            {
+                if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
                 {
-                    await args.Context.CreateEmbed(
-                            $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
-                            $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
-                        .ReplyToAsync(args.Message);
-                }
-                else if (!await _quoteService.CheckMessageAsync(args))
-                {
-                    if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
-                    {
-                        var tag = args.Context.GuildData.Extras.Tags.FirstOrDefault(t =>
-                            t.Name.EqualsIgnoreCase(tagName));
-                        if (tag is null) return;
-                        if (args.Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
-                            await tag.AsEmbed(args.Context).SendToAsync(args.Message.Channel);
-                        else
-                            await args.Message.Channel.SendMessageAsync(tag.FormatContent(args.Context));
-
-                    }
+                    var tag = args.Context.GuildData.Extras.Tags.FirstOrDefault(t =>
+                        t.Name.EqualsIgnoreCase(tagName));
+                    if (tag is null) return;
+                    if (args.Context.GuildData.Configuration.EmbedTagsAndShowAuthor)
+                        await tag.AsEmbed(args.Context).SendToAsync(args.Message.Channel);
+                    else
+                        await args.Message.Channel.SendMessageAsync(tag.FormatContent(args.Context));
                 }
             }
         }
@@ -221,7 +220,7 @@ namespace Volte.Services
 
         public static string Separator => new StringBuilder(" ".Repeat(SpaceCount)).Append("-".Repeat(49)).ToString();
 
-        private string CommandFrom(CommandEventArgs args) => 
+        private string CommandFrom(CommandEventArgs args) =>
             $"|  -Command from user: {args.Context.User} ({args.Context.User.Id})";
 
         private string CommandIssued(CommandEventArgs args) => new StringBuilder(" ".Repeat(SpaceCount)).Append(

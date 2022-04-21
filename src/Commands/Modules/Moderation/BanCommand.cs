@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Qmmands;
-using Volte.Core.Entities;
-using Volte.Core.Helpers;
+using Volte.Entities;
+using Volte.Helpers;
 
 namespace Volte.Commands.Modules
 {
@@ -33,7 +33,7 @@ namespace Volte.Commands.Modules
                         .WithDefaultsFromContext(Context)
                         .WithActionType(ModActionType.Ban)
                         .WithTarget(member)
-                        .WithReason(reason))
+                        .WithReason(reason), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
                 );
             }
             catch
@@ -59,14 +59,13 @@ namespace Volte.Commands.Modules
 
             var reason = modifications.TryGetValue("reason", out result) ? result : "Banned by a Moderator.";
 
-            var e = Context
-                .CreateEmbedBuilder(
+            var e = Context.CreateEmbedBuilder(
                     $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
 
             if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator ||
                 modifications.TryGetValue("shadow", out _))
             {
-                e = e.WithAuthor(author: null).WithSuccessColor();
+                e.WithAuthor(author: null).WithSuccessColor();
             }
             
             if (!await member.TrySendMessageAsync(embed: e.Build()))
@@ -83,7 +82,7 @@ namespace Volte.Commands.Modules
                         .WithDefaultsFromContext(Context)
                         .WithActionType(ModActionType.Ban)
                         .WithTarget(member)
-                        .WithReason(reason))
+                        .WithReason(reason), Context.CreateEmbedBuilder(), Context.GuildData, Context.Channel)
                 );
             }
             catch
