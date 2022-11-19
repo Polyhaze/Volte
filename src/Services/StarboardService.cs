@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Gommon;
 using Volte.Core.Helpers;
 using Volte.Core.Entities;
+using AsyncKeyedLock;
 
 namespace Volte.Services
 {
@@ -18,7 +19,7 @@ namespace Volte.Services
 
         // Ensures starboard message creations don't happen twice, and edits are atomic. Also ensures dictionary updates
         // don't happen at the same time.
-        private readonly AsyncDuplicateLock<ulong> _starboardReadWriteLock;
+        private readonly AsyncKeyedLocker<ulong> _starboardReadWriteLock;
 
         private readonly Emoji _starEmoji = DiscordHelper.Star.ToEmoji();
 
@@ -26,7 +27,7 @@ namespace Volte.Services
         {
             _db = databaseService;
             _client = discordShardedClient;
-            _starboardReadWriteLock = new AsyncDuplicateLock<ulong>();
+            _starboardReadWriteLock = new AsyncKeyedLocker<ulong>();
         }
 
         /// <summary>

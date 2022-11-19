@@ -20,6 +20,7 @@
       <None Include="..\.editorconfig" Link=".editorconfig" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="AsyncKeyedLock" Version="5.0.1" />
         <PackageReference Include="Colorful.Console" Version="1.2.15" />
         <PackageReference Include="Discord.Net.WebSocket" Version="3.0.0-dev-20210617.3" />
         <PackageReference Include="Gommon" Version="1.4.2" />
