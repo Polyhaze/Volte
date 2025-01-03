@@ -13,7 +13,7 @@ public partial class LogsView : UserControl
     {
         InitializeComponent();
         DataContext = new LogsViewModel { View = this, LogsClearAmount = 10 };
-
+        
         CopySimpleIcon.Value = FontAwesome.Copy;
         CopySimple.Command = new AsyncRelayCommand(async () =>
         {

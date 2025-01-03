@@ -30,7 +30,7 @@
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center">
                         <Border Padding="25">
-                            <Image Name="VolteLogo"></Image>
+                            <Image Name="VolteLogo" />
                         </Border>
                     </Viewbox>
                 </Grid>

@@ -1,12 +1,11 @@
 ﻿using System.Collections.ObjectModel;
-using Avalonia;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Discord;
 using Gommon;
 using Volte.Entities;
 using Volte.Helpers;
+using Volte.UI.Avalonia.Models;
 using Volte.UI.Helpers;
 
 namespace Volte.UI.Avalonia.Pages;
@@ -29,10 +28,8 @@ public partial class LogsViewModel : ObservableObject
 
     ~LogsViewModel() => Logger.Event -= Receive;
 
-    public static void UnregisterHandler()
-    {
-        Logger.Event -= PageManager.Shared.GetViewModel<LogsViewModel>().Receive;
-    }
+    public static void UnregisterHandler() 
+        => Logger.Event -= PageManager.Shared.GetViewModel<LogsViewModel>().Receive;
 
     private void Receive(VolteLogEventArgs eventArgs)
     {

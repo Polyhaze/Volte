@@ -59,7 +59,7 @@ public partial class AppStatus : ObservableObject
         bool? isWorkingStatus = null,
         TimeSpan? statusExpiresAfter = null,
         LogSeverity? logSeverity = null
-    )
+    ) 
     {
         var isResetStatus = status.EqualsIgnoreCase("ready");
 

@@ -33,10 +33,8 @@ public abstract class NotificationEventArgs
 
 public sealed class CustomNotificationEventArgs : NotificationEventArgs
 {
-    private CustomNotificationEventArgs(byte rawType)
-    {
-        RawType = rawType;
-    }
+    private CustomNotificationEventArgs(byte rawType) 
+        => RawType = rawType;
 
     public required string Title { get; init; }
     public required string Message { get; init; }

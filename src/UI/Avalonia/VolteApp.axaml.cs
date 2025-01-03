@@ -32,11 +32,15 @@ public class VolteApp : Application
             switch (notif)
             {
                 case CustomNotificationEventArgs custom:
-                    Notify(custom.Message, custom.Title, 
-                        custom.RawType.HardCast<NotificationType>(), 
+                    var notificationType = custom.RawType.HardCast<NotificationType>();
+                    Notify(
+                        custom.Message, 
+                        custom.Title,
+                        Enum.IsDefined(notificationType) ? notificationType : NotificationType.Information,
                         custom.Expiration,
-                        notif.Clicked, notif.Closed
-                        );
+                        notif.Clicked, 
+                        notif.Closed
+                    );
                     break;
                 case ErrorNotificationEventArgs custom:
                     NotifyError(custom.Error, custom.Expiration, notif.Clicked, notif.Closed);
@@ -47,43 +51,40 @@ public class VolteApp : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (AvaloniaHelper.TryGetDesktop(out var desktop))
+        if (!AvaloniaHelper.TryGetDesktop(out var desktop)) return;
+
+        XamlRoot = desktop.MainWindow = new UIShellView();
+
+        desktop.MainWindow.Loaded += (_, _) => _notificationManager = new(XamlRoot)
         {
-            XamlRoot = desktop.MainWindow = new UIShellView();
-            
-            desktop.MainWindow.Loaded += (_, _) => _notificationManager = new(XamlRoot)
-            {
-                Position = NotificationPosition.BottomRight,
-                MaxItems = 4,
-                Margin = new(0, 0, 4, 30)
-            };
-            
-            desktop.MainWindow.Closing += (_, _) =>
-            {
-                LogsViewModel.UnregisterHandler();
-                VolteManager.Stop();
-            };
-            
-            TaskScheduler.UnobservedTaskException += (_, eventArgs) =>
-            {
-                NotifyError(eventArgs.Exception);
-                eventArgs.SetObserved();
-            };
+            Position = NotificationPosition.BottomRight,
+            MaxItems = 4,
+            Margin = new(0, 0, 4, 30)
+        };
 
-            PageManager.Init();
-            
+        desktop.MainWindow.Closing += (_, _) =>
+        {
+            LogsViewModel.UnregisterHandler();
+            VolteManager.Stop();
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, eventArgs) =>
+        {
+            NotifyError(eventArgs.Exception);
+            eventArgs.SetObserved();
+        };
+
+        PageManager.Init();
+
 #if DEBUG
-            XamlRoot.AttachDevTools(new DevToolsOptions
-            {
-                Gesture = OpenDevTools,
-                Size = new Size(800, 800),
-                LaunchView = DevToolsViewKind.LogicalTree,
-                FocusHighlighterBrush = Brushes.Crimson
-            });
+        this.AttachDevTools(new DevToolsOptions
+        {
+            Gesture = OpenDevTools,
+            Size = new Size(800, 800),
+            LaunchView = DevToolsViewKind.LogicalTree,
+            FocusHighlighterBrush = Brush.Parse("#7000FB")
+        });
 #endif
-        }
-
-        VolteManager.Start();
     }
 
     public static void Notify(Notification notification)
@@ -114,7 +115,7 @@ public class VolteApp : Application
         Action? onClick = null,
         Action? onClose = null
     ) where TException : Exception
-        => Notify(new Notification 
+        => Notify(new Notification
         {
             Title = typeof(TException).AsPrettyString(),
             Message = ex.Message,

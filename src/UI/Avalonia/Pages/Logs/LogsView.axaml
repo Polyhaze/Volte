@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:faw="using:FluentAvalonia.UI.Windowing"
              xmlns:local="using:Volte.UI.Avalonia.Pages"
+             xmlns:models="using:Volte.UI.Avalonia.Models"
              xmlns:pi="using:Projektanker.Icons.Avalonia"
              xmlns:converters="using:Volte.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -29,26 +29,38 @@
             </ListBox.Styles>
             <ListBox.ContextFlyout>
                 <Flyout ShowMode="TransientWithDismissOnPointerMoveAway">
-                    <StackPanel Orientation="Horizontal" Spacing="5">
+                    <StackPanel Orientation="Vertical" Spacing="5">
                         <Button Name="CopySimple"
-                                Height="25"
-                                Width="25"
+                                MinHeight="25"
+                                MinWidth="25"
                                 Padding="0"
                                 ToolTip.Tip="Copy">
-                            <pi:Icon Name="CopySimpleIcon" />
+                            <Grid ColumnDefinitions="Auto,Auto">
+                                <pi:Icon Margin="5" Name="CopySimpleIcon" />
+                                <TextBlock Grid.Column="1"
+                                           Text="Copy Line"
+                                           Margin="0, 0, 5, 0"
+                                           TextWrapping="NoWrap" />
+                            </Grid>
                         </Button>
                         <Button Name="CopyMarkdown"
-                                Height="25"
-                                Width="25"
+                                MinHeight="25"
+                                MinWidth="25"
                                 Padding="0"
                                 ToolTip.Tip="Copy Markdown">
-                            <pi:Icon Name="CopyMarkdownIcon" />
+                            <Grid ColumnDefinitions="Auto,Auto">
+                                <pi:Icon Margin="5" Name="CopyMarkdownIcon" />
+                                <TextBlock Grid.Column="1"
+                                           Text="Copy Markdown"
+                                           Margin="0, 0, 5, 0"
+                                           TextWrapping="NoWrap" />
+                            </Grid>
                         </Button>
                     </StackPanel>
                 </Flyout>
             </ListBox.ContextFlyout>
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:VolteLog}">
+                <DataTemplate DataType="{x:Type models:VolteLog}">
                     <Grid ColumnDefinitions="Auto,Auto,*,Auto" Margin="5">
                         <TextBlock Grid.Column="0"
                                    FontFamily="{StaticResource JetBrainsMono}"

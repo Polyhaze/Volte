@@ -24,24 +24,13 @@ public static class Version
 
         InformationVersion = $"{DotNetVersion} {infoVer.Trim()}";
     }
-    
-    public static readonly bool IsDevelopment = ReleaseType is DevelopmentStage.Development;
-    
-    public static readonly DevelopmentStage ReleaseType = InformationVersion.ContainsIgnoreCase("dev") 
-        ? DevelopmentStage.Development 
-        : DevelopmentStage.Release;
-    
 
+    public static readonly bool IsDevelopment = InformationVersion.ContainsIgnoreCase("dev");
+    
     public static string DiscordNetVersion => DiscordConfig.Version;
     
     public static int Major => DotNetVersion.Major;
     public static int Minor => DotNetVersion.Minor;
     public static int Patch => DotNetVersion.Build;
     public static int Hotfix => DotNetVersion.Revision;
-}
-
-public enum DevelopmentStage
-{
-    Development,
-    Release
 }

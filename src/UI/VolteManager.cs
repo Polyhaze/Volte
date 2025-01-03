@@ -4,12 +4,6 @@ namespace Volte.UI;
 
 public class VolteManager
 {
-    static VolteManager()
-    {
-        Console.Title = $"Volte {Version.InformationVersion}";
-        Console.CursorVisible = false;
-    }
-    
     private static Task? _botTask;
 
     public static CancellationTokenSource? Cts { get; private set; }
