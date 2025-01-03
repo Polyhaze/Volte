@@ -2,7 +2,7 @@
 
 namespace Volte.Commands.Text.Modules;
 
-public sealed partial class ModerationModule : VolteModule
+public sealed partial class ModerationModule
 {
     [Command("Warn", "W")]
     [Description("Warns the target member for the given reason.")]

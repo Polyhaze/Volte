@@ -1,6 +1,6 @@
 namespace Volte.Commands.Text.Modules;
 
-public sealed partial class ModerationModule : VolteModule
+public sealed partial class ModerationModule
 {
     [Command("Purge", "Clear", "Clean")]
     [Description("Purges the last x messages, or the last x messages by a given user.")]
