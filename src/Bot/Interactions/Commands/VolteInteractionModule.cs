@@ -3,7 +3,7 @@ using Volte.Interactions.Results;
 
 namespace Volte.Interactions.Commands;
 
-public class VolteInteractionModule<T> : InteractionModuleBase<SocketInteractionContext<T>> where T : SocketInteraction
+public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketInteractionContext<T>> where T : SocketInteraction
 {
     public bool IsInGuild() => Context.Guild != null;
 
@@ -24,8 +24,8 @@ public class VolteInteractionModule<T> : InteractionModuleBase<SocketInteraction
         => new(Context.CreateReplyBuilder(ephemeral).WithEmbeds(embed));
 }
 
-public class VolteSlashCommandModule : VolteInteractionModule<SocketSlashCommand>;
-public class VolteMessageCommandModule : VolteInteractionModule<SocketMessageCommand>;
-public class VolteUserCommandModule : VolteInteractionModule<SocketUserCommand>;
-public class VolteMessageComponentModule : VolteInteractionModule<SocketMessageComponent>;
-public class VolteModalModule : VolteInteractionModule<SocketModal>;
+public abstract class VolteSlashCommandModule : VolteInteractionModule<SocketSlashCommand>;
+public abstract class VolteMessageCommandModule : VolteInteractionModule<SocketMessageCommand>;
+public abstract class VolteUserCommandModule : VolteInteractionModule<SocketUserCommand>;
+public abstract class VolteMessageComponentModule : VolteInteractionModule<SocketMessageComponent>;
+public abstract class VolteModalModule : VolteInteractionModule<SocketModal>;
