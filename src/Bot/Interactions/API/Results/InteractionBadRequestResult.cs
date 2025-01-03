@@ -6,6 +6,6 @@ public class InteractionBadRequestResult : RuntimeResult
 {
     public InteractionBadRequestResult(string error) : base(null, error) {}
 
-    public static implicit operator Task<InteractionBadRequestResult>(InteractionBadRequestResult input) 
-        => Task.FromResult(input);
+    public static implicit operator Task<RuntimeResult>(InteractionBadRequestResult input) 
+        => Task.FromResult<RuntimeResult>(input);
 }

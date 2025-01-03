@@ -11,7 +11,7 @@ public class InteractionOkResult<TInteraction> : RuntimeResult where TInteractio
 
     public readonly ReplyBuilder<TInteraction> Reply;
     
-    public static implicit operator Task<InteractionOkResult<TInteraction>>(InteractionOkResult<TInteraction> input) 
-        => Task.FromResult(input);
+    public static implicit operator Task<RuntimeResult>(InteractionOkResult<TInteraction> input) 
+        => Task.FromResult<RuntimeResult>(input);
 }
 

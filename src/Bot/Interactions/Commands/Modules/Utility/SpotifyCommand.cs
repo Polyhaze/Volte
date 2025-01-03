@@ -5,7 +5,7 @@ namespace Volte.Interactions.Commands.Modules;
 public partial class InteractionUtilityModule
 {
     [SlashCommand("spotify", "Shows what you're listening to on Spotify, if you're listening to something.")]
-    public async Task<RuntimeResult> SpotifyAsync(
+    public Task<RuntimeResult> SpotifyAsync(
         [Summary(description: "The member whose Spotify you want to see. Defaults to yourself.")]
         SocketUser user)
     {
@@ -17,10 +17,13 @@ public partial class InteractionUtilityModule
                     .WithDescription(sb =>
                         sb.AppendLine($"**Track:** {Format.Url(spotify.TrackTitle, spotify.TrackUrl)}")
                             .AppendLine($"**Album:** {spotify.AlbumTitle}")
-                            .AppendLine($"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "<not provided>")}")
+                            .AppendLine(
+                                $"**Duration:** {(spotify.Duration.HasValue ? spotify.Duration.Value.Humanize(2) : "<not provided>")}")
                             .AppendLine($"**Artist(s):** {spotify.Artists.JoinToString(", ")}")
-                            .AppendLine($"**Started At:** {spotify.StartedAt?.ToDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}")
-                            .AppendLine($"**Ends At:** {spotify.EndsAt?.ToDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}"))
+                            .AppendLine(
+                                $"**Started At:** {spotify.StartedAt?.ToDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}")
+                            .AppendLine(
+                                $"**Ends At:** {spotify.EndsAt?.ToDiscordTimestamp(TimestampType.LongTime) ?? "<not provided>"}"))
                     .WithThumbnailUrl(spotify.AlbumArtUrl),
                 ephemeral: true
             )

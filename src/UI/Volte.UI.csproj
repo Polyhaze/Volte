@@ -9,7 +9,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="FluentAvaloniaUI" Version="2.1.0" />
+        <PackageReference Include="FluentAvaloniaUI" Version="2.2.0" />
         <PackageReference Include="Avalonia" Version="11.1.2" />
         <PackageReference Include="Avalonia.Desktop" Version="11.1.2" />
         <PackageReference Include="Avalonia.Diagnostics" Version="11.1.2" Condition="'$(Configuration)' == 'Debug'" />
