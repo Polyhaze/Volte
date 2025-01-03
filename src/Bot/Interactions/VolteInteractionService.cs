@@ -40,6 +40,12 @@ public class VolteInteractionService : VolteService
                 var ctx = new SocketInteractionContext<SocketUserCommand>(client, interaction);
                 await _backing.ExecuteCommandAsync(ctx, provider);
             };
+            
+            client.AutocompleteExecuted += async interaction =>
+            {
+                var ctx = new SocketInteractionContext<SocketAutocompleteInteraction>(client, interaction);
+                await _backing.ExecuteCommandAsync(ctx, provider);
+            };
         }
 
         _backing.Log += logMessage =>
