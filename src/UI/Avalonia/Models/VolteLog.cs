@@ -8,7 +8,7 @@ using Volte.Helpers;
 
 namespace Volte.UI.Avalonia.Models;
 
-public record struct VolteLog
+public record VolteLog
 {
     private static readonly int LongestSeverity = Enum
         .GetNames<LogSeverity>()
@@ -59,7 +59,7 @@ public record struct VolteLog
         }
     }
 
-    private StringBuilder? _formatted = null;
+    private StringBuilder? _formatted;
 
     public string FormattedString => (
         _formatted ??= new StringBuilder(FormattedSeverityName)
