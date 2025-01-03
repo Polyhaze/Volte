@@ -7,7 +7,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <FontFamily x:Key="JetBrainsMono">avares://Volte.UI/Assets/Fonts/#JetBrains Mono</FontFamily>
-                    <FontFamily x:Key="Mojangles">avares://Volte.UI/Assets/Fonts/#Mojangles</FontFamily>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
