@@ -60,8 +60,8 @@ public sealed class MessageService : VolteService
             else if (!await _quoteService.CheckMessageAsync(args))
                 if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
                 {
-                    var tag = args.Data.Extras.Tags
-                        .FirstOrDefault(t => t.Name.EqualsIgnoreCase(tagName));
+                    if (!args.Data.Extras.GetTagByNameOrAlias(tagName).TryGet(out var tag))
+                        return;
 
                     if (tag is null)
                         return;
