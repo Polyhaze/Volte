@@ -63,9 +63,6 @@ public sealed class MessageService : VolteService
                     if (!args.Data.Extras.GetTagByNameOrAlias(tagName).TryGet(out var tag))
                         return;
 
-                    if (tag is null)
-                        return;
-
                     tag.Uses++;
                     _db.Save(args.Data);
 
