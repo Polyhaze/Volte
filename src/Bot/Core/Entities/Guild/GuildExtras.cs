@@ -1,16 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Optional = Gommon.Optional;
 
 namespace Volte.Entities;
 
 public sealed class GuildExtras
 {
-    internal GuildExtras()
-    {
-        SelfRoles = [];
-        Tags = [];
-        Warns = [];
-    }
-        
     [JsonPropertyName("mod_log_case_number")]
     public ulong ModActionCaseNumber { get; set; }
         
@@ -18,14 +12,34 @@ public sealed class GuildExtras
     public bool AutoParseQuoteUrls { get; set; }
 
     [JsonPropertyName("self_roles")]
-    public HashSet<ulong> SelfRoles { get; set; }
+    public HashSet<ulong> SelfRoles { get; set; } = [];
 
     [JsonPropertyName("tags")]
-    public HashSet<Tag> Tags { get; set; }
+    public HashSet<Tag> Tags { get; set; } = [];
+
+    public void AddTag(Tag tag)
+    {
+        var existingIdenticalTag = Tags.FirstOrDefault(it => it.Response == tag.Response);
+        if (existingIdenticalTag is not null)
+        {
+            Tags.Remove(existingIdenticalTag);
+            existingIdenticalTag.Aliases.Add(tag.Name);
+            Tags.Add(existingIdenticalTag);
+        }
+        else
+        {
+            Tags.Add(tag);
+        }
+    }
 
     [JsonPropertyName("warns")]
-    public HashSet<Warn> Warns { get; set; }
-    
+    public HashSet<Warn> Warns { get; set; } = [];
+
+    public Gommon.Optional<Tag> GetTagByNameOrAlias(string nameOrAlias)
+        => Tags.FindFirst(tag => tag.Name.EqualsIgnoreCase(nameOrAlias)
+                                      || nameOrAlias.EqualsAnyIgnoreCase(tag.Aliases.ToArray())
+        );
+
     public override string ToString()
         => JsonSerializer.Serialize(this, Config.JsonOptions);
 }

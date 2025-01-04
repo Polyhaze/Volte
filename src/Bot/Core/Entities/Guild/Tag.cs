@@ -7,6 +7,9 @@ public sealed class Tag
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [JsonPropertyName("aliases")] 
+    public List<string> Aliases { get; set; } = [];
+
     [JsonPropertyName("content")]
     public string Response { get; set; }
 

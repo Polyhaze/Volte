@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using Sentry.Extensibility;
 
 using Color = System.Drawing.Color;
-using Optional = Gommon.Optional;
 
 namespace Volte.Helpers;
 

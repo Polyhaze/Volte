@@ -4,8 +4,8 @@ namespace Volte.Entities;
 
 public class CalledCommandsInfo
 {
-    public static ulong ThisSessionSuccess;
-    public static ulong ThisSessionFailed;
+    public static ulong ThisSessionSuccess { get; private set; }
+    public static ulong ThisSessionFailed { get; private set; }
     
     public static ulong Successes => Instance.Successful;
     public static ulong Failures => Instance.Failed;
@@ -15,6 +15,7 @@ public class CalledCommandsInfo
     public static readonly FilePath CalledCommandsFile = FilePath.Data / "commandstats.bin";
 
     private static bool _isInitialized;
+    private static bool _persistenceStarted;
     // ReSharper disable once InconsistentNaming
     private static readonly CalledCommandsInfo _instance = new();
 
@@ -82,7 +83,10 @@ public class CalledCommandsInfo
         Save();
     }
 
-    public static void StartPersistence(IServiceProvider provider, TimeSpan saveEvery) =>
+    public static void StartPersistence(IServiceProvider provider, TimeSpan saveEvery)
+    {
+        if (_persistenceStarted) return;
+        
         ExecuteBackgroundAsync(async () =>
         {
             var ticker = new PeriodicTimer(saveEvery);
@@ -95,4 +99,7 @@ public class CalledCommandsInfo
                 UpdateSaved(ms);
             }
         });
+
+        _persistenceStarted = true;
+    }
 }

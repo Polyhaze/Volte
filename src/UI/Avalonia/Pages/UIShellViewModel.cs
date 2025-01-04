@@ -12,12 +12,16 @@ public partial class UIShellViewModel : ObservableObject
 
     public UIShellViewModel()
     {
+        if (VolteBot.Client is null) return;
+        
         VolteBot.Client.Connected += ChangeConnectionState;
         VolteBot.Client.Disconnected += Disconnected;
     }
 
     ~UIShellViewModel()
     {
+        if (VolteBot.Client is null) return;
+        
         VolteBot.Client.Connected -= ChangeConnectionState;
         VolteBot.Client.Disconnected -= Disconnected;
     }

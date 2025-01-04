@@ -73,9 +73,7 @@ public sealed class MessageService : VolteService
                         await tag.AsEmbed(args.Context).SendToAsync(args.Context.Channel);
                     else
                         await args.Context.Channel.SendMessageAsync(tag.FormatContent(args.Context));
-
                 }
-                
         }
     }
 

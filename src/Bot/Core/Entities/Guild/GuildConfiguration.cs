@@ -4,13 +4,6 @@ namespace Volte.Entities;
 
 public sealed class GuildConfiguration
 {
-    internal GuildConfiguration()
-    {
-        Moderation = new();
-        Welcome = new();
-        Starboard = new();
-    }
-
     [JsonPropertyName("autorole")]
     public ulong Autorole { get; set; }
 
@@ -18,13 +11,13 @@ public sealed class GuildConfiguration
     public string CommandPrefix { get; set; }
 
     [JsonPropertyName("welcome_options")]
-    public WelcomeOptions Welcome { get; set; }
+    public WelcomeOptions Welcome { get; set; } = new();
 
     [JsonPropertyName("moderation_options")]
-    public ModerationOptions Moderation { get; set; }
+    public ModerationOptions Moderation { get; set; } = new();
 
     [JsonPropertyName("starboard_options")]
-    public StarboardOptions Starboard { get; set; }
+    public StarboardOptions Starboard { get; set; } = new();
 
     [JsonPropertyName("reply_inline")]
     public bool ReplyInline { get; set; }

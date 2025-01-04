@@ -16,6 +16,7 @@ public class TagModule : VolteModule
 
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle($"Tag {tag.Name}")
+            .AddField("Aliases", tag.Aliases.Select(x => Format.Code(x)).JoinToString(", "))
             .AddField("Response", Format.Code(tag.Response, string.Empty), true)
             .AddField("Creator", $"{u}", true)
             .AddField("Uses", $"**{tag.Uses}**", true));
@@ -55,7 +56,7 @@ public class TagModule : VolteModule
             Uses = default
         };
 
-        Context.Modify(data => data.Extras.Tags.Add(tag));
+        Context.Modify(data => data.Extras.AddTag(tag));
 
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle("Tag Created!")
@@ -79,6 +80,39 @@ public class TagModule : VolteModule
         Context.GuildData.Extras.Tags.Add(tag);
         Db.Save(Context.GuildData);
         return Ok($"Successfully modified the content of tag **{tag.Name}**.");
+    }
+    
+    [Command("AddAlias", "+A")]
+    [Description("Add an alias to an existing tag.")]
+    [RequireGuildModerator]
+    public Task<ActionResult> AddAliasAsync([Description("The tag whose aliases you want to modify.")]
+        Tag tag, 
+        [Remainder, Description("The new alias of the tag.")]
+        string alias)
+    {
+        Context.GuildData.Extras.Tags.Remove(tag);
+        tag.Aliases.Add(alias);
+        Context.GuildData.Extras.Tags.Add(tag);
+        Db.Save(Context.GuildData);
+        return Ok($"Successfully added the alias `{alias}` to the tag **{tag.Name}**.");
+    }
+    
+    [Command("RemoveAlias", "RemAlias", "-A")]
+    [Description("Add an alias to an existing tag.")]
+    [RequireGuildModerator]
+    public Task<ActionResult> RemoveAliasAsync([Description("The tag whose aliases you want to modify.")]
+        Tag tag, 
+        [Remainder, Description("The alias of the tag to remove.")]
+        string alias)
+    {
+        Context.GuildData.Extras.Tags.Remove(tag);
+        var removed = tag.Aliases.Remove(alias);
+        Context.GuildData.Extras.Tags.Add(tag);
+        Db.Save(Context.GuildData);
+        
+        return Ok(removed 
+            ? $"Successfully removed the alias `{alias}` to the tag **{tag.Name}**." 
+            : $"Alias `{alias}` not found on tag **{tag.Name}**.");
     }
 
     [Command("Delete", "Remove", "Del", "Rem")]
