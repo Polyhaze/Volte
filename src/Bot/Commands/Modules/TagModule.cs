@@ -98,7 +98,7 @@ public class TagModule : VolteModule
     }
     
     [Command("RemoveAlias", "RemAlias", "-A")]
-    [Description("Add an alias to an existing tag.")]
+    [Description("Remove an alias from an existing tag.")]
     [RequireGuildModerator]
     public Task<ActionResult> RemoveAliasAsync([Description("The tag whose aliases you want to modify.")]
         Tag tag, 
