@@ -1,0 +1,37 @@
+﻿using Discord.Interactions;
+
+namespace Volte.Interactions.Commands.Modules;
+
+public sealed partial class InteractionModerationModule
+{
+    [SlashCommand("ban", "Ban someone from the server. Requires Moderator.")]
+    public async Task<RuntimeResult> BanAsync(
+        [Summary("member", "The member to ban.")]
+        SocketGuildUser member,
+        [Summary("reason", "The reason for the ban.")]
+        string reason = "Banned by a Moderator.")
+    {
+        var e = Context.CreateEmbedBuilder(
+            $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
+        
+        if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GetGuildData(VolteBot.Services)).Build()))
+            Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+        
+        try
+        {
+            await member.BanAsync(7, reason);
+            
+            await ModService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
+                .WithActionType(ModActionType.Ban)
+                .WithTarget(member)
+                .WithReason(reason));
+            
+            return Ok($"Successfully banned **{member}** from this guild.");
+        }
+        catch
+        {
+            return BadRequest(
+                "An error occurred banning that member. Do I have permission; or are they higher than me in the role list?");
+        }
+    }
+}

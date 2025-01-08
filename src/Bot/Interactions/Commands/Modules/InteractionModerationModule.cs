@@ -1,0 +1,10 @@
+﻿using Discord.Interactions;
+
+namespace Volte.Interactions.Commands.Modules;
+
+[Discord.Interactions.Group("mod", "Moderator-only commands.")]
+[RequireGuildModeratorPrecondition]
+public sealed partial class InteractionModerationModule : VolteSlashCommandModule
+{
+    public ModerationService ModService { get; set; }
+}

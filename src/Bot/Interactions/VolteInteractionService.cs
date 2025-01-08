@@ -103,22 +103,27 @@ public class VolteInteractionService : VolteService
         where TParameterInfo : CommandParameterInfo
         where TCommandInfo : CommandInfo<TParameterInfo>
     {
-        if (result.IsSuccess)
+        switch (result)
         {
-            switch (result)
-            {
-                case InteractionOkResult<TInteraction> okResult:
-                    await okResult.Reply.RespondAsync();
-                    break;
-                case InteractionBadRequestResult badRequest:
-                    await context.CreateReplyBuilder(true)
-                        .WithEmbed(e =>
-                            e.WithTitle("No can do, partner.")
-                                .WithDescription(badRequest.ErrorReason)
-                                .WithCurrentTimestamp()
-                        ).RespondAsync();
-                    break;
-            }
+            case InteractionOkResult<TInteraction> okResult:
+                await okResult.Reply.RespondAsync();
+                break;
+            case InteractionBadRequestResult badRequest:
+                await context.CreateReplyBuilder(true)
+                    .WithEmbed(e =>
+                        e.WithTitle("No can do, partner.")
+                            .WithDescription(badRequest.ErrorReason)
+                            .WithCurrentTimestamp()
+                    ).RespondAsync();
+                break;
+            case PreconditionResult unmetPreconditionResult:
+                await context.CreateReplyBuilder(true)
+                    .WithEmbed(e =>
+                        e.WithTitle(unmetPreconditionResult.ErrorReason)
+                            .WithColor(Color.DarkRed)
+                            .WithCurrentTimestamp()
+                    ).RespondAsync();
+                break;
         }
     }
 

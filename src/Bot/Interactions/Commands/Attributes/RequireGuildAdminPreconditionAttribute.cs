@@ -4,22 +4,24 @@ namespace Volte.Interactions.Commands;
 
 public class RequireGuildAdminPreconditionAttribute : PreconditionAttribute
 {
-    public override Task<PreconditionResult> CheckRequirementsAsync(
+    public override async Task<PreconditionResult> CheckRequirementsAsync(
         IInteractionContext context,
         ICommandInfo commandInfo,
         IServiceProvider services
     )
     {
         if (context.Guild is null)
-            return Task.FromResult(PreconditionResult.FromError("This command can only be executed in a guild."));
+            return PreconditionResult.FromError("This command can only be executed in a guild.");
 
         var db = services.Get<DatabaseService>();
-        var data = db.GetData(context.Guild.Id);
+        var data = await db.GetDataAsync(context.Guild.Id);
+        
+        var u = await context.Guild.GetUserAsync(context.User.Id);
 
-        return Task.FromResult(
-            data.Configuration.Moderation.AdminRole == context.User.Id
-                ? PreconditionResult.FromSuccess()
-                : PreconditionResult.FromError("This command requires you to be an administrator.")
-        );
+        return u.RoleIds.Contains(data.Configuration.Moderation.AdminRole) 
+               || context.Guild.OwnerId == u.Id
+               || u.IsBotOwner()
+            ? PreconditionResult.FromSuccess() 
+            : PreconditionResult.FromError("This command requires you to be an administrator.");
     }
 }

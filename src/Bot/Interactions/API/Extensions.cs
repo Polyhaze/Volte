@@ -56,6 +56,13 @@ public static class Extensions
     
     public static MessageComponentId GetId(this SocketInteractionContext<SocketMessageComponent> ctx)
         => ctx.Interaction.Data.CustomId;
+    
+    
+    public static GuildData GetGuildData<TInteraction>(
+        this SocketInteractionContext<TInteraction> interaction,
+        IServiceProvider serviceProvider
+    ) where TInteraction : SocketInteraction
+        => serviceProvider.Get<DatabaseService>().GetData(interaction.Guild);
 
 
     public static ReplyBuilder<TInteraction> CreateReplyBuilder<TInteraction>(

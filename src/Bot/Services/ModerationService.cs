@@ -43,15 +43,15 @@ public sealed class ModerationService : VolteService
         if (!Config.EnabledFeatures.ModLog) return;
 
         Debug(LogSource.Volte, "Attempting to post a modlog message.");
-
-        var c = args.Guild.GetTextChannel(args.Context.GuildData.Configuration.Moderation.ModActionLogChannel);
+        
+        var c = args.Guild.GetTextChannel(args.GuildData.Configuration.Moderation.ModActionLogChannel);
         if (c is null)
         {
             Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
             return;
         }
 
-        var e = args.Context.CreateEmbedBuilder().WithAuthor(author: null).WithSuccessColor();
+        var e = args.CreateEmbedBuilder(null).WithAuthor(author: null).WithSuccessColor();
         Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
         var sb = new StringBuilder();
 
@@ -85,7 +85,7 @@ public sealed class ModerationService : VolteService
 
             case ModActionType.Kick:
             {
-                IncrementAndSave(args.Context);
+                IncrementAndSave(args.GuildData);
                 await e.WithDescription(sb
                         .AppendLine(Action(args))
                         .AppendLine(Moderator(args))
@@ -100,7 +100,7 @@ public sealed class ModerationService : VolteService
 
             case ModActionType.Warn:
             {
-                IncrementAndSave(args.Context);
+                IncrementAndSave(args.GuildData);
                 await e.WithDescription(sb
                         .AppendLine(Action(args))
                         .AppendLine(Moderator(args))
@@ -127,7 +127,7 @@ public sealed class ModerationService : VolteService
 
             case ModActionType.Softban:
             {
-                IncrementAndSave(args.Context);
+                IncrementAndSave(args.GuildData);
                 await e.WithDescription(sb
                         .AppendLine(Action(args))
                         .AppendLine(Moderator(args))
@@ -142,7 +142,7 @@ public sealed class ModerationService : VolteService
 
             case ModActionType.Ban:
             {
-                IncrementAndSave(args.Context);
+                IncrementAndSave(args.GuildData);
                 await e.WithDescription(sb
                         .AppendLine(Action(args))
                         .AppendLine(Moderator(args))
@@ -157,7 +157,7 @@ public sealed class ModerationService : VolteService
 
             case ModActionType.IdBan:
             {
-                IncrementAndSave(args.Context);
+                IncrementAndSave(args.GuildData);
                 await e.WithDescription(sb
                         .AppendLine(Action(args))
                         .AppendLine(Moderator(args))
@@ -188,22 +188,22 @@ public sealed class ModerationService : VolteService
             "Sent a ModLog message or threw an exception.");
     }
 
-    private void IncrementAndSave(VolteContext ctx)
+    private void IncrementAndSave(GuildData gd)
     {
-        ctx.GuildData.Extras.ModActionCaseNumber += 1;
-        _db.Save(ctx.GuildData);
+        gd.Extras.ModActionCaseNumber += 1;
+        _db.Save(gd);
     }
 
     private static string Reason(ModActionEventArgs args) => $"**Reason:** {args.Reason}";
     private static string Action(ModActionEventArgs args) => $"**Action:** {args.ActionType}";
     private static string Moderator(ModActionEventArgs args) => $"**Moderator:** {args.Moderator} ({args.Moderator.Id})";
-    private static string Channel(ModActionEventArgs args) => $"**Channel:** {args.Context.Channel.Mention}";
-    private static string Case(ModActionEventArgs args) => $"**Case:** {args.Context.GuildData.Extras.ModActionCaseNumber}";
+    private static string Channel(ModActionEventArgs args) => $"**Channel:** <#{args.Channel.Id}>";
+    private static string Case(ModActionEventArgs args) => $"**Case:** {args.GuildData.Extras.ModActionCaseNumber}";
     private static string MessagesCleared(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
 
     private static async Task<string> TargetRestUser(ModActionEventArgs args)
     {
-        var u = await args.Context.Client.Rest.GetUserAsync(args.TargetId ?? 0);
+        var u = await VolteBot.Client.Rest.GetUserAsync(args.TargetId ?? 0);
         return u is null
             ? $"**User:** {args.TargetId}"
             : $"**User:** {u} ({args.TargetId})";
