@@ -6,8 +6,16 @@ public class InteractionOkResult<TInteraction> : InteractionResultBase where TIn
     {
         Reply = reply;
     }
+    
+    public AsyncFunction AfterCompletion { get; set; }
 
     public readonly ReplyBuilder<TInteraction> Reply;
 
-    public override Task ExecuteAsync() => Reply.ExecuteAsync();
+    public override async Task ExecuteAsync()
+    {
+        await Reply.ExecuteAsync();
+
+        if (AfterCompletion != null)
+            await AfterCompletion();
+    }
 }

@@ -31,12 +31,20 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     protected InteractionBadRequestResult<T> BadRequest(string reason) => new(Context, reason, DidDefer);
 
     protected InteractionOkResult<T> Ok(ReplyBuilder<T> reply) => new(reply);
+    
+    protected InteractionOkResult<T> Ok(ReplyBuilder<T> reply, AsyncFunction onComplete) => new(reply) { AfterCompletion = onComplete };
 
     protected InteractionOkResult<T> Ok(string message, bool ephemeral = false) 
         => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message));
     
+    protected InteractionOkResult<T> Ok(string message, AsyncFunction onComplete, bool ephemeral = false) 
+        => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), onComplete);
+    
     protected InteractionOkResult<T> Ok(EmbedBuilder embed, bool ephemeral = false) 
         => new(CreateReplyBuilder(ephemeral).WithEmbeds(embed));
+    
+    protected InteractionOkResult<T> Ok(EmbedBuilder embed, AsyncFunction onComplete, bool ephemeral = false) 
+        => new(CreateReplyBuilder(ephemeral).WithEmbeds(embed)) { AfterCompletion = onComplete };
 }
 
 #pragma warning disable CS0618 // Type or member is obsolete
