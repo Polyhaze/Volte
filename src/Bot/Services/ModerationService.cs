@@ -191,7 +191,7 @@ public sealed class ModerationService : VolteService
 
     private void IncrementAndSave(GuildData gd)
     {
-        gd.Extras.ModActionCaseNumber += 1;
+        gd.Extras.ModActionCaseNumber++;
         _db.Save(gd);
     }
 
