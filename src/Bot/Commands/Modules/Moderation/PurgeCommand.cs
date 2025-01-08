@@ -10,11 +10,13 @@ public sealed partial class ModerationModule
     {
         //+1 to include the command invocation message, and actually delete the last x messages instead of x - 1.
         //lets you theoretically use 0 to delete only the invocation message, for testing or something.
-        var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync()).ToList();
+        var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync())
+            .Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id)
+            .ToList();
+        
         try
         {
-            await Context.Channel.DeleteMessagesAsync(
-                messages.Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id),
+            await Context.Channel.DeleteMessagesAsync(messages,
                 DiscordHelper.RequestOptions(opts =>
                     opts.AuditLogReason = $"Messages purged by {Context.User}."));
         }
