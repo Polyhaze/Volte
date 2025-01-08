@@ -32,6 +32,7 @@ public partial class InteractionModerationModule
             () => ModService.OnModActionCompleteAsync(ModActionEventArgs
                 .FromModule(this)
                 .WithActionType(ModActionType.Purge)
-                .WithCount(count)), true);
+                .WithCount(count)), 
+            true);
     }
 }
