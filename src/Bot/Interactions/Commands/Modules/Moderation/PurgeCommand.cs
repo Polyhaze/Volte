@@ -6,7 +6,7 @@ public partial class InteractionModerationModule
 {
     [SlashCommand("purge", "Purges the last x messages, or the last x messages by a given user.")]
     public async Task<RuntimeResult> PurgeAsync(
-        [Summary("message_count", "The amount of messages to purge.")]
+        [Summary("message_count", "The amount of messages to purge."), DoHierarchyCheck]
         int count, 
         [Summary("target_author", "If provided, will only delete messages by this user within 'message_count' messages.")]
         RestUser targetAuthor = null)

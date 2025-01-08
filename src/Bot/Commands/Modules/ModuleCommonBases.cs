@@ -130,7 +130,7 @@ public sealed partial class ModerationModule : VolteModule
         { ["soft", "softly"], "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."}
     };
 
-    public static async Task WarnAsync(SocketGuildUser issuer, GuildData data, SocketGuildUser member,
+    public static async Task WarnAsync(SocketUser issuer, GuildData data, SocketGuildUser member,
         DatabaseService db, string reason)
     {
         data.Extras.Warns.Add(new Warn
@@ -142,8 +142,8 @@ public sealed partial class ModerationModule : VolteModule
         });
         db.Save(data);
 
-        var e = new EmbedBuilder().WithRelevantColor(issuer).WithAuthor(issuer)
-            .WithDescription($"You've been warned in {Format.Bold(issuer.Guild.Name)} for {Format.Code(reason)}.")
+        var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
+            .WithDescription($"You've been warned in {Format.Bold(member.Guild.Name)} for {Format.Code(reason)}.")
             .Apply(data);
 
         if (!await member.TrySendMessageAsync(embed: e.Build()))

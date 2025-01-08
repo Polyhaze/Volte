@@ -6,7 +6,7 @@ public partial class InteractionModerationModule
 {
     [SlashCommand("kick", "Kick someone from the server. Requires Moderator.")]
     public async Task<RuntimeResult> KickAsync(
-        [Summary("member", "The member to kick.")]
+        [Summary("member", "The member to kick."), DoHierarchyCheck]
         SocketGuildUser member,
         [Summary("reason", "The reason for the kick.")]
         string reason)

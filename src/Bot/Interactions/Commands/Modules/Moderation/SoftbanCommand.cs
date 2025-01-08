@@ -6,7 +6,7 @@ public partial class InteractionModerationModule
 {
     [SlashCommand("softban", "Kicking a user deleting the last x days of messages.")]
     public async Task<RuntimeResult> SoftBanAsync(
-        [Summary("member", "The member to softban.")]
+        [Summary("member", "The member to softban."), DoHierarchyCheck]
         SocketGuildUser member,
         [Summary("reason", "The reason for the ban.")]
         string reason,

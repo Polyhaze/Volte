@@ -6,7 +6,7 @@ public sealed partial class InteractionModerationModule
 {
     [SlashCommand("ban", "Ban someone from the server.")]
     public async Task<RuntimeResult> BanAsync(
-        [Summary("member", "The member to ban.")]
+        [Summary("member", "The member to ban."), DoHierarchyCheck]
         SocketGuildUser member,
         [Summary("reason", "The reason for the ban.")]
         string reason)

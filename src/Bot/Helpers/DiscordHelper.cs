@@ -1,5 +1,6 @@
 using Volte.Commands.Text.Modules;
 using Volte.Interactions;
+using Volte.Interactions.Commands;
 
 namespace Volte.Helpers;
 
@@ -45,6 +46,17 @@ public static class DiscordHelper
     public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
         => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
             ctx.Services.GetRequiredService<DatabaseService>(), reason);
+    
+    public static Task WarnAsync<TInteraction>(this SocketGuildUser member, 
+#pragma warning disable CS0618 // Type or member is obsolete
+        VolteInteractionModule<TInteraction> mdl, 
+#pragma warning restore CS0618 // Type or member is obsolete
+        string reason)
+        where TInteraction : SocketInteraction
+        => ModerationModule.WarnAsync(mdl.Context.User, mdl.GetData(), member,
+            VolteBot.Services.GetRequiredService<DatabaseService>(), reason);
+    
+    
 
     public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,
         bool isTts = false, Embed embed = null, RequestOptions options = null)
