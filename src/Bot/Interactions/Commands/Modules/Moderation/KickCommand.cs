@@ -4,7 +4,7 @@ namespace Volte.Interactions.Commands.Modules;
 
 public partial class InteractionModerationModule
 {
-    [SlashCommand("kick", "Kick someone from the server. Requires Moderator.")]
+    [SlashCommand("kick", "Kick someone from the server.")]
     public async Task<RuntimeResult> KickAsync(
         [Summary("member", "The member to kick."), DoHierarchyCheck]
         SocketGuildUser member,
