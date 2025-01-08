@@ -1,17 +1,13 @@
-﻿using Discord.Interactions;
+﻿namespace Volte.Interactions.Results;
 
-namespace Volte.Interactions.Results;
-
-public class InteractionOkResult<TInteraction> : RuntimeResult where TInteraction : SocketInteraction
+public class InteractionOkResult<TInteraction> : InteractionResultBase where TInteraction : SocketInteraction
 {
-    public InteractionOkResult(ReplyBuilder<TInteraction> reply) : base(null, string.Empty)
+    public InteractionOkResult(ReplyBuilder<TInteraction> reply)
     {
         Reply = reply;
     }
 
     public readonly ReplyBuilder<TInteraction> Reply;
-    
-    public static implicit operator Task<RuntimeResult>(InteractionOkResult<TInteraction> input) 
-        => Task.FromResult<RuntimeResult>(input);
-}
 
+    public override Task ExecuteAsync() => Reply.ExecuteAsync();
+}

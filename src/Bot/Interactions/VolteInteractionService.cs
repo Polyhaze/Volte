@@ -106,15 +106,10 @@ public class VolteInteractionService : VolteService
         switch (result)
         {
             case InteractionOkResult<TInteraction> okResult:
-                await okResult.Reply.RespondAsync();
+                await okResult.ExecuteAsync();
                 break;
-            case InteractionBadRequestResult badRequest:
-                await context.CreateReplyBuilder(true)
-                    .WithEmbed(e =>
-                        e.WithTitle("No can do, partner.")
-                            .WithDescription(badRequest.ErrorReason)
-                            .WithCurrentTimestamp()
-                    ).RespondAsync();
+            case InteractionBadRequestResult<TInteraction> badRequest:
+                await badRequest.ExecuteAsync();
                 break;
             case PreconditionResult unmetPreconditionResult:
                 await context.CreateReplyBuilder(true)

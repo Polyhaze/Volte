@@ -67,7 +67,8 @@ public static class Extensions
 
     public static ReplyBuilder<TInteraction> CreateReplyBuilder<TInteraction>(
         this SocketInteractionContext<TInteraction> interaction,
-        bool ephemeral = false
+        bool ephemeral = false,
+        bool deferred = false
     ) where TInteraction : SocketInteraction
-        => new ReplyBuilder<TInteraction>(interaction).WithEphemeral(ephemeral);
+        => new ReplyBuilder<TInteraction>(interaction).WithEphemeral(ephemeral).WithDeferral(deferred);
 }

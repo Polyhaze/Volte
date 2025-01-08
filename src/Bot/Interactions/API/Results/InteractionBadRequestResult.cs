@@ -2,10 +2,26 @@
 
 namespace Volte.Interactions.Results;
 
-public class InteractionBadRequestResult : RuntimeResult
+public class InteractionBadRequestResult<TInteraction> : InteractionResultBase where TInteraction : SocketInteraction
 {
-    public InteractionBadRequestResult(string error) : base(null, error) {}
+    public SocketInteractionContext<TInteraction> Context { get; }
+    
+    public bool DidDefer { get; }
 
-    public static implicit operator Task<RuntimeResult>(InteractionBadRequestResult input) 
-        => Task.FromResult<RuntimeResult>(input);
+    public InteractionBadRequestResult(SocketInteractionContext<TInteraction> context, string error, bool didDefer) 
+        : base(null, error)
+    {
+        Context = context;
+        DidDefer = didDefer;
+    }
+
+    public override Task ExecuteAsync() =>
+        Context.CreateReplyBuilder(true)
+            .WithDeferral(DidDefer)
+            .WithEmbed(e =>
+                e.WithTitle("No can do, partner.")
+                    .WithDescription(ErrorReason)
+                    .WithColor(Color.Red)
+                    .WithCurrentTimestamp()
+            ).ExecuteAsync();
 }
