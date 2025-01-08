@@ -4,7 +4,7 @@ namespace Volte.Interactions.Commands.Modules;
 
 public partial class InteractionModerationModule
 {
-    [SlashCommand("idban", "Ban a user by their ID.")]
+    [SlashCommand("banid", "Ban a user by their ID.")]
     public async Task<RuntimeResult> IdBanAsync(
         [Summary("user_id", "The ID of the user to ban.")]
         string userId,
