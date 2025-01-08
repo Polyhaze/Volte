@@ -26,7 +26,7 @@ public abstract class NotificationEventArgs
         remove => NotificationSentHandler.Remove(value);
     }
 
-    protected static readonly Event<Action<NotificationEventArgs>> NotificationSentHandler = new();
+    protected static readonly Event<NotificationEventArgs> NotificationSentHandler = new();
 }
 
 #region Implementations

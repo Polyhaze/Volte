@@ -23,7 +23,7 @@ public struct AppStatusEventArgs
         remove => ChangeRequestedHandler.Remove(value);
     }
 
-    private static readonly Event<Action<AppStatusEventArgs>> ChangeRequestedHandler = new();
+    private static readonly Event<AppStatusEventArgs> ChangeRequestedHandler = new();
 
     public static void SetAppStatus(
         string status,

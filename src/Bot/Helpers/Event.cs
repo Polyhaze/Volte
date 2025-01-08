@@ -3,11 +3,17 @@
 namespace Volte.Helpers;
 
 public class Event<T>
-    where T : class
 {
     private readonly object _subLock = new();
-    private ImmutableArray<T> _subscriptions = [];
+    private ImmutableArray<Action<T>> _subscriptions = [];
+    
+    private readonly Queue<T> _handlerlessEvents;
 
+    public Event(bool enableHandlerlessQueue = false)
+    {
+        _handlerlessEvents = enableHandlerlessQueue ? [] : null;
+    }
+    
     public bool HasSubscribers
     {
         get
@@ -17,7 +23,7 @@ public class Event<T>
         }
     }
 
-    public ImmutableArray<T> Subscriptions
+    public ImmutableArray<Action<T>> Subscriptions
     {
         get
         {
@@ -26,14 +32,14 @@ public class Event<T>
         }
     }
 
-    public void Add(T subscriber)
+    public void Add(Action<T> subscriber)
     {
         Guard.Require(subscriber, nameof(subscriber));
         lock (_subLock)
             _subscriptions = _subscriptions.Add(subscriber);
     }
 
-    public void Remove(T subscriber)
+    public void Remove(Action<T> subscriber)
     {
         Guard.Require(subscriber, nameof(subscriber));
         lock (_subLock)
@@ -45,37 +51,29 @@ public class Event<T>
         lock (_subLock)
             _subscriptions = [];
     }
+
+    public void CallHandlers(T arg)
+    {
+        lock (_subLock)
+        {
+            if (_subscriptions.Length == 0 && _handlerlessEvents is not null)
+            {
+                _handlerlessEvents.Enqueue(arg);
+                return;
+            }
+            
+            if (_handlerlessEvents is not null)
+                while (_handlerlessEvents.TryDequeue(out var queuedArg))
+                    this.Call(queuedArg);
+            
+            this.Call(arg);
+        }
+    }
 }
 
 public static class EventExtensions
 {
-    public static Task CallAsync(this Event<Func<Task>> eventHandler)
-        => eventHandler.Subscriptions.ForEachAsync(static x => x());
-
-    public static Task CallAsync<T>(this Event<Func<T, Task>> eventHandler,
-        T arg
-    ) => eventHandler.Subscriptions.ForEachAsync(x => x(arg));
-
-    public static void Call(this Event<Action> eventHandler)
-        => eventHandler.Subscriptions.ForEach(static x => x());
-
-    public static void Call<T>(this Event<Action<T>> eventHandler,
+    public static void Call<T>(this Event<T> eventHandler,
         T arg
     ) => eventHandler.Subscriptions.ForEach(x => x(arg));
-
-    public static void Call<T1, T2>(this Event<Action<T1, T2>> eventHandler,
-        T1 arg1, T2 arg2
-    ) => eventHandler.Subscriptions.ForEach(x => x(arg1, arg2));
-
-    public static void Call<T1, T2, T3>(this Event<Action<T1, T2, T3>> eventHandler,
-        T1 arg1, T2 arg2, T3 arg3
-    ) => eventHandler.Subscriptions.ForEach(x => x(arg1, arg2, arg3));
-
-    public static void Call<T1, T2, T3, T4>(this Event<Action<T1, T2, T3, T4>> eventHandler,
-        T1 arg1, T2 arg2, T3 arg3, T4 arg4
-    ) => eventHandler.Subscriptions.ForEach(x => x(arg1, arg2, arg3, arg4));
-
-    public static void Call<T1, T2, T3, T4, T5>(this Event<Action<T1, T2, T3, T4, T5>> eventHandler,
-        T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5
-    ) => eventHandler.Subscriptions.ForEach(x => x(arg1, arg2, arg3, arg4, arg5));
 }

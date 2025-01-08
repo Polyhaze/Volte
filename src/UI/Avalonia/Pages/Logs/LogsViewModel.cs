@@ -37,13 +37,9 @@ public partial class LogsViewModel : ObservableObject
             {
                 Source: LogSource.Sentry,
                 Severity: LogSeverity.Debug,
-                Message: not null,
-                Message.Length: > 200
+                Message: not null
             }
            ) return; //sentry debug messages are huge and break the log view entirely.
-
-        if (View?.Viewer is not { } scrollViewer) return;
-        
         
         lock (_logSync)
         {
@@ -51,7 +47,7 @@ public partial class LogsViewModel : ObservableObject
             
             Logs.Add(new VolteLog(eventArgs));
                 
-            Lambda.Try(() => Dispatcher.UIThread.Invoke(() => scrollViewer.ScrollToEnd()));
+            Lambda.Try(() => Dispatcher.UIThread.Invoke(() => View?.Viewer?.ScrollToEnd()));
 
             if (eventArgs.Error is not { } err) return;
 
