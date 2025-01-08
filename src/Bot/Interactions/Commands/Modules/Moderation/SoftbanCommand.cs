@@ -35,8 +35,9 @@ public partial class InteractionModerationModule
             await Context.Guild.RemoveBanAsync(member.Id);
             
             return Ok($"Successfully softbanned **{member}**.", () => 
-                ModService.OnModActionCompleteAsync(ModActionEventArgs.FromModule(this)
-                    .WithActionType(ModActionType.Ban)
+                ModService.OnModActionCompleteAsync(ModActionEventArgs
+                    .FromModule(this)
+                    .WithActionType(ModActionType.Softban)
                     .WithTarget(member)
                     .WithReason(reason)));
         }

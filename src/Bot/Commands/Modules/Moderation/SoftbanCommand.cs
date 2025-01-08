@@ -27,6 +27,7 @@ public sealed partial class ModerationModule
             return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
+                    .WithActionType(ModActionType.Softban)
                     .WithTarget(user)
                     .WithReason(reason))
             );
