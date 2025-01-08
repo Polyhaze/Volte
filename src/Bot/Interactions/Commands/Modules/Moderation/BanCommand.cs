@@ -4,7 +4,7 @@ namespace Volte.Interactions.Commands.Modules;
 
 public sealed partial class InteractionModerationModule
 {
-    [SlashCommand("ban", "Ban someone from the server. Requires Moderator.")]
+    [SlashCommand("ban", "Ban someone from the server.")]
     public async Task<RuntimeResult> BanAsync(
         [Summary("member", "The member to ban.")]
         SocketGuildUser member,
