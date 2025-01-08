@@ -10,6 +10,8 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Gommon;
 using Humanizer;
+using MenuFactory;
+using MenuFactory.Abstractions;
 using Volte.Entities;
 using Volte.UI.Avalonia.Pages;
 using Volte.UI.Helpers;
@@ -21,6 +23,11 @@ public class VolteApp : Application
     private static WindowNotificationManager? _notificationManager;
 
     public static TopLevel? XamlRoot { get; private set; }
+    
+    /// <summary>
+    /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
+    /// </summary>
+    public static IMenuFactory MenuFactory { get; private set; } = null!;
 
     public static readonly KeyGesture OpenDevTools = new(Key.F4, KeyModifiers.Control);
 
@@ -53,7 +60,9 @@ public class VolteApp : Application
     {
         if (!AvaloniaHelper.TryGetDesktop(out var desktop)) return;
 
-        XamlRoot = desktop.MainWindow = new UIShellView();
+        var shellView = new UIShellView();
+        
+        XamlRoot = desktop.MainWindow = shellView;
 
         desktop.MainWindow.Loaded += (_, _) => _notificationManager = new(XamlRoot)
         {
@@ -61,6 +70,10 @@ public class VolteApp : Application
             MaxItems = 4,
             Margin = new(0, 0, 4, 30)
         };
+        
+        MenuFactory = new AvaloniaMenuFactory(XamlRoot);
+        MenuFactory.AddMenuGroup<ShellViewMenu>();
+        shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
         desktop.MainWindow.Closing += (_, _) =>
         {

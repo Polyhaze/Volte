@@ -66,6 +66,27 @@ public class VolteInteractionService : VolteService
                     result);
         };
     }
+    
+    public async Task<int> ClearAllCommandsAsync()
+    {
+        await _backing.RestClient.BulkOverwriteGlobalCommands([]);
+        
+        var modules = _backing.Modules.ToArray();
+        var commandsRemoved = 0;
+        commandsRemoved += modules.Sum(x => x.ComponentCommands.Count);
+        commandsRemoved += modules.Sum(x => x.ContextCommands.Count);
+        commandsRemoved += modules.Sum(x => x.AutocompleteCommands.Count);
+        commandsRemoved += modules.Sum(x => x.ModalCommands.Count);
+        commandsRemoved += modules.Sum(x => x.SlashCommands.Count);
+        
+#if DEBUG
+        await _backing.RestClient.BulkOverwriteGuildCommands([], DiscordHelper.DevGuildId);
+#else
+        await _backing.RestClient.BulkOverwriteGlobalCommands([]);
+#endif
+
+        return commandsRemoved;
+    }
 
     public async Task InitAsync()
     {

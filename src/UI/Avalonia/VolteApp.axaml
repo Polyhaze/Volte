@@ -27,5 +27,6 @@
     </Application.Resources>
     <Application.Styles>       
         <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
+        <StyleInclude Source="Styles\MenuItem.axaml" />
     </Application.Styles>
 </Application>
