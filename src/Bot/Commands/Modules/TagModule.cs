@@ -16,10 +16,11 @@ public class TagModule : VolteModule
 
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle($"Tag {tag.Name}")
-            .AddField("Aliases", tag.Aliases.Count > 0 ? tag.Aliases.Select(x => Format.Code(x)).JoinToString(", ") : "None")
-            .AddField("Response", Format.Code(tag.Response, string.Empty), true)
+            .AddField("Aliases", tag.Aliases.Count > 0 ? tag.Aliases.Select(x => Format.Code(x)).JoinToString(", ") : "None", true)
             .AddField("Creator", $"{u}", true)
-            .AddField("Uses", $"**{tag.Uses}**", true));
+            .AddField("Uses", $"**{tag.Uses}**", true)
+            .AddField("Response", Format.Code(tag.Response, string.Empty), true)
+        );
     }
 
     [Command("List", "Ls")]
