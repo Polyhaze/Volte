@@ -6,15 +6,18 @@ namespace Volte.Interactions.Commands;
 [Obsolete("Use an inheritor of this class; not this class directly.")]
 public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketInteractionContext<T>> where T : SocketInteraction
 {
+    public DatabaseService Db { get; set; }
+    
     private bool DidDefer { get; set; }
 
-    protected new async Task DeferAsync(bool ephemeral = false, RequestOptions options = null)
+    protected new Task DeferAsync(bool ephemeral = false, RequestOptions options = null)
     {
-        if (DidDefer) 
-            return;
-        
-        await Context.Interaction.DeferAsync(ephemeral, options);
+        if (DidDefer)
+            return Task.CompletedTask;
+
         DidDefer = true;
+        
+        return Context.Interaction.DeferAsync(ephemeral, options);
     }
 
     protected ReplyBuilder<T> CreateReplyBuilder(
@@ -23,11 +26,9 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     
     public bool IsInGuild() => Context.Guild != null;
 
-    public GuildData GetData() 
-        => VolteBot.Services.Get<DatabaseService>().GetData(Context.Guild);
+    public GuildData GetData() => Db.GetData(Context.Guild);
     
-    public void ModifyData(DataEditor modifier)
-        => VolteBot.Services.Get<DatabaseService>().Modify(Context.Guild.Id, modifier);
+    public void ModifyData(DataEditor modifier) => Db.Modify(Context.Guild.Id, modifier);
 
     protected InteractionNoneResult<T> None() => new(Context, DidDefer);
     

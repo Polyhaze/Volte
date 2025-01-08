@@ -12,7 +12,7 @@ public sealed partial class ModerationModule
 
         if (banList.Count > 0)
             return Ok(
-                PaginatedMessage.Builder.New()
+                new PaginatedMessage.Builder()
                     .WithTitle($"Bans in {Context.Guild.Name}")
                     .WithPages(banList.Select(b => $"**{b.User}**: {Format.Code(b.Reason ?? "No reason provided.")}"))
                     .SplitPages(25)

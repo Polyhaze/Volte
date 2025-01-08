@@ -17,7 +17,7 @@ public class OkResult : ActionResult
     public OkResult(IEnumerable<EmbedBuilder> pages, uint pageSplit = 0, Color? color = null, IGuildUser author = null,
         VolteContext ctx = null, string title = null, PaginatedAppearanceOptions options = null)
     {
-        _pager = PaginatedMessage.Builder.New()
+        _pager = new PaginatedMessage.Builder()
             .WithPages(pages);
 
         if (color is { } clr) _pager.WithColor(clr);

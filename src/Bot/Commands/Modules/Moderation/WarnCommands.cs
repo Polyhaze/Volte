@@ -25,9 +25,11 @@ public sealed partial class ModerationModule
     public Task<ActionResult> WarnsAsync([Remainder, Description("The member to list warns for.")]
         SocketGuildUser member)
     {
-        var warns = Db.GetData(Context.Guild).Extras.Warns.Where(x => x.User == member.Id)
+        var warns = Db.GetData(Context.Guild).Extras.Warns
+            .Where(x => x.User == member.Id)
             .Select(static x => $"{Format.Bold(x.Reason)}, on {Format.Bold(x.Date.FormatDate())}");
-        return Ok(PaginatedMessage.Builder.New()
+        
+        return Ok(new PaginatedMessage.Builder()
             .WithPages(warns)
             .WithTitle($"Warns for {member}")
             .SplitPages(8)

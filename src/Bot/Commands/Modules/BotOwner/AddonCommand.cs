@@ -22,7 +22,7 @@ public partial class BotOwnerModule
                 .ToList();
 
             if (addonEmbeds.Count is 1) return Ok(addonEmbeds.First());
-            return Ok(PaginatedMessage.Builder.New()
+            return Ok(new PaginatedMessage.Builder()
                 .WithDefaults(Context)
                 .WithPages(addonEmbeds)
                 .WithTitle("All installed addons"));

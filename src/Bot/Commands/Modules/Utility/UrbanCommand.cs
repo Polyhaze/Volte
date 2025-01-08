@@ -16,7 +16,7 @@ public partial class UtilityModule
         {
             0 => BadRequest("That word didn't have a definition of Urban Dictionary."),
             1 => Ok(pages.First()),
-            _ => Ok(PaginatedMessage.Builder.New(true)
+            _ => Ok(new PaginatedMessage.Builder()
                 .WithPages(pages)
                 .WithTitle(word)
                 .WithDefaults(Context))
