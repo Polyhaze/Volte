@@ -105,11 +105,8 @@ public class VolteInteractionService : VolteService
     {
         switch (result)
         {
-            case InteractionOkResult<TInteraction> okResult:
+            case InteractionResultBase okResult:
                 await okResult.ExecuteAsync();
-                break;
-            case InteractionBadRequestResult<TInteraction> badRequest:
-                await badRequest.ExecuteAsync();
                 break;
             case PreconditionResult unmetPreconditionResult:
                 await context.CreateReplyBuilder(true)

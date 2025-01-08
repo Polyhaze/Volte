@@ -14,7 +14,7 @@ public sealed partial class InteractionModerationModule
         var e = Context.CreateEmbedBuilder(
             $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
         
-        if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GetGuildData(VolteBot.Services)).Build()))
+        if (!await member.TrySendMessageAsync(embed: e.Apply(GetData()).Build()))
             Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
         
         try

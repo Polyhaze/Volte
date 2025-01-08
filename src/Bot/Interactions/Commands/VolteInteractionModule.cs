@@ -26,7 +26,7 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     public void ModifyData(DataEditor modifier)
         => VolteBot.Services.Get<DatabaseService>().Modify(Context.Guild.Id, modifier);
 
-    protected InteractionNoneResult None() => new();
+    protected InteractionNoneResult<T> None() => new(Context, DidDefer);
     
     protected InteractionBadRequestResult<T> BadRequest(string reason) => new(Context, reason, DidDefer);
 
