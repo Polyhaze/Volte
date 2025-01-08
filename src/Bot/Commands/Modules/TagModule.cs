@@ -14,12 +14,14 @@ public class TagModule : VolteModule
     {
         var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
 
+        tag.Aliases.FormatCollection(static x => Format.Code(x), separator: ", ");
+        
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle($"Tag {tag.Name}")
-            .AddField("Aliases", tag.Aliases.Count > 0 ? tag.Aliases.Select(x => Format.Code(x)).JoinToString(", ") : "None", true)
+            .AddField("Aliases", tag.Aliases.FormatCollection(static x => Format.Code(x), separator: ", "), true)
             .AddField("Creator", $"{u}", true)
             .AddField("Uses", $"**{tag.Uses}**", true)
-            .AddField("Response", Format.Code(tag.Response, string.Empty), true)
+            .AddField("Response", Format.Code(tag.Response, string.Empty))
         );
     }
 
@@ -27,9 +29,7 @@ public class TagModule : VolteModule
     [Description("Lists all available tags in the current guild.")]
     public Task<ActionResult> TagsAsync()
         => Ok(Context.CreateEmbedBuilder(
-            Context.GuildData.Extras.Tags.Count != 0
-                ? Context.GuildData.Extras.Tags.Select(static x => Format.Code(x.Name)).JoinToString(", ")
-                : "None"
+            Context.GuildData.Extras.Tags.FormatCollection(static x => Format.Code(x.Name), separator: ", ")
         ).WithTitle($"Available Tags for {Context.Guild.Name}"));
 
     [Command("Create", "Add", "New")]
