@@ -14,7 +14,7 @@ public partial class InteractionUtilityModule
             return BadRequest("You can only use this command in guilds.");
         
         var data = GetData();
-        if (!data.Extras.SelfRoles.Any())
+        if (data.Extras.SelfRoles.Count == 0)
             return BadRequest("This guild does not have any roles you can give yourself.");
 
         if (!data.Extras.SelfRoles.Contains(role.Id))

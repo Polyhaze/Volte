@@ -9,7 +9,7 @@ public sealed partial class InteractionModerationModule
         [Summary("member", "The member to ban.")]
         SocketGuildUser member,
         [Summary("reason", "The reason for the ban.")]
-        string reason = "Banned by a Moderator.")
+        string reason)
     {
         var e = Context.CreateEmbedBuilder(
             $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
@@ -22,7 +22,7 @@ public sealed partial class InteractionModerationModule
             await member.BanAsync(7, reason);
             
             return Ok($"Successfully banned **{member}** from this guild.", () => 
-                ModService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
+                ModService.OnModActionCompleteAsync(ModActionEventArgs.FromModule(this)
                     .WithActionType(ModActionType.Ban)
                     .WithTarget(member)
                     .WithReason(reason)));

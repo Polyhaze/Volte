@@ -10,6 +10,9 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
 
     protected new async Task DeferAsync(bool ephemeral = false, RequestOptions options = null)
     {
+        if (DidDefer) 
+            return;
+        
         await Context.Interaction.DeferAsync(ephemeral, options);
         DidDefer = true;
     }

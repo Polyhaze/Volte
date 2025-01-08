@@ -163,6 +163,7 @@ public sealed class ModerationService : VolteService
                         .AppendLine(Moderator(args))
                         .AppendLine(Case(args))
                         .AppendLine(await TargetRestUser(args))
+                        .AppendLine(Reason(args))
                         .AppendLine(Time(args)))
                     .SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");

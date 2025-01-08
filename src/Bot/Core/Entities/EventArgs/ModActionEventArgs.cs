@@ -1,5 +1,6 @@
 using Discord.Interactions;
 using Volte.Interactions;
+using Volte.Interactions.Commands;
 
 namespace Volte.Entities;
 
@@ -25,13 +26,15 @@ public class ModActionEventArgs
         Channel = ctx.Channel
     }.WithDefaultsFromContext(ctx);
     
-    public static ModActionEventArgs InContext<TInteraction>(SocketInteractionContext<TInteraction> ctx) 
+#pragma warning disable CS0618 // Type or member is obsolete
+    public static ModActionEventArgs FromModule<TInteraction>(VolteInteractionModule<TInteraction> mdl) 
+#pragma warning restore CS0618 // Type or member is obsolete
         where TInteraction : SocketInteraction => new ModActionEventArgs
     {
-        CreateEmbedBuilder = ctx.CreateEmbedBuilder,
-        GuildData = ctx.GetGuildData(VolteBot.Services),
-        Channel = ctx.Channel
-    }.WithDefaultsFromContext(ctx);
+        CreateEmbedBuilder = mdl.Context.CreateEmbedBuilder,
+        GuildData = mdl.GetData(),
+        Channel = mdl.Context.Channel
+    }.WithDefaultsFromContext(mdl.Context);
 
     public ModActionEventArgs WithModerator(SocketUser user)
     {
