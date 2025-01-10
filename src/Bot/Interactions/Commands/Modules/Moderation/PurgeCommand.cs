@@ -9,11 +9,27 @@ public partial class InteractionModerationModule
         [Summary("message_count", "The amount of messages to purge.")]
         int count, 
         [Summary("target_author", "If provided, will only delete messages by this user within 'message_count' messages.")]
-        RestUser targetAuthor = null)
+        string targetAuthor = null)
     {
+        await DeferAsync(true);
+
+        Func<IMessage, bool> filter = _ => true;
+
+        if (targetAuthor != null)
+        {
+            if (!ulong.TryParse(targetAuthor, out var targetAuthorId))
+                return BadRequest("target_author is not a valid Discord user ID.");
+
+            filter = x => x.Author.Id == targetAuthorId;
+        }
+
+
         var messages = (await Context.Channel.GetMessagesAsync(count).FlattenAsync())
-            .Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id)
+            .Where(filter)
             .ToList();
+
+        if (messages.Count == 0)
+            return BadRequest("Cannot mass delete 0 messages.");
         
         try
         {
@@ -32,7 +48,7 @@ public partial class InteractionModerationModule
             () => ModService.OnModActionCompleteAsync(ModActionEventArgs
                 .FromModule(this)
                 .WithActionType(ModActionType.Purge)
-                .WithCount(count)), 
+                .WithCount(messages.Count)), 
             true);
     }
 }

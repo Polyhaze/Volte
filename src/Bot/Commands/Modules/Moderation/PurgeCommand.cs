@@ -12,7 +12,7 @@ public sealed partial class ModerationModule
         //lets you theoretically use 0 to delete only the invocation message, for testing or something.
         var messages = (await Context.Channel.GetMessagesAsync(count + 1).FlattenAsync())
             .Where(x => targetAuthor is null || x.Author.Id == targetAuthor.Id)
-            .ToList();
+            .ToHashSet();
         
         try
         {
@@ -35,7 +35,7 @@ public sealed partial class ModerationModule
             await ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                 .InContext(Context)
                 .WithActionType(ModActionType.Purge)
-                .WithCount(count));
+                .WithCount(messages.Count - 1));
         }, false);
     }
 }

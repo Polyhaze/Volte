@@ -4,10 +4,9 @@ public sealed class ModerationService : VolteService
 {
     private readonly DatabaseService _db;
     
-    public ModerationService(DiscordSocketClient client, DatabaseService databaseService)
+    public ModerationService(DatabaseService databaseService)
     {
         _db = databaseService;
-        client.UserJoined += user => CheckAccountAgeAsync(new UserJoinedEventArgs(user));
     }
     
     public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)

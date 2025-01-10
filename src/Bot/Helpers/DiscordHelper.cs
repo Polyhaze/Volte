@@ -124,6 +124,27 @@ public static class DiscordHelper
         Listen(client);
         
         CalledCommandsInfo.StartPersistence(provider, saveEvery: 2.Minutes());
+
+        var welcome = provider.Get<WelcomeService>();
+        client.UserJoined += user => welcome.JoinAsync(new UserJoinedEventArgs(user));
+        client.UserLeft += (guild, user) => welcome.LeaveAsync(new UserLeftEventArgs(guild, user));
+        
+        var starboard = provider.Get<StarboardService>();
+        
+        client.ReactionAdded += starboard.HandleReactionAddAsync;
+        client.ReactionRemoved += starboard.HandleReactionRemoveAsync;
+        client.ReactionsCleared += starboard.HandleReactionsClearAsync;
+
+        var moderation = provider.Get<ModerationService>();
+        
+        client.UserJoined += user => moderation.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
+
+        var guild = provider.Get<GuildService>();
+        client.JoinedGuild += async g => await guild.OnJoinAsync(new JoinedGuildEventArgs(g));
+
+        var autorole = provider.Get<AutoroleService>();
+        
+        client.UserJoined += user => autorole.ApplyRoleAsync(new UserJoinedEventArgs(user));
         
         client.MessageReceived += socketMessage =>
         {

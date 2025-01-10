@@ -4,11 +4,9 @@ public sealed class WelcomeService : VolteService
 {
     private readonly DatabaseService _db;
 
-    public WelcomeService(DiscordSocketClient client, DatabaseService databaseService)
+    public WelcomeService(DatabaseService databaseService)
     {
         _db = databaseService;
-        client.UserJoined += user => JoinAsync(new UserJoinedEventArgs(user));
-        client.UserLeft += (guild, user) => LeaveAsync(new UserLeftEventArgs(guild, user));
     }
     
     public async Task JoinAsync(UserJoinedEventArgs args)

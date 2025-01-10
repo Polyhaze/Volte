@@ -3,8 +3,15 @@ using System.Text.RegularExpressions;
 namespace Volte.Services;
 
 //thanks discord-csharp/MODiX for the idea and some of the code (definitely the regex lol)
-public sealed partial class QuoteService(DiscordSocketClient client) : VolteService
+public sealed partial class QuoteService : VolteService
 {
+    private readonly DiscordSocketClient _client;
+
+    public QuoteService(DiscordSocketClient client)
+    {
+        _client = client;
+    }
+
     public async Task<bool> CheckMessageAsync(MessageReceivedEventArgs args)
     {
         if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return false;
@@ -32,7 +39,7 @@ public sealed partial class QuoteService(DiscordSocketClient client) : VolteServ
             !match.Groups["ChannelId"].Value.TryParse<ulong>(out var channelId) ||
             !match.Groups["MessageId"].Value.TryParse<ulong>(out var messageId)) return null;
 
-        var g = await client.Rest.GetGuildAsync(guildId);
+        var g = await _client.Rest.GetGuildAsync(guildId);
         if (g is null) return null;
         var c = await g.GetTextChannelAsync(channelId);
         if (c is null) return null;

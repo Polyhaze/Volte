@@ -11,9 +11,7 @@ public sealed class StarboardService : VolteService
     {
         _client = client;
         _db = databaseService;
-        client.ReactionAdded += HandleReactionAddAsync;
-        client.ReactionRemoved += HandleReactionRemoveAsync;
-        client.ReactionsCleared += HandleReactionsClearAsync;
+
     }
     
     // Ensures starboard message creations don't happen twice, and edits are atomic. Also ensures dictionary updates

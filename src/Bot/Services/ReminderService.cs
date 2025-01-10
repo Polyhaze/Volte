@@ -2,16 +2,23 @@ using System.Text.RegularExpressions;
 
 namespace Volte.Services;
 
-public sealed partial class ReminderService(
-    DatabaseService _db,
-    DiscordSocketClient _client)
-    : VolteService, IDisposable
+public sealed partial class ReminderService : VolteService, IDisposable
 {
     private static readonly Regex JumpUrl = MessageUrlPattern();
     
     private readonly PeriodicTimer _ticker = new(30.Seconds());
     private readonly CancellationTokenSource _tickerTokenSource = new();
-    
+    private readonly DatabaseService _db;
+    private readonly DiscordSocketClient _client;
+
+    public ReminderService(
+        DatabaseService db,
+        DiscordSocketClient client)
+    {
+        _db = db;
+        _client = client;
+    }
+
     public void Initialize() =>
         ExecuteBackgroundAsync(async () =>
         {

@@ -7,7 +7,6 @@ public sealed class GuildService : VolteService
     public GuildService(DiscordSocketClient client)
     {
         _client = client;
-        client.JoinedGuild += async g => await OnJoinAsync(new JoinedGuildEventArgs(g));
     }
     
     public async Task OnJoinAsync(JoinedGuildEventArgs args)
