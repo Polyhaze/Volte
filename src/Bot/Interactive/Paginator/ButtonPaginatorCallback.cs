@@ -52,7 +52,7 @@ public class ButtonPaginatorCallback : IButtonCallback
     public async Task StartAsync()
     {
         PagerMessage =
-            await MessageContext.Channel.SendMessageAsync(_pager.Content, 
+            await MessageContext.Channel.SendMessageAsync(_pager.Content,
                 embed: BuildEmbed(),
                 components: BuildComponent());
         Interactive.AddButtonCallback(PagerMessage, this);
@@ -100,35 +100,29 @@ public class ButtonPaginatorCallback : IButtonCallback
 
     private MessageComponent BuildComponent() => new ComponentBuilder()
         .AddActionRow(x =>
-            x.AddComponent(Buttons.Primary($"pager:back:{MessageContext.Message.Id}")
-                    .WithLabel("Back")
+            x.AddComponent(Buttons.Primary($"pager:back:{MessageContext.Message.Id}", label: "Back")
                     .WithEmote(_pager.Options.Back)
                     .WithDisabled(_currentPageIndex < 2)
                     .Build())
-                .AddComponent(Buttons.Primary($"pager:next:{MessageContext.Message.Id}")
-                    .WithLabel("Next")
+                .AddComponent(Buttons.Primary($"pager:next:{MessageContext.Message.Id}", label: "Next")
                     .WithEmote(_pager.Options.Next)
                     .WithDisabled(_currentPageIndex >= _pageCount)
                     .Build())
-                .AddComponent(Buttons.Danger($"pager:stop:{MessageContext.Message.Id}")
+                .AddComponent(Buttons.Danger($"pager:stop:{MessageContext.Message.Id}", label: "End")
                     .WithCustomId($"pager:stop:{MessageContext.Message.Id}")
-                    .WithLabel("End")
                     .WithEmote(_pager.Options.Stop)
                     .Build())
         ).AddActionRow(x =>
-            x.AddComponent(Buttons.Primary($"pager:first:{MessageContext.Message.Id}")
-                    .WithLabel("First")
+            x.AddComponent(Buttons.Primary($"pager:first:{MessageContext.Message.Id}", label: "First")
                     .WithEmote(_pager.Options.First)
                     .WithDisabled(_currentPageIndex is 1)
                     .Build())
-                .AddComponent(Buttons.Primary($"pager:last:{MessageContext.Message.Id}")
-                    .WithLabel("Last")
+                .AddComponent(Buttons.Primary($"pager:last:{MessageContext.Message.Id}", label: "Last")
                     .WithEmote(_pager.Options.Last)
                     .WithDisabled(_currentPageIndex == _pageCount)
                     .Build())
                 .AddComponentIf(_pager.Options.DisplayInformationIcon,
-                    Buttons.Secondary($"pager:info:{MessageContext.Message.Id}")
-                        .WithLabel("Info")
+                    Buttons.Secondary($"pager:info:{MessageContext.Message.Id}", label: "Info")
                         .WithEmote(_pager.Options.Info)
                         .Build())
         ).Build();
