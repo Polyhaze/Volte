@@ -109,7 +109,6 @@ public class ButtonPaginatorCallback : IButtonCallback
                     .WithDisabled(_currentPageIndex >= _pageCount)
                     .Build())
                 .AddComponent(Buttons.Danger($"pager:stop:{MessageContext.Message.Id}", label: "End")
-                    .WithCustomId($"pager:stop:{MessageContext.Message.Id}")
                     .WithEmote(_pager.Options.Stop)
                     .Build())
         ).AddActionRow(x =>

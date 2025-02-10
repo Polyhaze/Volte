@@ -17,8 +17,8 @@ public static class Buttons
             EnsureNeitherNull(label, emote);
 
             return (label is null
-                ? CreateBuilder(id, ButtonStyle.Danger, emote)
-                : ButtonBuilder.CreateDangerButton(id, label, emote)).WithDisabled(disabled);
+                ? CreateBuilder(id, ButtonStyle.Danger, emote).WithDisabled(disabled)
+                : ButtonBuilder.CreateDangerButton(label, id,  emote)).WithDisabled(disabled);
         }
         
         public static ButtonBuilder Success(MessageComponentId id, string label = null, IEmote emote = null, bool disabled = false)
@@ -26,11 +26,8 @@ public static class Buttons
             EnsureNeitherNull(label, emote);
 
             return (label is null
-                ? new ButtonBuilder()
-                    .WithStyle(ButtonStyle.Success)
-                    .WithCustomId(id)
-                    .WithEmote(emote)
-                : ButtonBuilder.CreateSuccessButton(id, label, emote)).WithDisabled(disabled);
+                ? CreateBuilder(id, ButtonStyle.Success, emote).WithDisabled(disabled)
+                : ButtonBuilder.CreateSuccessButton(label, id,  emote)).WithDisabled(disabled);
         }
         
         public static ButtonBuilder Primary(MessageComponentId id, string label = null, IEmote emote = null, bool disabled = false)
@@ -38,11 +35,8 @@ public static class Buttons
             EnsureNeitherNull(label, emote);
 
             return (label is null
-                ? new ButtonBuilder()
-                    .WithStyle(ButtonStyle.Primary)
-                    .WithCustomId(id)
-                    .WithEmote(emote)
-                : ButtonBuilder.CreatePrimaryButton(id, label, emote)).WithDisabled(disabled);
+                ? CreateBuilder(id, ButtonStyle.Primary, emote).WithDisabled(disabled)
+                : ButtonBuilder.CreatePrimaryButton(label, id, emote)).WithDisabled(disabled);
         } 
         
         public static ButtonBuilder Secondary(MessageComponentId id, string label = null, IEmote emote = null, bool disabled = false)
@@ -50,11 +44,8 @@ public static class Buttons
             EnsureNeitherNull(label, emote);
 
             return (label is null
-                ? new ButtonBuilder()
-                    .WithStyle(ButtonStyle.Secondary)
-                    .WithCustomId(id)
-                    .WithEmote(emote)
-                : ButtonBuilder.CreateSecondaryButton(id, label, emote)).WithDisabled(disabled);
+                ? CreateBuilder(id, ButtonStyle.Secondary, emote).WithDisabled(disabled)
+                : ButtonBuilder.CreateSecondaryButton(label, id,  emote)).WithDisabled(disabled);
         }
 
         public static ButtonBuilder Link(string url, string label, IEmote emote = null, bool disabled = false) =>
