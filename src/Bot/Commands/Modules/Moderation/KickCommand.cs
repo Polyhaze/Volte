@@ -16,7 +16,7 @@ public sealed partial class ModerationModule
         try
         {
             await user.KickAsync(reason);
-            return Ok($"Successfully kicked **{user.Username}#{user.Discriminator}** from this guild.", _ =>
+            return Ok($"Successfully kicked **{user.GetEffectiveUsername()}** from this guild.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
                     .WithActionType(ModActionType.Kick)
