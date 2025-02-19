@@ -38,6 +38,17 @@ public static class TextCommandHelper
                 yield return cmd;
     }
 
+    public static bool IsAccessibleToGuild(this Command command, ulong id)
+    {
+        if (!command.Checks.Any(x => x is RequireSpecificGuildAttribute))
+            return true;
+
+        return command.Checks
+                   .TryGetFirst(x => x is RequireSpecificGuildAttribute, out var attr)
+               && attr is RequireSpecificGuildAttribute rsga
+               && rsga.GuildId == id;
+    }
+
     public static async ValueTask<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
     {
         var embed = ctx.CreateEmbedBuilder()
@@ -86,7 +97,11 @@ public static class TextCommandHelper
 
         return checks.Count > 0
             ? embed.AddField("Checks",
-                (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).JoinToString("\n"))
+                (await Task.WhenAll(
+                    checks.Where(check => check is not RequireSpecificGuildAttribute)
+                        .Select(check => FormatCheckAsync(check, ctx))
+                    )
+                ).JoinToString("\n"))
             : embed;
             
             

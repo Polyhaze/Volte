@@ -5,7 +5,7 @@ public sealed class MessageService : VolteService
     private readonly DatabaseService _db;
     private readonly CommandService _commandService;
     private readonly QuoteService _quoteService;
-        
+
     public MessageService(DatabaseService databaseService,
         CommandService commandService,
         QuoteService quoteService)
@@ -14,13 +14,14 @@ public sealed class MessageService : VolteService
         _commandService = commandService;
         _quoteService = quoteService;
     }
-    
-    public ulong AllTimeCommandCalls => CalledCommandsInfo.Sum + 
-                                        UnsavedSuccessfulCommandCalls + 
+
+    public ulong AllTimeCommandCalls => CalledCommandsInfo.Sum +
+                                        UnsavedSuccessfulCommandCalls +
                                         UnsavedFailedCommandCalls;
+
     public ulong AllTimeSuccessfulCommandCalls => CalledCommandsInfo.Successes + UnsavedSuccessfulCommandCalls;
     public ulong AllTimeFailedCommandCalls => CalledCommandsInfo.Failures + UnsavedFailedCommandCalls;
-    
+
     public ulong UnsavedSuccessfulCommandCalls { get; private set; }
     public ulong UnsavedFailedCommandCalls { get; private set; }
 
@@ -32,8 +33,9 @@ public sealed class MessageService : VolteService
 
     public async Task HandleMessageAsync(MessageReceivedEventArgs args)
     {
-        List<string> prefixes = [
-            args.Data.Configuration.CommandPrefix, 
+        List<string> prefixes =
+        [
+            args.Data.Configuration.CommandPrefix,
             $"<@{args.Context.Client.CurrentUser.Id}> ",
             $"<@!{args.Context.Client.CurrentUser.Id}> "
         ];
@@ -126,7 +128,7 @@ public sealed class MessageService : VolteService
             .AppendLine(args.FormatTimestamp())
             .AppendLine(args.ExecutedLogMessage())
             .AppendLine(args.FormatTimeTaken());
-        
+
         if (data)
             sb.AppendLine(ResultMessage(data));
 
@@ -150,11 +152,13 @@ public sealed class MessageService : VolteService
 
         if (!reason.IsNullOrEmpty())
         {
-            await args.Context.CreateEmbedBuilder()
-                .AddField("Error in Command", args.Context.Command.Name)
-                .AddField("Error Reason", reason)
-                .AddField("Usage", TextCommandHelper.FormatUsage(args.Context, args.Context.Command))
-                .SendToAsync(args.Context.Channel);
+            if (args.Context.Command.IsAccessibleToGuild(args.Context.Guild.Id))
+                await args.Context.CreateEmbedBuilder()
+                    .AddField("Error in Command", args.Context.Command.Name)
+                    .AddField("Error Reason", reason)
+                    .AddField("Usage", TextCommandHelper.FormatUsage(args.Context, args.Context.Command))
+                    .SendToAsync(args.Context.Channel);
+
 
             if (!Config.LogAllCommands) return;
 
@@ -173,27 +177,27 @@ public sealed class MessageService : VolteService
         return;
 
 
-        static string checksFailed(ChecksFailedResult result) 
+        static string checksFailed(ChecksFailedResult result)
             => String(sb => sb
                 .Append("One or more checks failed for command ")
                 .Append(Format.Bold(result.Command.Name))
                 .AppendLine(":")
-                .Append(Format.Code(result.FailedChecks.Select(x => 
+                .Append(Format.Code(result.FailedChecks.Select(x =>
                     $"{x.Check.GetType().AsPrettyString().Replace("Attribute", "")}: {x.Result.FailureReason}"
                 ).JoinToString('\n'), "css"))
             );
 
 
-        static string paramChecksFailed(ParameterChecksFailedResult result) 
+        static string paramChecksFailed(ParameterChecksFailedResult result)
             => String(sb => sb
                 .Append("One or more checks failed on parameter ")
                 .Append(Format.Bold(result.Parameter.Name))
                 .AppendLine(":")
-                .Append(Format.Code(result.FailedChecks.Select(x => 
+                .Append(Format.Code(result.FailedChecks.Select(x =>
                     $"{x.Check.GetType().AsPrettyString().Replace("Attribute", "")}: {x.Result.FailureReason}"
                 ).JoinToString('\n'), "css"))
             );
-        
+
         static string unknown(FailedResult result)
         {
             Verbose(LogSource.Service,
@@ -225,7 +229,7 @@ public sealed class MessageService : VolteService
         Error(LogSource.Module, sb.ToString());
     }
 
-    private static string ResultMessage(ResultCompletionData data) 
+    private static string ResultMessage(ResultCompletionData data)
         => new StringBuilder(CommandEventArgs.Whitespace)
             .Append($"|     -Result Message: {data.Message?.Id}")
             .ToString();

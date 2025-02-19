@@ -18,7 +18,7 @@ public sealed class HelpModule : VolteModule
                 return Ok(await GetPagesAsync().ToListAsync());
 
             var searchRes = CommandService.GetCommand(query);
-            if (searchRes is null)
+            if (searchRes is null || !searchRes.IsAccessibleToGuild(Context.Guild.Id))
                 return BadRequest($"No command or group found for {Format.Code(query)}.");
 
             return Ok(await TextCommandHelper.CreateCommandEmbedAsync(searchRes, Context));
