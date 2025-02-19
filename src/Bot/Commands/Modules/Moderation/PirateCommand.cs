@@ -10,7 +10,7 @@ public partial class ModerationModule
     [RequireSpecificGuild(1294443224030511104)]
     public async Task<ActionResult> PirateAsync([Description("The target user.")] SocketGuildUser member)
     {
-        await member.WarnAsync(Context, "<#1294444833737412669> Rule #4");
+        await member.WarnAsync(Context, "Rule #4");
         if (member.HasRole(VerifiedSwitchOwnerRoleId))
             await member.RemoveRoleAsync(VerifiedSwitchOwnerRoleId);
 
