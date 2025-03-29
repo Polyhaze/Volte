@@ -5,7 +5,6 @@ namespace Volte.Commands.Text.Modules;
 public sealed partial class UtilityModule : VolteModule
 {
     public MessageService MessageService { get; set; }
-    public HttpClient Http { get; set; }
 
     public static readonly Dictionary<string[], string> ZalgoNamedArguments = new()
     {
@@ -41,22 +40,6 @@ public sealed partial class UtilityModule : VolteModule
 
     private string GetNato(char i) =>
         _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
-
-    /// <summary>
-    ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
-    /// </summary>
-    /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
-    /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
-    public async Task<IReadOnlyList<UrbanEntry>> RequestUrbanDefinitionsAsync(string word)
-    {
-        var get = await Http.GetAsync(
-            $"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(),
-            HttpCompletionOption.ResponseContentRead);
-
-        get.EnsureSuccessStatusCode();
-
-        return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
-    }
 
     private (
         IOrderedEnumerable<(string Name, bool Value)> Allowed, 
@@ -107,6 +90,22 @@ public sealed partial class AdminUtilityModule : VolteModule
             "Set the author of the embed. `self` or `me` will make you the author; `bot`, `you`, or `volte` will make volte the author, or you can use a server member's ID."
         }
     };
+    
+    /// <summary>
+    ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
+    /// </summary>
+    /// <param name="word">The word/phrase to search for. This method URL encodes it.</param>
+    /// <returns><see cref="IEnumerable{UrbanEntry}"/> if the request was successful; <see langword="null"/> otherwise.</returns>
+    public async Task<IReadOnlyList<UrbanEntry>> RequestUrbanDefinitionsAsync(string word)
+    {
+        var get = await Http.GetAsync(
+            $"https://api.urbandictionary.com/v0/define?term={HttpUtility.UrlEncode(word)}".Trim(),
+            HttpCompletionOption.ResponseContentRead);
+
+        get.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<UrbanApiResponse>(await get.Content.ReadAsStringAsync()).Entries;
+    }
 }
 
 [RequireBotOwner]

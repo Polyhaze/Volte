@@ -2,7 +2,7 @@ using Volte.Interactive;
 
 namespace Volte.Commands.Text.Modules;
 
-public partial class UtilityModule
+public partial class AdminUtilityModule
 {
     [Command("Urban", "Definition")]
     [Description("Brings up the first result from Urban Dictionary's API for a word.")]
