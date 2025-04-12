@@ -1,31 +1,52 @@
 name: Volte CI
 
 on:
+  workflow_dispatch:
+    inputs: {}
   push:
-    branches:
-    - v3
-  pull_request:
-    branches:
-    - v3
+    branches: [ v4 ]
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'assets/**'
+      - '.vscode/**'
+      - '*.yml'
+      - '*.json'
+      - '*.md'
+      - '.gitignore'
+      - '.gitattributes'
+
+
+env:
+  VOLTE_BASE_VERSION: "4.0"
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@main
-    - uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '3.1.408'
-    - name: Compile
-      run: bash build.sh
-    - name: Upload Linux binary
-      uses: actions/upload-artifact@main
-      with:
-        name: Volte Linux
-        path: src/bin/Release/netcoreapp3.1/linux-x64/publish/Volte
-    - name: Upload Windows
-      uses: actions/upload-artifact@main
-      with:
-        name: Volte Windows
-        path: src/bin/Release/netcoreapp3.1/win10-x64/publish/Volte.exe
+      - name: Get version info
+        id: version_info
+        run: |
+          echo "build_version=${{ env.VOLTE_BASE_VERSION }}.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "prev_build_version=${{ env.VOLTE_BASE_VERSION }}.$((${{ github.run_number }} - 1))" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Compile
+        run: bash build.sh ${{ steps.version_info.outputs.build_version }}
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.version_info.outputs.build_version }}
+          tag: ${{ steps.version_info.outputs.build_version }}
+          artifacts: "artifacts/*.tar.gz,artifacts/*.7z"
+          body: "**[Changes since last build](https://github.com/Polyhaze/Volte/compare/${{ steps.version_info.outputs.prev_build_version }}...${{ steps.version_info.outputs.build_version }})**"
+          omitBodyDuringUpdate: true
+          owner: Polyhaze
+          repo: Volte
+          token: ${{ secrets.RELEASE_TOKEN }}
