@@ -32,12 +32,16 @@ jobs:
         shell: bash
 
       - uses: actions/checkout@v4
+        name: "Checkout code"
       - uses: actions/setup-dotnet@v4
+        name: "Install .NET SDK"
         with:
           global-json-file: global.json
 
       - name: Compile
-        run: bash build.sh ${{ steps.version_info.outputs.build_version }}
+        run: |
+          bash build.sh ${{ steps.version_info.outputs.build_version }}
+          echo "$PWD"
 
       - name: Create release
         uses: ncipollo/release-action@v1
