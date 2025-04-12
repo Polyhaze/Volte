@@ -48,7 +48,7 @@ jobs:
         with:
           name: ${{ steps.version_info.outputs.build_version }}
           tag: ${{ steps.version_info.outputs.build_version }}
-          artifacts: "artifacts/*.tar.gz,artifacts/*.7z"
+          artifacts: "packages/*.tar.gz,packages/*.7z"
           body: "**[Changes since last build](https://github.com/Polyhaze/Volte/compare/${{ steps.version_info.outputs.prev_build_version }}...${{ steps.version_info.outputs.build_version }})**"
           omitBodyDuringUpdate: true
           owner: Polyhaze
