@@ -12,9 +12,9 @@ public static partial class Logger
         remove => LogEventHandler.Remove(value);
     }
 
-    private static readonly Event<VolteLogEventArgs> LogEventHandler = new(enableHandlerlessQueue: true);
+    private static readonly EventWithQueue<VolteLogEventArgs> LogEventHandler = new();
 
-    public static void Log(VolteLogEventArgs eventArgs) => LogEventHandler.CallHandlers(eventArgs);
+    public static void Log(VolteLogEventArgs eventArgs) => LogEventHandler.Call(eventArgs);
 
     public static bool IsDebugLoggingEnabled => Config.DebugEnabled || Version.IsDevelopment;
 

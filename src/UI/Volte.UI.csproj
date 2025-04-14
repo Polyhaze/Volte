@@ -17,7 +17,7 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.2" />
         <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.4.0"/>
         <PackageReference Include="MenuFactory" Version="1.1.0" />
-        <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.2" />
+        <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.3" />
         <PackageReference Include="OneOf" Version="3.0.271" />
         
         <ProjectReference Include="../Bot/Volte.csproj"/>
