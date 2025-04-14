@@ -39,9 +39,7 @@ jobs:
           global-json-file: global.json
 
       - name: Compile
-        run: |
-          bash build.sh ${{ steps.version_info.outputs.build_version }}
-          echo "$PWD"
+        run: bash build.sh ${{ steps.version_info.outputs.build_version }}
 
       - name: Create release
         uses: ncipollo/release-action@v1
