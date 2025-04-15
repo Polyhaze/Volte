@@ -27,12 +27,20 @@ public sealed class StarboardService : VolteService
     /// <param name="starboard">Will be assigned to retrieved starboard information</param>
     /// <param name="starboardChannel">Will be assigned to the <see cref="SocketChannel"/> for the starboard channel</param>
     /// <returns>True if the reaction is valid, false otherwise</returns>
-    private bool IsStarReaction(
-        IMessageChannel channel, SocketReaction reaction,
+    private bool IsCountableStarReaction(
+        IMessageChannel channel,
+        IUserMessage starredMessage,
+        SocketReaction reaction,
         out StarboardOptions starboard, out SocketChannel starboardChannel)
     {
         starboard = default;
         starboardChannel = default;
+        
+        if (starredMessage is null)
+            return false; //message pointed to is a non-user posted message
+        
+        // Ignore reactions from the user who posted the star
+        if (reaction.UserId == starredMessage.Author.Id) return false;
             
         // Ignore reaction events sent in DMs
         if (channel is not IGuildChannel guildChannel) return false;
@@ -42,9 +50,8 @@ public sealed class StarboardService : VolteService
             
         // Ignore reactions from the current user
         if (reaction.UserId == _client.CurrentUser.Id) return false;
-
-        var data = _db.GetData(guildChannel.Guild.Id);
-        starboard = data.Configuration.Starboard;
+        
+        starboard = _db.GetData(guildChannel.Guild.Id).Configuration.Starboard;
 
         if (!starboard.Enabled) return false;
 
@@ -55,8 +62,12 @@ public sealed class StarboardService : VolteService
     public async Task HandleReactionAddAsync(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
     {
         var channel = await cachedChannel.GetOrDownloadAsync();
+        
+        var starredMessage = reaction.Message.IsSpecified
+            ? reaction.Message.Value
+            : (await channel.GetMessageAsync(reaction.MessageId)).Cast<IUserMessage>();
             
-        if (!IsStarReaction(channel, reaction, out var starboard, out var starboardChannel) || reaction.User.IsSpecified && reaction.User.Value.IsBot)
+        if (!IsCountableStarReaction(channel, starredMessage, reaction, out var starboard, out var starboardChannel) || reaction.User.IsSpecified && reaction.User.Value.IsBot)
             return;
 
         var guildId = channel.Cast<IGuildChannel>().Guild.Id;
@@ -113,8 +124,12 @@ public sealed class StarboardService : VolteService
     public async Task HandleReactionRemoveAsync(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
     {
         var channel = await cachedChannel.GetOrDownloadAsync();
+        
+        var starredMessage = reaction.Message.IsSpecified
+            ? reaction.Message.Value
+            : (await channel.GetMessageAsync(reaction.MessageId)).Cast<IUserMessage>();
 
-        if (!IsStarReaction(channel, reaction, out var starboard, out _))
+        if (!IsCountableStarReaction(channel, starredMessage, reaction, out var starboard, out _))
             return;
 
         var guildId = channel.Cast<IGuildChannel>().Guild.Id;
