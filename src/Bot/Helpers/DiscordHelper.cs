@@ -253,12 +253,30 @@ public static class DiscordHelper
     public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
         => deletable.TryDeleteAsync(RequestOptions(opts => opts.AuditLogReason = reason));
 
-    public static string GetEffectiveUsername(this IGuildUser user) =>
-        user.Nickname ?? user.Username;
+    public static string GetEffectiveUsername(this IGuildUser user)
+    {
+        if (user.Nickname != null)
+            return Format.Sanitize($"{user.Nickname} ({user.Username})");
+
+        return user.DisplayName == user.Username 
+            ? Format.Sanitize(user.Username) 
+            : Format.Sanitize(user.DisplayName ?? user.Username);
+    }
+    
+    public static string GetEffectiveUsername(this IUser user)
+    {
+        return user.GlobalName == user.Username 
+            ? Format.Sanitize(user.Username) 
+            : Format.Sanitize(user.GlobalName ?? user.Username);
+    }
+
+    public static string GetEffectiveAvatarUrl(this IGuildUser user, ImageFormat format = ImageFormat.Auto,
+        ushort size = 128)
+        => user.GetGuildAvatarUrl(format, size) ?? user.GetAvatarUrl(format, size);
 
     public static string GetEffectiveAvatarUrl(this IUser user, ImageFormat format = ImageFormat.Auto,
         ushort size = 128)
-        => user.GetAvatarUrl(format, size) ?? user.GetDefaultAvatarUrl();
+        => user.GetDisplayAvatarUrl(format, size) ?? user.GetAvatarUrl(format, size);
 
     public static bool HasAttachments(this IMessage message)
         => message.Attachments.Count != 0;

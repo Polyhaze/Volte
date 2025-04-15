@@ -24,7 +24,7 @@ public sealed partial class ModerationModule
             await user.BanAsync(daysToDelete == 0 ? 7 : daysToDelete, reason);
             await Context.Guild.RemoveBanAsync(user);
 
-            return Ok($"Successfully softbanned **{user.Username}#{user.Discriminator}**.", _ =>
+            return Ok($"Successfully softbanned **{user.GetEffectiveUsername()}**.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
                     .WithActionType(ModActionType.Softban)
