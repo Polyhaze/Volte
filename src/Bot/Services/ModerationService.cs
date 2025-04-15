@@ -3,19 +3,19 @@ namespace Volte.Services;
 public sealed class ModerationService : VolteService
 {
     private readonly DatabaseService _db;
-    
+
     public ModerationService(DatabaseService databaseService)
     {
         _db = databaseService;
     }
-    
+
     public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
     {
         var modConfig = _db.GetData(args.Guild).Configuration.Moderation;
         if (args.User.IsBot || !modConfig.CheckAccountAge || !Config.EnabledFeatures.ModLog) return;
-            
+
         Debug(LogSource.Volte, "Attempting to post a VerifyAge message.");
-            
+
         var c = args.User.Guild.GetTextChannel(modConfig.ModActionLogChannel);
         if (c is null) return;
         Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
@@ -25,7 +25,7 @@ public sealed class ModerationService : VolteService
             Debug(LogSource.Volte, "Account younger than 30 days; posting message.");
             var unit = diff.Days > 0 ? "day" : diff.Hours > 0 ? "hour" : "minute";
             var time = diff.Days > 0 ? diff.Days : diff.Hours > 0 ? diff.Hours : diff.Minutes;
-                
+
             await new EmbedBuilder()
                 .WithColor(Color.Red)
                 .WithTitle("Possibly Malicious User")
@@ -42,7 +42,7 @@ public sealed class ModerationService : VolteService
         if (!Config.EnabledFeatures.ModLog) return;
 
         Debug(LogSource.Volte, "Attempting to post a modlog message.");
-        
+
         var c = args.Guild.GetTextChannel(args.GuildData.Configuration.Moderation.ModActionLogChannel);
         if (c is null)
         {
@@ -52,32 +52,33 @@ public sealed class ModerationService : VolteService
 
         var e = args.CreateEmbedBuilder(null).WithAuthor(author: null).WithSuccessColor();
         Debug(LogSource.Volte, "Received a signal to send a ModLog message.");
-        var sb = new StringBuilder();
 
         switch (args.ActionType)
         {
             case ModActionType.Purge:
             {
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(MessagesCleared(args))
-                        .AppendLine(Channel(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .MessagesCleared()
+                            .Channel()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Purge)}");
                 break;
             }
 
             case ModActionType.Delete:
             {
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Target(args, true))
-                        .AppendLine(Channel(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Target(true)
+                            .Channel()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Delete)}");
                 break;
             }
@@ -85,14 +86,15 @@ public sealed class ModerationService : VolteService
             case ModActionType.Kick:
             {
                 IncrementAndSave(args.GuildData);
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Case(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Reason(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Case()
+                            .Target(false)
+                            .Reason()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Kick)}");
                 break;
             }
@@ -100,26 +102,28 @@ public sealed class ModerationService : VolteService
             case ModActionType.Warn:
             {
                 IncrementAndSave(args.GuildData);
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Case(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Reason(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Case()
+                            .Target(false)
+                            .Reason()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Warn)}");
                 break;
             }
 
             case ModActionType.ClearWarns:
             {
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Target(false)
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.ClearWarns)}");
                 break;
             }
@@ -127,14 +131,15 @@ public sealed class ModerationService : VolteService
             case ModActionType.Softban:
             {
                 IncrementAndSave(args.GuildData);
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Case(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Reason(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Case()
+                            .Target(false)
+                            .Reason()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Softban)}");
                 break;
             }
@@ -142,14 +147,15 @@ public sealed class ModerationService : VolteService
             case ModActionType.Ban:
             {
                 IncrementAndSave(args.GuildData);
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Case(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Reason(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Case()
+                            .Target(false)
+                            .Reason()
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Ban)}");
                 break;
             }
@@ -157,28 +163,32 @@ public sealed class ModerationService : VolteService
             case ModActionType.IdBan:
             {
                 IncrementAndSave(args.GuildData);
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Case(args))
-                        .AppendLine(await TargetRestUser(args))
-                        .AppendLine(Reason(args))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        (
+                            await new ModLogMessageBuilder(args)
+                                .Action()
+                                .Moderator()
+                                .Case()
+                                .TargetRestUser()
+                        )
+                        .Reason()
+                        .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                 break;
             }
 
             case ModActionType.Verify:
-                await e.WithDescription(sb
-                        .AppendLine(Action(args))
-                        .AppendLine(Moderator(args))
-                        .AppendLine(Target(args, false))
-                        .AppendLine(Time(args)))
-                    .SendToAsync(c);
+                await e.WithDescription(
+                        new ModLogMessageBuilder(args)
+                            .Action()
+                            .Moderator()
+                            .Target(false)
+                            .Time()
+                    ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Verify)}");
                 break;
-            
+
             default:
                 Debug(LogSource.Volte, "What the hell did you pass as a ModActionType?", InvocationInfo.Here());
                 break;
@@ -194,24 +204,36 @@ public sealed class ModerationService : VolteService
         _db.Save(gd);
     }
 
-    private static string Reason(ModActionEventArgs args) => $"**Reason:** {args.Reason}";
-    private static string Action(ModActionEventArgs args) => $"**Action:** {args.ActionType}";
-    private static string Moderator(ModActionEventArgs args) => $"**Moderator:** {args.Moderator} ({args.Moderator.Id})";
-    private static string Channel(ModActionEventArgs args) => $"**Channel:** <#{args.Channel.Id}>";
-    private static string Case(ModActionEventArgs args) => $"**Case:** {args.GuildData.Extras.ModActionCaseNumber}";
-    private static string MessagesCleared(ModActionEventArgs args) => $"**Messages Cleared:** {args.Count}";
-
-    private static async Task<string> TargetRestUser(ModActionEventArgs args)
+    private readonly struct ModLogMessageBuilder(ModActionEventArgs args)
     {
-        var u = await VolteBot.Client.Rest.GetUserAsync(args.TargetId ?? 0);
-        return u is null
-            ? $"**User:** {args.TargetId}"
-            : $"**User:** {u} ({args.TargetId})";
-    }
-    private static string Target(ModActionEventArgs args, bool isOnMessageDelete) => isOnMessageDelete
-        ? $"**Message Deleted:** {args.TargetId}"
-        : $"**User:** {args.TargetUser} ({args.TargetUser.Id})";
+        private readonly StringBuilder _sb = new();
 
-    private static string Time(ModActionEventArgs args)
-        => $"**Time:** {args.Time.ToDiscordTimestamp(TimestampType.LongDateTime)}";
+        public ModLogMessageBuilder Reason() => append($"**Action:** {args.ActionType}");
+        public ModLogMessageBuilder Action() => append($"**Action:** {args.ActionType}");
+        public ModLogMessageBuilder Moderator() => append($"**Moderator:** {args.Moderator} ({args.Moderator.Id})");
+        public ModLogMessageBuilder Channel() => append($"**Channel:** <#{args.Channel.Id}>");
+        public ModLogMessageBuilder Case() => append($"**Case:** {args.GuildData.Extras.ModActionCaseNumber}");
+        public ModLogMessageBuilder MessagesCleared() => append($"**Messages Cleared:** {args.Count}");
+
+        public ModLogMessageBuilder Target(bool isOnMessageDelete)
+            => append(isOnMessageDelete
+                ? $"**Message Deleted:** {args.TargetId}"
+                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})");
+
+        public ModLogMessageBuilder Time()
+            => append($"**Time:** {args.Time.ToDiscordTimestamp(TimestampType.LongDateTime)}");
+
+        public async Task<ModLogMessageBuilder> TargetRestUser()
+        {
+            var u = await VolteBot.Client.Rest.GetUserAsync(args.TargetId ?? 0);
+            return append(u is null
+                ? $"**User:** {args.TargetId}"
+                : $"**User:** {u} ({args.TargetId})");
+        }
+
+        private ModLogMessageBuilder append(string content)
+            => this.Apply(it => it._sb.AppendLine(content));
+
+        public static implicit operator string(ModLogMessageBuilder messageBuilder) => messageBuilder._sb.ToString();
+    }
 }
