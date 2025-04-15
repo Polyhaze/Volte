@@ -208,30 +208,30 @@ public sealed class ModerationService : VolteService
     {
         private readonly StringBuilder _sb = new();
 
-        public ModLogMessageBuilder Reason() => append($"**Action:** {args.ActionType}");
-        public ModLogMessageBuilder Action() => append($"**Action:** {args.ActionType}");
-        public ModLogMessageBuilder Moderator() => append($"**Moderator:** {args.Moderator} ({args.Moderator.Id})");
-        public ModLogMessageBuilder Channel() => append($"**Channel:** <#{args.Channel.Id}>");
-        public ModLogMessageBuilder Case() => append($"**Case:** {args.GuildData.Extras.ModActionCaseNumber}");
-        public ModLogMessageBuilder MessagesCleared() => append($"**Messages Cleared:** {args.Count}");
+        public ModLogMessageBuilder Reason() => Append($"**Action:** {args.ActionType}");
+        public ModLogMessageBuilder Action() => Append($"**Action:** {args.ActionType}");
+        public ModLogMessageBuilder Moderator() => Append($"**Moderator:** {args.Moderator.GetEffectiveUsername()} ({args.Moderator.Id})");
+        public ModLogMessageBuilder Channel() => Append($"**Channel:** <#{args.Channel.Id}>");
+        public ModLogMessageBuilder Case() => Append($"**Case:** {args.GuildData.Extras.ModActionCaseNumber}");
+        public ModLogMessageBuilder MessagesCleared() => Append($"**Messages Cleared:** {args.Count}");
 
         public ModLogMessageBuilder Target(bool isOnMessageDelete)
-            => append(isOnMessageDelete
+            => Append(isOnMessageDelete
                 ? $"**Message Deleted:** {args.TargetId}"
-                : $"**User:** {args.TargetUser} ({args.TargetUser.Id})");
+                : $"**User:** {args.TargetUser.GetEffectiveUsername()} ({args.TargetUser.Id})");
 
         public ModLogMessageBuilder Time()
-            => append($"**Time:** {args.Time.ToDiscordTimestamp(TimestampType.LongDateTime)}");
+            => Append($"**Time:** {args.Time.ToDiscordTimestamp(TimestampType.LongDateTime)}");
 
         public async Task<ModLogMessageBuilder> TargetRestUser()
         {
             var u = await VolteBot.Client.Rest.GetUserAsync(args.TargetId ?? 0);
-            return append(u is null
+            return Append(u is null
                 ? $"**User:** {args.TargetId}"
                 : $"**User:** {u} ({args.TargetId})");
         }
 
-        private ModLogMessageBuilder append(string content)
+        private ModLogMessageBuilder Append(string content)
             => this.Apply(it => it._sb.AppendLine(content));
 
         public static implicit operator string(ModLogMessageBuilder messageBuilder) => messageBuilder._sb.ToString();
