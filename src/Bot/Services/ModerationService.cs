@@ -208,7 +208,7 @@ public sealed class ModerationService : VolteService
     {
         private readonly StringBuilder _sb = new();
 
-        public ModLogMessageBuilder Reason() => Append($"**Action:** {args.ActionType}");
+        public ModLogMessageBuilder Reason() => Append($"**Reason:** `{args.Reason}`");
         public ModLogMessageBuilder Action() => Append($"**Action:** {args.ActionType}");
         public ModLogMessageBuilder Moderator() => Append($"**Moderator:** {args.Moderator.GetEffectiveUsername()} ({args.Moderator.Id})");
         public ModLogMessageBuilder Channel() => Append($"**Channel:** <#{args.Channel.Id}>");
