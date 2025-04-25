@@ -34,7 +34,7 @@ public partial class ModerationModule
     
     [Command("SilentPlainSay", "SPSay")]
     [Description(
-        "Runs the say command normally, but doesn't show the author in the message.")]
+        "Runs the plain say command normally, but deletes your message afterwards.")]
     public Task<ActionResult> SilentPlainSayAsync([Remainder, Description("What to say.")]
         string msg)
         => None(async () =>
