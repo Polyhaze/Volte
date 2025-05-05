@@ -7,7 +7,7 @@ namespace Volte.UI.Avalonia.Pages;
 
 public class ShellViewMenu
 {
-    [Menu("Clear Commands", "Dev", Icon = "fa-solid fa-broom")]
+    [Menu("Clear Commands", "Tools", Icon = "fa-solid fa-broom")]
     public static async Task ClearCommands()
     {
         var interactionService = VolteBot.Services.Get<VolteInteractionService>();
@@ -17,7 +17,7 @@ public class ShellViewMenu
             return;
         }
 
-#if DEBUG
+#if DEBUG || !PROD
         var removedCommandsText = $"{await interactionService.ClearAllCommandsAsync()} commands";
 #else
         var removedCommandsText = $"{await interactionService.ClearAllCommandsAsync()} global commands";

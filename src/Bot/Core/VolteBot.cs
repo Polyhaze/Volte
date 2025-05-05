@@ -4,6 +4,13 @@ namespace Volte;
 
 public class VolteBot
 {
+    public const bool IsProduction =
+#if PROD
+        true;
+#else
+        false;
+#endif
+    
     public static Task StartAsync(Gommon.Optional<CancellationTokenSource> cts = default)
     {
         Console.Title = $"Volte {Version.InformationVersion}";

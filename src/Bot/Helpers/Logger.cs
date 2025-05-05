@@ -1,5 +1,6 @@
 using System.IO;
 using System.Runtime.CompilerServices;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Volte.Helpers;
@@ -16,7 +17,12 @@ public static partial class Logger
 
     public static void Log(VolteLogEventArgs eventArgs) => LogEventHandler.Call(eventArgs);
 
-    public static bool IsDebugLoggingEnabled => Config.DebugEnabled || Version.IsDevelopment;
+    public static bool IsDebugLoggingEnabled =>
+#if PROD
+        Config.DebugEnabled;
+#else
+        true;
+#endif
 
     #region Logger methods with invocation info
 
@@ -164,7 +170,8 @@ public static partial class Logger
     public static void OutputLogToStandardOut()
     {
         LogEventHandler.Clear();
-        Event += logEvent => LogSync.Lock(() => Execute(logEvent.Severity, logEvent.Source, logEvent.Message, logEvent.Error, logEvent.Invocation));
+        Event += logEvent => LogSync.Lock(() =>
+            Execute(logEvent.Severity, logEvent.Source, logEvent.Message, logEvent.Error, logEvent.Invocation));
     }
 }
 
@@ -200,7 +207,7 @@ public readonly struct InvocationInfo
     /// <remarks>Mostly used in the logger.</remarks>
     /// <returns>An <see cref="InvocationInfo"/> referencing the specific C# source member it was created in.</returns>
     public static InvocationInfo CurrentMember([CallerMemberName] string callerName = default!) => new(callerName);
-    
+
     public bool IsInitialized { get; }
 
     public string FilePath { get; }
@@ -244,13 +251,13 @@ public readonly struct InvocationInfo
         CallerName = caller;
     }
 
-    public new Gommon.Optional<string> ToString() 
+    public new Gommon.Optional<string> ToString()
         => Type switch
         {
             { Full: true } => $"{CallerName}:{this.GetSourceFileName()}:{LineInFile}",
             { CallerOnly: true } => CallerName,
             { FileLoc: true } => $"{this.GetSourceFileName()}:{LineInFile}",
-            _ => (Gommon.Optional<string>) default 
+            _ => (Gommon.Optional<string>)default
             //casting to ensure default branch returns a default optional and not an optional with a null string value
         };
 }
@@ -261,6 +268,4 @@ public static class InvocationInfoExt
         => invocation.FilePath[
             (invocation.FilePath.LastIndexOf(Path.DirectorySeparatorChar) + 1)..
         ];
-
-
 }

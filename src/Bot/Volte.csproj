@@ -10,12 +10,12 @@
         <RepositoryUrl>https://github.com/Polyhaze/Volte</RepositoryUrl>
         <Copyright>MIT</Copyright>
         <Version>4.0.0.0</Version> <!-- actual version number -->
-        <InformationalVersion>Dev Build</InformationalVersion> <!-- release/dev build --> 
         <Platforms>AnyCPU</Platforms>
         <ApplicationIcon>Resources/Volte.ico</ApplicationIcon>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
       <None Include="..\..\.editorconfig" Link=".editorconfig" />

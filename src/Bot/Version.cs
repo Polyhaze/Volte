@@ -14,15 +14,10 @@ public static class Version
     {
         DotNetVersion = Assembly.GetExecutingAssembly().GetName().Version ??
                         throw new InvalidOperationException("Version not found");
-        
-        var infoVer = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            ?.InformationalVersion ?? throw new InvalidOperationException("Version not found");
 
-        infoVer = infoVer.LastIndexOf('+') != -1
-            ? infoVer[..infoVer.LastIndexOf('+')]
-            : infoVer;
-
-        InformationVersion = $"{DotNetVersion} {infoVer.Trim()}";
+        // ReSharper disable once HeuristicUnreachableCode
+        //compile-time constant is determined by a define constant
+        InformationVersion = $"{DotNetVersion} {(VolteBot.IsProduction ? "Release" : "indev")}";
     }
 
     public static readonly bool IsDevelopment = InformationVersion.ContainsIgnoreCase("dev");

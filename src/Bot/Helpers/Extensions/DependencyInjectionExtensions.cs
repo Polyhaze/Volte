@@ -22,7 +22,7 @@ public static partial class Extensions
             }))
             .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = Config.DebugEnabled || Version.IsDevelopment 
+                LogLevel = IsDebugLoggingEnabled
                     ? LogSeverity.Debug 
                     : LogSeverity.Verbose,
                 GatewayIntents = Intents,
