@@ -1,5 +1,5 @@
 build/
-packages/
+artifacts/
 .idea/
 .vs/
 src/Bot/bin/
