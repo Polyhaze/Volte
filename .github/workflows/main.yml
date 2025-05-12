@@ -39,7 +39,7 @@ jobs:
           global-json-file: global.json
 
       - name: Compile
-        run: bash build.sh ${{ steps.version_info.outputs.build_version }}
+        run: bash build.sh ${{ steps.version_info.outputs.build_version }} false
 
       - name: Create release
         uses: ncipollo/release-action@v1

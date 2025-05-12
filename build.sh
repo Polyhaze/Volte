@@ -1,14 +1,12 @@
-if [ $# != 1 ]; then
-   echo "This script requires one argument, representing the version to build."
+if [ $# != 2 ]; then
+   echo "This script can accept two arguments, but only needs one. They are in this order: representing the version to build and whether or not you are running this in an interactive shell. i.e. ./build.sh 4.0.0.0 true"
    read -n1 -r -p "Press any key to exit."
    exit 1
 fi
 
 function pub {
-
-echo "Compiling for $1..."
-dotnet publish -c release -r $1 --self-contained -o ../../build/$1/$2/publish --p:Version="$3" -p:ExtraDefineConstants=PROD
-
+  echo "Compiling for $1..."
+  dotnet publish -c release -r $1 --self-contained -o ../../build/$1/$2/publish --p:Version="$3" -p:ExtraDefineConstants=PROD
 }
 
 function packClassic {
@@ -81,4 +79,7 @@ packUi osx-arm64 $1
 packUi osx-x64 $1
 
 echo "Complete. You can find builds for all 6 OSes in build/. Pre-compressed archives are in artifacts/."
-read -n1 -r -p "Press any key to exit."
+
+if [ $2 != "false" ]; then
+  read -n1 -r -p "Press any key to exit."  
+fi
