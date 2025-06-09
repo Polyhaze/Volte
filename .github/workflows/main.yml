@@ -51,4 +51,4 @@ jobs:
           omitBodyDuringUpdate: true
           owner: Polyhaze
           repo: Volte
-          token: ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
