@@ -141,7 +141,7 @@ public static class Config
 
     public static string Streamer => _configuration.Streamer;
 
-    public static bool DebugEnabled => _configuration.EnableDebug;
+    public static bool DebugEnabled => _configuration?.EnableDebug ?? false;
 
     public static string FormattedStreamUrl => $"https://twitch.tv/{Streamer}";
 
