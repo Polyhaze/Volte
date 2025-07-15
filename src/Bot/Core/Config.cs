@@ -153,7 +153,7 @@ public static class Config
 
     public static HashSet<ulong> BlacklistedOwners => _configuration.BlacklistedGuildOwners;
 
-    public static EnabledFeatures EnabledFeatures => _configuration.EnabledFeatures;
+    public static EnabledFeatures EnabledFeatures => _configuration?.EnabledFeatures;
 }
 
 public struct HeadlessBotConfig : IVolteConfig
