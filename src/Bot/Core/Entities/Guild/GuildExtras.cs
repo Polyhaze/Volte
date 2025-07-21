@@ -17,6 +17,9 @@ public sealed class GuildExtras
     [JsonPropertyName("tags")]
     public HashSet<Tag> Tags { get; set; } = [];
 
+    [JsonPropertyName("starscript_tables")]
+    public StarscriptTables StarscriptTables { get; set; } = new();
+
     public void AddTag(Tag tag)
     {
         var existingIdenticalTag = Tags.FirstOrDefault(it => it.Response == tag.Response);

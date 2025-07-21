@@ -1,6 +1,8 @@
-﻿namespace Volte.Commands.Text;
+﻿using Starscript;
 
-public sealed class VolteContext : CommandContext
+namespace Volte.Commands.Text;
+
+public sealed class VolteContext : CommandContext, IStarscriptObject<VolteContext>
 {
     // ReSharper disable once SuggestBaseTypeForParameter
     public VolteContext(SocketMessage msg, IServiceProvider provider) : base(provider)
@@ -75,4 +77,12 @@ public sealed class VolteContext : CommandContext
         if (Services.TryGet<DatabaseService>(out var db))
             db.Save(GuildData);
     }
+
+    public StringSegment RunStarscript(string source) => VolteStarscript.Run(source, this);
+    public StringSegment RunStarscriptExpression(string expression) 
+        => RunStarscript($"{{{expression.Replace("{", string.Empty).Replace("}", string.Empty)}}}");
+
+    public ValueMap ToStarscript() => new ValueMap()
+        .Set("message", StarscriptHelper.Wrap(Message))
+        .Set("user", StarscriptHelper.Wrap(User));
 }

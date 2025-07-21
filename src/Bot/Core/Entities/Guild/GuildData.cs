@@ -33,6 +33,7 @@ public sealed class GuildData
             },
             Extras = new()
             {
+                StarscriptTables = new StarscriptTables(),
                 ModActionCaseNumber = default,
                 SelfRoles = [],
                 Tags = [],
