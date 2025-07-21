@@ -12,7 +12,7 @@ public static class Extensions
     }
 
     public static ActionRowBuilder AddComponentIf(this ActionRowBuilder builder, bool condition,
-        IMessageComponent component)
+        IMessageComponentBuilder component)
     {
         if (condition)
         {
@@ -25,11 +25,11 @@ public static class Extensions
         return builder;
     }
 
-    public static ActionRowBuilder AsActionRow(this IEnumerable<IMessageComponent> components)
+    public static ActionRowBuilder AsActionRow(this IEnumerable<IMessageComponentBuilder> components)
         => new ActionRowBuilder().AddComponents(components);
 
     public static ActionRowBuilder AddComponents(this ActionRowBuilder builder,
-        IEnumerable<IMessageComponent> components)
+        IEnumerable<IMessageComponentBuilder> components)
         => builder.Apply(x => components.ForEach(c => x.AddComponent(c)));
 
     public static ComponentBuilder AddActionRow(this ComponentBuilder builder,
