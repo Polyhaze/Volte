@@ -7,7 +7,8 @@ public sealed class StarboardModule : VolteModule
     public StarboardService Service { get; set; }
         
     [Command, DummyCommand, Description("The set of commands used to modify how the Starboard works in your guild.")]
-    public Task<ActionResult> BaseAsync() => None();
+    public async Task<ActionResult> BaseAsync() 
+        => Ok(await TextCommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
         
     [Command("Channel", "Ch")]
     [Description("Sets the channel to be used by starboard when a message is starred.")]
