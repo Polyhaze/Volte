@@ -5,29 +5,31 @@ namespace Volte.Helpers;
 
 public static class VolteStarscript
 {
-    public static readonly StarscriptHypervisor Hypervisor = StarscriptHypervisor.CreateWithStdLib();
+    public static bool GetBooleanValue(this StringSegment segment) 
+        => bool.Parse(segment.ToString());
 
-    public static readonly StarscriptHypervisor MathHypervisor = StarscriptHypervisor.CreateStandalone().WithStandardLibraryMath();
+    public static readonly StarscriptHypervisor Hypervisor = StarscriptHypervisor.Create().WithStandardLibrary();
+
+    public static readonly StarscriptHypervisor MathHypervisor = StarscriptHypervisor.Create().WithStandardLibraryMath();
 
     
-    public static StringSegment Run(string source, ValueMap environment)
-    {
-        var script = Compile(source);
-
-        var hv = Hypervisor.CopyGlobalsToNew();
-
-        foreach (var entry in environment)
-        {
-            hv.Set(entry.Key, entry.Value);
-        }
-
-        return hv.Run(script).Apply(_ => hv.Clear());
-    }
-
-    public static StringSegment Run<T>(string source, IStarscriptObject<T> environment) where T : IStarscriptObject<T>
+    public static StringSegment Run(string source, IStarscriptObject environment) 
         => Run(source, environment.ToStarscript());
 
-    public static StringSegment RunMath(string expression)
+    public static StringSegment Run(Script script, IStarscriptObject environment) 
+        => Run(script, environment.ToStarscript());
+
+    public static StringSegment Run(string source, ValueMap environment) 
+        => Run(Compile(source), environment);
+    
+    public static StringSegment Run(Script script, ValueMap environment)
+    {
+        var hv = Hypervisor.ReplaceLocals(environment);
+
+        return hv.Run(script, environment);
+    }
+
+    public static StringSegment RunExpression(string expression)
         => CompileExpression(expression).Execute(MathHypervisor);
     
     public static Script Compile(string source)

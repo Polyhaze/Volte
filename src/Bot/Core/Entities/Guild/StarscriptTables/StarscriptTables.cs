@@ -2,5 +2,5 @@
 
 public class StarscriptTables
 {
-    public List<StarscriptSrc> UserFilter { get; set; } = [];
+    public UserFilterTable UserFilter { get; set; } = new();
 }

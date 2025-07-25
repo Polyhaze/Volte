@@ -85,6 +85,8 @@ public sealed class InteractiveService : VolteService, IDisposable
         
         async Task messageHandler(SocketMessage m)
         {
+            Debug(LogSource.Service, m.Content);
+            
             if (m.ShouldHandle(out var msg))
             {
                 var result = await criterion.JudgeAsync(context, msg);

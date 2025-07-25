@@ -7,16 +7,16 @@ public sealed partial class UtilityModule
 {
     [Command("Math", "Maths")]
     [Description("Evaluate a mathematical expression.")]
-    public Task<ActionResult> MathAsync(
-        [Remainder, Description("The expression.")]
-        string expression)
+    public Task<ActionResult> MathAsync([Remainder, Description("The expression.")] string expression)
     {
         try
         {
-            var result = VolteStarscript.RunMath(expression);
+            var expr = expression.Replace("{", string.Empty).Replace("}", string.Empty);
+            
+            var result = VolteStarscript.RunExpression(expr);
 
             return Ok(Context.CreateEmbedBuilder()
-                .AddField("Input", Format.Code(expression))
+                .AddField("Input", Format.Code(expr))
                 .AddField("Output", Format.Code(result.ToString())));
         }
         catch (ParseException pe)
