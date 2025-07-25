@@ -32,9 +32,10 @@ public class UserFilterEntry
     /// <summary>
     ///     Performs the action specified by <see cref="Action"/> with the given <see cref="Reason"/>.
     /// </summary>
+    /// <param name="guild">The guild the user is in.</param>
     /// <param name="user">The user to moderate.</param>
     /// <returns>true if an action was carried out successfully; false if there was an <see cref="HttpException"/>.</returns>
-    public async Task<bool> ExecuteAsync(SocketGuildUser user)
+    public async Task<bool> ExecuteAsync(SocketGuild guild, SocketGuildUser user)
     {
         switch (Action)
         {
@@ -42,7 +43,7 @@ public class UserFilterEntry
                 try
                 {
                     await user.KickAsync(Reason,
-                        DiscordHelper.RequestOptions(o => o.AuditLogReason = $"Triggered user filter {Id}"));
+                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
                     return true;
                 }
                 catch (HttpException)
@@ -52,7 +53,8 @@ public class UserFilterEntry
             case ActionType.Ban:
                 try
                 {
-                    await user.BanAsync(7, Reason, DiscordHelper.RequestOptions(o => o.AuditLogReason = $"Triggered user filter {Id}"));
+                    await guild.AddBanAsync(user.Id, 7, Reason,
+                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
                     return true;
                 }
                 catch (HttpException)
@@ -62,9 +64,9 @@ public class UserFilterEntry
             case ActionType.SoftBan:
                 try
                 {
-                    await user.BanAsync(7, Reason,
-                        DiscordHelper.RequestOptions(o => o.AuditLogReason = $"Triggered user filter {Id}"));
-                    await user.Guild.RemoveBanAsync(user.Id);
+                    await guild.AddBanAsync(user.Id, 7, Reason,
+                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await guild.RemoveBanAsync(user.Id);
                     return true;
                 }
                 catch (HttpException)

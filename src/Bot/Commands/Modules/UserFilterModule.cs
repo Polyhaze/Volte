@@ -18,7 +18,9 @@ public class UserFilterModule : VolteModule
         "Creates a user filter with the specified Starscript condition. This command is interactive and prompts for further data: what to do when the filter is triggered, and the reason.")]
     public Task<ActionResult> CreateAsync([Remainder, Description("The condition this filter should match. The result of the condition needs to be a boolean (true/false).")] string condition)
     {
-        if (!Parser.TryParse($"{{{condition.Replace("{", "").Replace("}", "")}}}", out var result))
+        condition = $"{{{condition.Replace("{", "").Replace("}", "")}}}";
+        
+        if (!Parser.TryParse(condition, out var result))
             return BadRequest($"Syntax error: {result.Errors.First()}");
 
         var script = Compiler.SingleCompile(result);

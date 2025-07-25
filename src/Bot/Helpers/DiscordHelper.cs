@@ -135,6 +135,9 @@ public static class DiscordHelper
         client.ReactionRemoved += starboard.HandleReactionRemoveAsync;
         client.ReactionsCleared += starboard.HandleReactionsClearAsync;
 
+        var userFilter = provider.Get<UserFilterService>();
+        client.UserJoined += user => userFilter.OnUserJoined(new UserJoinedEventArgs(user));
+
         var moderation = provider.Get<ModerationService>();
         
         client.UserJoined += user => moderation.CheckAccountAgeAsync(new UserJoinedEventArgs(user));
