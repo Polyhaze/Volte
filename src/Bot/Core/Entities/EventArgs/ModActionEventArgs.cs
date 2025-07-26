@@ -1,5 +1,4 @@
 using Discord.Interactions;
-using Volte.Interactions;
 using Volte.Interactions.Commands;
 
 namespace Volte.Entities;
@@ -98,4 +97,6 @@ public class ModActionEventArgs
             .WithGuild(ctx.Guild)
             .WithModerator(ctx.User);
     }
+
+    public ModerationService.ModLogMessageBuilder MessageBuilder() => new(this);
 }
