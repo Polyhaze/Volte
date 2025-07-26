@@ -173,10 +173,19 @@ public class UserFilterModule : VolteModule
                 Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Entries
                     .RemoveAll(f => brokenEntries.Contains(f.Id)));
 
+            if (compiledEntries.Count is 0)
+            {
+                await Context.CreateEmbed("All configured filters were broken and have been automatically removed.")
+                    .SendToAsync(Context.Channel);
+                return;
+            }
+
             uint processedUsers = 0;
             uint actionedUsers = 0;
 
             var guild = await Context.Client.Rest.GetGuildAsync(Context.Guild.Id);
+
+            IUserMessage resultMessage = null;
 
             await foreach (var users in guild.GetUsersAsync())
             {
@@ -188,10 +197,31 @@ public class UserFilterModule : VolteModule
                         actionedUsers++;
                 }
 
-                await Context.CreateEmbedBuilder()
-                    .AddField("Processed users", processedUsers)
-                    .AddField("Actioned users", actionedUsers)
-                    .SendToAsync(Context.Channel);
+                if (resultMessage is null)
+                {
+                    resultMessage = await Context.CreateEmbedBuilder()
+                        .AddField("Processed users", processedUsers)
+                        .AddField("Actioned users", actionedUsers)
+                        .SendToAsync(Context.Channel);
+                }
+                else
+                {
+                    try
+                    {
+                        await resultMessage.ModifyAsync(x =>
+                            x.Embed = Context.CreateEmbedBuilder()
+                                .AddField("Processed users", processedUsers)
+                                .AddField("Actioned users", actionedUsers)
+                                .Build());
+                    }
+                    catch
+                    {
+                        resultMessage = await Context.CreateEmbedBuilder()
+                            .AddField("Processed users", processedUsers)
+                            .AddField("Actioned users", actionedUsers)
+                            .SendToAsync(Context.Channel);
+                    }
+                }
 
                 await Task.Delay(3.75.Seconds());
             }
