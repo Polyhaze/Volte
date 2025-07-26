@@ -57,8 +57,9 @@ public sealed class WelcomeOptions
     [JsonPropertyName("welcome_dm_message")]
     public string WelcomeDmMessage { get; set; }
 
-    public string FormatWelcomeMessage(SocketGuildUser user)
-        => WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+    public async Task<string> FormatWelcomeMessageAsync(SocketGuildUser user)
+    {
+        var msg = WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
             .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
             .ReplaceIgnoreCase("{UserName}", user.Username)
             .ReplaceIgnoreCase("{UserMention}", user.Mention)
@@ -67,8 +68,19 @@ public sealed class WelcomeOptions
             .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
             .ReplaceIgnoreCase("{UserString}", user);
 
-    public string FormatLeavingMessage(SocketGuild guild, SocketUser user)
-        => LeavingMessage.ReplaceIgnoreCase("{ServerName}", guild.Name)
+        try
+        {
+            return VolteStarscript.Run(WelcomeMessage, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+        }
+        catch
+        {
+            return msg;
+        }
+    }
+
+    public async Task<string> FormatLeavingMessageAsync(SocketGuild guild, SocketUser user)
+    {
+        var msg = LeavingMessage.ReplaceIgnoreCase("{ServerName}", guild.Name)
             .ReplaceIgnoreCase("{GuildName}", guild.Name)
             .ReplaceIgnoreCase("{UserName}", user.Username)
             .ReplaceIgnoreCase("{UserMention}", user.Mention)
@@ -76,9 +88,20 @@ public sealed class WelcomeOptions
             .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
             .ReplaceIgnoreCase("{MemberCount}", guild.MemberCount)
             .ReplaceIgnoreCase("{UserString}", user);
+        
+        try
+        {
+            return VolteStarscript.Run(LeavingMessage, await StarscriptHelper.WrapAsync(guild, user)).ToString();
+        }
+        catch
+        {
+            return msg;
+        }
+    }
 
-    public string FormatDmMessage(SocketGuildUser user)
-        => WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
+    public async Task<string> FormatDmMessageAsync(SocketGuildUser user)
+    {
+        var msg = WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
             .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
             .ReplaceIgnoreCase("{UserName}", user.Username)
             .ReplaceIgnoreCase("{UserMention}", user.Mention)
@@ -87,6 +110,16 @@ public sealed class WelcomeOptions
             .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
             .ReplaceIgnoreCase("{UserString}", user);
         
+        try
+        {
+            return VolteStarscript.Run(WelcomeDmMessage, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+        }
+        catch
+        {
+            return msg;
+        }
+    }
+
     public override string ToString()
         => JsonSerializer.Serialize(this, Config.JsonOptions);
 }

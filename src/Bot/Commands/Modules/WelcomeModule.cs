@@ -39,7 +39,7 @@ public class WelcomeModule : VolteModule
                 .AppendLine($"Set this guild's welcome message to: {Format.Code(message, string.Empty)}")
                 .AppendLine()
                 .AppendLine($"{sendingTest}"),
-            _ =>  Service.JoinAsync(new UserJoinedEventArgs(Context.User)));
+            _ => Service.JoinAsync(new UserJoinedEventArgs(Context.User)));
     }
 
     [Command("Color", "Colour", "Cl")]

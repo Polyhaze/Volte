@@ -16,7 +16,7 @@ public sealed class WelcomeService : VolteService
         var data = _db.GetData(args.Guild);
         
         if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
-            await args.User.TrySendMessageAsync(data.Configuration.Welcome.FormatDmMessage(args.User));
+            await args.User.TrySendMessageAsync(await data.Configuration.Welcome.FormatDmMessageAsync(args.User));
 
         if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
             return; //we don't want to send an empty join message
@@ -24,7 +24,7 @@ public sealed class WelcomeService : VolteService
 
         Debug(LogSource.Volte,
             "User joined a guild, let's check to see if we should send a welcome embed.");
-        var welcomeMessage = data.Configuration.Welcome.FormatWelcomeMessage(args.User);
+        var welcomeMessage = await data.Configuration.Welcome.FormatWelcomeMessageAsync(args.User);
         var c = args.Guild.GetTextChannel(data.Configuration.Welcome.WelcomeChannel);
 
         if (c is not null)
@@ -55,7 +55,7 @@ public sealed class WelcomeService : VolteService
         {
             await new EmbedBuilder()
                 .WithColor(data.Configuration.Welcome.WelcomeColor)
-                .WithDescription(data.Configuration.Welcome.FormatLeavingMessage(args.Guild, args.User))
+                .WithDescription(await data.Configuration.Welcome.FormatLeavingMessageAsync(args.Guild, args.User))
                 .WithThumbnailUrl(args.User.GetEffectiveAvatarUrl())
                 .WithCurrentTimestamp()
                 .SendToAsync(c);
