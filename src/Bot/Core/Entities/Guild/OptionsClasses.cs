@@ -70,7 +70,7 @@ public sealed class WelcomeOptions
 
         try
         {
-            return VolteStarscript.Run(WelcomeMessage, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
         }
         catch
         {
@@ -91,7 +91,7 @@ public sealed class WelcomeOptions
         
         try
         {
-            return VolteStarscript.Run(LeavingMessage, await StarscriptHelper.WrapAsync(guild, user)).ToString();
+            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(guild, user)).ToString();
         }
         catch
         {
@@ -112,7 +112,7 @@ public sealed class WelcomeOptions
         
         try
         {
-            return VolteStarscript.Run(WelcomeDmMessage, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
         }
         catch
         {
