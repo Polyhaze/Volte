@@ -32,7 +32,9 @@ public static class StarscriptHelper
         var gMap = new ValueMap();
         gMap.SetToString(guild.ToString);
         gMap.Set("name", guild.Name);
-        gMap.Set("id", guild.Id);
+        gMap.Set("id", guild.Id.ToString());
+        gMap.Set("createdAt", guild.CreatedAt.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
+        gMap.Set("createdAtTimestamp", guild.CreatedAt.ToDiscordTimestamp(TimestampType.LongDateTime));
         gMap.Set("mfaLevel", Enum.GetName(guild.MfaLevel)!);
         gMap.Set("verificationLevel", Enum.GetName(guild.VerificationLevel)!);
         gMap.Set("explicitContentFilter", Enum.GetName(guild.ExplicitContentFilter)!);
@@ -84,11 +86,12 @@ public static class StarscriptHelper
         uMap.Set("isWebhook", user.IsWebhook);
         uMap.Set("mention", user.Mention);
         uMap.Set("createdAt", user.CreatedAt.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
+        uMap.Set("createdAtTimestamp", user.CreatedAt.ToDiscordTimestamp(TimestampType.LongDateTime));
         uMap.Set("avatarUrl", user.GetDisplayAvatarUrl(size: 256));
         uMap.Set("hasPrimaryGuild", user.PrimaryGuild.HasValue);
         uMap.TryAddNullable("primaryGuild", user.PrimaryGuild, Wrap);
 
-        uMap.Set("id", user.Id);
+        uMap.Set("id", user.Id.ToString());
         return uMap;
     }
 
@@ -110,6 +113,10 @@ public static class StarscriptHelper
             v => v.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
         uMap.TryAddNullable("joinedAt", user.JoinedAt,
             v => v.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
+        uMap.TryAddNullable("timedOutUntilTimestamp", user.TimedOutUntil,
+            v => v.ToDiscordTimestamp(TimestampType.LongDateTime));
+        uMap.TryAddNullable("joinedAtTimestamp", user.JoinedAt,
+            v => v.ToDiscordTimestamp(TimestampType.LongDateTime));
 
         uMap.Set("hasRole", ctx =>
         {
