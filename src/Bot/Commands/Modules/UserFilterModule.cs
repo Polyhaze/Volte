@@ -17,10 +17,14 @@ public class UserFilterModule : VolteModule
     [Command("Create", "Add", "New")]
     [Description(
         "Creates a user filter with the specified Starscript condition. This command is interactive and prompts for further data: what to do when the filter is triggered, and the reason.")]
-    public Task<ActionResult> CreateAsync([Remainder, Description("The condition this filter should match. The result of the condition needs to be a boolean (true/false).")] string condition)
+    public Task<ActionResult> CreateAsync(
+        [Remainder,
+         Description(
+             "The condition this filter should match. The result of the condition needs to be a boolean (true/false).")]
+        string condition)
     {
         condition = $"{{{condition.Replace("{", "").Replace("}", "")}}}";
-        
+
         if (!Parser.TryParse(condition, out var result))
             return BadRequest($"Syntax error: {result.Errors.First()}");
 
@@ -46,25 +50,27 @@ public class UserFilterModule : VolteModule
         return Ok(async () =>
         {
             GetActionType:
-            await Context.CreateEmbed("What would you like to do when someone matches this filter? (Ban, Kick, Softban)")
+            await Context
+                .CreateEmbed("What would you like to do when someone matches this filter? (Ban, Kick, Softban)")
                 .SendToAsync(Context.Channel);
             var (actionType, didTimeout, _) = await Context.GetNextEnumAsync<ActionType>();
             if (didTimeout) return;
             if (!actionType.HasValue) goto GetActionType;
-            
+
             GetReason:
             await Context.CreateEmbed("What would you like the reason to be for the moderation action?")
                 .SendToAsync(Context.Channel);
             (var message, didTimeout) = await Context.GetNextAsync();
             if (didTimeout) return;
             if (!message.HasValue) goto GetReason;
-            
-            Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Add(condition, actionType, message.Value.Content));
+
+            Context.Modify(data =>
+                data.Extras.StarscriptTables.UserFilter.Add(condition, actionType, message.Value.Content));
 
             await Context.CreateEmbed("Added that filter to this guild.").SendToAsync(Context.Channel);
         }, false);
     }
-    
+
     [Command("Remove", "Delete", "Rem", "Del")]
     [Description("Deletes a user filter entry with the specified ID.")]
     public Task<ActionResult> RemoveAsync([Description("The filter entry ID.")] int id)
@@ -75,9 +81,10 @@ public class UserFilterModule : VolteModule
             return Ok("Removed that filter.");
         }
 
-        return BadRequest($"Unknown filter ID. See `{Context.FormatUsageFor("UserFilter List")}` to get the ID for a filter.");
+        return BadRequest(
+            $"Unknown filter ID. See `{Context.FormatUsageFor("UserFilter List")}` to get the ID for a filter.");
     }
-    
+
     [Command("List", "Ls")]
     [Description("Lists all user filters in this guild.")]
     public Task<ActionResult> ListAsync()
@@ -96,10 +103,10 @@ public class UserFilterModule : VolteModule
                     .AppendLine($"Action: `{it.Action}`")
                     .AppendLine($"Justification: `{it.Reason}`")
                     .ToString()
-                ))
+            ))
             .SplitPages(3));
     }
-    
+
     [Command("Clear")]
     [Description("Clears all user filters in this guild.")]
     public Task<ActionResult> ClearAsync() =>
@@ -112,13 +119,14 @@ public class UserFilterModule : VolteModule
             if (didTimeout) return;
             if (!confirmation.HasValue) goto Confirmation;
             if (!confirmation.Value) return;
-            
+
             Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Entries.Clear());
             await Context.CreateEmbed("Done.").SendToAsync(Context.Channel);
         }, false);
-    
+
     [Command("Check")]
-    [Description("Run the filter list against all users in this guild. WARNING: if your filters are misconfigured this can punish a LOT of people!")]
+    [Description(
+        "Run the filter list against all users in this guild. WARNING: if your filters are misconfigured this can punish a LOT of people!")]
     public Task<ActionResult> CheckAsync() =>
         Ok(async () =>
         {
@@ -127,12 +135,14 @@ public class UserFilterModule : VolteModule
             if (entriesList.Count is 0)
             {
                 await Context
-                    .CreateEmbed(
-                        $"There are no user filters configured in this guild.\nTo get started, run `{Context.FormatUsageFor("UserFilter")}`")
-                    .SendToAsync(Context.Channel);
+                    .CreateEmbed(String(sb => sb
+                            .AppendLine("There are no user filters configured in this guild.")
+                            .Append($"To get started, run {Format.Code(Context.FormatUsageFor("UserFilter"))}")
+                        )
+                    ).SendToAsync(Context.Channel);
                 return;
             }
-            
+
             Confirmation:
             await Context.CreateEmbed("Are you sure you want to run the user filters on every user?")
                 .SendToAsync(Context.Channel);
@@ -157,14 +167,14 @@ public class UserFilterModule : VolteModule
                     brokenEntries.Add(entry.Id);
                 }
             }
-            
+
             if (brokenEntries.Count > 0)
                 Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Entries
                     .RemoveAll(f => brokenEntries.Contains(f.Id)));
 
             uint processedUsers = 0;
             uint actionedUsers = 0;
-            
+
             await foreach (var users in Context.Guild.GetUsersAsync())
             {
                 foreach (var u in users)
@@ -175,15 +185,17 @@ public class UserFilterModule : VolteModule
                         actionedUsers++;
                 }
 
-                await Context.CreateEmbed($"Processed users: {processedUsers}\nActioned users: {actionedUsers}")
+                await Context.CreateEmbedBuilder()
+                    .AddField("Processed users", processedUsers)
+                    .AddField("Actioned users", actionedUsers)
                     .SendToAsync(Context.Channel);
+
                 await Task.Delay(2.5.Seconds());
             }
-            
         }, false);
 
     private async Task<bool> HandleUserAsync(
-        IGuildUser user, 
+        IGuildUser user,
         List<(UserFilterEntry Entry, Script Script)> compiledEntries)
     {
         foreach (var (entry, script) in compiledEntries)
@@ -203,7 +215,6 @@ public class UserFilterModule : VolteModule
             {
                 // Ignore
             }
-
         }
 
         return false;
