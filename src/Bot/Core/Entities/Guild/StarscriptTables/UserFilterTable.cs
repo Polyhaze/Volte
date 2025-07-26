@@ -35,7 +35,7 @@ public class UserFilterEntry
     /// <param name="guild">The guild the user is in.</param>
     /// <param name="user">The user to moderate.</param>
     /// <returns>true if an action was carried out successfully; false if there was an <see cref="HttpException"/>.</returns>
-    public async Task<bool> ExecuteAsync(SocketGuild guild, SocketGuildUser user)
+    public async Task<bool> ExecuteAsync(SocketGuild guild, IGuildUser user)
     {
         switch (Action)
         {

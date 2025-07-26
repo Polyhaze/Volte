@@ -51,7 +51,7 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
     /// </summary>
     /// <param name="timeout">The timespan to wait for. Defaults to 30 seconds.</param>
     /// <typeparam name="T">The type of object to wait for.</typeparam>
-    public async ValueTask<(Gommon.Optional<T> Result, bool DidTimeout)> GetNextAsync<T>(TimeSpan? timeout = null)
+    public async ValueTask<(Gommon.Optional<T> Result, bool DidTimeout, SocketUserMessage Message)> GetNextAsync<T>(TimeSpan? timeout = null)
     {
         timeout ??= 30.Seconds();
         var message = await Interactive.NextMessageAsync(this, timeout: timeout);
@@ -59,13 +59,13 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
         {
             await CreateEmbed($"You didn't reply within {timeout.Value.Humanize()}. Run the command and try again.")
                 .SendToAsync(Channel);
-            return (default, true);
+            return (default, true, null);
         }
 
         var parserResult = await Services.Get<CommandService>().GetTypeParser<T>().ParseAsync(null, message.Content, this);
         return parserResult.IsSuccessful 
-            ? (parserResult.Value, false) 
-            : (default, false);
+            ? (parserResult.Value, false, message) 
+            : (default, false, message);
     }
     
     /// <summary>
@@ -74,7 +74,7 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
     ///     To disable a timeout, set it to <see cref="Timeout"/>.<see cref="Timeout.InfiniteTimeSpan"/>.
     /// </summary>
     /// <param name="timeout">The timespan to wait for. Defaults to 30 seconds.</param>
-    public async ValueTask<(Gommon.Optional<string> Result, bool DidTimeout)> GetNextAsync(TimeSpan? timeout = null)
+    public async ValueTask<(Gommon.Optional<SocketUserMessage> Result, bool DidTimeout)> GetNextAsync(TimeSpan? timeout = null)
     {
         timeout ??= 30.Seconds();
         var message = await Interactive.NextMessageAsync(this, timeout: timeout);
@@ -85,7 +85,7 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
             return (default, true);
         }
 
-        return (message.Content, false);
+        return (message, false);
     }
     
     /// <summary>
@@ -96,7 +96,7 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
     /// </summary>
     /// <param name="timeout">The timespan to wait for. Defaults to 30 seconds.</param>
     /// <typeparam name="T">The type of enum to wait for.</typeparam>
-    public async ValueTask<(Gommon.Optional<T> Result, bool DidTimeout)> GetNextEnumAsync<T>(TimeSpan? timeout = null) where T : struct 
+    public async ValueTask<(Gommon.Optional<T> Result, bool DidTimeout, SocketUserMessage Message)> GetNextEnumAsync<T>(TimeSpan? timeout = null) where T : struct 
     {
         timeout ??= 30.Seconds();
         var message = await Interactive.NextMessageAsync(this, timeout: timeout);
@@ -104,13 +104,13 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
         {
             await CreateEmbed($"You didn't reply within {timeout.Value.Humanize()}. Run the command and try again.")
                 .SendToAsync(Channel);
-            return (default, true);
+            return (default, true, null);
         }
 
         if (Enum.TryParse<T>(message.Content, ignoreCase: true, out var result))
-            return (result, false);
+            return (result, false, message);
 
-        return (default, false);
+        return (default, false, message);
     }
 
     public string FormatUsageFor(string commandName) => 

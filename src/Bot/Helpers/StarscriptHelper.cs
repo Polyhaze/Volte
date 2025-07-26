@@ -14,7 +14,7 @@ public static class StarscriptHelper
         return mMap;
     }
     
-    public static ValueMap Wrap(SocketUser user)
+    public static ValueMap Wrap(IUser user)
     {
         var uMap = new ValueMap();
         uMap.SetToString(user.ToString);
@@ -31,9 +31,9 @@ public static class StarscriptHelper
         return uMap;
     }
     
-    public static ValueMap Wrap(SocketGuildUser user)
+    public static ValueMap Wrap(IGuildUser user)
     {
-        var uMap = Wrap((SocketUser)user);
+        var uMap = Wrap((IUser)user);
 
         uMap.Set("nickname", user.Nickname);
         uMap.Set("isSuppressed", user.IsSuppressed);
@@ -44,8 +44,6 @@ public static class StarscriptHelper
         uMap.Set("isStreaming", user.IsStreaming);
         uMap.Set("isVideoing", user.IsVideoing);
         uMap.Set("hierarchy", user.Hierarchy);
-        uMap.Set("highestRoleId", () => user.GetHighestRole()?.Id!);
-        uMap.Set("highestRoleName", () => user.GetHighestRole()?.Name!);
         uMap.Set("isTimedOut", user.TimedOutUntil.HasValue);
         uMap.TryAddNullable("timedOutUntil", user.TimedOutUntil, v => v.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
         uMap.TryAddNullable("joinedAt", user.JoinedAt, v => v.ToString($"{StandardLibrary.TimeFormat}, {StandardLibrary.DateFormat}"));
@@ -57,7 +55,7 @@ public static class StarscriptHelper
             if (!ulong.TryParse(ctx.NextString(1), out var id))
                 throw ctx.Error($"The argument to {ctx.FormattedName} must be a Discord Snowflake ID in a string.");
 
-            return user.HasRole(id);
+            return user.RoleIds.Contains(id);
         });
 
         return uMap;
