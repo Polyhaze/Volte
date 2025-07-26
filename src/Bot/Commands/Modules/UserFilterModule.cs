@@ -23,7 +23,8 @@ public class UserFilterModule : VolteModule
              "The condition this filter should match. The result of the condition needs to be a boolean (true/false).")]
         string condition)
     {
-        condition = $"{{{condition.Replace("{", "").Replace("}", "")}}}";
+        var rawCondition = condition.Replace("{", "").Replace("}", "");
+        condition = $"{{{rawCondition}}}";
 
         if (!Parser.TryParse(condition, out var result))
             return BadRequest($"Syntax error: {result.Errors.First()}");
@@ -65,7 +66,7 @@ public class UserFilterModule : VolteModule
             if (!message.HasValue) goto GetReason;
 
             Context.Modify(data =>
-                data.Extras.StarscriptTables.UserFilter.Add(condition, actionType, message.Value.Content));
+                data.Extras.StarscriptTables.UserFilter.Add(rawCondition, actionType, message.Value.Content));
 
             await Context.CreateEmbed("Added that filter to this guild.").SendToAsync(Context.Channel);
         }, false);
