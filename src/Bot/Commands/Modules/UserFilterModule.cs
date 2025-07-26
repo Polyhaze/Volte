@@ -175,7 +175,9 @@ public class UserFilterModule : VolteModule
             uint processedUsers = 0;
             uint actionedUsers = 0;
 
-            await foreach (var users in Context.Guild.GetUsersAsync())
+            var guild = await Context.Client.Rest.GetGuildAsync(Context.Guild.Id);
+
+            await foreach (var users in guild.GetUsersAsync())
             {
                 foreach (var u in users)
                 {
