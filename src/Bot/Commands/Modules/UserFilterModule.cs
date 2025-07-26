@@ -147,12 +147,10 @@ public class UserFilterModule : VolteModule
             Confirmation:
             await Context.CreateEmbed("Are you sure you want to run the user filters on every user?")
                 .SendToAsync(Context.Channel);
-            var (confirmation, didTimeout, message) = await Context.GetNextAsync<bool>();
+            var (confirmation, didTimeout, _) = await Context.GetNextAsync<bool>();
             if (didTimeout) return;
             if (!confirmation.HasValue) goto Confirmation;
             if (!confirmation.Value) return;
-
-            await message.AddReactionAsync(Emojis.BallotBoxWithCheck);
 
             List<(UserFilterEntry Entry, Script Script)> compiledEntries = [];
             List<uint> brokenEntries = [];
@@ -183,12 +181,14 @@ public class UserFilterModule : VolteModule
             uint processedUsers = 0;
             uint actionedUsers = 0;
 
-            var guild = await Context.Client.Rest.GetGuildAsync(Context.Guild.Id);
+            IUserMessage resultMessage = await Context.CreateEmbed($"Running {compiledEntries.Count} filters...").SendToAsync(Context.Channel);
 
-            IUserMessage resultMessage = null;
-
-            await foreach (var users in guild.GetUsersAsync())
+            await foreach (var users in await Context.Client.Rest
+                               .GetGuildAsync(Context.Guild.Id)
+                               .Then(it => it.GetUsersAsync()))
             {
+                await Task.Delay(3.75.Seconds());
+                
                 foreach (var u in users)
                 {
                     processedUsers++;
@@ -196,34 +196,22 @@ public class UserFilterModule : VolteModule
                     if (await HandleUserAsync(u, compiledEntries))
                         actionedUsers++;
                 }
-
-                if (resultMessage is null)
+                
+                try
+                {
+                    await resultMessage.ModifyAsync(x =>
+                        x.Embed = Context.CreateEmbedBuilder()
+                            .AddField("Processed users", processedUsers)
+                            .AddField("Actioned users", actionedUsers)
+                            .Build());
+                }
+                catch
                 {
                     resultMessage = await Context.CreateEmbedBuilder()
                         .AddField("Processed users", processedUsers)
                         .AddField("Actioned users", actionedUsers)
                         .SendToAsync(Context.Channel);
                 }
-                else
-                {
-                    try
-                    {
-                        await resultMessage.ModifyAsync(x =>
-                            x.Embed = Context.CreateEmbedBuilder()
-                                .AddField("Processed users", processedUsers)
-                                .AddField("Actioned users", actionedUsers)
-                                .Build());
-                    }
-                    catch
-                    {
-                        resultMessage = await Context.CreateEmbedBuilder()
-                            .AddField("Processed users", processedUsers)
-                            .AddField("Actioned users", actionedUsers)
-                            .SendToAsync(Context.Channel);
-                    }
-                }
-
-                await Task.Delay(3.75.Seconds());
             }
         }, false);
 
