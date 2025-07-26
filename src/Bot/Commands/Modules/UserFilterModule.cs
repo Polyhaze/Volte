@@ -190,7 +190,7 @@ public class UserFilterModule : VolteModule
                     .AddField("Actioned users", actionedUsers)
                     .SendToAsync(Context.Channel);
 
-                await Task.Delay(2.5.Seconds());
+                await Task.Delay(3.75.Seconds());
             }
         }, false);
 
