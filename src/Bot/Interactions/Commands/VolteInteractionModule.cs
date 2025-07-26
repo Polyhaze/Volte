@@ -17,7 +17,7 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
 
         DidDefer = true;
         
-        return Context.Interaction.DeferAsync(ephemeral, options);
+        return base.DeferAsync(ephemeral, options);
     }
 
     protected ReplyBuilder<T> CreateReplyBuilder(
