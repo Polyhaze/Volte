@@ -5,7 +5,7 @@ namespace Volte.Interactions.Commands;
 
 public abstract class AbstractStarscriptAutocompleter : AutocompleteHandler
 {
-    public abstract StarscriptHypervisor Hypervisor { get; }
+    public abstract StarscriptHypervisor Hypervisor { get; protected set; }
     
     public override Task<AutocompletionResult> GenerateSuggestionsAsync(
         IInteractionContext context, 
@@ -19,10 +19,7 @@ public abstract class AbstractStarscriptAutocompleter : AutocompleteHandler
 
             if (!option.Focused || string.Empty.Equals(userValue) || userValue == null) continue;
 
-            var results = new List<string>();
-            
-            Hypervisor.GetCompletions(userValue, userValue.Length,
-                (completion, isFunction) => results.Add($"{completion}{(isFunction ? "(" : string.Empty)}"));
+            var results = GetCompletions(userValue);
 
             if (results.Count > 0)
             {
@@ -36,5 +33,15 @@ public abstract class AbstractStarscriptAutocompleter : AutocompleteHandler
         }
 
         return Task.FromResult(AutocompletionResult.FromSuccess());
+    }
+
+    protected List<string> GetCompletions(string input)
+    {
+        var results = new List<string>();
+            
+        Hypervisor.GetCompletions(input, input.Length,
+            (completion, isFunction) => results.Add($"{completion}{(isFunction ? "(" : string.Empty)}"));
+
+        return results;
     }
 }

@@ -41,7 +41,13 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     protected InteractionOkResult<T> Ok(string message, bool ephemeral = false) 
         => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message));
     
+    protected InteractionOkResult<T> Ok(StringBuilder message, bool ephemeral = false) 
+        => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message));
+    
     protected InteractionOkResult<T> Ok(string message, AsyncFunction onComplete, bool ephemeral = false) 
+        => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), onComplete);
+    
+    protected InteractionOkResult<T> Ok(StringBuilder message, AsyncFunction onComplete, bool ephemeral = false) 
         => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), onComplete);
     
     protected InteractionOkResult<T> Ok(EmbedBuilder embed, bool ephemeral = false) 

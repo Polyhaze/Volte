@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Volte.Interactions.Commands.TypeConverters;
 using Volte.Interactions.Results;
 using IResult = Discord.Interactions.IResult;
 
@@ -21,6 +22,8 @@ public class VolteInteractionService : VolteService
                 : LogSeverity.Verbose,
             InteractionCustomIdDelimiters = [MessageComponentId.Separator]
         });
+        
+        _backing.AddTypeConverter<Color>(new ColorTypeConverter());
 
         {
             client.SlashCommandExecuted += async interaction =>

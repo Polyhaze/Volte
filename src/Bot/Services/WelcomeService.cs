@@ -14,9 +14,8 @@ public sealed class WelcomeService : VolteService
         if (!Config.EnabledFeatures.Welcome) return;
         
         var data = _db.GetData(args.Guild);
-        
-        if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
-            await args.User.TrySendMessageAsync(await data.Configuration.Welcome.FormatDmMessageAsync(args.User));
+
+        await DmAsync(args, data);
 
         if (data.Configuration.Welcome.WelcomeMessage.IsNullOrEmpty())
             return; //we don't want to send an empty join message
@@ -40,6 +39,16 @@ public sealed class WelcomeService : VolteService
         } else
             Debug(LogSource.Volte,
             "WelcomeChannel config value resulted in an invalid/nonexistent channel; aborting.");
+    }
+    
+    public async Task DmAsync(UserJoinedEventArgs args, GuildData data = null)
+    {
+        if (!Config.EnabledFeatures.Welcome) return;
+        
+        data ??= _db.GetData(args.Guild);
+        
+        if (!data.Configuration.Welcome.WelcomeDmMessage.IsNullOrEmpty())
+            await args.User.TrySendMessageAsync(await data.Configuration.Welcome.FormatDmMessageAsync(args.User));
     }
 
     public async Task LeaveAsync(UserLeftEventArgs args)
