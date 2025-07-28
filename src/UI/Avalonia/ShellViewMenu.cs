@@ -3,7 +3,7 @@ using Gommon;
 using MenuFactory.Abstractions.Attributes;
 using Volte.Interactions;
 
-namespace Volte.UI.Avalonia.Pages;
+namespace Volte.UI.Avalonia;
 
 public class ShellViewMenu
 {

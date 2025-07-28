@@ -5,14 +5,14 @@
                xmlns:fac="using:FluentAvalonia.UI.Controls"
                xmlns:faw="using:FluentAvalonia.UI.Windowing"
                xmlns:v="using:Volte"
-               xmlns:local="using:Volte.UI.Avalonia.Pages"
                xmlns:h="using:Volte.UI.Helpers"
                xmlns:pi="using:Projektanker.Icons.Avalonia"
                mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
-               x:Class="Volte.UI.Avalonia.Pages.UIShellView"
+               x:Class="Volte.UI.Avalonia.Views.UIShellView"
+               xmlns:viewModels="using:Volte.UI.Avalonia.ViewModels"
                Title="Volte">
     <faw:AppWindow.DataContext>
-        <local:UIShellViewModel />
+        <viewModels:UIShellViewModel />
     </faw:AppWindow.DataContext>
     <Grid Background="Transparent" RowDefinitions="32,*,25">
         <Grid ColumnDefinitions="Auto,*">

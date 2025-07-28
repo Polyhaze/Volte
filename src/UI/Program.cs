@@ -3,7 +3,6 @@ using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Volte.Helpers;
 using Volte.UI.Avalonia;
-using Volte.UI.Avalonia.Pages;
 using Logger = Volte.Helpers.Logger;
 
 namespace Volte.UI;

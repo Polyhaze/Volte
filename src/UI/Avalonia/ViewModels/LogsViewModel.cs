@@ -6,11 +6,13 @@ using Gommon;
 using Volte.Entities;
 using Volte.Helpers;
 using Volte.UI.Avalonia.Models;
+using Volte.UI.Avalonia.ViewModels;
+using Volte.UI.Avalonia.Views;
 using Volte.UI.Helpers;
 
-namespace Volte.UI.Avalonia.Pages;
+namespace Volte.UI.Avalonia.ViewModels;
 
-public partial class LogsViewModel : ObservableObject
+public partial class LogsViewModel : BaseModel
 {
     private const byte MaxLogsInMemory = 200;
 

@@ -13,7 +13,8 @@ using Humanizer;
 using MenuFactory;
 using MenuFactory.Abstractions;
 using Volte.Entities;
-using Volte.UI.Avalonia.Pages;
+using Volte.UI.Avalonia.ViewModels;
+using Volte.UI.Avalonia.Views;
 using Volte.UI.Helpers;
 
 namespace Volte.UI.Avalonia;

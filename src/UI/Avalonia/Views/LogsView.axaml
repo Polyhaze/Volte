@@ -2,15 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="using:Volte.UI.Avalonia.Pages"
              xmlns:models="using:Volte.UI.Avalonia.Models"
              xmlns:pi="using:Projektanker.Icons.Avalonia"
              xmlns:converters="using:Volte.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Volte.UI.Avalonia.Pages.LogsView"
-             x:DataType="local:LogsViewModel">
+             x:Class="Volte.UI.Avalonia.Views.LogsView"
+             xmlns:viewModels="using:Volte.UI.Avalonia.ViewModels"
+             x:DataType="viewModels:LogsViewModel">
     <UserControl.DataContext>
-        <local:LogsViewModel />
+        <viewModels:LogsViewModel />
     </UserControl.DataContext>
     <ScrollViewer Name="Viewer">
         <ListBox Margin="5"

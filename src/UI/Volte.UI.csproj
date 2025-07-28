@@ -31,12 +31,12 @@
         <DependentUpon>App.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Avalonia\Pages\Logs\LogsView.axaml.cs">
-        <DependentUpon>LogsView.axaml</DependentUpon>
+      <Compile Update="Avalonia\Views\UIShellView.axaml.cs">
+        <DependentUpon>UIShellView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Avalonia\Pages\UIShellView.axaml.cs">
-        <DependentUpon>UIShellView.axaml</DependentUpon>
+      <Compile Update="Avalonia\Views\LogsView.axaml.cs">
+        <DependentUpon>LogsView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

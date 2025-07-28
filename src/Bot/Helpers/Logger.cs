@@ -15,7 +15,13 @@ public static partial class Logger
 
     private static readonly EventWithQueue<VolteLogEventArgs> LogEventHandler = new();
 
-    public static void Log(VolteLogEventArgs eventArgs) => LogEventHandler.Call(eventArgs);
+    public static void Log(VolteLogEventArgs eventArgs)
+    {
+        try
+        {
+            LogEventHandler.Call(eventArgs);
+        } catch {}
+    }
 
     public static bool IsDebugLoggingEnabled =>
 #if PROD

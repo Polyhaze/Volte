@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Volte.UI.Avalonia.Views;
 
-namespace Volte.UI.Avalonia.Pages;
+namespace Volte.UI.Avalonia.ViewModels;
 
 // ReSharper disable once InconsistentNaming
-public partial class UIShellViewModel : ObservableObject
+public partial class UIShellViewModel : BaseModel
 {
     public required UIShellView? View { get; init; } 
 
