@@ -17,7 +17,7 @@ public static class HttpHelper
         try
         {
             var jdoc = JsonDocument.Parse(await (await PostStringAsync(provider, "https://paste.greemdev.net/documents", content)).Content.ReadAsStringAsync());
-            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? "" : $".{fileExtension}")}}}";
+            return $"https://paste.greemdev.net/{jdoc.RootElement.GetProperty("key").GetString()}{(fileExtension is null ? string.Empty : $".{fileExtension}")}}}";
         }
         catch (Exception e)
         {

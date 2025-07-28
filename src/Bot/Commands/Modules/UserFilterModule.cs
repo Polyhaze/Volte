@@ -23,7 +23,7 @@ public class UserFilterModule : VolteModule
              "The condition this filter should match. The result of the condition needs to be a boolean (true/false).")]
         string condition)
     {
-        var rawCondition = condition.Replace("{", "").Replace("}", "");
+        var rawCondition = condition.Replace("{", string.Empty).Replace("}", string.Empty);
         condition = $"{{{rawCondition}}}";
 
         if (!Parser.TryParse(condition, out var result))

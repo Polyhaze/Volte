@@ -20,7 +20,7 @@ public static class FontAwesome
 
 public readonly record struct FontAwesomeIcon
 {
-    public FontAwesomeIcon() : this("", (IconVariant)int.MaxValue) {}
+    public FontAwesomeIcon() : this(string.Empty, (IconVariant)int.MaxValue) {}
         
     public FontAwesomeIcon(string name, IconVariant defaultVariant)
     {

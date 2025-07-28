@@ -183,7 +183,7 @@ public sealed class MessageService : VolteService
                 .Append(Format.Bold(result.Command.Name))
                 .AppendLine(":")
                 .Append(Format.Code(result.FailedChecks.Select(x =>
-                    $"{x.Check.GetType().AsPrettyString().Replace("Attribute", "")}: {x.Result.FailureReason}"
+                    $"{x.Check.GetType().AsPrettyString().Replace("Attribute", string.Empty)}: {x.Result.FailureReason}"
                 ).JoinToString('\n'), "css"))
             );
 
@@ -194,7 +194,7 @@ public sealed class MessageService : VolteService
                 .Append(Format.Bold(result.Parameter.Name))
                 .AppendLine(":")
                 .Append(Format.Code(result.FailedChecks.Select(x =>
-                    $"{x.Check.GetType().AsPrettyString().Replace("Attribute", "")}: {x.Result.FailureReason}"
+                    $"{x.Check.GetType().AsPrettyString().Replace("Attribute", string.Empty)}: {x.Result.FailureReason}"
                 ).JoinToString('\n'), "css"))
             );
 

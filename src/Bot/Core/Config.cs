@@ -49,7 +49,7 @@ public static class Config
         _configuration = new TConfig
         {
             Token = "token here",
-            SentryDsn = "",
+            SentryDsn = string.Empty,
             CommandPrefix = "$",
             Owner = 0,
             Game = "game here",

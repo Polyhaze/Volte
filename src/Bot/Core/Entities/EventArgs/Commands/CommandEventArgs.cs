@@ -50,7 +50,7 @@ public abstract class CommandEventArgs : EventArgs
         string commandInfoLine,
         string content,
         bool whitespace = true
-    ) => new StringBuilder(whitespace ? Whitespace : "")
+    ) => new StringBuilder(whitespace ? Whitespace : string.Empty)
         .Append('|')
         .Append(('-' + commandInfoLine).PadLeft(20))
         .Append(": ")

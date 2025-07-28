@@ -26,7 +26,8 @@ public partial class InteractionSettingsModule
 
         [SlashCommand("color", "Sets the color used for welcome embeds for this guild.")]
         public Task<RuntimeResult> ColorAsync(
-            [Summary(description: "Hexadecimal number (with/without #) or RGB number separated by ,")] Color color)
+            [Summary(description: "Hexadecimal number (with/without #) or RGB number separated by ,")] 
+            Color color)
         {
             ModifyData(d => d.Configuration.Welcome.WelcomeColor = color.RawValue);
             return Ok("Successfully set this guild's welcome message embed color!", ephemeral: true);
@@ -90,7 +91,7 @@ public partial class InteractionSettingsModule
                 ephemeral: true);
         }
 
-        [SlashCommand("dm", "Sets or disables the message to be (attempted to) sent to members upon joining.")]
+        [SlashCommand("dm", "Sets or shows the message to be (attempted to) sent to members upon joining.")]
         public Task<RuntimeResult> DmAsync(
             [Autocomplete<WelcomeStarscriptAutocompleter>]
             [Summary(
@@ -100,19 +101,19 @@ public partial class InteractionSettingsModule
         {
             if (message is null)
                 return Ok(
-                    $"The current join DM for this guild is: {Format.Code(GetData().Configuration.Welcome.WelcomeDmMessage ?? "None", string.Empty)}",
+                    $"The current welcome DM for this guild is: {Format.Code(GetData().Configuration.Welcome.WelcomeDmMessage ?? "None", string.Empty)}",
                     ephemeral: true);
 
             if (message is "disable")
             {
                 ModifyData(data => data.Configuration.Welcome.WelcomeDmMessage = string.Empty);
-                return Ok("Disabled join DMs.", ephemeral: true);
+                return Ok("Disabled welcome DMs.", ephemeral: true);
             }
 
             ModifyData(data => data.Configuration.Welcome.WelcomeDmMessage = message);
 
             return Ok(new StringBuilder()
-                    .AppendLine($"Set this server's join DM to: {Format.Code(message, string.Empty)}")
+                    .AppendLine($"Set this server's welcome DM to: {Format.Code(message, string.Empty)}")
                     .AppendLine()
                     .AppendLine("Trying to send a test message to your DM."),
                 () => Welcome.DmAsync(
