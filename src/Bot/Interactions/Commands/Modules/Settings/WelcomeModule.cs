@@ -16,6 +16,13 @@ public partial class InteractionSettingsModule
             ModifyData(d => d.Configuration.Welcome.WelcomeChannel = channel.Id);
             return Ok($"Set this guild's welcome channel to {channel.Mention}.", ephemeral: true);
         }
+        
+        [SlashCommand("disable", "Disable the welcome system in your guild. Set a channel to re-enable.")]
+        public Task<RuntimeResult> DisableAsync()
+        {
+            ModifyData(d => d.Configuration.Welcome.WelcomeChannel = 0);
+            return Ok("Disabled the welcoming system in this guild.", ephemeral: true);
+        }
 
         [SlashCommand("color", "Sets the color used for welcome embeds for this guild.")]
         public Task<RuntimeResult> ColorAsync(
