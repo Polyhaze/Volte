@@ -27,7 +27,7 @@ public sealed partial class ModerationModule
     {
         var warns = Db.GetData(Context.Guild).Extras.Warns
             .Where(x => x.User == member.Id)
-            .Select(static x => $"{Format.Bold(x.Reason)}, on {Format.Bold(x.Date.FormatDate())}");
+            .Select(static x => $"{Format.Bold(Format.StripMarkDown(x.Reason))}, on {Format.Bold(x.Date.FormatDate())}");
         
         return Ok(new PaginatedMessage.Builder()
             .WithPages(warns)
