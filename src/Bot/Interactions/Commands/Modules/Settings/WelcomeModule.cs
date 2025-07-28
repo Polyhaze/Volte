@@ -100,7 +100,7 @@ public partial class InteractionSettingsModule
         {
             if (message is null)
                 return Ok(
-                    $"The current join DM for this guild is: {Format.Code(GetData().Configuration.Welcome.LeavingMessage ?? "None", string.Empty)}",
+                    $"The current join DM for this guild is: {Format.Code(GetData().Configuration.Welcome.WelcomeDmMessage ?? "None", string.Empty)}",
                     ephemeral: true);
 
             if (message is "disable")
