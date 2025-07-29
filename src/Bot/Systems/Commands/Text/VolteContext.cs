@@ -130,5 +130,6 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
 
     public ValueMap ToStarscript() => new ValueMap()
         .Set("message", StarscriptHelper.Wrap(Message))
+        .Set("guild", StarscriptHelper.Wrap(Guild))
         .Set("user", StarscriptHelper.Wrap(User));
 }

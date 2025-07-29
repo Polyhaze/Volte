@@ -8,6 +8,8 @@ public static class VolteStarscript
         => bool.Parse(segment.ToString());
 
     public static readonly StarscriptHypervisor Hypervisor = StarscriptHypervisor.Create().WithStandardLibrary();
+    
+    public static readonly StarscriptHypervisor UnsafeHypervisor = StarscriptHypervisor.Create().WithStandardLibrary(@unsafe: true).WithStandardLibraryHttp();
 
     public static readonly StarscriptHypervisor MathHypervisor = StarscriptHypervisor.Create().WithStandardLibraryMath();
 
