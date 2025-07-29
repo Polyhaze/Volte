@@ -1,6 +1,6 @@
 ﻿using Starscript;
 
-namespace Volte.Interactions.Commands;
+namespace Volte.Interactions;
 
 public class VolteStarscriptAutocompleter : AbstractStarscriptAutocompleter
 {

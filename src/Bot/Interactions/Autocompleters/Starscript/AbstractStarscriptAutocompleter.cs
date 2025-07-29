@@ -1,7 +1,7 @@
 ﻿using Discord.Interactions;
 using Starscript;
 
-namespace Volte.Interactions.Commands;
+namespace Volte.Interactions;
 
 public abstract class AbstractStarscriptAutocompleter : AutocompleteHandler
 {

@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 
-namespace Volte.Interactions.Commands;
+namespace Volte.Interactions;
 
 public class MathStarscriptAutocompleter : AutocompleteHandler
 {
