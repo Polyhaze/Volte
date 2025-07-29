@@ -31,23 +31,29 @@ public static class DiscordHelper
     private static bool IsGuildOwner(this IGuildUser user)
         => user.Guild.OwnerId == user.Id || IsBotOwner(user);
     
-    public static bool IsAdmin(this VolteContext ctx, SocketGuildUser user)
+    public static bool IsAdmin(this VolteContext ctx, IGuildUser user)
         => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) 
            || IsGuildOwner(user);
 
-    public static bool IsModerator(this VolteContext ctx, SocketGuildUser user)
+    public static bool IsModerator(this VolteContext ctx, IGuildUser user)
         => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) 
            || ctx.IsAdmin(user) 
            || IsGuildOwner(user);
 
-    public static bool HasRole(this SocketGuildUser user, ulong roleId)
-        => user.Roles.Select(x => x.Id).Contains(roleId);
+    public static bool HasRole(this IGuildUser user, ulong roleId) => user.RoleIds.Contains(roleId);
     
-    public static Task WarnAsync(this SocketGuildUser member, VolteContext ctx, string reason)
+    public static Task WarnAsync(this IGuildUser member, VolteContext ctx, string reason)
         => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
             ctx.Services.GetRequiredService<DatabaseService>(), reason);
+
+    public static Task WarnAsync(this IGuildUser member, IUser issuer, IServiceProvider provider, string reason)
+    {
+        var db = provider.GetRequiredService<DatabaseService>();
+        
+        return ModerationModule.WarnAsync(issuer, db.GetData(member.GuildId), member, db, reason);
+    }
     
-    public static Task WarnAsync<TInteraction>(this SocketGuildUser member, 
+    public static Task WarnAsync<TInteraction>(this IGuildUser member, 
 #pragma warning disable CS0618 // Type or member is obsolete
         VolteInteractionModule<TInteraction> mdl, 
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -58,7 +64,7 @@ public static class DiscordHelper
     
     
 
-    public static async Task<bool> TrySendMessageAsync(this SocketGuildUser user, string text = null,
+    public static async Task<bool> TrySendMessageAsync(this IGuildUser user, string text = null,
         bool isTts = false, Embed embed = null, RequestOptions options = null)
     {
         try
@@ -96,7 +102,7 @@ public static class DiscordHelper
     public static string ToDiscordTimestamp(this DateTime date, TimestampType type) => 
         new DateTimeOffset(date).ToDiscordTimestamp(type);
 
-    public static async Task<bool> TrySendMessageAsync(this SocketTextChannel channel, string text = null,
+    public static async Task<bool> TrySendMessageAsync(this ITextChannel channel, string text = null,
         bool isTts = false, Embed embed = null, RequestOptions options = null)
     {
         try

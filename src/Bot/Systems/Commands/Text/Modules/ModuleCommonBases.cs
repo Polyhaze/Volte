@@ -130,7 +130,7 @@ public sealed partial class ModerationModule : VolteModule
         { ["soft", "softly"], "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."}
     };
 
-    public static async Task WarnAsync(SocketUser issuer, GuildData data, SocketGuildUser member,
+    public static async Task WarnAsync(IUser issuer, GuildData data, IGuildUser member,
         DatabaseService db, string reason)
     {
         data.Extras.Warns.Add(new Warn
