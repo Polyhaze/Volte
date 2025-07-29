@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text.Json.Serialization.Metadata;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -69,6 +70,23 @@ public sealed class EvalEnvironment
 
     public Task ReactAsync(string unicode) => Context.Message.AddReactionAsync(new Emoji(unicode));
     public Task ReactAsync(Emoji emoji) => Context.Message.AddReactionAsync(emoji);
+
+    public readonly JsonSerializerOptions DefaultOptions = new() { WriteIndented = true };
+    
+    public readonly JsonSerializerOptions MinifiedOptions = new() { WriteIndented = false };
+    
+    public string ToJson<T>(T obj, JsonSerializerOptions options = null) => JsonSerializer.Serialize(obj, options ?? DefaultOptions);
+    
+    public string ToJson<T>(T obj, JsonTypeInfo<T> typeInfo) => JsonSerializer.Serialize(obj, typeInfo);
+    
+    public T FromJson<T>(ReadOnlySpan<char> value, JsonSerializerOptions options = null) 
+        => JsonSerializer.Deserialize<T>(value, options ?? DefaultOptions);
+
+    public T FromJson<T>(ReadOnlySpan<char> value, JsonTypeInfo<T> typeInfo)
+        => JsonSerializer.Deserialize(value, typeInfo);
+
+    public JsonDocument JsonDoc(string value, JsonDocumentOptions jsonDocumentOptions = default)
+        => JsonDocument.Parse(value, jsonDocumentOptions);
 
     public string Inheritance<T>() => Inheritance(typeof(T));
     public string Inheritance(object obj) => Inheritance(obj.GetType());

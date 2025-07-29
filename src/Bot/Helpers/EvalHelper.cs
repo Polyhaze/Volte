@@ -10,8 +10,9 @@ public static partial class EvalHelper
 {
     public static readonly string[] Imports =
     [
-        "System", "System.IO", "System.Linq", "System.Text", "System.Threading", "System.Threading.Tasks",
+        "System", "System.IO", "System.Linq", "System.Threading", "System.Threading.Tasks",
         "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
+        "System.Text", "System.Text.Json", "System.Text.Json.Serialization", 
 
         "Volte", "Volte.Helpers", "Volte.Entities", "Volte.Systems.Commands.Text", "Volte.Services",
 
