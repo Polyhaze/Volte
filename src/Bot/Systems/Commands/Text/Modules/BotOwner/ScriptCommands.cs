@@ -2,7 +2,7 @@ namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class BotOwnerModule
 {
-    private const string EvalEnvSource = "https://github.com/Polyhaze/Volte/blob/v4/src/Bot/Core/Entities/EvalEnvironment.cs";
+    private const string EvalEnvSource = "https://github.com/Polyhaze/Volte/blob/v4/src/Bot/Entities/EvalEnvironment.cs";
     
     [Command("Evaluate", "Eval", "Repl")]
     [Description($"Evaluates C# code. You have implicit access to the methods defined in [EvalEnvironment]({EvalEnvSource}).")]
