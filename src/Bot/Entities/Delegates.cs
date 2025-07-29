@@ -1,3 +1,5 @@
+using Volte.Systems.Database.Entities;
+
 namespace Volte.Entities;
 
 public delegate void DataEditor(GuildData data);

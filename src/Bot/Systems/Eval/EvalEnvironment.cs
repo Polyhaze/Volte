@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Text.Json.Serialization.Metadata;
+using Volte.Systems.Database;
+using Volte.Systems.Database.Entities;
 
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Entities;
+namespace Volte.Systems.Eval;
 
 public sealed class EvalEnvironment
 {

@@ -1,7 +1,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Entities;
+using Volte.Systems.Database;
+
+namespace Volte.Systems.Addons;
 
 public class AddonEnvironment
 {

@@ -1,14 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Addons;
 
 public class VolteAddonMeta
 {
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
+    [JsonPropertyName("name")] public string Name { get; set; }
 
-    [JsonPropertyName("description")]
-    public string Description { get; set; }
+    [JsonPropertyName("description")] public string Description { get; set; }
 }
 
 public class VolteAddon

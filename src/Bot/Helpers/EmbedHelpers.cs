@@ -1,4 +1,7 @@
-﻿namespace Volte.Helpers;
+﻿using Volte.Systems.Database.Entities;
+using Volte.Systems.Interactive;
+
+namespace Volte.Helpers;
 
 public static class EmbedHelpers
 {

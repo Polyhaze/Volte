@@ -1,3 +1,5 @@
+using Volte.Systems.Eval;
+
 namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class BotOwnerModule

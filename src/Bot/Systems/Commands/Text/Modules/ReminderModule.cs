@@ -13,7 +13,7 @@ public sealed class ReminderModule : VolteModule
         string reminder)
     {
         var end = Context.Now.Add(timeFromNow);
-        Db.CreateReminder(Reminder.CreateFrom(Context, end, reminder));
+        Db.CreateReminder(Reminder.Reminder.CreateFrom(Context, end, reminder));
         return Ok($"I'll remind you {end.ToDiscordTimestamp(TimestampType.LongDateTime)} ({end.ToDiscordTimestamp(TimestampType.Relative)}).");
     }
 

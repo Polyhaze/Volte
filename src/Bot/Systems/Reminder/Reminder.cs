@@ -2,7 +2,7 @@ using JsonParser = System.Text.Json.JsonSerializer; // same class in namespace L
 using System.Text.Json.Serialization;
 using LiteDB;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Reminder;
 
 public sealed class Reminder
 {

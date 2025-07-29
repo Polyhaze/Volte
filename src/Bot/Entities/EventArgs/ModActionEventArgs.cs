@@ -1,5 +1,6 @@
 using Discord.Interactions;
 using Volte.Systems.Commands.Interaction;
+using Volte.Systems.Database.Entities;
 
 namespace Volte.Entities;
 

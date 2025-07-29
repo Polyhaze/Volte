@@ -1,4 +1,6 @@
-﻿namespace Volte.Systems.Commands.Text;
+﻿using Volte.Systems.Database.Entities;
+
+namespace Volte.Systems.Commands.Text;
 
 [InjectTypeParser]
 public sealed class TagParser : VolteTypeParser<Tag>

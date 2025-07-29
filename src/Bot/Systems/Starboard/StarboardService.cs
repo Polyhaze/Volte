@@ -1,6 +1,8 @@
 using System.Net;
+using Volte.Systems.Database;
+using Volte.Systems.Database.Entities;
 
-namespace Volte.Services;
+namespace Volte.Systems.Starboard;
 
 public sealed class StarboardService : VolteService
 {

@@ -1,11 +1,12 @@
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using Volte.Systems.Eval;
 
-namespace Volte.Services;
+namespace Volte.Systems.Addons;
 
 public sealed class AddonService : VolteService
 {
-    public static FilePath AddonsDir = new("addons", true);
+    public static readonly FilePath AddonsDir = new("addons", true);
         
     private readonly IServiceProvider _provider;
     private bool _isInitialized;

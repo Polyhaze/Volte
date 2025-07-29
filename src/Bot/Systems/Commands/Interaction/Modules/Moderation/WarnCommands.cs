@@ -1,5 +1,4 @@
 ﻿using Discord.Interactions;
-using Volte.Systems.Commands.Text.Modules;
 
 namespace Volte.Systems.Commands.Interaction.Modules;
 

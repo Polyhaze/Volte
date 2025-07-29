@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using Volte.Systems.Starscript;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Database.Entities;
 
 public sealed class ModerationOptions
 {

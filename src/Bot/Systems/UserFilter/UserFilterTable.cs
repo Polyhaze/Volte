@@ -1,6 +1,8 @@
 ﻿using Starscript;
+using Volte.Systems.Database.Entities;
+using Volte.Systems.Starscript;
 
-namespace Volte.Entities;
+namespace Volte.Systems.UserFilter;
 
 public class UserFilterTable
 {

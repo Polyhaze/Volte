@@ -1,11 +1,12 @@
 ﻿using Starscript;
+using Volte.Systems.Starscript;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Database.Entities;
 
 public class StarscriptSrc
 {
     public StarscriptType Type { get; set; }
-    
+
     public string CodeInput { get; set; }
 
     public Script Compile() =>
@@ -13,7 +14,7 @@ public class StarscriptSrc
             ? VolteStarscript.CompileExpression(CodeInput)
             : VolteStarscript.Compile(CodeInput);
 
-    public override string ToString() 
+    public override string ToString()
         => $"{{ Type: {Type}, Source: {CodeInput} }}";
 }
 

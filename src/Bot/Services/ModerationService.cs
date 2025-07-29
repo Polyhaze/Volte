@@ -1,3 +1,6 @@
+using Volte.Systems.Database;
+using Volte.Systems.Database.Entities;
+
 namespace Volte.Services;
 
 public sealed class ModerationService : VolteService

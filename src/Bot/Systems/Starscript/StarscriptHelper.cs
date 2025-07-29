@@ -1,6 +1,6 @@
 ﻿using Starscript;
 
-namespace Volte.Helpers;
+namespace Volte.Systems.Starscript;
 
 public static class StarscriptHelper
 {

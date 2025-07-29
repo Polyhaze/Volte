@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using Volte.Systems.Database;
 
-namespace Volte.Services;
+namespace Volte.Systems.Reminder;
 
 public sealed partial class ReminderService : VolteService, IDisposable
 {

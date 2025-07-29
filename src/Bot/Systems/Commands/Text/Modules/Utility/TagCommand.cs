@@ -1,3 +1,5 @@
+using Volte.Systems.Database.Entities;
+
 namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class UtilityModule

@@ -2,7 +2,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Entities;
+namespace Volte.Systems.Interactive;
 
 public sealed class PollInfo
 {

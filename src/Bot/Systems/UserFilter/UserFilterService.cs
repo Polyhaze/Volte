@@ -1,4 +1,6 @@
-﻿namespace Volte.Services;
+﻿using Volte.Systems.Database;
+
+namespace Volte.Systems.UserFilter;
 
 public class UserFilterService : VolteService
 {

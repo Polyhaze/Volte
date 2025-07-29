@@ -2,30 +2,44 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using Volte.Systems.Database;
 
-namespace Volte.Helpers;
+namespace Volte.Systems.Eval;
 
 public static partial class EvalHelper
 {
-    public static readonly string[] Imports =
+    public static readonly string[] BaseImports =
     [
         "System", "System.IO", "System.Linq", "System.Threading", "System.Threading.Tasks",
         "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
-        "System.Text", "System.Text.Json", "System.Text.Json.Serialization", 
-
-        "Volte", "Volte.Helpers", "Volte.Entities", "Volte.Systems.Commands.Text", "Volte.Services",
+        "System.Text", "System.Text.Json", "System.Text.Json.Serialization",
 
         "Discord", "Discord.WebSocket",
 
         "Humanizer", "Gommon", "Qmmands"
     ];
 
+    private static string[] _resolvedImports;
+
     public static readonly ScriptOptions Options = ScriptOptions.Default
-        .WithImports(Imports)
+        .WithImports(GetImports())
         .WithReferences(
             AppDomain.CurrentDomain.GetAssemblies()
                 .Where(static x => !x.IsDynamic && !x.Location.IsNullOrWhitespace())
         );
+
+    public static string[] GetImports() =>
+        _resolvedImports ??= BaseImports
+            .Concat(
+                typeof(EvalHelper).Assembly
+                    .GetTypes()
+                    .Select(x => x.Namespace)
+                    .Where(x => x != null)
+                    .Distinct()
+                    .Except(BaseImports)
+            )
+            .Distinct()
+            .ToArray();
 
     public static Task EvaluateAsync(VolteContext ctx, string code)
     {

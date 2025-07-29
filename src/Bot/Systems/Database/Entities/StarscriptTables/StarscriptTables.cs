@@ -1,4 +1,6 @@
-﻿namespace Volte.Entities;
+﻿using Volte.Systems.UserFilter;
+
+namespace Volte.Systems.Database.Entities;
 
 public class StarscriptTables
 {

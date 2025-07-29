@@ -1,3 +1,5 @@
+using Volte.Systems.Starboard;
+
 namespace Volte.Systems.Commands.Text.Modules;
 
 [Group("Starboard", "Sb")]

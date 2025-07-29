@@ -1,6 +1,6 @@
 ﻿using Starscript;
 
-namespace Volte.Helpers;
+namespace Volte.Systems.Starscript;
 
 public static class VolteStarscript
 {
@@ -23,12 +23,8 @@ public static class VolteStarscript
     public static StringSegment Run(string source, ValueMap environment) 
         => Run(Compile(source), environment);
     
-    public static StringSegment Run(Script script, ValueMap environment)
-    {
-        var hv = Hypervisor.ReplaceLocals(environment);
-
-        return hv.Run(script, environment);
-    }
+    public static StringSegment Run(Script script, ValueMap environment) 
+        => Hypervisor.ReplaceLocals(environment).Run(script, environment);
 
     public static StringSegment RunExpression(string expression)
         => CompileExpression(expression).Execute(MathHypervisor);

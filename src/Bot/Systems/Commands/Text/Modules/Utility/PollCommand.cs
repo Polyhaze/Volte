@@ -1,4 +1,6 @@
-﻿namespace Volte.Systems.Commands.Text.Modules;
+﻿using Volte.Systems.Interactive;
+
+namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class UtilityModule
 {

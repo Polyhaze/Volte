@@ -1,4 +1,6 @@
-﻿namespace Volte.Services;
+﻿using Volte.Systems.Database;
+
+namespace Volte.Services;
 
 public sealed class MessageService : VolteService
 {

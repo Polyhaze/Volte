@@ -1,4 +1,5 @@
 ﻿using Starscript;
+using Volte.Systems.Starscript;
 
 namespace Volte.Systems.Commands.Interaction;
 

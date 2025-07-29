@@ -1,3 +1,6 @@
+using Volte.Systems.Database;
+using Volte.Systems.Database.Entities;
+
 namespace Volte.Entities;
 
 public sealed class MessageReceivedEventArgs : EventArgs

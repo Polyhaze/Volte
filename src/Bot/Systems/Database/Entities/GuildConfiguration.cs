@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Database.Entities;
 
 public sealed class GuildConfiguration
 {
