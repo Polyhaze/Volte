@@ -21,6 +21,6 @@ public partial class ModerationModule
             _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
                 .WithActionType(ModActionType.Warn)
                 .WithTarget(member)
-                .WithReason("<#1294444833737412669> Rule #4")));
+                .WithReason("#rules #4")));
     }
 }
