@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Volte.Systems.Commands.Text.Modules;
 
 namespace Volte.Systems.Commands.Interaction.Modules;
 
@@ -11,7 +12,7 @@ public partial class InteractionModerationModule
         [Summary("reason", "The reason for the warn.")]
         string reason)
     {
-        await member.WarnAsync(this, reason);
+        await Db.WarnAsync(Context.User, member, reason);
         
         return Ok($"Successfully warned **{member}** for **{reason}**.",
             () => ModService.OnModActionCompleteAsync(ModActionEventArgs

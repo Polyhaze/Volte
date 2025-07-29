@@ -129,27 +129,6 @@ public sealed partial class ModerationModule : VolteModule
         { ["shadow"], "If this option is present, the banned member will not be made aware of who actually banned them via the embed author. This option takes no value."},
         { ["soft", "softly"], "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."}
     };
-
-    public static async Task WarnAsync(IUser issuer, GuildData data, IGuildUser member,
-        DatabaseService db, string reason)
-    {
-        data.Extras.Warns.Add(new Warn
-        {
-            User = member.Id,
-            Reason = reason,
-            Issuer = issuer.Id,
-            Date = DateTimeOffset.Now
-        });
-        db.Save(data);
-
-        var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
-            .WithDescription($"You've been warned in {Format.Bold(member.Guild.Name)} for {Format.Code(reason)}.")
-            .Apply(data);
-
-        if (!await member.TrySendMessageAsync(embed: e.Build()))
-            Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
-            
-    }
 }
 
 [Group("Settings", "Setting", "Options", "Option")]

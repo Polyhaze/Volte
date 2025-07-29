@@ -43,26 +43,14 @@ public static class DiscordHelper
     public static bool HasRole(this IGuildUser user, ulong roleId) => user.RoleIds.Contains(roleId);
     
     public static Task WarnAsync(this IGuildUser member, VolteContext ctx, string reason)
-        => ModerationModule.WarnAsync(ctx.User, ctx.GuildData, member,
-            ctx.Services.GetRequiredService<DatabaseService>(), reason);
+        => ctx.Services.GetRequiredService<DatabaseService>().WarnAsync(ctx.User, member, reason);
 
     public static Task WarnAsync(this IGuildUser member, IUser issuer, IServiceProvider provider, string reason)
     {
         var db = provider.GetRequiredService<DatabaseService>();
         
-        return ModerationModule.WarnAsync(issuer, db.GetData(member.GuildId), member, db, reason);
+        return db.WarnAsync(issuer, member, reason);
     }
-    
-    public static Task WarnAsync<TInteraction>(this IGuildUser member, 
-#pragma warning disable CS0618 // Type or member is obsolete
-        VolteInteractionModule<TInteraction> mdl, 
-#pragma warning restore CS0618 // Type or member is obsolete
-        string reason)
-        where TInteraction : SocketInteraction
-        => ModerationModule.WarnAsync(mdl.Context.User, mdl.GetData(), member,
-            VolteBot.Services.GetRequiredService<DatabaseService>(), reason);
-    
-    
 
     public static async Task<bool> TrySendMessageAsync(this IGuildUser user, string text = null,
         bool isTts = false, Embed embed = null, RequestOptions options = null)

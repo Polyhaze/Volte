@@ -77,6 +77,28 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
+    public async Task WarnAsync(IUser issuer, IGuildUser member, string reason)
+    {
+        var data = await GetDataAsync(member.GuildId);
+
+        data.Extras.Warns.Add(new Warn
+        {
+            User = member.Id,
+            Reason = reason,
+            Issuer = issuer.Id,
+            Date = DateTimeOffset.Now
+        });
+        
+        Save(data);
+
+        var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)
+            .WithDescription($"You've been warned in {Format.Bold(member.Guild.Name)} for {Format.Code(reason)}.")
+            .Apply(data);
+
+        if (!await member.TrySendMessageAsync(embed: e.Build()))
+            Warn(LogSource.Service, $"encountered a 403 when trying to message {member}!");
+    }
+
     private StarboardDbEntry GetStargazersInternal(ulong guildId, ulong messageId)
         => _reminderData.ValueLock(() => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId));
 
