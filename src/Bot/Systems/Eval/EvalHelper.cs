@@ -33,8 +33,8 @@ public static partial class EvalHelper
             .Concat(
                 typeof(EvalHelper).Assembly
                     .GetTypes()
-                    .Select(x => x.Namespace)
-                    .Where(x => x != null)
+                    .Select(static x => x.Namespace)
+                    .Where(static x => x != null)
                     .Distinct()
                     .Except(BaseImports)
             )

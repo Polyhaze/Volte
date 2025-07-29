@@ -159,8 +159,8 @@ public static class DiscordHelper
         client.Ready += async () =>
         {
             var guilds = client.Guilds.Count;
-            var users = client.Guilds.SelectMany(x => x.Users).DistinctBy(x => x.Id).Count();
-            var channels = client.Guilds.SelectMany(x => x.Channels).DistinctBy(x => x.Id).Count();
+            var users = client.Guilds.SelectMany(static x => x.Users).DistinctBy(static x => x.Id).Count();
+            var channels = client.Guilds.SelectMany(static x => x.Channels).DistinctBy(static x => x.Id).Count();
 
             PrintHeader();
             Info(LogSource.Volte, $"Currently running Volte V{Version.InformationVersion}.");

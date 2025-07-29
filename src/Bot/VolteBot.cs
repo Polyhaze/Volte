@@ -60,17 +60,17 @@ public class VolteBot
             var addedParsers = commandService.AddTypeParsers();
             Info(LogSource.Volte,
                 $"Loaded TypeParsers: [{
-                    addedParsers.Select(x => x.Name.Replace("Parser", string.Empty)).JoinToString(", ")
+                    addedParsers.Select(static x => x.Name.Replace("Parser", string.Empty)).JoinToString(", ")
                 }]");
 
             var addedModules = commandService.AddModules(Assembly.GetExecutingAssembly());
             Info(LogSource.Volte,
-                $"Loaded {addedModules.Count} modules and {addedModules.Sum(m => m.Commands.Count)} commands.");
+                $"Loaded {addedModules.Count} modules and {addedModules.Sum(static m => m.Commands.Count)} commands.");
         }
 
         Client.RegisterVolteEventHandlers(Services);
 
-        ExecuteBackgroundAsync(async () => await Services.Get<AddonService>().InitAsync());
+        ExecuteBackgroundAsync(static async () => await Services.Get<AddonService>().InitAsync());
         Services.Get<ReminderService>().Initialize();
 
         try

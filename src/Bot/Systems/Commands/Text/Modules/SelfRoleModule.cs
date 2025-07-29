@@ -18,7 +18,7 @@ public class SelfRoleModule : VolteModule
             Context.Guild.Roles.TryGetFirst(r => r.Id == x, out var role)
                 ? Format.Bold(role.Name)
                 : string.Empty
-        ).Where(x => !x.IsNullOrEmpty())
+        ).Where(static x => !x.IsNullOrEmpty())
             .JoinToString("\n");
 
         return Ok(Context.CreateEmbedBuilder(roles).WithTitle("Roles available to self-assign in this guild:"));

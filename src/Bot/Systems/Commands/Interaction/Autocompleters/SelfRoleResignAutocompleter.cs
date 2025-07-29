@@ -32,7 +32,7 @@ public class SelfRoleResignAutocompleter : AutocompleteHandler
             if (validSelfRoles.Count > 0)
             {
                 return AutocompletionResult.FromSuccess(validSelfRoles
-                    .Select(x => new AutocompleteResult(x.Name, x.Id)));
+                    .Select(static x => new AutocompleteResult(x.Name, x.Id)));
             }
         }
 

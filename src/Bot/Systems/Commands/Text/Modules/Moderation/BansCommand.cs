@@ -14,7 +14,7 @@ public sealed partial class ModerationModule
             return Ok(
                 new PaginatedMessage.Builder()
                     .WithTitle($"Bans in {Context.Guild.Name}")
-                    .WithPages(banList.Select(b => $"**{b.User}**: {Format.Code(b.Reason ?? "No reason provided.")}"))
+                    .WithPages(banList.Select(static b => $"**{b.User}**: {Format.Code(b.Reason ?? "No reason provided.")}"))
                     .SplitPages(25)
             );
         

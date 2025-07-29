@@ -70,7 +70,7 @@ public static class TextCommandHelper
             embed.AppendDescription($" {command.Remarks}");
 
         if (command.FullAliases.Any())
-            embed.AddField("Aliases", command.FullAliases.Select(x => Format.Code(x)).JoinToString(", "), true);
+            embed.AddField("Aliases", command.FullAliases.Select(static x => Format.Code(x)).JoinToString(", "), true);
 
         if (command.Parameters.Any())
             embed.AddField("Parameters", command.Parameters.Select(FormatParameter).JoinToString("\n"));
@@ -81,7 +81,7 @@ public static class TextCommandHelper
         if (command.Attributes.Any(x => x is ShowPlaceholdersInHelpAttribute))
             embed.AddField("Placeholders",
                 WelcomeOptions.ValidPlaceholders
-                    .Select(x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
+                    .Select(static x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
                     .JoinToString("\n"));
 
         if (command.Attributes.Any(x => x is ShowTimeFormatInHelpAttribute))
@@ -110,13 +110,13 @@ public static class TextCommandHelper
         async Task addSubcommandsFieldAsync()
         {
             embed.AddField("Subcommands", (await command.Module.Commands.WhereAccessibleAsync(ctx)
-                    .Where(x => !x.Attributes.Any(a => a is DummyCommandAttribute)).ToListAsync())
-                .Select(x => FormatCommandShort(x, false))
+                    .Where(static x => !x.Attributes.Any(a => a is DummyCommandAttribute)).ToListAsync())
+                .Select(static x => FormatCommandShort(x, false))
                 .JoinToString(", "));
         }
             
         static string formatUnixArgs(KeyValuePair<string[], string> kvp) =>
-            $"{Format.Bold(kvp.Key.Select(name => $"-{name}").JoinToString(" or "))}: {kvp.Value}";
+            $"{Format.Bold(kvp.Key.Select(static name => $"-{name}").JoinToString(" or "))}: {kvp.Value}";
 
         static string getArgs(VolteUnixCommand unixCommand) => unixCommand switch
         {
@@ -169,7 +169,7 @@ public static class TextCommandHelper
                 
             if (!param.Description.IsNullOrWhitespace())
                 sb.Append($": {param.Description} ");
-            if (param.Checks.Any(x => x is EnsureNotSelfAttribute))
+            if (param.Checks.Any(static x => x is EnsureNotSelfAttribute))
                 sb.Append("Cannot be yourself.");
             if (param.DefaultValue != null)
                 sb.Append($"Defaults to: {Format.Code(param.DefaultValue.ToString())}");
@@ -178,7 +178,7 @@ public static class TextCommandHelper
     internal static IEnumerable<Type> AddTypeParsers(this CommandService service)
     {
         var parsers = Assembly.GetExecutingAssembly().ExportedTypes
-            .Where(x => x.HasAttribute<InjectTypeParserAttribute>())
+            .Where(static x => x.HasAttribute<InjectTypeParserAttribute>())
             .ToList();
 
         var csMirror = Mirror.Reflect(service);

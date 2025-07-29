@@ -68,7 +68,7 @@ public static class ZalgoHelper
     public static string GenerateZalgo(string content, ZalgoIntensity intensity, IncludeChars includeChars)
         => String(sb =>
         {
-            foreach (var c in content.Where(c => !IsZalgoChar(c)))
+            foreach (var c in content.Where(static c => !IsZalgoChar(c)))
             {
                 var (up, mid, down) = intensity switch
                 {

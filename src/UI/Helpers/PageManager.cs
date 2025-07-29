@@ -75,25 +75,25 @@ public partial class PageManager : ObservableObject
     public static void Init(Optional<Assembly> assembly = default)
     {
         assembly.OrElse(Assembly.GetExecutingAssembly()).GetTypes()
-            .Where(x => x.HasAttribute<UiPageAttribute>() && !x.HasAttribute<DontAutoRegisterAttribute>())
-            .Select(x => (type: x, attribute: x.GetCustomAttribute<UiPageAttribute>()!))
-            .OrderBy(x => x.attribute.PageType)
-            .ForEach(page => Shared.Register(
-                pageType: page.attribute.PageType,
-                title: page.attribute.Title,
-                content: page.type.GetConstructor(Type.EmptyTypes)?.Invoke([])
+            .Where(static x => x.HasAttribute<UiPageAttribute>() && !x.HasAttribute<DontAutoRegisterAttribute>())
+            .Select(static x => (Type: x, Meta: x.GetCustomAttribute<UiPageAttribute>()!))
+            .OrderBy(static x => x.Meta.PageType)
+            .ForEach(static page => Shared.Register(
+                pageType: page.Meta.PageType,
+                title: page.Meta.Title,
+                content: page.Type.GetConstructor(Type.EmptyTypes)?.Invoke([])
                          ?? throw new TypeInitializationException(
-                             page.type.AsFullNamePrettyString(),
+                             page.Type.AsFullNamePrettyString(),
                              new Exception($"""
                                             The specified type does not have a parameterless constructor.
                                             Create one or use {nameof(DontAutoRegisterAttribute)}
                                             on the page type to prevent auto-registration.
                                             """.ReplaceLineEndings())
                          ),
-                icon: page.attribute.Icon,
-                description: page.attribute.Description,
-                isDefault: page.attribute.IsDefault,
-                isFooter: page.attribute.IsFooter
+                icon: page.Meta.Icon,
+                description: page.Meta.Description,
+                isDefault: page.Meta.IsDefault,
+                isFooter: page.Meta.IsFooter
             ));
     }
 

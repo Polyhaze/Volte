@@ -42,6 +42,6 @@ public abstract class VolteBrushConverter<TSource, TConverter> : BasicValueConve
 {
     protected void SetBrushDefinitions(params (TSource Raw, Color Color)[] definitions) =>
         Definitions = definitions
-            .Select(x => (x.Raw, Brush.Parse(x.Color.ToHexadecimalString())))
+            .Select(static x => (x.Raw, Brush.Parse(x.Color.ToHexadecimalString())))
             .ToImmutableArray();
 }

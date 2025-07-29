@@ -50,13 +50,13 @@ public sealed partial class UtilityModule : VolteModule
             IGuildUser user)
     {
         var propDict = user.GuildPermissions.GetType().GetProperties()
-            .Where(a => a.PropertyType.Inherits<bool>())
+            .Where(static a => a.PropertyType.Inherits<bool>())
             .Select(a => (a.Name.Humanize(LetterCasing.Title), a.GetValue(user.GuildPermissions).Cast<bool>()))
-            .OrderByDescending(ab => ab.Item2 ? 1 : 0)
+            .OrderByDescending(static ab => ab.Item2 ? 1 : 0)
             .ToList(); //holy reflection
 
-        return (propDict.Where(ab => ab.Item2).OrderBy(a => a.Item1.Length),
-            propDict.Where(ab => !ab.Item2).OrderBy(a => a.Item1.Length));
+        return (propDict.Where(static ab => ab.Item2).OrderBy(static a => a.Item1.Length),
+            propDict.Where(static ab => !ab.Item2).OrderBy(static a => a.Item1.Length));
     }
 }
 

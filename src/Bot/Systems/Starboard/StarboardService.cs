@@ -191,7 +191,7 @@ public sealed class StarboardService : VolteService
 
                 var clearList = entry.Stargazers
                     .Where(x => x.Value == clearedStarTarget)
-                    .Select(x => x.Key)
+                    .Select(static x => x.Key)
                     .ToArray();
 
                 // Remove the stars from the database
