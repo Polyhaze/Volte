@@ -66,7 +66,7 @@ public static class StarscriptHelper
 
     public static ValueMap Wrap(IGuild guild) 
         => WrapBase(guild)
-            .Set("ownerId", guild.OwnerId);
+            .Set("ownerId", guild.OwnerId.ToString());
 
     public static async ValueTask<ValueMap> WrapAsync(IGuild guild) =>
         WrapBase(guild)
