@@ -1,6 +1,6 @@
-using Volte.Commands.Text.Modules;
-using Volte.Interactions;
-using Volte.Interactions.Commands;
+using Volte.Systems.Commands.Text.Modules;
+using Volte.Systems.Interactions;
+using Volte.Systems.Commands.Interaction;
 
 namespace Volte.Helpers;
 

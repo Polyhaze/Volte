@@ -1,4 +1,4 @@
-using Volte.Commands.Text.Modules;
+using Volte.Systems.Commands.Text.Modules;
 
 namespace Volte;
 

@@ -1,0 +1,38 @@
+﻿using Discord.Interactions;
+using Starscript;
+using Starscript.Internal;
+
+namespace Volte.Systems.Commands.Interaction.Modules;
+
+public partial class InteractionUtilityModule
+{
+    [SlashCommand("math", "Evaluate a mathematical expression via Starscript.")]
+    public Task<RuntimeResult> MathAsync(
+        [Autocomplete<MathStarscriptAutocompleter>] 
+        [Summary(description: "The expression. Powered by Starscript.")]
+        string expression,
+        [Summary("public", "Post the result publicly.")]
+        bool publicResult = false)
+    {
+        try
+        {
+            var expr = expression.Replace("{", string.Empty).Replace("}", string.Empty);
+
+            var result = VolteStarscript.RunExpression(expr);
+
+            return Ok(Context.CreateEmbedBuilder()
+                    .AddField("Input", Format.Code(expr))
+                    .AddField("Output", Format.Code(result.ToString())),
+                ephemeral: !publicResult
+            );
+        }
+        catch (ParseException pe)
+        {
+            return BadRequest($"Syntax error: {pe.Message}");
+        }
+        catch (StarscriptException se)
+        {
+            return BadRequest(se.Message);
+        }
+    }
+}

@@ -1,0 +1,47 @@
+﻿using Discord.Interactions;
+using Starscript;
+
+namespace Volte.Systems.Commands.Interaction;
+
+public abstract class AbstractStarscriptAutocompleter : AutocompleteHandler
+{
+    public abstract StarscriptHypervisor Hypervisor { get; protected set; }
+    
+    public override Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context, 
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, 
+        IServiceProvider services)
+    {
+        foreach (var option in autocompleteInteraction.Data.Options)
+        {
+            var userValue = option.Value?.ToString();
+
+            if (!option.Focused || string.Empty.Equals(userValue) || userValue == null) continue;
+
+            var results = GetCompletions(userValue);
+
+            if (results.Count > 0)
+            {
+                var autocompleteResults = results.Take(24)
+                    .Select(x => new AutocompleteResult(x, userValue));
+                
+                return Task.FromResult(AutocompletionResult.FromSuccess(autocompleteResults
+                    .Prepend(
+                        new AutocompleteResult("Do not click these! Simply use this as a visual guide for how you can finish what you're typing.", userValue))));
+            }
+        }
+
+        return Task.FromResult(AutocompletionResult.FromSuccess());
+    }
+
+    protected List<string> GetCompletions(string input)
+    {
+        var results = new List<string>();
+            
+        Hypervisor.GetCompletions(input, input.Length,
+            (completion, isFunction) => results.Add($"{completion}{(isFunction ? "(" : string.Empty)}"));
+
+        return results;
+    }
+}

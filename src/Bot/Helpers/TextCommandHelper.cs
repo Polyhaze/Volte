@@ -1,5 +1,5 @@
 using System.Collections;
-using Volte.Commands.Text.Modules;
+using Volte.Systems.Commands.Text.Modules;
 using Module = Qmmands.Module;
 
 namespace Volte.Helpers;

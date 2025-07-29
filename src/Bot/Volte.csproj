@@ -40,5 +40,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Resources\" />
+      <Folder Include="Systems\" />
     </ItemGroup>
 </Project>

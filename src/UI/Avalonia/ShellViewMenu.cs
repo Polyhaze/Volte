@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls.Notifications;
 using Gommon;
 using MenuFactory.Abstractions.Attributes;
-using Volte.Interactions;
+using Volte.Systems.Interactions;
 
 namespace Volte.UI.Avalonia;
 
