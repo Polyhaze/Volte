@@ -102,6 +102,16 @@ public class UserFilterEntry
     {
         switch (Action)
         {
+            case ActionType.Warn:
+                try
+                {
+                    await user.WarnAsync(VolteBot.Client.CurrentUser, VolteBot.Services, Reason);
+                    return true;
+                }
+                catch (HttpException)
+                {
+                    return false;
+                }
             case ActionType.Kick:
                 try
                 {
@@ -144,6 +154,7 @@ public class UserFilterEntry
 
 public enum ActionType 
 {
+    Warn,
     Kick,
     Ban,
     SoftBan

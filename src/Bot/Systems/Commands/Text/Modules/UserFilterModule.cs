@@ -51,7 +51,7 @@ public class UserFilterModule : VolteModule
         {
             GetActionType:
             await Context
-                .CreateEmbed("What would you like to do when someone matches this filter? (Ban, Kick, Softban)")
+                .CreateEmbed("What would you like to do when someone matches this filter? (Warn, Kick, SoftBan, Ban)")
                 .SendToAsync(Context.Channel);
             var (actionType, didTimeout, _) = await Context.GetNextEnumAsync<ActionType>();
             if (didTimeout) return;
