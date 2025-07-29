@@ -18,10 +18,6 @@
         <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
-      <None Include="..\..\.editorconfig" Link=".editorconfig" />
-      <None Include="..\..\build.sh" Link="Build Script" />
-    </ItemGroup>
-    <ItemGroup>
         <EmbeddedResource Include="Resources/VolteIcon.png" LogicalName="VolteIcon" />
         <EmbeddedResource Include="Resources/Mono/JetBrainsMonoNL-Regular.ttf" LogicalName="Regular" />
         <EmbeddedResource Include="Resources/Mono/JetBrainsMonoNL-Bold.ttf" LogicalName="Bold" />
