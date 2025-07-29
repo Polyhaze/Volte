@@ -54,7 +54,7 @@ public sealed class HelpModule : VolteModule
     //module without aliases: regular module
     private async IAsyncEnumerable<string> GetAllRegularCommandsAsync()
     {
-        foreach (var mdl in CommandService.GetAllModules().Where(x => !x.FullAliases.Any()))
+        foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.None()))
         {
             if (!await TextCommandHelper.CanShowModuleAsync(Context, mdl)) continue;
 
@@ -69,7 +69,7 @@ public sealed class HelpModule : VolteModule
     // module with aliases: group command module
     private async IAsyncEnumerable<string> GetAllGroupCommandsAsync()
     {
-        foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.None()))
+        foreach (var mdl in CommandService.GetAllModules().Where(x => x.FullAliases.Any()))
         {
             if (!await TextCommandHelper.CanShowModuleAsync(Context, mdl)) continue;
 
