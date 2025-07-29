@@ -1,6 +1,5 @@
 ﻿using Discord.Interactions;
 using Volte.Systems.Interactions;
-using Volte.Systems.Commands.Interaction;
 
 namespace Volte.Systems.Commands.Interaction;
 

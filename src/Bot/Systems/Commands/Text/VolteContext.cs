@@ -1,6 +1,5 @@
 ﻿using Starscript;
 using Volte.Systems.Interactive;
-using Optional = Gommon.Optional;
 
 namespace Volte.Systems.Commands.Text;
 

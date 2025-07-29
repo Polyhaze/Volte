@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Optional = Gommon.Optional;
 
 namespace Volte.Entities;
 

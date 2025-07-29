@@ -6,7 +6,6 @@ using Gommon;
 using Volte.Entities;
 using Volte.Helpers;
 using Volte.UI.Avalonia.Models;
-using Volte.UI.Avalonia.ViewModels;
 using Volte.UI.Avalonia.Views;
 using Volte.UI.Helpers;
 

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using Gommon;
-using Qmmands;
-using Volte.Helpers;
-
-namespace Volte.Systems.Commands.Text.Modules;
+﻿namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class UtilityModule
 {

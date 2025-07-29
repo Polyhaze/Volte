@@ -1,5 +1,4 @@
 ﻿using Starscript;
-using Starscript.Internal;
 
 namespace Volte.Helpers;
 

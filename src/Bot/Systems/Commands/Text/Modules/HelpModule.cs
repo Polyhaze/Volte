@@ -1,5 +1,3 @@
-using Volte.Systems.Interactive;
-
 namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed class HelpModule : VolteModule

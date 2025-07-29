@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volte;
-using Version = Volte.Version;
 
 namespace Gommon;
 

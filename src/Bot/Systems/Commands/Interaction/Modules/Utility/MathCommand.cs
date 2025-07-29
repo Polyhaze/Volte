@@ -1,6 +1,5 @@
 ﻿using Discord.Interactions;
 using Starscript;
-using Starscript.Internal;
 
 namespace Volte.Systems.Commands.Interaction.Modules;
 

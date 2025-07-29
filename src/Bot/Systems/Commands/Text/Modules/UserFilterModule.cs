@@ -1,5 +1,4 @@
 ﻿using Starscript;
-using Starscript.Internal;
 using Volte.Systems.Interactive;
 using ActionType = Volte.Entities.ActionType;
 
