@@ -13,8 +13,6 @@ public class TagModule : VolteModule
         Tag tag)
     {
         var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
-
-        tag.Aliases.FormatCollection(static x => Format.Code(x), separator: ", ");
         
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle($"Tag {tag.Name}")
