@@ -82,6 +82,7 @@ public static class StarscriptHelper
         var uMap = new ValueMap();
         uMap.SetToString(user.ToString);
         uMap.Set("username", user.Username);
+        uMap.Set("name", user.Username);
         uMap.Set("isBot", user.IsBot);
         uMap.Set("isWebhook", user.IsWebhook);
         uMap.Set("mention", user.Mention);
@@ -100,6 +101,7 @@ public static class StarscriptHelper
         var uMap = Wrap((IUser)user);
 
         uMap.Set("nickname", user.Nickname);
+        uMap.Set("displayName", user.DisplayName);
         uMap.Set("isSuppressed", user.IsSuppressed);
         uMap.Set("isDeafened", user.IsDeafened);
         uMap.Set("isMuted", user.IsMuted);
