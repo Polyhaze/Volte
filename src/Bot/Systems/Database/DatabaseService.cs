@@ -43,23 +43,6 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
-    public GuildData this[ulong guildId] => GetData(guildId);
-    public GuildData this[IGuild guild] => GetData(guild);
-    public HashSet<Reminder.Reminder> this[IUser user] => GetReminders(user);
-    
-    public HashSet<Reminder.Reminder> GetReminders(IUser user, IGuild guild = null) =>
-        GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
-
-    public HashSet<Reminder.Reminder> GetReminders(ulong creator, ulong guild = 0)
-        => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
-
-    public bool TryDeleteReminder(Reminder.Reminder reminder) =>
-        _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
-
-    public HashSet<Reminder.Reminder> GetAllReminders() => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
-
-    public void CreateReminder(Reminder.Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
-
     public void Modify(ulong guildId, DataEditor modifier)
     {
         _guildData.LockedRef(coll =>
@@ -78,6 +61,21 @@ public sealed class DatabaseService : VolteService, IDisposable
             coll.Update(newConfig);
         });
     }
+    
+    public HashSet<Reminder.Reminder> this[IUser user] => GetReminders(user);
+    
+    public HashSet<Reminder.Reminder> GetReminders(IUser user, IGuild guild = null) =>
+        GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
+
+    public HashSet<Reminder.Reminder> GetReminders(ulong creator, ulong guild = 0)
+        => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
+
+    public bool TryDeleteReminder(Reminder.Reminder reminder) =>
+        _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
+
+    public HashSet<Reminder.Reminder> GetAllReminders() => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
+
+    public void CreateReminder(Reminder.Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
 
     public async Task WarnAsync(IUser issuer, IGuildUser member, string reason)
     {
