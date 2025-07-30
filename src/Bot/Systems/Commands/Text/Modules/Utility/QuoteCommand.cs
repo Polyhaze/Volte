@@ -16,7 +16,7 @@ public sealed partial class UtilityModule
                     .AppendLine(m.Content)
                     .AppendLine()
                     .AppendLine(Format.Url("Jump!", m.GetJumpUrl())))
-                .WithAuthor($"{m.Author}, in #{m.Channel}", m.Author.GetEffectiveAvatarUrl())
+                .WithAuthor($"{m.Author}, in #{m.Channel}", m.Author.GetDisplayAvatarUrl())
                 .WithFooter(m.Timestamp.Humanize()).Apply(e =>
                 {
                     if (m.HasAttachments())

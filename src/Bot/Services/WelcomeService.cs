@@ -68,7 +68,7 @@ public sealed class WelcomeService : VolteService
             await new EmbedBuilder()
                 .WithColor(data.Configuration.Welcome.WelcomeColor)
                 .WithDescription(await data.Configuration.Welcome.FormatLeavingMessageAsync(args.Guild, args.User))
-                .WithThumbnailUrl(args.User.GetEffectiveAvatarUrl())
+                .WithThumbnailUrl(args.User.GetDisplayAvatarUrl())
                 .WithCurrentTimestamp()
                 .SendToAsync(c);
             Debug(LogSource.Volte, $"Sent a leaving embed to #{c.Name}.");

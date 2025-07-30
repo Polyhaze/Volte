@@ -19,7 +19,7 @@ public sealed partial class UtilityModule
                     .DistinctBy(static x => x.Id).Count(),
                 true)
             .WithFooter($"Version: {Version.InformationVersion}")
-            .WithThumbnailUrl(Context.Client.CurrentUser.GetEffectiveAvatarUrl(size: 512)));
+            .WithThumbnailUrl(Context.Client.CurrentUser.GetDisplayAvatarUrl(size: 512)));
 
     [Command("UserInfo", "Ui")]
     [Description("Shows info for the mentioned user or yourself if none is provided.")]

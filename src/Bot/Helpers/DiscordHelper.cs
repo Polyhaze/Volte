@@ -272,11 +272,7 @@ public static class DiscordHelper
 
     public static string GetEffectiveAvatarUrl(this IGuildUser user, ImageFormat format = ImageFormat.Auto,
         ushort size = 128)
-        => user.GetGuildAvatarUrl(format, size) ?? user.GetAvatarUrl(format, size);
-
-    public static string GetEffectiveAvatarUrl(this IUser user, ImageFormat format = ImageFormat.Auto,
-        ushort size = 128)
-        => user.GetDisplayAvatarUrl(format, size) ?? user.GetAvatarUrl(format, size);
+        => user.GetGuildAvatarUrl(format, size) ?? user.GetDisplayAvatarUrl(format, size);
 
     public static bool HasAttachments(this IMessage message)
         => message.Attachments.Count != 0;
