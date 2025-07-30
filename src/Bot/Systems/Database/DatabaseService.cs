@@ -1,5 +1,6 @@
 using LiteDB;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Starboard;
 
 // ReSharper disable ReturnTypeCanBeEnumerable.Global
@@ -14,6 +15,7 @@ public sealed class DatabaseService : VolteService, IDisposable
     private readonly DiscordSocketClient _client;
 
     private readonly ILiteCollection<GuildData> _guildData;
+    private readonly ILiteCollection<GuildDataV2> _guildDataV2;
     private readonly ILiteCollection<Reminder.Reminder> _reminderData;
     private readonly ILiteCollection<StarboardDbEntry> _starboardData;
 
@@ -21,10 +23,22 @@ public sealed class DatabaseService : VolteService, IDisposable
     {
         _client = discordShardedClient;
         _guildData = Database.GetCollection<GuildData>("guilds");
+        _guildDataV2 = Database.GetCollection<GuildDataV2>("guildData");
         _reminderData = Database.GetCollection<Reminder.Reminder>("reminders");
         _starboardData = Database.GetCollection<StarboardDbEntry>("starboard");
         _starboardData.EnsureIndex("composite_id",
             $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
+    }
+
+    public int Migrate()
+    {
+        var v1 = _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
+        
+        return _guildDataV2.ValueLock(() =>
+        {
+            _guildDataV2.DeleteAll();
+            return _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
+        });
     }
 
     public GuildData GetData(IGuild guild) => GetData(guild.Id);
