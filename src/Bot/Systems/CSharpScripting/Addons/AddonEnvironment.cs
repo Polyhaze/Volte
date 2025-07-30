@@ -3,7 +3,7 @@
 
 using Volte.Systems.Database;
 
-namespace Volte.Systems.Addons;
+namespace Volte.Systems.CSharpScripting;
 
 public class AddonEnvironment
 {

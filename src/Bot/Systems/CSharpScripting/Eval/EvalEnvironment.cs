@@ -2,10 +2,10 @@ using System.Collections;
 using System.Text.Json.Serialization.Metadata;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
-
+// ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Systems.Eval;
+namespace Volte.Systems.CSharpScripting;
 
 public sealed class EvalEnvironment
 {

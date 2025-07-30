@@ -1,4 +1,4 @@
-using Volte.Systems.Addons;
+using Volte.Systems.CSharpScripting;
 using Volte.Systems.Commands.Text.Modules;
 using Volte.Systems.Reminder;
 

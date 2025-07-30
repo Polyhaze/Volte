@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Volte.Systems.Addons;
+namespace Volte.Systems.CSharpScripting;
 
 public class VolteAddonMeta
 {

@@ -1,8 +1,8 @@
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Volte.Systems.Eval;
 
-namespace Volte.Systems.Addons;
+
+namespace Volte.Systems.CSharpScripting;
 
 public sealed class AddonService : VolteService
 {

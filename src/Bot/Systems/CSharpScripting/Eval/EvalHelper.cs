@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Volte.Systems.Database;
 
-namespace Volte.Systems.Eval;
+namespace Volte.Systems.CSharpScripting;
 
 public static partial class EvalHelper
 {
