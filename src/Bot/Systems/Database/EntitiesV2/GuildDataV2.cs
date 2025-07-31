@@ -151,7 +151,10 @@ public class GuildDataV2
         },
         StarscriptTables = new StarscriptTables
         {
-            UserFilter = new UserFilterTable()
+            UserFilter = new UserFilterTable
+            {
+                Entries = v1.Extras.StarscriptTables.UserFilter.Entries
+            }
         }
     };
 }
