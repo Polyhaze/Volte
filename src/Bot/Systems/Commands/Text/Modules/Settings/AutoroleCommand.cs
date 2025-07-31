@@ -7,9 +7,9 @@ public sealed partial class SettingsModule
     public Task<ActionResult> AutoroleAsync([Remainder, Description("The role to be given to users when they join; or none to see the current one.")] SocketRole role = null)
     {
         if (role is null)
-            return Ok($"The current Autorole for this guild is <@&{Context.GuildData.Configuration.Autorole}>");
+            return Ok($"The current Autorole for this guild is <@&{Context.GuildData.Settings.Autorole}>");
 
-        Context.Modify(data => data.Configuration.Autorole = role.Id);
+        Context.Modify(data => data.Settings.Autorole = role.Id);
         return Ok($"Successfully set **{role.Name}** as the role to be given to members upon joining this guild.");
     }
 }

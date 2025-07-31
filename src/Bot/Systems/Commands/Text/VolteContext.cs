@@ -1,6 +1,7 @@
 ﻿using Starscript;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Interactive;
 using Volte.Systems.Starscript;
 
@@ -28,7 +29,7 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
     public SocketTextChannel Channel { get; }
     public SocketGuildUser User { get; }
     public SocketUserMessage Message { get; }
-    public GuildData GuildData { get; }
+    public GuildDataV2 GuildData { get; }
     public DateTime Now { get; }
         
     public Embed CreateEmbed(StringBuilder content) => CreateEmbed(content.ToString());

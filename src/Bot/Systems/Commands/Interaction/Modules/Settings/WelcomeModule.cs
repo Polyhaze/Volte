@@ -13,14 +13,14 @@ public partial class InteractionSettingsModule
             [Summary(description: "The channel to use for welcoming messages.")]
             ITextChannel channel)
         {
-            ModifyData(d => d.Configuration.Welcome.WelcomeChannel = channel.Id);
+            ModifyData(d => d.Settings.Welcome.Channel = channel.Id);
             return Ok($"Set this guild's welcome channel to {channel.Mention}.", ephemeral: true);
         }
         
         [SlashCommand("disable", "Disable the welcome system in your guild. Set a channel to re-enable.")]
         public Task<RuntimeResult> DisableAsync()
         {
-            ModifyData(d => d.Configuration.Welcome.WelcomeChannel = 0);
+            ModifyData(d => d.Settings.Welcome.Channel = 0);
             return Ok("Disabled the welcoming system in this guild.", ephemeral: true);
         }
 
@@ -29,7 +29,7 @@ public partial class InteractionSettingsModule
             [Summary(description: "Hexadecimal number (with/without #) or RGB number separated by ,")] 
             Color color)
         {
-            ModifyData(d => d.Configuration.Welcome.WelcomeColor = color.RawValue);
+            ModifyData(d => d.Settings.Welcome.EmbedColor = color.RawValue);
             return Ok("Successfully set this guild's welcome message embed color!", ephemeral: true);
         }
 
@@ -41,12 +41,12 @@ public partial class InteractionSettingsModule
         {
             if (message is null)
                 return Ok(
-                    $"The current leaving message for this guild is: {Format.Code(GetData().Configuration.Welcome.LeavingMessage ?? "None", string.Empty)}",
+                    $"The current leaving message for this guild is: {Format.Code(GetData().Settings.Welcome.LeftMessage ?? "None", string.Empty)}",
                     ephemeral: true);
 
-            ModifyData(data => data.Configuration.Welcome.LeavingMessage = message);
+            ModifyData(data => data.Settings.Welcome.LeftMessage = message);
 
-            var welcomeChannel = Context.Guild.GetTextChannel(GetData().Configuration.Welcome.WelcomeChannel);
+            var welcomeChannel = Context.Guild.GetTextChannel(GetData().Settings.Welcome.Channel);
             var sendingTest = welcomeChannel is null
                 ? "Not sending a test message, as you do not have a welcome channel set. " +
                   "Set a welcome channel to fully complete the setup!"
@@ -68,12 +68,12 @@ public partial class InteractionSettingsModule
         {
             if (message is null)
                 return Ok(
-                    $"The current joining message for this guild is: {Format.Code(GetData().Configuration.Welcome.WelcomeMessage ?? "None", string.Empty)}",
+                    $"The current joining message for this guild is: {Format.Code(GetData().Settings.Welcome.JoinMessage ?? "None", string.Empty)}",
                     ephemeral: true);
 
-            ModifyData(data => data.Configuration.Welcome.WelcomeMessage = message);
+            ModifyData(data => data.Settings.Welcome.JoinMessage = message);
 
-            var welcomeChannel = Context.Guild.GetTextChannel(GetData().Configuration.Welcome.WelcomeChannel);
+            var welcomeChannel = Context.Guild.GetTextChannel(GetData().Settings.Welcome.Channel);
             var sendingTest = welcomeChannel is null
                 ? "Not sending a test message, as you do not have a welcome channel set. " +
                   "Set a welcome channel to fully complete the setup!"
@@ -101,16 +101,16 @@ public partial class InteractionSettingsModule
         {
             if (message is null)
                 return Ok(
-                    $"The current welcome DM for this guild is: {Format.Code(GetData().Configuration.Welcome.WelcomeDmMessage ?? "None", string.Empty)}",
+                    $"The current welcome DM for this guild is: {Format.Code(GetData().Settings.Welcome.JoinDmMessage ?? "None", string.Empty)}",
                     ephemeral: true);
 
             if (message is "disable")
             {
-                ModifyData(data => data.Configuration.Welcome.WelcomeDmMessage = string.Empty);
+                ModifyData(data => data.Settings.Welcome.JoinDmMessage = null);
                 return Ok("Disabled welcome DMs.", ephemeral: true);
             }
 
-            ModifyData(data => data.Configuration.Welcome.WelcomeDmMessage = message);
+            ModifyData(data => data.Settings.Welcome.JoinDmMessage = message);
 
             return Ok(new StringBuilder()
                     .AppendLine($"Set this server's welcome DM to: {Format.Code(message, string.Empty)}")

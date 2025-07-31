@@ -35,6 +35,6 @@ public partial class BotOwnerModule
                 .WithDescription(Format.Code(addon.Script, "cs")))
             : BadRequest(
                 $"The provided addon, \"{listOrAddon}\", was not found. " +
-                $"Try `{Context.GuildData.Configuration.CommandPrefix}addon list` to see every initialized addon.");
+                $"Try `{Context.FormatUsageFor("Addon List")}` to see every initialized addon.");
     }
 }

@@ -37,7 +37,7 @@ public sealed class MessageService : VolteService
     {
         List<string> prefixes =
         [
-            args.Data.Configuration.CommandPrefix,
+            args.Data.Settings.CommandPrefix,
             $"<@{args.Context.Client.CurrentUser.Id}> ",
             $"<@!{args.Context.Client.CurrentUser.Id}> "
         ];
@@ -57,20 +57,20 @@ public sealed class MessageService : VolteService
                     $"<@!{args.Context.Client.CurrentUser.Id}>"))
             {
                 await args.Context.CreateEmbed(
-                        $"The prefix for this guild is **{args.Data.Configuration.CommandPrefix}**; " +
+                        $"The prefix for this guild is **{args.Data.Settings.CommandPrefix}**; " +
                         $"alternatively you can just mention me as a prefix, i.e. `@{args.Context.Guild.CurrentUser} help`.")
                     .ReplyToAsync(args.Message);
             }
             else if (!await _quoteService.CheckMessageAsync(args))
                 if (CommandUtilities.HasPrefix(args.Message.Content, '%', out var tagName))
                 {
-                    if (!args.Data.Extras.GetTagByNameOrAlias(tagName).TryGet(out var tag))
+                    if (!args.Data.GetTagByNameOrAlias(tagName).TryGet(out var tag))
                         return;
 
                     tag.Uses++;
                     _db.Save(args.Data);
 
-                    if (args.Data.Configuration.EmbedTagsAndShowAuthor)
+                    if (args.Data.Settings.EmbedTags)
                         await tag.AsEmbed(args.Context).SendToAsync(args.Context.Channel);
                     else
                         await args.Context.Channel.SendMessageAsync(tag.FormatContent(args.Context));

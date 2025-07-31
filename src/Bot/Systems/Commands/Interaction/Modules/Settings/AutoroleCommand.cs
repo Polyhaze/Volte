@@ -10,9 +10,9 @@ public partial class InteractionSettingsModule
         SocketRole role = null)
     {
         if (role is null)
-            return Ok($"The current Autorole for this guild is <@&{GetData().Configuration.Autorole}>", ephemeral: true);
+            return Ok($"The current Autorole for this guild is <@&{GetData().Settings.Autorole}>", ephemeral: true);
 
-        ModifyData(data => data.Configuration.Autorole = role.Id);
+        ModifyData(data => data.Settings.Autorole = role.Id);
         return Ok($"Successfully set **{role.Name}** as the role to be given to members upon joining this guild.", ephemeral: true);
     }
 }

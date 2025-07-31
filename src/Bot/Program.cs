@@ -4,7 +4,7 @@ namespace Volte;
 
 public static class Program
 {
-    public static ReadOnlyDictionary<string, string> CommandLineArguments { get; private set; }
+    public static ReadOnlyDictionary<string, string> CommandLineArguments { get; internal set; }
     
     private static async Task Main(string[] args)
     {

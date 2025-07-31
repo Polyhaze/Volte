@@ -14,10 +14,10 @@ public partial class InteractionUtilityModule
             return BadRequest("You can only use this command in guilds.");
         
         var data = GetData();
-        if (data.Extras.SelfRoles.Count == 0)
+        if (data.Settings.Collections.SelfRoles.Count == 0)
             return BadRequest("This guild does not have any roles you can give yourself.");
 
-        if (!data.Extras.SelfRoles.Contains(role.Id))
+        if (!data.Settings.Collections.SelfRoles.Contains(role.Id))
             return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");
 
         await Context.Guild.GetUser(Context.User.Id).AddRoleAsync(role);
@@ -34,7 +34,7 @@ public partial class InteractionUtilityModule
             return BadRequest("You can only use this command in guilds.");
         
         var data = GetData();
-        if (!data.Extras.SelfRoles.Contains(role.Id))
+        if (!data.Settings.Collections.SelfRoles.Contains(role.Id))
             return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");
 
         await Context.Guild.GetUser(Context.User.Id).RemoveRoleAsync(role.Id);

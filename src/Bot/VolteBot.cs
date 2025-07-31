@@ -1,5 +1,6 @@
 using Volte.Systems.CSharpScripting;
 using Volte.Systems.Commands.Text.Modules;
+using Volte.Systems.Database;
 using Volte.Systems.Reminder;
 
 namespace Volte;
@@ -72,6 +73,9 @@ public class VolteBot
 
         ExecuteBackgroundAsync(static async () => await Services.Get<AddonService>().InitAsync());
         Services.Get<ReminderService>().Initialize();
+        Services.Get<DatabaseService>().Initialize();
+        
+        ExecuteBackground(() => EvalHelper.GetImports()); // takes a few seconds the first time it's called, let's do this on startup on a separate thread instead of on first eval invocation.
 
         try
         {

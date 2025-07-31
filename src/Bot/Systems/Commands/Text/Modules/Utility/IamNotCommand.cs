@@ -8,7 +8,7 @@ public sealed partial class UtilityModule
         [Remainder, Description("The Self Role you want to remove from yourself.")]
         SocketRole role)
     {
-        if (!Context.GuildData.Extras.SelfRoles.Contains(role.Id))
+        if (!Context.GuildData.Settings.Collections.SelfRoles.Contains(role.Id))
             return BadRequest($"The role **{role.Name}** isn't in the self roles list for this guild.");
 
         await Context.User.RemoveRoleAsync(role.Id);

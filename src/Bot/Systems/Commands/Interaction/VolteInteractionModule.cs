@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Interactions;
 
 namespace Volte.Systems.Commands.Interaction;
@@ -28,7 +29,7 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     
     public bool IsInGuild() => Context.Guild != null;
 
-    public GuildData GetData() => Db.GetData(Context.Guild);
+    public GuildDataV2 GetData() => Db.GetData(Context.Guild);
     
     public void ModifyData(DataEditor modifier) => Db.Modify(Context.Guild.Id, modifier);
 

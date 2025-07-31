@@ -25,7 +25,7 @@ public class WelcomeSettings
     
     public uint EmbedColor { get; set; }
 
-    public async Task<string> FormatJoinMessageAsync(SocketGuildUser user)
+    public async ValueTask<string> FormatJoinMessageAsync(SocketGuildUser user)
     {
         var msg = JoinMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
             .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
@@ -46,7 +46,7 @@ public class WelcomeSettings
         }
     }
 
-    public async Task<string> FormatLeftMessageAsync(SocketGuild guild, SocketUser user)
+    public async ValueTask<string> FormatLeftMessageAsync(SocketGuild guild, SocketUser user)
     {
         var msg = LeftMessage.ReplaceIgnoreCase("{ServerName}", guild.Name)
             .ReplaceIgnoreCase("{GuildName}", guild.Name)
@@ -67,7 +67,7 @@ public class WelcomeSettings
         }
     }
 
-    public async Task<string> FormatJoinDmMessageAsync(SocketGuildUser user)
+    public async ValueTask<string> FormatJoinDmMessageAsync(SocketGuildUser user)
     {
         var msg = JoinDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
             .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)

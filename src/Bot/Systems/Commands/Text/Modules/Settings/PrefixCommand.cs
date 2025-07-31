@@ -6,7 +6,7 @@ public sealed partial class SettingsModule
     [Description("Sets the command prefix for this guild.")]
     public Task<ActionResult> PrefixAsync([Remainder] string newPrefix)
     {
-        Context.Modify(data => data.Configuration.CommandPrefix = newPrefix);
+        Context.Modify(data => data.Settings.CommandPrefix = newPrefix);
         return Ok($"Set this guild's prefix to {Format.Bold(newPrefix)}.");
     }
 }

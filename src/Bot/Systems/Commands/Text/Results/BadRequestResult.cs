@@ -16,7 +16,7 @@ public class BadRequestResult : ActionResult
             .WithDescription(Reason)
             .WithCurrentTimestamp();
 
-        return new ResultCompletionData(ctx.GuildData.Configuration.ReplyInline
+        return new ResultCompletionData(ctx.GuildData.Settings.ReplyInline
             ? await e.ReplyToAsync(ctx.Message)
             : await e.SendToAsync(ctx.Channel));
     }

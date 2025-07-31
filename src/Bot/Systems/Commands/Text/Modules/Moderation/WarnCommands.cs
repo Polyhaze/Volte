@@ -25,8 +25,8 @@ public sealed partial class ModerationModule
     public Task<ActionResult> WarnsAsync([Remainder, Description("The member to list warns for.")]
         SocketGuildUser member)
     {
-        var warns = Db.GetData(Context.Guild).Extras.Warns
-            .Where(x => x.User == member.Id)
+        var warns = Db.GetData(Context.Guild).Moderation.Warns
+            .Where(x => x.Target == member.Id)
             .Select(static x => $"{Format.Bold(Format.StripMarkDown(x.Reason))}, on {Format.Bold(x.Date.FormatDate())}");
         
         return Ok(new PaginatedMessage.Builder()
@@ -42,7 +42,7 @@ public sealed partial class ModerationModule
         [Remainder, EnsureNotSelf, Description("The member who you want to clear warns for.")]
         SocketGuildUser member)
     {
-        var warnCount = Context.GuildData.Extras.Warns.RemoveWhere(x => x.User == member.Id);
+        var warnCount = Context.GuildData.Moderation.Warns.RemoveWhere(x => x.Target == member.Id);
         Db.Save(Context.GuildData);
 
         var e = Context

@@ -30,36 +30,70 @@ public sealed class DatabaseService : VolteService, IDisposable
             $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
     }
 
-    public int Migrate()
+    public void Initialize()
+    {
+        if (Program.CommandLineArguments.ContainsKey("migrate"))
+            _ = Migrate();
+        else if (Program.CommandLineArguments.ContainsKey("hard-migrate"))
+            _ = Migrate(destroyV1: true);
+    }
+
+    public int Migrate(bool destroyV1 = false)
     {
         var v1 = _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
+
+        if (v1.None())
+        {
+            Info(LogSource.Service, "Guild data has already been migrated to V2.");
+            return 0;
+        }
+        
+        Info(LogSource.Service, $"Migrating {v1.Count} guild data entries...");
+
+        if (destroyV1)
+        {
+            var cleared = _guildData.ValueLock(() => _guildData.DeleteAll());
+            if (cleared > 0)
+                Info(LogSource.Service, $"Cleared {"existing guild data V1 entry".ToQuantity(cleared)}.");
+
+            Info(LogSource.Service, "Dropping 'guilds' database collection.");
+            Database.DropCollection("guilds");
+        }
         
         return _guildDataV2.ValueLock(() =>
         {
-            _guildDataV2.DeleteAll();
-            return _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
+            var cleared = _guildDataV2.DeleteAll();
+            
+            if (cleared > 0)
+                Info(LogSource.Service, $"Cleared {"existing guild data V2 entry".ToQuantity(cleared)}.");
+            
+            var inserted = _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
+            
+            Info(LogSource.Service, $"Migrated {"guild data entry".ToQuantity(inserted)} to V2.");
+
+            return inserted;
         });
     }
 
-    public GuildData GetData(IGuild guild) => GetData(guild.Id);
+    public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
 
-    public ValueTask<GuildData> GetDataAsync(ulong id) => new(GetData(id));
+    public ValueTask<GuildDataV2> GetDataAsync(ulong id) => new(GetData(id));
 
-    public GuildData GetData(ulong id)
+    public GuildDataV2 GetData(ulong id)
     {
-        return _guildData.ValueLock(() =>
+        return _guildDataV2.ValueLock(() =>
         {
-            var conf = _guildData.FindOne(g => g.Id == id);
+            var conf = _guildDataV2.FindOne(g => g.Id == id);
             if (conf != null) return conf;
-            var newConf = GuildData.CreateFrom(_client.GetGuild(id));
-            _guildData.Insert(newConf);
+            var newConf = GuildDataV2.CreateFrom(_client.GetGuild(id));
+            _guildDataV2.Insert(newConf);
             return newConf;
         });
     }
 
     public void Modify(ulong guildId, DataEditor modifier)
     {
-        _guildData.LockedRef(coll =>
+        _guildDataV2.LockedRef(coll =>
         {
             var data = GetData(guildId);
             modifier(data);
@@ -67,9 +101,9 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
-    public void Save(GuildData newConfig)
+    public void Save(GuildDataV2 newConfig)
     {
-        _guildData.LockedRef(coll =>
+        _guildDataV2.LockedRef(coll =>
         {
             coll.EnsureIndex(s => s.Id, true);
             coll.Update(newConfig);
@@ -94,13 +128,13 @@ public sealed class DatabaseService : VolteService, IDisposable
     public async Task WarnAsync(IUser issuer, IGuildUser member, string reason)
     {
         var data = await GetDataAsync(member.GuildId);
-
-        data.Extras.Warns.Add(new Warn
+        
+        data.Moderation.AddWarn(warn =>
         {
-            User = member.Id,
-            Reason = reason,
-            Issuer = issuer.Id,
-            Date = DateTimeOffset.Now
+            warn.Issuer = issuer.Id;
+            warn.Target = member.Id;
+            warn.Reason = reason;
+            warn.Date = DateTimeOffset.Now;
         });
         
         Save(data);

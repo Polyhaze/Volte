@@ -2,6 +2,8 @@ using System.Collections;
 using System.Text.Json.Serialization.Metadata;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -16,7 +18,7 @@ public sealed class EvalEnvironment
 
     public required VolteContext Context { get; init; }
     public required DiscordSocketClient Client { get; init; }
-    public required GuildData Data { get; init; }
+    public required GuildDataV2 Data { get; init; }
     public required CommandService Commands { get; init; }
     public required DatabaseService Database { get; init; }
     public EvalEnvironment Environment { get; }

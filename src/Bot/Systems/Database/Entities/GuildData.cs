@@ -6,43 +6,6 @@ namespace Volte.Systems.Database.Entities;
 
 public sealed class GuildData
 {
-    public static GuildData CreateFrom(IGuild guild)
-        => new()
-        {
-            Id = guild.Id,
-            OwnerId = guild.OwnerId,
-            Configuration = new()
-            {
-                Autorole = default,
-                CommandPrefix = Config.CommandPrefix,
-                Moderation = new()
-                {
-                    AdminRole = default,
-                    ModActionLogChannel = default,
-                    ModRole = default,
-                    CheckAccountAge = false,
-                    VerifiedRole = default,
-                    UnverifiedRole = default,
-                    ShowResponsibleModerator = true
-                },
-                Welcome = new()
-                {
-                    LeavingMessage = string.Empty,
-                    WelcomeChannel = default,
-                    WelcomeColor = new Color(0x7000FB).RawValue,
-                    WelcomeMessage = string.Empty
-                }
-            },
-            Extras = new()
-            {
-                StarscriptTables = new StarscriptTables(),
-                ModActionCaseNumber = default,
-                SelfRoles = [],
-                Tags = [],
-                Warns = []
-            }
-        };
-
     public GuildData()
     {
         Configuration = new();

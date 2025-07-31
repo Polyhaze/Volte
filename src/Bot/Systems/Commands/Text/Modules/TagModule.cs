@@ -1,4 +1,4 @@
-using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Systems.Commands.Text.Modules;
 
@@ -12,7 +12,7 @@ public class TagModule : VolteModule
     [Command("Stats")]
     [Description("Shows stats for a tag.")]
     public async Task<ActionResult> TagStatsAsync([Remainder, Description("The tag to show stats for.")]
-        Tag tag)
+        TagV2 tag)
     {
         var u = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
         
@@ -29,7 +29,7 @@ public class TagModule : VolteModule
     [Description("Lists all available tags in the current guild.")]
     public Task<ActionResult> TagsAsync()
         => Ok(Context.CreateEmbedBuilder(
-            Context.GuildData.Extras.Tags.FormatCollection(static x => Format.Code(x.Name), separator: ", ")
+            Context.GuildData.Settings.Collections.Tags.FormatCollection(static x => Format.Code(x.Name), separator: ", ")
         ).WithTitle($"Available Tags for {Context.Guild.Name}"));
 
     [Command("Create", "Add", "New")]
@@ -41,11 +41,15 @@ public class TagModule : VolteModule
         string name, [Remainder, Description("What you want the tag to reply with.")]
         string response)
     {
-        if (Context.GuildData.Extras.Tags.TryGetFirst(t => t.Name.EqualsIgnoreCase(name), out var tag))
+        if (Context.GuildData.GetTagByNameOrAlias(name).TryGet(out var tag))
         {
             var user = await Context.Client.Rest.GetUserAsync(tag.CreatorId);
-            return BadRequest(
-                $"Cannot make the tag **{tag.Name}**, as it already exists and is owned by **{user}**.");
+
+            var desiredNameIsAliasOfFound = tag.Aliases.ContainsIgnoreCase(name);
+
+            return BadRequest(desiredNameIsAliasOfFound 
+                ? $"Cannot make the tag `{name}`, as it already exists as an alias of the tag **{tag.Name}** and is owned by **{user}**." 
+                : $"Cannot make the tag `{name}`, as it already exists and is owned by **{user}**.");
         }
 
         tag = new()
@@ -57,7 +61,7 @@ public class TagModule : VolteModule
             Uses = default
         };
 
-        Context.Modify(data => data.Extras.AddTag(tag));
+        Context.Modify(data => data.AddTag(tag));
 
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle("Tag Created!")
@@ -73,12 +77,12 @@ public class TagModule : VolteModule
     [Description("Edit a tag's content if it exists.")]
     [RequireGuildModerator]
     public Task<ActionResult> TagEditAsync([Description("The tag whose content you want to modify.")]
-        Tag tag, [Remainder, Description("The new content of the tag.")]
+        TagV2 tag, [Remainder, Description("The new content of the tag.")]
         string response)
     {
-        Context.GuildData.Extras.Tags.Remove(tag);
+        Context.GuildData.Settings.Collections.Tags.Remove(tag);
         tag.Response = response;
-        Context.GuildData.Extras.Tags.Add(tag);
+        Context.GuildData.Settings.Collections.Tags.Add(tag);
         Db.Save(Context.GuildData);
         return Ok($"Successfully modified the content of tag **{tag.Name}**.");
     }
@@ -87,13 +91,13 @@ public class TagModule : VolteModule
     [Description("Add an alias to an existing tag.")]
     [RequireGuildModerator]
     public Task<ActionResult> AddAliasAsync([Description("The tag whose aliases you want to modify.")]
-        Tag tag, 
+        TagV2 tag, 
         [Remainder, Description("The new alias of the tag.")]
         string alias)
     {
-        Context.GuildData.Extras.Tags.Remove(tag);
+        Context.GuildData.Settings.Collections.Tags.Remove(tag);
         tag.Aliases.Add(alias);
-        Context.GuildData.Extras.Tags.Add(tag);
+        Context.GuildData.Settings.Collections.Tags.Add(tag);
         Db.Save(Context.GuildData);
         return Ok($"Successfully added the alias `{alias}` to the tag **{tag.Name}**.");
     }
@@ -102,13 +106,13 @@ public class TagModule : VolteModule
     [Description("Remove an alias from an existing tag.")]
     [RequireGuildModerator]
     public Task<ActionResult> RemoveAliasAsync([Description("The tag whose aliases you want to modify.")]
-        Tag tag, 
+        TagV2 tag, 
         [Remainder, Description("The alias of the tag to remove.")]
         string alias)
     {
-        Context.GuildData.Extras.Tags.Remove(tag);
+        Context.GuildData.Settings.Collections.Tags.Remove(tag);
         var removed = tag.Aliases.Remove(alias);
-        Context.GuildData.Extras.Tags.Add(tag);
+        Context.GuildData.Settings.Collections.Tags.Add(tag);
         Db.Save(Context.GuildData);
         
         return Ok(removed 
@@ -120,9 +124,9 @@ public class TagModule : VolteModule
     [Description("Deletes a tag if it exists.")]
     [RequireGuildModerator]
     public async Task<ActionResult> TagDeleteAsync([Remainder, Description("The tag to delete.")]
-        Tag tag)
+        TagV2 tag)
     {
-        Context.GuildData.Extras.Tags.Remove(tag);
+        Context.GuildData.Settings.Collections.Tags.Remove(tag);
         Db.Save(Context.GuildData);
         return Ok($"Deleted the tag {Format.Bold(tag.Name)}, created by " +
                   $"**{await Context.Client.Rest.GetUserAsync(tag.CreatorId)}**, with " +

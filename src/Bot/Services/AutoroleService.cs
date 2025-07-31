@@ -5,17 +5,16 @@ namespace Volte.Services;
 public sealed class AutoroleService : VolteService
 {
     private readonly DatabaseService _db;
-    
+
     public AutoroleService(DatabaseService databaseService)
     {
         _db = databaseService;
     }
-    
-    
+
     public async Task ApplyRoleAsync(UserJoinedEventArgs args)
     {
         var data = _db.GetData(args.Guild);
-        var targetRole = args.Guild.GetRole(data.Configuration.Autorole);
+        var targetRole = args.Guild.GetRole(data.Settings.Autorole);
         if (targetRole is null)
         {
             Debug(LogSource.Volte,

@@ -53,7 +53,7 @@ public sealed partial class ModerationModule
             .CreateEmbedBuilder(
                 $"You've been banned from {Format.Bold(Context.Guild.Name)} for {Format.Bold(reason)}.");
 
-        if (!Context.GuildData.Configuration.Moderation.ShowResponsibleModerator || modifications.TryGetValue("shadow", out _))
+        if (!Context.GuildData.Settings.Moderation.ShowResponsibleModerator || modifications.TryGetValue("shadow", out _))
         {
             e = e.WithAuthor(author: null).WithSuccessColor();
         }

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using Qommon.Collections;
 using Volte.Helpers;
 using Volte.UI.Avalonia;
 using Logger = Volte.Helpers.Logger;
@@ -17,6 +18,8 @@ public class Program
     {
         if (!UnixHelper.TryParseNamedArguments(args, out var output) && output.Error is not InvalidOperationException)
             Logger.Error(output.Error);
+
+        Volte.Program.CommandLineArguments = new ReadOnlyDictionary<string, string>(output.Parsed);
 
         if (VolteBot.IsHeadless = args.Contains("--no-gui")) 
             return await VolteManager.StartWait();

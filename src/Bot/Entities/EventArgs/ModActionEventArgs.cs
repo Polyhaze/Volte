@@ -1,6 +1,7 @@
 using Discord.Interactions;
 using Volte.Systems.Commands.Interaction;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Entities;
 
@@ -9,7 +10,7 @@ public class ModActionEventArgs
     public SocketUser Moderator { get; private set; }
     public ISocketMessageChannel Channel { get; private set; }
     public required Func<string, EmbedBuilder> CreateEmbedBuilder { get; init; }
-    public required GuildData GuildData { get; init; }
+    public required GuildDataV2 GuildData { get; init; }
     
     public ModActionType ActionType { get; private set; }
     public string Reason { get; private set; }

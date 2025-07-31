@@ -10,9 +10,9 @@ public partial class InteractionSettingsModule
         SocketRole role = null)
     {
         if (role is null)
-            return Ok($"The current Admin role for this guild is <@&{GetData().Configuration.Moderation.AdminRole}>", ephemeral: true);
+            return Ok($"The current Admin role for this guild is <@&{GetData().Settings.Moderation.AdminRole}>", ephemeral: true);
 
-        ModifyData(data => data.Configuration.Moderation.AdminRole = role.Id);
+        ModifyData(data => data.Settings.Moderation.AdminRole = role.Id);
         return Ok($"Set {role.Mention} as the Admin role for this guild.", ephemeral: true);
     }
 }

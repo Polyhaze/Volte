@@ -10,6 +10,8 @@ public class GuildSettings
     
     public bool EmbedTags { get; set; }
     
+    public bool AutoQuoteMessageUrls { get; set; }
+    
     public ModerationSettings Moderation { get; set; } = new();
     
     public StarboardSettings Starboard { get; set; } = new();

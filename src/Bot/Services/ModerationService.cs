@@ -1,5 +1,6 @@
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Services;
 
@@ -14,12 +15,12 @@ public sealed class ModerationService : VolteService
 
     public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
     {
-        var modConfig = _db.GetData(args.Guild).Configuration.Moderation;
+        var modConfig = _db.GetData(args.Guild).Settings.Moderation;
         if (args.User.IsBot || !modConfig.CheckAccountAge || !Config.EnabledFeatures.ModLog) return;
 
         Debug(LogSource.Volte, "Attempting to post a VerifyAge message.");
 
-        var c = args.User.Guild.GetTextChannel(modConfig.ModActionLogChannel);
+        var c = args.User.Guild.GetTextChannel(modConfig.ActionLogChannel);
         if (c is null) return;
         Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
         var diff = DateTimeOffset.Now - args.User.CreatedAt;
@@ -46,7 +47,7 @@ public sealed class ModerationService : VolteService
 
         Debug(LogSource.Volte, "Attempting to post a modlog message.");
 
-        var c = args.Guild.GetTextChannel(args.GuildData.Configuration.Moderation.ModActionLogChannel);
+        var c = args.Guild.GetTextChannel(args.GuildData.Settings.Moderation.ActionLogChannel);
         if (c is null)
         {
             Debug(LogSource.Volte, "Resulting channel was either not set or invalid; aborting.");
@@ -201,9 +202,9 @@ public sealed class ModerationService : VolteService
             "Sent a ModLog message or threw an exception.");
     }
 
-    private void IncrementAndSave(GuildData gd)
+    private void IncrementAndSave(GuildDataV2 gd)
     {
-        gd.Extras.ModActionCaseNumber++;
+        gd.Moderation.CurrentModActionCase++;
         _db.Save(gd);
     }
 
@@ -218,7 +219,7 @@ public sealed class ModerationService : VolteService
             Append(nameof(Moderator), $"{args.Moderator.Username} ({args.Moderator.Id})");
 
         public ModLogMessageBuilder Channel() => Append(nameof(Channel), $"<#{args.Channel.Id}>");
-        public ModLogMessageBuilder Case() => Append(nameof(Case), args.GuildData.Extras.ModActionCaseNumber);
+        public ModLogMessageBuilder Case() => Append(nameof(Case), args.GuildData.Moderation.CurrentModActionCase);
         public ModLogMessageBuilder MessagesCleared() => Append("Messages Cleared", args.Count);
 
         public ModLogMessageBuilder Target(bool isOnMessageDelete)

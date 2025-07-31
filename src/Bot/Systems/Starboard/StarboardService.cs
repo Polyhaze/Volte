@@ -1,6 +1,7 @@
 using System.Net;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Systems.Starboard;
 
@@ -33,7 +34,7 @@ public sealed class StarboardService : VolteService
         IMessageChannel channel,
         IUserMessage starredMessage,
         SocketReaction reaction,
-        out StarboardOptions starboard, out SocketChannel starboardChannel)
+        out StarboardSettings starboard, out SocketChannel starboardChannel)
     {
         starboard = default;
         starboardChannel = default;
@@ -53,11 +54,11 @@ public sealed class StarboardService : VolteService
         // Ignore reactions from the current user
         if (reaction.UserId == _client.CurrentUser.Id) return false;
         
-        starboard = _db.GetData(guildChannel.Guild.Id).Configuration.Starboard;
+        starboard = _db.GetData(guildChannel.Guild.Id).Settings.Starboard;
 
         if (!starboard.Enabled) return false;
 
-        starboardChannel = _client.GetChannel(starboard.StarboardChannel);
+        starboardChannel = _client.GetChannel(starboard.Channel);
         return starboardChannel is not null;
     }
 
@@ -174,11 +175,11 @@ public sealed class StarboardService : VolteService
         var guildId = channel.Guild.Id;
         var messageId = cachedMessage.Id;
             
-        var starboard = (await _db.GetDataAsync(guildId)).Configuration.Starboard;
+        var starboard = (await _db.GetDataAsync(guildId)).Settings.Starboard;
 
         if (!starboard.Enabled) return;
 
-        var starboardChannel = _client.GetChannel(starboard.StarboardChannel);
+        var starboardChannel = _client.GetChannel(starboard.Channel);
         if (starboardChannel is null) return;
 
         if (_db.TryGetStargazers(guildId, messageId, out var entry))
@@ -223,9 +224,9 @@ public sealed class StarboardService : VolteService
     /// <param name="starboard">The guild's starboard configuration</param>
     /// <param name="message">The message to star (must be from a <see cref="IGuildChannel"/>)</param>
     /// <param name="entry"></param>
-    private async Task UpdateOrPostToStarboardAsync(StarboardOptions starboard, IMessage message, StarboardEntry entry)
+    private async Task UpdateOrPostToStarboardAsync(StarboardSettings starboard, IMessage message, StarboardEntry entry)
     {
-        var starboardChannel = _client.GetChannel(starboard.StarboardChannel);
+        var starboardChannel = _client.GetChannel(starboard.Channel);
         if (starboardChannel is not SocketTextChannel starboardTextChannel)
             return;
 
@@ -294,7 +295,7 @@ public sealed class StarboardService : VolteService
     {
         var data = await _db.GetDataAsync(message.Channel.Cast<IGuildChannel>().GuildId);
             
-        var starboardChannel = _client.GetChannel(data.Configuration.Starboard.StarboardChannel);
+        var starboardChannel = _client.GetChannel(data.Settings.Starboard.Channel);
         if (starboardChannel is not ITextChannel starboardTextChannel)
             return null;
 

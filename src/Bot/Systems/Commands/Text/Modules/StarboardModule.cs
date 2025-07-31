@@ -17,7 +17,7 @@ public sealed class StarboardModule : VolteModule
     public Task<ActionResult> ChannelAsync(
         [Description("The channel to be used by Starboard.")] SocketTextChannel channel)
     {
-        Context.Modify(data => data.Configuration.Starboard.StarboardChannel = channel.Id);
+        Context.Modify(data => data.Settings.Starboard.Channel = channel.Id);
         return Ok($"Successfully set the starboard channel to {MentionUtils.MentionChannel(channel.Id)}.");
     }
 
@@ -28,9 +28,8 @@ public sealed class StarboardModule : VolteModule
     {
         if (amount < 1)
             return BadRequest("Amount must be larger than zero.");
-            
 
-        Context.Modify(data => data.Configuration.Starboard.StarsRequiredToPost = amount);
+        Context.Modify(data => data.Settings.Starboard.StarsRequiredToPost = amount);
             
         return Ok($"Set the amount of stars required to be posted as a starboard message to **{amount}**.");
     }
@@ -53,8 +52,8 @@ public sealed class StarboardModule : VolteModule
             
         Context.Modify(data =>
         {
-            data.Configuration.Starboard.Enabled = true;
-            data.Configuration.Starboard.StarboardChannel = channel.Id;
+            data.Settings.Starboard.Enabled = true;
+            data.Settings.Starboard.Channel = channel.Id;
         });
             
         return Ok($"Successfully configured the Starboard functionality, and any starred messages will go to {channel.Mention}.");
@@ -65,7 +64,7 @@ public sealed class StarboardModule : VolteModule
     public Task<ActionResult> EnableAsync(
         [Description("Whether or not to enable or disable the Starboard.")] bool enabled)
     {
-        Context.Modify(data => data.Configuration.Starboard.Enabled = enabled);
+        Context.Modify(data => data.Settings.Starboard.Enabled = enabled);
         return Ok(
             enabled ? "Enabled the Starboard in this Guild." : "Disabled the Starboard in this Guild.");
     }

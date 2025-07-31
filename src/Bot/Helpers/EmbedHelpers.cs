@@ -1,4 +1,5 @@
 ﻿using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Interactive;
 
 namespace Volte.Helpers;
@@ -24,17 +25,17 @@ public static class EmbedHelpers
     public static EmbedBuilder AddField(this EmbedBuilder e, object name, Action<StringBuilder> description,
         bool inline = false) => 
         e.AddField(name.ToString(), String(description), inline);
-
+    
     /// <summary>
     ///     Removes the author and sets the color to the config-provided <see cref="Config"/>.<see cref="Config.SuccessColor"/>,
     /// however it only removes it if <see cref="ModerationOptions.ShowResponsibleModerator"/> on the provided <paramref name="data"/> is <see langword="false"/>
     /// </summary>
     /// <param name="e">The current <see cref="EmbedBuilder"/>.</param>
-    /// <param name="data">The <see cref="GuildData"/> to apply settings for.</param>
+    /// <param name="data">The <see cref="GuildDataV2"/> to apply settings for.</param>
     /// <returns>The possibly-modified <see cref="EmbedBuilder"/></returns>
-    public static EmbedBuilder Apply(this EmbedBuilder e, GuildData data) => e.Apply(eb =>
+    public static EmbedBuilder Apply(this EmbedBuilder e, GuildDataV2 data) => e.Apply(eb =>
     {
-        if (data.Configuration.Moderation.ShowResponsibleModerator) return;
+        if (data.Settings.Moderation.ShowResponsibleModerator) return;
         
         eb.WithAuthor(author: null);
         eb.WithSuccessColor();

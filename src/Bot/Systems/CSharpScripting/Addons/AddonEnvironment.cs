@@ -22,7 +22,7 @@ public class AddonEnvironment
 
     public bool IsCommand(SocketUserMessage message, ulong guildId, out string targetCommand) 
         => CommandUtilities.HasAnyPrefix(message.Content, 
-            new[] { Database.GetData(guildId).Configuration.CommandPrefix, $"<@{Client.CurrentUser.Id}> ", $"<@!{Client.CurrentUser.Id}> " }, 
+            new[] { Database.GetData(guildId).Settings.CommandPrefix, $"<@{Client.CurrentUser.Id}> ", $"<@!{Client.CurrentUser.Id}> " }, 
             StringComparison.OrdinalIgnoreCase, out _, out targetCommand);
 
 }

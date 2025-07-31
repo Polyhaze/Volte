@@ -67,7 +67,7 @@ public class UserFilterModule : VolteModule
             if (!message.HasValue) goto GetReason;
 
             Context.Modify(data =>
-                data.Extras.StarscriptTables.UserFilter.Add(rawCondition, actionType, message.Value.Content));
+                data.StarscriptTables.UserFilter.Add(rawCondition, actionType, message.Value.Content));
 
             await Context.CreateEmbed("Added that filter to this guild.").SendToAsync(Context.Channel);
         }, false);
@@ -77,7 +77,7 @@ public class UserFilterModule : VolteModule
     [Description("Deletes a user filter entry with the specified ID.")]
     public Task<ActionResult> RemoveAsync([Description("The filter entry ID.")] int id)
     {
-        if (Context.GuildData.Extras.StarscriptTables.UserFilter.Entries.RemoveAll(x => x.Id == id) > 0)
+        if (Context.GuildData.StarscriptTables.UserFilter.Entries.RemoveAll(x => x.Id == id) > 0)
         {
             Db.Save(Context.GuildData);
             return Ok("Removed that filter.");
@@ -91,7 +91,7 @@ public class UserFilterModule : VolteModule
     [Description("Lists all user filters in this guild.")]
     public Task<ActionResult> ListAsync()
     {
-        var entries = Context.GuildData.Extras.StarscriptTables.UserFilter.Entries;
+        var entries = Context.GuildData.StarscriptTables.UserFilter.Entries;
 
         if (entries.None())
             return Ok("This guild has no user filters configured.");
@@ -122,7 +122,7 @@ public class UserFilterModule : VolteModule
             if (!confirmation.HasValue) goto Confirmation;
             if (!confirmation.Value) return;
 
-            Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Entries.Clear());
+            Context.Modify(data => data.StarscriptTables.UserFilter.Entries.Clear());
             await Context.CreateEmbed("Done.").SendToAsync(Context.Channel);
         }, false);
 
@@ -132,7 +132,7 @@ public class UserFilterModule : VolteModule
     public Task<ActionResult> CheckAsync() =>
         Ok(async () =>
         {
-            var entriesList = Context.GuildData.Extras.StarscriptTables.UserFilter.Entries;
+            var entriesList = Context.GuildData.StarscriptTables.UserFilter.Entries;
 
             if (entriesList.Count is 0)
             {
@@ -169,7 +169,7 @@ public class UserFilterModule : VolteModule
             }
 
             if (brokenEntries.Count > 0)
-                Context.Modify(data => data.Extras.StarscriptTables.UserFilter.Entries
+                Context.Modify(data => data.StarscriptTables.UserFilter.Entries
                     .RemoveAll(f => brokenEntries.Contains(f.Id)));
 
             if (compiledEntries.Count is 0)

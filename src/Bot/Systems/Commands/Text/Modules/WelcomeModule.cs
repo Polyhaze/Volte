@@ -16,7 +16,7 @@ public class WelcomeModule : VolteModule
         [Remainder, Description("The channel to use for welcoming messages.")]
         SocketTextChannel channel)
     {
-        Context.Modify(data => data.Configuration.Welcome.WelcomeChannel = channel.Id);
+        Context.Modify(data => data.Settings.Welcome.Channel = channel.Id);
         return Ok($"Set this guild's welcome channel to {channel.Mention}.");
     }
 
@@ -27,10 +27,10 @@ public class WelcomeModule : VolteModule
     public Task<ActionResult> WelcomeMessageAsync([Remainder] string message = null)
     {
         if (message is null)
-            return Ok($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeMessage ?? "None", string.Empty)}");
+            return Ok($"The current welcome message for this guild is: {Format.Code(Context.GuildData.Settings.Welcome.JoinMessage ?? "None", string.Empty)}");
 
-        Context.Modify(data => data.Configuration.Welcome.WelcomeMessage = message);
-        var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
+        Context.Modify(data => data.Settings.Welcome.JoinMessage = message);
+        var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Settings.Welcome.Channel);
         var sendingTest = welcomeChannel is null
             ? "Not sending a test message as you do not have a welcome channel set." +
               "Set a welcome channel to fully complete the setup!"
@@ -47,7 +47,7 @@ public class WelcomeModule : VolteModule
     [Description("Sets the color used for welcome embeds for this guild.")]
     public Task<ActionResult> WelcomeColorAsync([Remainder] Color color)
     {
-        Context.GuildData.Configuration.Welcome.WelcomeColor = color.RawValue;
+        Context.GuildData.Settings.Welcome.EmbedColor = color.RawValue;
         Db.Save(Context.GuildData);
         return Ok("Successfully set this guild's welcome message embed color!");
     }
@@ -61,11 +61,11 @@ public class WelcomeModule : VolteModule
         if (message is null)
             return Ok(new StringBuilder()
                 .AppendLine(
-                    $"The current leaving message for this guild is: {Format.Code(Context.GuildData.Configuration.Welcome.LeavingMessage ?? "None", string.Empty)}"));
+                    $"The current leaving message for this guild is: {Format.Code(Context.GuildData.Settings.Welcome.LeftMessage ?? "None", string.Empty)}"));
 
-        Context.GuildData.Configuration.Welcome.LeavingMessage = message;
+        Context.GuildData.Settings.Welcome.LeftMessage = message;
         Db.Save(Context.GuildData);
-        var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Configuration.Welcome.WelcomeChannel);
+        var welcomeChannel = Context.Guild.GetTextChannel(Context.GuildData.Settings.Welcome.Channel);
         var sendingTest = welcomeChannel is null
             ? "Not sending a test message, as you do not have a welcome channel set. " +
               "Set a welcome channel to fully complete the setup!"
@@ -88,9 +88,9 @@ public class WelcomeModule : VolteModule
     {
         if (message is null)
             return Ok(
-                $"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Configuration.Welcome.WelcomeDmMessage ?? "None")}");
+                $"Unset the WelcomeDmMessage that was previously set to: {Format.Code(Context.GuildData.Settings.Welcome.JoinDmMessage ?? "None")}");
 
-        Context.GuildData.Configuration.Welcome.WelcomeDmMessage = message;
+        Context.GuildData.Settings.Welcome.JoinDmMessage = message;
         Db.Save(Context.GuildData);
         return Ok($"Set the WelcomeDmMessage to: {Format.Code(message, string.Empty)}");
     }

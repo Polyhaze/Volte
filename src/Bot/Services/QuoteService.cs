@@ -14,7 +14,7 @@ public sealed partial class QuoteService : VolteService
 
     public async Task<bool> CheckMessageAsync(MessageReceivedEventArgs args)
     {
-        if (!args.Context.GuildData.Extras.AutoParseQuoteUrls) return false;
+        if (!args.Context.GuildData.Settings.AutoQuoteMessageUrls) return false;
         var match = JumpUrl.Match(args.Message.Content);
         if (!match.Success) return false;
 

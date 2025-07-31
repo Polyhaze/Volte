@@ -19,7 +19,7 @@ public class RequireGuildAdminPreconditionAttribute : PreconditionAttribute
         
         var u = await context.Guild.GetUserAsync(context.User.Id);
 
-        return u.RoleIds.Contains(data.Configuration.Moderation.AdminRole) 
+        return u.RoleIds.Contains(data.Settings.Moderation.AdminRole) 
                || context.Guild.OwnerId == u.Id
                || u.IsBotOwner()
             ? PreconditionResult.FromSuccess() 

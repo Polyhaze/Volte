@@ -14,7 +14,7 @@ public partial class AdminUtilityModule
             if (didTimeout) return;
             if (!role.HasValue) goto adminRole;
                 
-            Context.Modify(data => data.Configuration.Moderation.AdminRole = role.Value.Id);
+            Context.Modify(data => data.Settings.Moderation.AdminRole = role.Value.Id);
             
             await message.AddReactionAsync(Emojis.BallotBoxWithCheck);
 
@@ -26,7 +26,7 @@ public partial class AdminUtilityModule
             if (didTimeout) return;
             if (!role.HasValue) goto modRole;
 
-            Context.Modify(data => data.Configuration.Moderation.ModRole = role.Value.Id);
+            Context.Modify(data => data.Settings.Moderation.ModRole = role.Value.Id);
 
             await message.AddReactionAsync(Emojis.BallotBoxWithCheck);
             

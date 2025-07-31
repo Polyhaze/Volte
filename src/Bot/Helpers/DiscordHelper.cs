@@ -35,11 +35,11 @@ public static class DiscordHelper
         => user.Guild.OwnerId == user.Id || IsBotOwner(user);
     
     public static bool IsAdmin(this VolteContext ctx, IGuildUser user)
-        => HasRole(user, ctx.GuildData.Configuration.Moderation.AdminRole) 
+        => HasRole(user, ctx.GuildData.Settings.Moderation.AdminRole) 
            || IsGuildOwner(user);
 
     public static bool IsModerator(this VolteContext ctx, IGuildUser user)
-        => user.HasRole(ctx.GuildData.Configuration.Moderation.ModRole) 
+        => user.HasRole(ctx.GuildData.Settings.Moderation.ModRole) 
            || ctx.IsAdmin(user) 
            || IsGuildOwner(user);
 

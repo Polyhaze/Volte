@@ -12,14 +12,14 @@ public partial class InteractionSettingsModule
             [Summary(description: "The channel to use for the mod log.")]
             ITextChannel channel)
         {
-            ModifyData(d => d.Configuration.Moderation.ModActionLogChannel = channel.Id);
+            ModifyData(d => d.Settings.Moderation.ActionLogChannel = channel.Id);
             return Ok($"Set this guild's welcome channel to {channel.Mention}.", ephemeral: true);
         }
         
         [SlashCommand("disable", "Disable the mod log system in your guild. Set a channel to re-enable.")]
         public Task<RuntimeResult> DisableAsync()
         {
-            ModifyData(d => d.Configuration.Moderation.ModActionLogChannel = 0);
+            ModifyData(d => d.Settings.Moderation.ActionLogChannel = 0);
             return Ok("Disabled the mod log system in this guild.", ephemeral: true);
         }
     }

@@ -7,9 +7,9 @@ public sealed partial class SettingsModule
     public Task<ActionResult> AdminRoleAsync([Remainder, Description("The role to be set as the Admin role; or none if you want to see the current one.")] SocketRole role = null)
     {
         if (role is null)
-            return Ok($"The current Admin role in this guild is <@&{Context.GuildData.Configuration.Moderation.AdminRole}>.");
+            return Ok($"The current Admin role in this guild is <@&{Context.GuildData.Settings.Moderation.AdminRole}>.");
             
-        Context.Modify(data => data.Configuration.Moderation.AdminRole = role.Id);
+        Context.Modify(data => data.Settings.Moderation.AdminRole = role.Id);
         return Ok($"Set {role.Mention} as the Admin role for this guild.");
     }
 }

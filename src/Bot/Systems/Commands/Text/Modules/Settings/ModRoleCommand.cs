@@ -11,9 +11,9 @@ public sealed partial class SettingsModule
     {
         if (role is null)
             return Ok(
-                $"The current Moderator role in this guild is <@&{Context.GuildData.Configuration.Moderation.ModRole}>.");
+                $"The current Moderator role in this guild is <@&{Context.GuildData.Settings.Moderation.ModRole}>.");
 
-        Context.Modify(data => data.Configuration.Moderation.ModRole = role.Id);
+        Context.Modify(data => data.Settings.Moderation.ModRole = role.Id);
         return Ok($"Set {role.Mention} as the Moderator role for this guild.");
     }
 }

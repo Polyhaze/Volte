@@ -25,7 +25,7 @@ public class SelfRoleResignAutocompleter : AutocompleteHandler
 
             if (!option.Focused || string.Empty.Equals(userValue) || userValue == null) continue;
             
-            var selfRoles = guild.Roles.Where(x => guildData.Extras.SelfRoles.Contains(x.Id));
+            var selfRoles = guild.Roles.Where(x => guildData.Settings.Collections.SelfRoles.Contains(x.Id));
 
             var validSelfRoles = selfRoles.Where(it => user.HasRole(it.Id)).ToList();
 

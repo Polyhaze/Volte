@@ -13,6 +13,26 @@ public class GuildDataV2
     public ModerationData Moderation { get; set; } = new();
 
     public GuildSettings Settings { get; set; } = new();
+    
+    public void AddTag(TagV2 tag)
+    {
+        var existingIdenticalTag = Settings.Collections.Tags.FirstOrDefault(it => it.Response == tag.Response);
+        if (existingIdenticalTag is not null)
+        {
+            Settings.Collections.Tags.Remove(existingIdenticalTag);
+            existingIdenticalTag.Aliases.Add(tag.Name);
+            Settings.Collections.Tags.Add(existingIdenticalTag);
+        }
+        else
+        {
+            Settings.Collections.Tags.Add(tag);
+        }
+    }
+
+    public Gommon.Optional<TagV2> GetTagByNameOrAlias(string nameOrAlias)
+        => Settings.Collections.Tags.FindFirst(tag => tag.Name.EqualsIgnoreCase(nameOrAlias)
+                                 || nameOrAlias.EqualsAnyIgnoreCase(tag.Aliases.ToArray())
+        );
 
     public static GuildDataV2 CreateFrom(IGuild guild)
         => new()
@@ -25,6 +45,7 @@ public class GuildDataV2
                 CommandPrefix = Config.CommandPrefix,
                 ReplyInline = false,
                 EmbedTags = false,
+                AutoQuoteMessageUrls = false,
                 Moderation = new ModerationSettings
                 {
                     ActionLogChannel = default,
@@ -77,6 +98,7 @@ public class GuildDataV2
             CommandPrefix = v1.Configuration.CommandPrefix,
             ReplyInline = v1.Configuration.ReplyInline,
             EmbedTags = v1.Configuration.EmbedTagsAndShowAuthor,
+            AutoQuoteMessageUrls = v1.Extras.AutoParseQuoteUrls,
             Moderation = new ModerationSettings
             {
                 ActionLogChannel = v1.Configuration.Moderation.ModActionLogChannel,

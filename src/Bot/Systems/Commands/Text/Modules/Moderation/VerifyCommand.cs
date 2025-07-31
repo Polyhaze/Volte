@@ -15,8 +15,8 @@ public partial class ModerationModule
         if (!await member.TrySendMessageAsync(embed: e.Build()))
             Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
 
-        var uRole = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.UnverifiedRole);
-        var vRole = Context.Guild.GetRole(Context.GuildData.Configuration.Moderation.VerifiedRole);
+        var uRole = Context.Guild.GetRole(Context.GuildData.Settings.Moderation.UnverifiedRole);
+        var vRole = Context.Guild.GetRole(Context.GuildData.Settings.Moderation.VerifiedRole);
         if (uRole is null)
             return BadRequest(
                 "This guild does not have an Unverified role set. Please use the VerifyRole command.");

@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using Volte.Systems.Database;
 using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Systems.Interactions;
 
@@ -60,7 +61,7 @@ public static class Extensions
         => ctx.Interaction.Data.CustomId;
     
     
-    public static GuildData GetGuildData<TInteraction>(
+    public static GuildDataV2 GetGuildData<TInteraction>(
         this SocketInteractionContext<TInteraction> interaction,
         IServiceProvider serviceProvider
     ) where TInteraction : SocketInteraction

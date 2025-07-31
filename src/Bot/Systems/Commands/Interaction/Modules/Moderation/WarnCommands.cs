@@ -28,7 +28,7 @@ public partial class InteractionModerationModule
         SocketGuildUser member)
     {
         var gd = GetData();
-        var warnCount = gd.Extras.Warns.RemoveWhere(x => x.User == member.Id);
+        var warnCount = gd.Moderation.Warns.RemoveWhere(x => x.Target == member.Id);
         Db.Save(gd);
 
         var e = Context

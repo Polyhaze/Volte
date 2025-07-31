@@ -130,7 +130,7 @@ public static class TextCommandHelper
     }
 
     public static string FormatUsage(VolteContext ctx, Command cmd)
-        => FormatUsage(ctx.GuildData.Configuration.CommandPrefix, cmd);
+        => FormatUsage(ctx.GuildData.Settings.CommandPrefix, cmd);
     
     public static string FormatUsage(string commandPrefix, Command cmd)
     {
