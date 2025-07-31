@@ -1,5 +1,4 @@
 using Volte.Systems.Database;
-using Volte.Systems.Database.Entities;
 using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Entities;

@@ -1,5 +1,4 @@
 using LiteDB;
-using Volte.Systems.Database.Entities;
 using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Starboard;
 
@@ -14,7 +13,7 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     private readonly DiscordSocketClient _client;
 
-    private readonly ILiteCollection<GuildData> _guildData;
+    private readonly ILiteCollection<Entities.GuildData> _guildData;
     private readonly ILiteCollection<GuildDataV2> _guildDataV2;
     private readonly ILiteCollection<Reminder.Reminder> _reminderData;
     private readonly ILiteCollection<StarboardDbEntry> _starboardData;
@@ -22,7 +21,7 @@ public sealed class DatabaseService : VolteService, IDisposable
     public DatabaseService(DiscordSocketClient discordShardedClient)
     {
         _client = discordShardedClient;
-        _guildData = Database.GetCollection<GuildData>("guilds");
+        _guildData = Database.GetCollection<Entities.GuildData>("guilds");
         _guildDataV2 = Database.GetCollection<GuildDataV2>("guildData");
         _reminderData = Database.GetCollection<Reminder.Reminder>("reminders");
         _starboardData = Database.GetCollection<StarboardDbEntry>("starboard");

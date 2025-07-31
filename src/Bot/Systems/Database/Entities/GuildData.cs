@@ -1,6 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Volte.Systems.Database.EntitiesV2;
-using Volte.Systems.UserFilter;
 
 namespace Volte.Systems.Database.Entities;
 

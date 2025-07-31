@@ -1,6 +1,6 @@
 using System.Collections;
 using Volte.Systems.Commands.Text.Modules;
-using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Module = Qmmands.Module;
 
 namespace Volte.Helpers;
@@ -80,7 +80,7 @@ public static class TextCommandHelper
 
         if (command.Attributes.Any(x => x is ShowPlaceholdersInHelpAttribute))
             embed.AddField("Placeholders",
-                WelcomeOptions.ValidPlaceholders
+                WelcomeSettings.ValidPlaceholders
                     .Select(static x => $"{Format.Code($"{{{x.Key}}}")}: {Format.Italics(x.Value)}")
                     .JoinToString("\n"));
 

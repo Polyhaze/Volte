@@ -1,5 +1,5 @@
 ﻿using Starscript;
-using Volte.Systems.Database.Entities;
+using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Starscript;
 
 namespace Volte.Systems.UserFilter;

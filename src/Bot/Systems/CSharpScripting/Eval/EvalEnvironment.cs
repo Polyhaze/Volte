@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Text.Json.Serialization.Metadata;
 using Volte.Systems.Database;
-using Volte.Systems.Database.Entities;
 using Volte.Systems.Database.EntitiesV2;
 
 // ReSharper disable UnusedMember.Global
