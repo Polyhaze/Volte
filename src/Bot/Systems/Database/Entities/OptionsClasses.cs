@@ -32,17 +32,6 @@ public sealed class ModerationOptions
 
 public sealed class WelcomeOptions
 {
-    public static Dictionary<string, string> ValidPlaceholders => new Dictionary<string, string>
-    {
-        {"GuildName", "The name of the guild."},
-        {"UserName", "The user's name."},
-        {"UserMention", "The user's full @."}, 
-        {"OwnerMention", "The guild owner's full @."},
-        {"UserTag", "The user's discriminator (the numbers after their #)."},
-        {"MemberCount", "The amount of people in the guild."},
-        {"UserString", "A user's full username#discriminator; i.e. Greem#1337."}
-    };
-        
     [JsonPropertyName("welcome_channel")]
     public ulong WelcomeChannel { get; set; }
 
@@ -57,69 +46,6 @@ public sealed class WelcomeOptions
 
     [JsonPropertyName("welcome_dm_message")]
     public string WelcomeDmMessage { get; set; }
-
-    public async Task<string> FormatWelcomeMessageAsync(SocketGuildUser user)
-    {
-        var msg = WelcomeMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
-            .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
-            .ReplaceIgnoreCase("{UserName}", user.Username)
-            .ReplaceIgnoreCase("{UserMention}", user.Mention)
-            .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
-            .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
-            .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
-            .ReplaceIgnoreCase("{UserString}", user);
-
-        try
-        {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
-        }
-        catch
-        {
-            return msg;
-        }
-    }
-
-    public async Task<string> FormatLeavingMessageAsync(SocketGuild guild, SocketUser user)
-    {
-        var msg = LeavingMessage.ReplaceIgnoreCase("{ServerName}", guild.Name)
-            .ReplaceIgnoreCase("{GuildName}", guild.Name)
-            .ReplaceIgnoreCase("{UserName}", user.Username)
-            .ReplaceIgnoreCase("{UserMention}", user.Mention)
-            .ReplaceIgnoreCase("{OwnerMention}", guild.Owner.Mention)
-            .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
-            .ReplaceIgnoreCase("{MemberCount}", guild.MemberCount)
-            .ReplaceIgnoreCase("{UserString}", user);
-        
-        try
-        {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(guild, user)).ToString();
-        }
-        catch
-        {
-            return msg;
-        }
-    }
-
-    public async Task<string> FormatDmMessageAsync(SocketGuildUser user)
-    {
-        var msg = WelcomeDmMessage.ReplaceIgnoreCase("{ServerName}", user.Guild.Name)
-            .ReplaceIgnoreCase("{GuildName}", user.Guild.Name)
-            .ReplaceIgnoreCase("{UserName}", user.Username)
-            .ReplaceIgnoreCase("{UserMention}", user.Mention)
-            .ReplaceIgnoreCase("{OwnerMention}", user.Guild.Owner.Mention)
-            .ReplaceIgnoreCase("{UserTag}", user.Discriminator)
-            .ReplaceIgnoreCase("{MemberCount}", user.Guild.MemberCount)
-            .ReplaceIgnoreCase("{UserString}", user);
-        
-        try
-        {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
-        }
-        catch
-        {
-            return msg;
-        }
-    }
 
     public override string ToString()
         => JsonSerializer.Serialize(this, Config.JsonOptions);
