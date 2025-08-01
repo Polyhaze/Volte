@@ -11,12 +11,14 @@
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="SeparatorColor">Black</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeHighColor">#FFACACAC</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeLowColor">Transparent</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeMediumColor">#FFF2F2F2</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeMediumLowColor">#FFE6E6E6</SolidColorBrush>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="SeparatorColor">DimGray</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeHighColor">#FF737373</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeLowColor">Transparent</SolidColorBrush>
                     <SolidColorBrush x:Key="SystemChromeMediumColor">#FF2B2B2B</SolidColorBrush>

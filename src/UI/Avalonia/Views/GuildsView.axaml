@@ -58,7 +58,7 @@
         <!-- Visibility binding Selected will cause this section of the control to not display at all when SelectedGuild is null, no fallback is required. -->
         <Border Grid.Column="1"
                 Margin="0, 5"
-                BorderBrush="DimGray" 
+                BorderBrush="{DynamicResource SeparatorColor}" 
                 BorderThickness="1" 
                 VerticalAlignment="Stretch" 
                 HorizontalAlignment="Stretch"
