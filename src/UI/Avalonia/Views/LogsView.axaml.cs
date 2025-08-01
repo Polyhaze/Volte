@@ -13,7 +13,7 @@ public partial class LogsView : VolteControl<LogsViewModel>
     public LogsView()
     {
         InitializeComponent();
-        DataContext = new LogsViewModel { View = this, LogsClearAmount = 10 };
+        ViewModel = new LogsViewModel { View = this, LogsClearAmount = 10 };
         
         CopySimpleIcon.Value = FontAwesome.Copy;
         CopySimple.Command = new AsyncRelayCommand(async () =>

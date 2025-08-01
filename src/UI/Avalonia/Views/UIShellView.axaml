@@ -71,7 +71,7 @@
                        FontSize="12">
                 <Run Text="{Binding Connection}" />
                 <Run Text=" | Volte |" />
-                <Run Text="{Binding Source={x:Static v:Version.InformationVersion}}" />
+                <Run Text="{x:Static v:Version.InformationVersion}" />
             </TextBlock>
         </Grid>
     </Grid>

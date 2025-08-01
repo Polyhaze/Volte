@@ -7,6 +7,16 @@ namespace Volte.UI.Avalonia;
 
 public class ShellViewMenu
 {
+    /*[Menu("Shutdown", "Tools", Icon = "mdi-power")]
+    public static Task ShutdownAsync()
+    {
+        VolteManager.Stop();
+        
+        Environment.Exit(0);
+        
+        return Task.CompletedTask;
+    }*/
+    
     [Menu("Clear Commands", "Tools", Icon = "fa-solid fa-broom")]
     public static async Task ClearCommands()
     {

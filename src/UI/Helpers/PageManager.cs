@@ -102,7 +102,8 @@ public partial class PageManager : ObservableObject
 
 public enum PageType : byte
 {
-    Logs = 0
+    Logs = 0,
+    Guilds = 1
 }
 
 public class Page

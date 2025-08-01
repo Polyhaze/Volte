@@ -1,6 +1,8 @@
 ﻿using Avalonia;
+using Gommon;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using Projektanker.Icons.Avalonia.MaterialDesign;
 using Qommon.Collections;
 using Volte.Helpers;
 using Volte.UI.Avalonia;
@@ -19,7 +21,8 @@ public class Program
         if (!UnixHelper.TryParseNamedArguments(args, out var output) && output.Error is not InvalidOperationException)
             Logger.Error(output.Error);
 
-        Volte.Program.CommandLineArguments = new ReadOnlyDictionary<string, string>(output.Parsed);
+        Volte.Program.CommandLineArguments =
+            new ReadOnlyDictionary<string, string>(output.Parsed ?? new Dictionary<string, string>());
 
         if (VolteBot.IsHeadless = args.Contains("--no-gui")) 
             return await VolteManager.StartWait();
@@ -27,6 +30,7 @@ public class Program
         VolteManager.Start();
 
         IconProvider.Current.Register<FontAwesomeIconProvider>();
+        IconProvider.Current.Register<MaterialDesignIconProvider>();
         
         return BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
