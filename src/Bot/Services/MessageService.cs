@@ -143,7 +143,7 @@ public sealed class MessageService : VolteService
         var reason = args.Result switch
         {
             CommandNotFoundResult => "Unknown command.",
-            ChecksFailedResult cfr => checksFailed(cfr),
+            ChecksFailedResult cfr => checksFailed(cfr, args.Context),
             ParameterChecksFailedResult pcfr => paramChecksFailed(pcfr),
             ArgumentParseFailedResult apfr => $"Parsing for arguments failed for {Format.Bold(apfr.Command.Name)}.",
             TypeParseFailedResult tpfr => tpfr.FailureReason,
@@ -179,9 +179,10 @@ public sealed class MessageService : VolteService
         return;
 
 
-        static string checksFailed(ChecksFailedResult result)
+        static string checksFailed(ChecksFailedResult result, VolteContext ctx)
             => String(sb => sb
                 .Append("One or more checks failed for command ")
+                .Append(Format.Bold((result.Command ?? ctx.Command).Name))
                 .Append(Format.Bold(result.Command.Name))
                 .AppendLine(":")
                 .Append(Format.Code(result.FailedChecks.Select(x =>
