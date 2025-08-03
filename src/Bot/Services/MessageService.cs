@@ -183,7 +183,6 @@ public sealed class MessageService : VolteService
             => String(sb => sb
                 .Append("One or more checks failed for command ")
                 .Append(Format.Bold((result.Command ?? ctx.Command).Name))
-                .Append(Format.Bold(result.Command.Name))
                 .AppendLine(":")
                 .Append(Format.Code(result.FailedChecks.Select(x =>
                     $"{x.Check.GetType().AsPrettyString().Replace("Attribute", string.Empty)}: {x.Result.FailureReason}"
