@@ -23,7 +23,7 @@ public partial class VolteApp : Application
 {
     private static WindowNotificationManager? _notificationManager;
 
-    public static TopLevel? XamlRoot { get; private set; }
+    public static UIShellView? VisualRoot { get; private set; }
     
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
@@ -70,9 +70,9 @@ public partial class VolteApp : Application
             Margin = new(0, 0, 4, 30)
         };
         
-        MenuFactory = new AvaloniaMenuFactory(XamlRoot);
+        MenuFactory = new AvaloniaMenuFactory(VisualRoot);
         MenuFactory.AddMenuGroup<ShellViewMenu>();
-        shellView.MainMenu.ItemsSource = MenuFactory.Items;
+        VisualRoot.MainMenu.ItemsSource = MenuFactory.Items;
 
         desktop.MainWindow.Closing += (_, _) =>
         {
