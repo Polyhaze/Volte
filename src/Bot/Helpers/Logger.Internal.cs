@@ -28,7 +28,7 @@ public static partial class Logger
         
     static Logger() => FilePath.Logs.Create();
         
-    private static readonly object LogSync = new();
+    private static readonly Lock LogSync = new();
     
     internal static void PrintHeader()
     {

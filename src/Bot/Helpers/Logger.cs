@@ -176,8 +176,13 @@ public static partial class Logger
     public static void OutputLogToStandardOut()
     {
         LogEventHandler.Clear();
-        Event += logEvent => LogSync.Lock(() =>
-            Execute(logEvent.Severity, logEvent.Source, logEvent.Message, logEvent.Error, logEvent.Invocation));
+        Event += logEvent =>
+        {
+            lock (LogSync)
+            {
+                Execute(logEvent.Severity, logEvent.Source, logEvent.Message, logEvent.Error, logEvent.Invocation);
+            }
+        };
     }
 }
 
