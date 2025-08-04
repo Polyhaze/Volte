@@ -45,6 +45,7 @@
                            MenuItemsSource="{Binding Pages, Source={x:Static h:PageManager.Shared}}"
                            PaneDisplayMode="LeftCompact"
                            PaneTitle="Volte"
+                           Content="{Binding Current.Content, Mode=TwoWay, Source={x:Static h:PageManager.Shared}}"
                            SelectedItem="{Binding Current, Mode=TwoWay, Source={x:Static h:PageManager.Shared}}">
             <fac:NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="h:Page">

@@ -6,8 +6,6 @@ namespace Volte.UI.Avalonia.ViewModels;
 // ReSharper disable once InconsistentNaming
 public partial class UIShellViewModel : BaseModel
 {
-    public required UIShellView? View { get; init; } 
-
     [ObservableProperty]
     private string _connection = "Disconnected";
 
