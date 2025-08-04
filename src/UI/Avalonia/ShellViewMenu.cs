@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls.Notifications;
 using Gommon;
 using MenuFactory.Abstractions.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using Volte.Systems.Interactions;
 
 namespace Volte.UI.Avalonia;
@@ -20,7 +21,7 @@ public class ShellViewMenu
     [Menu("Clear Commands", "Tools", Icon = "fa-solid fa-broom")]
     public static async Task ClearCommands()
     {
-        var interactionService = VolteBot.Services.Get<VolteInteractionService>();
+        var interactionService = VolteBot.Services.GetService<VolteInteractionService>();
         if (interactionService is null || VolteBot.Client is null)
         {
             VolteApp.Notify("Not logged in", "State error", NotificationType.Error);
