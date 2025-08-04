@@ -74,10 +74,6 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
-    public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
-
-    public ValueTask<GuildDataV2> GetDataAsync(ulong id) => new(GetData(id));
-
     public GuildDataV2 GetData(ulong id)
     {
         return _guildDataV2.ValueLock(() =>
@@ -90,14 +86,31 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
-    public void Modify(ulong guildId, DataEditor modifier)
-    {
+    public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
+    public HashSet<GuildDataV2> GetAllData() => _guildDataV2.ValueLock(() => _guildDataV2.FindAll().ToHashSet());
+
+    public ValueTask<GuildDataV2> GetDataAsync(ulong id) => new(GetData(id));
+    
+    public void CreateGuildDataIfNotExists(IGuild guild) =>
         _guildDataV2.LockedRef(coll =>
         {
-            var data = GetData(guildId);
-            modifier(data);
-            Save(data);
+            if (!coll.Exists(g => g.Id == guild.Id))
+                coll.Insert(GuildDataV2.CreateFrom(guild));
         });
+
+    public void CreateGuildDataIfNotExists(ulong id) => CreateGuildDataIfNotExists(_client.GetGuild(id));
+
+    public GuildDataV2 this[ulong id]
+    {
+        get => GetData(id);
+        set => Save(value);
+    }
+
+    public void Modify(ulong guildId, DataEditor modifier)
+    {
+        var data = this[guildId];
+        modifier(data);
+        this[guildId] = data;
     }
 
     public void Save(GuildDataV2 newConfig)

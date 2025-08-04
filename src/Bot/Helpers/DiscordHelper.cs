@@ -192,12 +192,15 @@ public static class DiscordHelper
                     if (Config.BlacklistedOwners.Contains(g.OwnerId))
                         await g.LeaveAsync().Then(async () => Warn(LogSource.Volte,
                             $"Left guild \"{g.Name}\" owned by blacklisted owner {await client.Rest.GetUserAsync(g.OwnerId)}."));
-                    else provider.Get<DatabaseService>().GetData(g); //ensuring all guilds have data available to prevent exceptions later on 
+                    else provider.Get<DatabaseService>().CreateGuildDataIfNotExists(g); //ensuring all guilds have data available to prevent exceptions later on 
                 }
             });
             
             await provider.Get<VolteInteractionService>().InitAsync();
         };
+        
+        client.JoinedGuild += g => Task.Run(() => provider.Get<DatabaseService>().CreateGuildDataIfNotExists(g));
+        client.GuildAvailable += g => Task.Run(() => provider.Get<DatabaseService>().CreateGuildDataIfNotExists(g));
     }
 
     public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
