@@ -24,30 +24,18 @@
                     <DataTemplate DataType="models:GuildModel">
                         <Grid>
                             <Border
-                                Margin="0"
-                                Padding="0, 5, 3, 5"
+                                Margin="-5, 3"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 ClipToBounds="True"
                                 CornerRadius="5">
-                                <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                                    <controls:CircularImage Margin="0, 0, 5, 0" asyncImageLoader:ImageLoader.Source="{Binding SmallIconUrl}" MaxWidth="64" MaxHeight="64"/>
-                                    <StackPanel Orientation="Vertical" Spacing="5" Margin="0, 5, 0, 0">
-                                        <TextBlock
-                                            HorizontalAlignment="Stretch"
-                                            FontWeight="Bold"
-                                            Text="{Binding Entity.Name}"
-                                            TextAlignment="Start"
-                                            TextWrapping="Wrap" />
-                                        <TextBlock
-                                            HorizontalAlignment="Stretch"
-                                            TextAlignment="Start"
-                                            TextWrapping="Wrap">
-                                            <Run Text="Owner: "/>
-                                            <Run Text="{Binding Entity.Owner.Username}"/>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </StackPanel>
+                                <controls:CircularImage 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"
+                                    MaxWidth="64" 
+                                    MaxHeight="64"
+                                    asyncImageLoader:ImageLoader.Source="{Binding SmallIconUrl}"
+                                    ToolTip.Tip="{Binding Entity.Name}" />
                             </Border>
                         </Grid>
                     </DataTemplate>
@@ -57,17 +45,17 @@
         <!-- ReSharper disable Xaml.PossibleNullReferenceException -->
         <!-- Visibility binding Selected will cause this section of the control to not display at all when SelectedGuild is null, no fallback is required. -->
         <Border Grid.Column="1"
-                Margin="0, 5"
+                Margin="3, 5"
                 BorderBrush="{DynamicResource SeparatorColor}" 
-                BorderThickness="1" 
+                BorderThickness="2" 
                 VerticalAlignment="Stretch" 
                 HorizontalAlignment="Stretch"
                 CornerRadius="1"
                 IsVisible="{Binding Selected}"/>
         <Grid Grid.Column="2" IsVisible="{Binding Selected}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto" VerticalAlignment="Top" Margin="5">
-                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Spacing="2" VerticalAlignment="Top">
-                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="5, 5, 0, 15">
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Spacing="2" VerticalAlignment="Top" Margin="5, 5, 0, 0">
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0, 0, 0, 15">
                         <Border>
                             <controls:RoundedImage CornerRadius="16" asyncImageLoader:ImageLoader.Source="{Binding SelectedGuild.IconUrl}"/>
                         </Border>
@@ -76,6 +64,7 @@
                                 Padding="0, 15, 0, 0"
                                 HorizontalAlignment="Stretch"
                                 FontWeight="Bold"
+                                TextDecorations="Underline"
                                 Text="{Binding SelectedGuild.Entity.Name}"
                                 FontSize="30"
                                 TextAlignment="Start"
@@ -110,8 +99,36 @@
                         <Run Text="Channels: "/>
                         <Run Text="{Binding SelectedGuild.Entity.Channels.Count}"/>
                     </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Start"
+                        TextWrapping="Wrap">
+                        <Run Text="Warns: "/>
+                        <Run Text="{Binding SelectedGuild.Data.Moderation.Warns.Count}"/>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Start"
+                        TextWrapping="Wrap">
+                        <Run Text="UserFilter entries: "/>
+                        <Run Text="{Binding SelectedGuild.Data.StarscriptTables.UserFilter.Entries.Count}"/>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Start"
+                        TextWrapping="Wrap">
+                        <Run Text="Self-assignable roles: "/>
+                        <Run Text="{Binding SelectedGuild.Data.Settings.Collections.SelfRoles.Count}"/>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Start"
+                        TextWrapping="Wrap">
+                        <Run Text="Tags: "/>
+                        <Run Text="{Binding SelectedGuild.Data.Settings.Collections.Tags.Count}"/>
+                    </TextBlock>
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Orientation="Vertical" Spacing="5" VerticalAlignment="Top" Margin="15">
+                <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Orientation="Vertical" Spacing="5" VerticalAlignment="Top" Margin="15">
                     <Button
                         Name="LeaveSelectedGuildButton"
                         HorizontalAlignment="Right"

@@ -14,10 +14,8 @@ namespace Volte.UI.Avalonia.ViewModels;
 
 public partial class GuildsViewModel : BaseModel
 {
-    public required GuildsView View { get; init; }
-
     [ObservableProperty]
-    private IEnumerable<GuildModel> _guilds;
+    private IEnumerable<GuildModel> _guilds = null!;
 
     [ObservableProperty]
     private bool _selected;
@@ -45,6 +43,14 @@ public partial class GuildsViewModel : BaseModel
         VolteBot.Client.LeftGuild += HandleGuildUpdate;
         VolteBot.Client.GuildAvailable += HandleGuildUpdate;
         VolteBot.Client.GuildUnavailable += HandleGuildUpdate;
+    }
+    
+    ~GuildsViewModel()
+    {
+        VolteBot.Client.JoinedGuild -= HandleGuildUpdate;
+        VolteBot.Client.LeftGuild -= HandleGuildUpdate;
+        VolteBot.Client.GuildAvailable -= HandleGuildUpdate;
+        VolteBot.Client.GuildUnavailable -= HandleGuildUpdate;
     }
 
     public async Task LeaveSelectedGuildAsync()
@@ -109,16 +115,11 @@ public partial class GuildsViewModel : BaseModel
 
     private Task HandleGuildUpdate(SocketGuild guild) => Dispatcher.UIThread.InvokeAsync(() =>
     {
-        Guilds = VolteBot.Client.Guilds.Select(x => new GuildModel(x));
+        Guilds = GuildModel.MapDataToGuilds(
+            VolteBot.Services.Get<DatabaseService>().GetAllData(),
+            VolteBot.Client.Guilds
+        );
         
         return Task.CompletedTask;
     });
-
-    ~GuildsViewModel()
-    {
-        VolteBot.Client.JoinedGuild -= HandleGuildUpdate;
-        VolteBot.Client.LeftGuild -= HandleGuildUpdate;
-        VolteBot.Client.GuildAvailable -= HandleGuildUpdate;
-        VolteBot.Client.GuildUnavailable -= HandleGuildUpdate;
-    }
 }

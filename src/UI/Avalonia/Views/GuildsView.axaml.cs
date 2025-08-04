@@ -11,7 +11,7 @@ public partial class GuildsView : VolteControl<GuildsViewModel>
     public GuildsView()
     {
         InitializeComponent();
-        ViewModel = new GuildsViewModel { View = this };
+        ViewModel = new GuildsViewModel();
         
         LeaveSelectedGuildButton.Command = Commands.Create(ViewModel.LeaveSelectedGuildAsync);
         DeleteSelectedGuildDataButton.Command = Commands.Create(ViewModel.ClearSelectedGuildDataAsync);
