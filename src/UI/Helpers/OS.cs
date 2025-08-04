@@ -1,11 +1,13 @@
-﻿namespace Volte.UI.Helpers;
+﻿using Volte.UI.Avalonia;
+
+namespace Volte.UI.Helpers;
 
 // ReSharper disable once InconsistentNaming
 public static class OS
 {
     public static async Task CopyToClipboardAsync(string content)
     {
-        if (AvaloniaHelper.DesktopLifetime?.MainWindow?.Clipboard is { } clipboard)
+        if (VolteApp.DesktopLifetime?.MainWindow?.Clipboard is { } clipboard)
             await clipboard.SetTextAsync(content);
     }
     

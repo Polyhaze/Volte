@@ -19,7 +19,7 @@ using Volte.UI.Helpers;
 
 namespace Volte.UI.Avalonia;
 
-public class VolteApp : Application
+public partial class VolteApp : Application
 {
     private static WindowNotificationManager? _notificationManager;
 
