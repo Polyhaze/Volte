@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
+﻿using FluentAvalonia.UI.Controls;
 using Volte.Helpers;
 using Volte.UI.Avalonia.Controls;
 using Volte.UI.Avalonia.ViewModels;
@@ -14,16 +13,16 @@ public partial class LogsView : VolteControl<LogsViewModel>
     {
         InitializeComponent();
         ViewModel = new LogsViewModel { View = this, LogsClearAmount = 10 };
-        
+
         CopySimpleIcon.Value = FontAwesome.Copy;
-        CopySimple.Command = new AsyncRelayCommand(async () =>
+        CopySimple.Command = Commands.Create(async () =>
         {
             if (ViewModel.Selected is { } selected)
                 await OS.CopyToClipboardAsync(selected.FormattedString);
         });
 
         CopyMarkdownIcon.Value = FontAwesome.Brush;
-        CopyMarkdown.Command = new AsyncRelayCommand(async () =>
+        CopyMarkdown.Command = Commands.Create(async () =>
         {
             if (ViewModel.Selected is { } selected)
                 await OS.CopyToClipboardAsync(selected.Markdown);

@@ -15,7 +15,7 @@ public partial class LogsViewModel : BaseModel
 {
     private const byte MaxLogsInMemory = 200;
 
-    private readonly object _logSync = new();
+    private readonly Lock _lock = new();
 
     public required LogsView? View { get; init; }
 
@@ -41,23 +41,23 @@ public partial class LogsViewModel : BaseModel
                 Message: not null
             }
            ) return; //sentry debug messages are huge and break the log view entirely.
-        
-        lock (_logSync)
+
+        lock (_lock)
         {
             IfNeededRemoveLast(LogsClearAmount);
-            
+
             Logs.Add(new VolteLog(eventArgs));
-                
-            Lambda.Try(() => Dispatcher.UIThread.Invoke(() => View?.Viewer?.ScrollToEnd()));
-
-            if (eventArgs.Error is not { } err) return;
-
-            VolteApp.NotifyError(err);
-            err.SentryCapture(scope =>
-                scope.AddBreadcrumb(
-                    "This exception might not have been thrown, and may not be important; it is merely being logged.")
-            );
         }
+        
+        Lambda.Try(() => Dispatcher.UIThread.Invoke(() => View?.Viewer?.ScrollToEnd()));
+
+        if (eventArgs.Error is not { } err) return;
+
+        VolteApp.NotifyError(err);
+        err.SentryCapture(scope =>
+            scope.AddBreadcrumb(
+                "This exception might not have been thrown, and may not be important; it is merely being logged.")
+        );
     }
 
     private void IfNeededRemoveLast(int amount)

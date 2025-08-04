@@ -49,7 +49,7 @@
                                 Padding="0"
                                 ToolTip.Tip="Copy Markdown">
                             <Grid ColumnDefinitions="Auto,Auto">
-                                <pi:Icon Margin="5" Name="CopyMarkdownIcon" />
+                                <pi:Icon Name="CopyMarkdownIcon"/>
                                 <TextBlock Grid.Column="1"
                                            Text="Copy Markdown"
                                            Margin="0, 0, 5, 0"
