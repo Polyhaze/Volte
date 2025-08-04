@@ -59,13 +59,11 @@ public partial class VolteApp : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (!AvaloniaHelper.TryGetDesktop(out var desktop)) return;
-
-        var shellView = new UIShellView();
+        if (!TryGetDesktop(out var desktop)) return;
         
-        XamlRoot = desktop.MainWindow = shellView;
+        desktop.MainWindow = VisualRoot = new UIShellView();
 
-        desktop.MainWindow.Loaded += (_, _) => _notificationManager = new(XamlRoot)
+        desktop.MainWindow.Loaded += (_, _) => _notificationManager = new(VisualRoot)
         {
             Position = NotificationPosition.BottomRight,
             MaxItems = 4,
