@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Gommon;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Projektanker.Icons.Avalonia.MaterialDesign;

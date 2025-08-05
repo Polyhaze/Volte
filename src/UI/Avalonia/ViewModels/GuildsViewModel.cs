@@ -7,7 +7,6 @@ using Volte.Helpers;
 using Volte.Systems.Database;
 using Volte.Systems.Database.EntitiesV2;
 using Volte.UI.Avalonia.Models;
-using Volte.UI.Avalonia.Views;
 using Volte.UI.Helpers;
 
 namespace Volte.UI.Avalonia.ViewModels;

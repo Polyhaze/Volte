@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Volte.UI.Avalonia.Views;
 
 namespace Volte.UI.Avalonia.ViewModels;
 
