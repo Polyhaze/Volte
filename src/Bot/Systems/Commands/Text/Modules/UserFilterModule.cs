@@ -146,7 +146,7 @@ public class UserFilterModule : VolteModule
             }
 
             Confirmation:
-            await Context.CreateEmbed("Are you sure you want to run the user filters on every user?")
+            await Context.CreateEmbed("Are you sure you want to run the user filter on every user?")
                 .SendToAsync(Context.Channel);
             var (confirmation, didTimeout, _) = await Context.GetNextAsync<bool>();
             if (didTimeout) return;
@@ -182,7 +182,7 @@ public class UserFilterModule : VolteModule
             uint processedUsers = 0;
             uint actionedUsers = 0;
 
-            IUserMessage resultMessage = await Context.CreateEmbed($"Running {compiledEntries.Count} filters...").SendToAsync(Context.Channel);
+            IUserMessage resultMessage = await Context.CreateEmbed($"Running {"filter".ToQuantity(compiledEntries.Count)}...").SendToAsync(Context.Channel);
 
             await foreach (var users in await Context.Client.Rest
                                .GetGuildAsync(Context.Guild.Id)
