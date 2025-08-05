@@ -36,7 +36,7 @@
         <PackageReference Include="Qmmands" Version="4.0.1-nightly-00257" />        
         <PackageReference Include="Sentry" Version="5.12.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
-        <PackageReference Include="Starscript.Net" Version="1.0.37" />
+        <PackageReference Include="Starscript.Net" Version="1.0.43" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Resources\" />

@@ -1,19 +1,18 @@
 ﻿using Starscript;
-using Starscript.Internal;
 using Volte.Systems.Starscript;
 
 namespace Volte.Systems.Commands.Text.Modules;
 
 public partial class BotOwnerModule
 {
-        [Command("Starscript", "Ss")]
+    [Command("Starscript", "Ss")]
     [Description(
         "Evaluates Starscript code. You have access to the entire Starscript.Net Standard Library, including unsafe and HTTP.")]
     public Task<ActionResult> StarscriptAsync(
-        [Remainder, Description("The Starscript code to execute. Can be in a codeblock if you want.")]
+        [Remainder, Description("The Starscript code to execute.")]
         string code)
     {
-        if (!Parser.TryParse(code, out ParserResult result))
+        if (!Parser.TryParse(code, out Parser.Result result))
             return BadRequest(String(sb =>
                     {
                         sb.AppendLine(Format.Bold("Syntax error".ToQuantity(result.Errors.Count))).AppendLine();
