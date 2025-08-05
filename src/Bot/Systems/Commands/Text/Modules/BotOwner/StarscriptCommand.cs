@@ -14,12 +14,12 @@ public partial class BotOwnerModule
     {
         if (!Parser.TryParse(code, out Parser.Result result))
             return BadRequest(String(sb =>
-                    {
-                        sb.AppendLine(Format.Bold("Syntax error".ToQuantity(result.Errors.Count))).AppendLine();
+                {
+                    sb.AppendLine(Format.Bold("Syntax error".ToQuantity(result.Errors.Count))).AppendLine();
 
-                        result.Errors.ForEachIndexed((e, i) => sb.AppendLine($"{Format.Code(i.ToString(), string.Empty)}: `{e}`"));
-                    }
-                )
+                    result.Errors.ForEachIndexed((e, i) =>
+                        sb.AppendLine($"{Format.Code(i.ToString(), string.Empty)}: `{e}`"));
+                })
             );
 
         var script = Compiler.SingleCompile(result);
@@ -34,7 +34,7 @@ public partial class BotOwnerModule
             {
                 if (executionResult.Length + 2 > EmbedBuilder.MaxDescriptionLength)
                     return Ok("Execution succeeded; but the result was too big to display in an embed.");
-                
+
                 return Ok(Context.CreateEmbedBuilder()
                     .WithDescription(Format.Code(script.Execute(hv).ToString(), string.Empty))
                     .AddField("Input", Format.Code(code, string.Empty)));
@@ -44,8 +44,6 @@ public partial class BotOwnerModule
                 .AddField("Input", Format.Code(code, string.Empty))
                 .AddField("Result",
                     Format.Code(script.Execute(hv).ToString(), string.Empty)));
-
-
         }
         catch (StarscriptException se)
         {
