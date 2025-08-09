@@ -1,7 +1,7 @@
 using Volte.Systems.Database;
 using Volte.Systems.Database.EntitiesV2;
 
-namespace Volte.Services;
+namespace Volte.Systems.Moderation;
 
 public sealed class ModerationService : VolteService
 {

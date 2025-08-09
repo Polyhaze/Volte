@@ -71,6 +71,7 @@ public class GuildDataV2
                     Enabled = false,
                     StarsRequiredToPost = 1
                 },
+                AuditLog = AuditLogArchiveSettings.Empty,
                 Collections = new GuildSettings.SettingsCollections
                 {
                     SelfRoles = [],

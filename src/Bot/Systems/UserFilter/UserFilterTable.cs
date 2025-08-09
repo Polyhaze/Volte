@@ -51,7 +51,7 @@ public class UserFilterEntry
     public async Task<bool> HandleAsync(IGuild guild, IGuildUser user)
     {
         StringSegment returnVal = null;
-        
+
         try
         {
             var script = Starscript.Compile();

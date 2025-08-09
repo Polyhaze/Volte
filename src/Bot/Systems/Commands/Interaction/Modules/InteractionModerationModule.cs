@@ -1,4 +1,6 @@
-﻿namespace Volte.Systems.Commands.Interaction.Modules;
+﻿using Volte.Systems.Moderation;
+
+namespace Volte.Systems.Commands.Interaction.Modules;
 
 [Discord.Interactions.Group("mod", "Moderator-only commands.")]
 [RequireGuildModeratorPrecondition]

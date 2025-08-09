@@ -1,5 +1,6 @@
 using Volte.Systems.Interactions;
 using Volte.Systems.Database;
+using Volte.Systems.Moderation;
 using Volte.Systems.Starboard;
 using Volte.Systems.UserFilter;
 
@@ -199,8 +200,11 @@ public static class DiscordHelper
             await provider.Get<VolteInteractionService>().InitAsync();
         };
         
-        client.JoinedGuild += g => Task.Run(() => provider.Get<DatabaseService>().CreateGuildDataIfNotExists(g));
-        client.GuildAvailable += g => Task.Run(() => provider.Get<DatabaseService>().CreateGuildDataIfNotExists(g));
+        client.AuditLogCreated += (e, g) => AuditLogHandlers.HandleAsync(new AuditLogCreatedEventArgs(e, g));
+
+        var db = provider.Get<DatabaseService>();
+        client.JoinedGuild += g => Task.Run(() => db.CreateGuildDataIfNotExists(g));
+        client.GuildAvailable += g => Task.Run(() => db.CreateGuildDataIfNotExists(g));
     }
 
     public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>

@@ -27,7 +27,8 @@ public static partial class Extensions
                 GatewayIntents = Intents,
                 AlwaysDownloadUsers = true,
                 ConnectionTimeout = 10000,
-                MessageCacheSize = 50
+                MessageCacheSize = 50,
+                AuditLogCacheSize = 25
             }))
             .Apply(_ =>
             {
@@ -48,7 +49,7 @@ public static partial class Extensions
 
     private const GatewayIntents Intents
         = GatewayIntents.Guilds | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers |
-           GatewayIntents.GuildMessages | GatewayIntents.GuildPresences | GatewayIntents.MessageContent;
+          GatewayIntents.GuildMessages | GatewayIntents.GuildPresences | GatewayIntents.MessageContent | GatewayIntents.GuildBans;
 
     private static bool IsEligibleService(Type type) => type.Inherits<VolteService>() && !type.IsAbstract;
 }

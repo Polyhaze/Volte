@@ -18,6 +18,8 @@ public class GuildSettings
     
     public WelcomeSettings Welcome { get; set; } = new();
     
+    public AuditLogArchiveSettings AuditLog { get; set; } = AuditLogArchiveSettings.Empty;
+    
     public SettingsCollections Collections { get; set; } = new();
     
     public class SettingsCollections
