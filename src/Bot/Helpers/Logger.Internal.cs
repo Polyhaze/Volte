@@ -51,11 +51,7 @@ public static partial class Logger
         _logFileNoticePrinted = true;
     }
     
-    public static void Log(LogSeverity s, LogSource from, string message, Exception e = null, InvocationInfo caller = default)
-    {
-        if (s is LogSeverity.Debug && !Config.DebugEnabled)
-            return;
-        
+    public static void Log(LogSeverity s, LogSource from, string message, Exception e = null, InvocationInfo caller = default) =>
         Log(new VolteLogEventArgs
         {
             Severity = s,
@@ -64,8 +60,7 @@ public static partial class Logger
             Error = e,
             Invocation = caller
         });
-    }
-    
+
     private static void Execute(LogSeverity s, LogSource src, string message, Exception e, InvocationInfo caller)
     {
         var content = new StringBuilder();
