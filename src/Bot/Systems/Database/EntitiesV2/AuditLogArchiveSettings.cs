@@ -8,7 +8,7 @@ public class AuditLogArchiveSettings
     public void Toggle(ActionType type)
     {
         if (EnabledLogs.TryGetValue(type, out bool value))
-             EnabledLogs[type] = !value;
+            EnabledLogs[type] = !value;
         else
             EnabledLogs.Add(type, true);
     }

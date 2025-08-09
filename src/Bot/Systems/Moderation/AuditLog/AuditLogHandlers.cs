@@ -31,14 +31,48 @@ public static partial class AuditLogHandlers
         Delegates.Clear();
 
         typeof(AuditLogHandlers).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-            .Select(x => x.GetCustomAttribute<AuditLogHandlerAttribute>()?.WithMethod(x))
-            .Where(x => x != null)
+            .Select(x => (Method: x, Attr: x.GetCustomAttribute<AuditLogHandlerAttribute>()))
             .ForEach(Map);
         
         Info(LogSource.Service, $"Loaded {Delegates.Count} audit log handlers.");
     }
+
+    private static void Map((MethodInfo Method, AuditLogHandlerAttribute Attr) arg)
+    {
+        if (arg.Attr is null) return;
+        
+        Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
+    }
     
-    private static void Map(AuditLogHandlerAttribute attr) => Delegates[attr.Action] = attr.Wrap(attr.Method);
+    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => 
+        args =>
+        {
+            var context = IAuditLogContext.Create(AuditLogHandlerAttribute.FindConstructorForDataType(attribute), args);
+
+            return context.Process(() =>
+            {
+                try
+                {
+                    if (mi.ReturnType == typeof(void))
+                    {
+                        mi.Invoke(null, [context]);
+                        return Task.CompletedTask;
+                    }
+
+                    var returned = mi.Invoke(null, [context]);
+
+                    return returned switch
+                    {
+                        Task task => task,
+                        _ => Task.FromResult(returned)
+                    };
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException(e);
+                }
+            });
+        };
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
@@ -63,57 +97,17 @@ public class AuditLogHandlerAttribute : Attribute
         DataType = dataType;
     }
 
-    public MethodInfo Method { get; private set; }
-
-    public AuditLogHandlerAttribute WithMethod(MethodInfo method)
+    public static ConstructorInfo FindConstructorForDataType(AuditLogHandlerAttribute attr)
     {
-        Method = method;
-        return this;
-    }
-
-    public ConstructorInfo GetOrAdd(ActionType action)
-    {
-        if (ActionsToContextCtor[action] is not { } contextCtor)
+        if (ActionsToContextCtor[attr.Action] is not { } contextCtor)
         {
-            var contextType = AuditLogHandlers.AuditLogContextType.MakeGenericType(DataType);
+            var contextType = AuditLogHandlers.AuditLogContextType.MakeGenericType(attr.DataType);
 
-            contextCtor = ActionsToContextCtor[action] 
+            contextCtor = ActionsToContextCtor[attr.Action] 
                 = contextType.GetConstructor([typeof(AuditLogCreatedEventArgs), typeof(DatabaseService)]) 
                   ?? throw new InvalidOperationException($"AuditLogContext constructor taking ({nameof(AuditLogCreatedEventArgs)}, {nameof(DatabaseService)}) not found");
         }
 
         return contextCtor;
     }
-
-    public Func<AuditLogCreatedEventArgs, Task> Wrap(MethodInfo mi) => 
-        args =>
-        {
-            var context = GetOrAdd(args.Entry.Action).Invoke([args, VolteBot.Services.Get<DatabaseService>()]).HardCast<IAuditLogContext>();
-
-            return context.Process(() =>
-            {
-                try
-                {
-                    if (mi.ReturnType == typeof(void))
-                    {
-                        mi.Invoke(null, [context]);
-                        return Task.CompletedTask;
-                    }
-
-                    var returned = mi.Invoke(null, [context]);
-
-                    switch (returned)
-                    {
-                        case Task task:
-                            return task;
-                        default:
-                            return Task.FromResult(returned);
-                    }
-                }
-                catch (Exception e)
-                {
-                    return Task.FromException(e);
-                }
-            });
-        };
 }

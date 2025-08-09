@@ -32,6 +32,14 @@ public interface IAuditLogContext
 
         return await Message.SendAsync();
     }
+
+    public static IAuditLogContext Create(ConstructorInfo ctor, AuditLogCreatedEventArgs args)
+    {
+        if (ctor.DeclaringType?.IsAssignableFrom(typeof(IAuditLogContext)) ?? false)
+            throw new InvalidOperationException($"provided constructor was not for an object implementing {nameof(IAuditLogContext)}");
+
+        return  ctor.Invoke([args, VolteBot.Services.Get<DatabaseService>()]).HardCast<IAuditLogContext>();
+    }
 }
 
 public class AuditLogContext<TAuditLogData> : IAuditLogContext where TAuditLogData : class, ISocketAuditLogData
