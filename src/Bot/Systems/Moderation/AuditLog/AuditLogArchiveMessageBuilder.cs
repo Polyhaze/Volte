@@ -7,7 +7,12 @@ public class AuditLogArchiveMessageBuilder : CustomEmbedBuilder<AuditLogArchiveM
     public AuditLogArchiveMessageBuilder(SocketUser causer, SocketTextChannel socketTextChannel)
     {
         _channel = socketTextChannel;
-        this.WithAuthor(causer);
+        WithAuthor($"Causer: {
+            (causer.DiscriminatorValue != 0
+                ? $"{causer.Username}#{causer.Discriminator}"
+                : causer.Username
+            )
+        }", causer.GetDisplayAvatarUrl());
     }
 
 #pragma warning disable CA1822
