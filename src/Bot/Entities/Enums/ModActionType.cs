@@ -38,5 +38,9 @@ public enum ModActionType : uint
     /// <summary>
     ///     Indicates that the moderator action in question is from a successful Ban command invocation.
     /// </summary>
-    Ban = 9
+    Ban = 9,
+    /// <summary>
+    ///     Indicates that the moderator action in question is from a successful Unban command invocation.
+    /// </summary>
+    Unban = 10
 }

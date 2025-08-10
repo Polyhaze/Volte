@@ -31,7 +31,7 @@ public partial class InteractionModerationModule
         
         try
         {
-            await member.BanAsync(daysToDelete, reason);
+            await member.BanAsync(daysToDelete, GetReason(Context.User, reason));
             await Context.Guild.RemoveBanAsync(member.Id);
             
             return Ok($"Successfully softbanned **{member}**.", () => 
