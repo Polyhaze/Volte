@@ -335,6 +335,15 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
             new EmbedFieldBuilder { IsInline = _isInInlineBlock }
                 .Apply(action)
         );
+    
+    /// <summary>
+    ///     Adds an <see cref="Embed" /> field with a Zero-Width Space name and value.
+    /// </summary>
+    /// <param name="inline">Indicates whether the field is in-line or not.</param>
+    /// <returns>
+    ///     The current builder.
+    /// </returns>
+    public TSelf AddEmptyField(bool? inline = null) => AddField(DiscordHelper.Zws, DiscordHelper.Zws, inline);
 
     public TSelf EnterInlineFieldBlock()
     {
