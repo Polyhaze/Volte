@@ -205,9 +205,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public new TSelf WithAuthor(Action<EmbedAuthorBuilder> action)
     {
-        var author = new EmbedAuthorBuilder();
-        action(author);
-        Author = author;
+        Author = new EmbedAuthorBuilder().Apply(action);
         return (TSelf)this;
     }
 
@@ -222,13 +220,12 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public new TSelf WithAuthor(string name, string iconUrl = null, string url = null)
     {
-        var author = new EmbedAuthorBuilder
+        Author = new EmbedAuthorBuilder
         {
             Name = name,
             IconUrl = iconUrl,
             Url = url
         };
-        Author = author;
         return (TSelf)this;
     }
 
@@ -254,9 +251,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public new TSelf WithFooter(Action<EmbedFooterBuilder> action)
     {
-        var footer = new EmbedFooterBuilder();
-        action(footer);
-        Footer = footer;
+        Footer = new EmbedFooterBuilder().Apply(action);
         return (TSelf)this;
     }
 
@@ -270,12 +265,11 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public new TSelf WithFooter(string text, string iconUrl = null)
     {
-        var footer = new EmbedFooterBuilder
+        Footer = new EmbedFooterBuilder
         {
             Text = text,
             IconUrl = iconUrl
         };
-        Footer = footer;
         return (TSelf)this;
     }
 
@@ -289,10 +283,11 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     ///     The current builder.
     /// </returns>
     public TSelf AddField(object name, object value, bool? inline = null)
-        => AddField(new EmbedFieldBuilder()
-            .WithIsInline(inline ?? _isInInlineBlock)
-            .WithName(name.ToString())
-            .WithValue(value)
+        => AddField(
+            new EmbedFieldBuilder()
+                .WithIsInline(inline ?? _isInInlineBlock)
+                .WithName(name.ToString())
+                .WithValue(value)
         );
 
     /// <summary>
@@ -335,16 +330,11 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf AddField(Action<EmbedFieldBuilder> action)
-    {
-        var field = new EmbedFieldBuilder
-        {
-            IsInline = _isInInlineBlock
-        };
-        action(field);
-        AddField(field);
-        return (TSelf)this;
-    }
+    public new TSelf AddField(Action<EmbedFieldBuilder> action) => 
+        AddField(
+            new EmbedFieldBuilder { IsInline = _isInInlineBlock }
+                .Apply(action)
+        );
 
     public TSelf EnterInlineFieldBlock()
     {
