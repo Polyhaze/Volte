@@ -121,13 +121,11 @@ public sealed partial class BotOwnerModule : VolteModule
 [RequireGuildModerator]
 public sealed partial class ModerationModule : VolteModule
 {
-    public static string GetReason(IUser moderator, string reason, out string original)
-    {
-        original = reason;
+    public static string GetReason(string action, IUser moderator, string reason) =>
+        reason is null
+            ? GetDefaultReason(action, moderator) 
+            : $"{moderator.Username} ({moderator.Id}): {reason}";
 
-        return $"{moderator.Username} ({moderator.Id}): {reason}";
-    }
-    
     public static string GetDefaultReason(string action, IUser moderator) 
         => $"{action} by {moderator.Username} ({moderator.Id})";
 

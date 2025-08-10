@@ -9,25 +9,19 @@ public partial class ModerationModule
         [Remainder, Description("The reason for the unban.")]
         string reason = null)
     {
-        var originalReason = reason;
-
-        reason = reason is null 
-            ? GetDefaultReason("Unbanned", Context.User) 
-            : GetReason(Context.User, reason, out originalReason);
-        
         var ban = await Context.Guild.GetBanAsync(user);
 
         if (ban is null)
             return BadRequest($"**{user}** is not banned.");
         
-        await Context.Guild.RemoveBanAsync(user, new RequestOptions { AuditLogReason = reason });
+        await Context.Guild.RemoveBanAsync(user, new RequestOptions { AuditLogReason = GetReason("Unbanned", Context.User, reason) });
         return Ok($"Successfully unbanned **{user}** from this guild.",
             async _ =>
                 await ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
                     .WithActionType(ModActionType.Unban)
                     .WithTarget(user)
-                    .WithReason(originalReason))
+                    .WithReason(reason))
         );
     }
 }

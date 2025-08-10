@@ -222,7 +222,8 @@ public sealed class ModerationService : VolteService
     {
         private readonly StringBuilder _sb = new();
 
-        public ModLogMessageBuilder Reason() => Append(nameof(Reason), Format.Code(args.Reason));
+        public ModLogMessageBuilder Reason() 
+            => Append(nameof(Reason), Format.Code(string.IsNullOrEmpty(args.Reason) ? "None provided" : args.Reason));
         public ModLogMessageBuilder Action() => Append(nameof(Action), args.ActionType);
 
         public ModLogMessageBuilder Moderator() =>

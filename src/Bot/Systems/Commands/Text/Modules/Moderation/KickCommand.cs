@@ -16,22 +16,16 @@ public sealed partial class ModerationModule
         
         if (!await user.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
             Warn(LogSource.Module, $"encountered a 403 when trying to message {user}!");
-        
-        var originalReason = reason;
-
-        reason = reason is null 
-            ? GetDefaultReason("Kicked", Context.User)
-            : GetReason(Context.User, reason, out originalReason);
 
         try
         {
-            await user.KickAsync(reason);
+            await user.KickAsync(GetReason("Kicked", Context.User, reason));
             return Ok($"Successfully kicked **{user}** from this guild.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
                     .WithActionType(ModActionType.Kick)
                     .WithTarget(user)
-                    .WithReason(originalReason))
+                    .WithReason(reason))
             );
         }
         catch

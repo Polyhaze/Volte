@@ -17,20 +17,14 @@ public sealed partial class ModerationModule
         if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
             Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
 
-        var originalReason = reason;
-
-        reason = reason is null 
-            ? GetDefaultReason("Banned", Context.User) 
-            : GetReason(Context.User, reason, out originalReason);
-
         try
         {
-            await member.BanAsync(7, reason);
+            await member.BanAsync(7, GetReason("Banned", Context.User, reason));
             return Ok($"Successfully banned **{member}** from this guild.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
                     .WithActionType(ModActionType.Ban)
                     .WithTarget(member)
-                    .WithReason(originalReason))
+                    .WithReason(reason))
             );
         }
         catch
