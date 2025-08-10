@@ -3,14 +3,27 @@ using Volte.Systems.Database.EntitiesV2;
 
 namespace Volte.Systems.Moderation;
 
-public sealed class ModerationService : VolteService
+public sealed class ModerationService : VolteService, IDisposable
 {
+    private static readonly AsyncEvent<ModActionEventArgs> ModActionEvent = new();
+
+    public static event Func<ModActionEventArgs, Task> ActionInvoked
+    {
+        add => ModActionEvent.Add(value);
+        remove => ModActionEvent.Remove(value);
+    }
+
+    public static void CallEvent(ModActionEventArgs args) => ExecuteBackgroundAsync(() => ModActionEvent.CallAsync(args));
+    
     private readonly DatabaseService _db;
 
     public ModerationService(DatabaseService databaseService)
     {
         _db = databaseService;
+        ActionInvoked += OnModActionCompleteAsync;
     }
+
+    public void Dispose() => ActionInvoked -= OnModActionCompleteAsync;
 
     public async Task CheckAccountAgeAsync(UserJoinedEventArgs args)
     {
@@ -40,7 +53,7 @@ public sealed class ModerationService : VolteService
         }
     }
 
-    public async Task OnModActionCompleteAsync(ModActionEventArgs args)
+    private async Task OnModActionCompleteAsync(ModActionEventArgs args)
     {
         if (!Config.EnabledFeatures.ModLog) return;
 

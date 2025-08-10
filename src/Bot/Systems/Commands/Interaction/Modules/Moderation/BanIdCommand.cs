@@ -30,12 +30,10 @@ public partial class InteractionModerationModule
         }
 
         await Context.Guild.AddBanAsync(userIdUL, 0, GetReason(Context.User, reason));
-        return Ok($"Successfully banned **{user}** from this guild.", () =>
-                ModService.OnModActionCompleteAsync(ModActionEventArgs
-                    .FromModule(this)
-                    .WithActionType(ModActionType.IdBan)
-                    .WithTarget(user)
-                    .WithReason(reason))
+        return Ok($"Successfully banned **{user}** from this guild.", ModAction
+            .WithActionType(ModActionType.IdBan)
+            .WithTarget(user)
+            .WithReason(reason)
         );
     }
 }

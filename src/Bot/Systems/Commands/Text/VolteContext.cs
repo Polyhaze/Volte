@@ -44,6 +44,8 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
         .WithDescription(content ?? string.Empty);
 
     public EmbedBuilder CreateEmbedBuilder(StringBuilder content) => CreateEmbedBuilder(content.ToString());
+    
+    public ModActionEventArgs ModAction => ModActionEventArgs.InContext(this);
         
     /// <summary>
     ///     Waits for a message containing content parseable by a registered <see cref="TypeParser{T}"/>.

@@ -32,12 +32,10 @@ public partial class InteractionModerationModule
             }
         );
         
-        return Ok($"Successfully unbanned **{user}** from this guild.", () =>
-            ModService.OnModActionCompleteAsync(ModActionEventArgs
-                .FromModule(this)
-                .WithActionType(ModActionType.Unban)
-                .WithTarget(user)
-                .WithReason(reason))
+        return Ok($"Successfully unbanned **{user}** from this guild.", ModAction
+            .WithActionType(ModActionType.Unban)
+            .WithTarget(user)
+            .WithReason(reason)
         );
     }
 }

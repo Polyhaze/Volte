@@ -9,5 +9,5 @@ public sealed partial class InteractionModerationModule : VolteSlashCommandModul
     public static string GetReason(IUser moderator, string reason) 
         => $"{moderator.Username} ({moderator.Id}): {reason}";
     
-    public ModerationService ModService { get; set; }
+    public ModActionEventArgs ModAction => ModActionEventArgs.FromModule(this);
 }

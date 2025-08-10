@@ -20,12 +20,10 @@ public sealed partial class ModerationModule
         try
         {
             await user.KickAsync(GetReason("Kicked", Context.User, reason));
-            return Ok($"Successfully kicked **{user}** from this guild.", _ =>
-                ModerationService.OnModActionCompleteAsync(ModActionEventArgs
-                    .InContext(Context)
-                    .WithActionType(ModActionType.Kick)
-                    .WithTarget(user)
-                    .WithReason(reason))
+            return Ok($"Successfully kicked **{user}** from this guild.", Context.ModAction
+                .WithActionType(ModActionType.Kick)
+                .WithTarget(user)
+                .WithReason(reason)
             );
         }
         catch

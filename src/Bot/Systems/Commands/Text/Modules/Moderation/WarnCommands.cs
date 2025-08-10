@@ -12,12 +12,10 @@ public sealed partial class ModerationModule
     {
         await member.WarnAsync(Context, reason);
 
-        return Ok($"Successfully warned **{member}** for **{reason}**.",
-            _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
-                .WithActionType(ModActionType.Warn)
-                .WithTarget(member)
-                .WithReason(reason))
-        );
+        return Ok($"Successfully warned **{member}** for **{reason}**.", Context.ModAction
+            .WithActionType(ModActionType.Warn)
+            .WithTarget(member)
+            .WithReason(reason));
     }
 
     [Command("Warns", "Ws")]
@@ -53,11 +51,9 @@ public sealed partial class ModerationModule
         if (!await member.TrySendMessageAsync(embed: e.Build()))
             Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
 
-        return Ok($"Cleared **{warnCount}** {"warning".ToQuantity(warnCount, showQuantityAs: ShowQuantityAs.None)} for **{member}**.", _ =>
-            ModerationService.OnModActionCompleteAsync(ModActionEventArgs
-                .InContext(Context)
-                .WithActionType(ModActionType.ClearWarns)
-                .WithTarget(member))
+        return Ok($"Cleared **{warnCount}** {"warning".ToQuantity(warnCount, showQuantityAs: ShowQuantityAs.None)} for **{member}**.", Context.ModAction
+            .WithActionType(ModActionType.ClearWarns)
+            .WithTarget(member)
         );
     }
 }

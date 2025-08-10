@@ -21,12 +21,11 @@ public sealed partial class InteractionModerationModule
         {
             await member.BanAsync(7, GetReason(Context.User, reason));
             
-            return Ok($"Successfully banned **{member}** from this guild.", () => 
-                ModService.OnModActionCompleteAsync(ModActionEventArgs
-                    .FromModule(this)
-                    .WithActionType(ModActionType.Ban)
-                    .WithTarget(member)
-                    .WithReason(reason)));
+            return Ok($"Successfully banned **{member}** from this guild.", ModAction
+                .WithActionType(ModActionType.Ban)
+                .WithTarget(member)
+                .WithReason(reason)
+            );
         }
         catch
         {

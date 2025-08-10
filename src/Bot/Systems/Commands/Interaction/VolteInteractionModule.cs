@@ -2,6 +2,7 @@
 using Volte.Systems.Database;
 using Volte.Systems.Database.EntitiesV2;
 using Volte.Systems.Interactions;
+using Volte.Systems.Moderation;
 
 namespace Volte.Systems.Commands.Interaction;
 
@@ -27,7 +28,7 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     ) => Context.CreateReplyBuilder(ephemeral, DidDefer);
     
     public bool IsInGuild() => Context.Guild != null;
-
+    
     public GuildDataV2 GetData() => Db.GetData(Context.Guild);
     
     public void ModifyData(DataEditor modifier) => Db.Modify(Context.Guild.Id, modifier);
@@ -48,6 +49,13 @@ public abstract class VolteInteractionModule<T> : InteractionModuleBase<SocketIn
     
     protected InteractionOkResult<T> Ok(string message, AsyncFunction onComplete, bool ephemeral = false) 
         => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), onComplete);
+    
+    protected InteractionOkResult<T> Ok(string message, ModActionEventArgs modAction, bool ephemeral = false) 
+        => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), () =>
+        {
+            ModerationService.CallEvent(modAction);
+            return Task.CompletedTask;
+        });
     
     protected InteractionOkResult<T> Ok(StringBuilder message, AsyncFunction onComplete, bool ephemeral = false) 
         => Ok(CreateReplyBuilder(ephemeral).WithEmbedFrom(message), onComplete);

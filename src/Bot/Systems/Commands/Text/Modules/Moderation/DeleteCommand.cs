@@ -1,4 +1,6 @@
-﻿namespace Volte.Systems.Commands.Text.Modules;
+﻿using Volte.Systems.Moderation;
+
+namespace Volte.Systems.Commands.Text.Modules;
 
 public sealed partial class ModerationModule
 {
@@ -22,7 +24,7 @@ public sealed partial class ModerationModule
                 timeout: 3.Seconds());
             await Context.Message.TryDeleteAsync();
             
-            await ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
+            ModerationService.CallEvent(Context.ModAction
                 .WithActionType(ModActionType.Delete)
                 .WithTarget(messageId)
             );

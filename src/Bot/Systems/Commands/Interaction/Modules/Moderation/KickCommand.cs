@@ -21,12 +21,11 @@ public partial class InteractionModerationModule
         {
             await member.KickAsync(GetReason(Context.User, reason));
             
-            return Ok($"Successfully kicked **{member}** from this guild.", () => 
-                ModService.OnModActionCompleteAsync(ModActionEventArgs
-                    .FromModule(this)
-                    .WithActionType(ModActionType.Kick)
-                    .WithTarget(member)
-                    .WithReason(reason)));
+            return Ok($"Successfully kicked **{member}** from this guild.", ModAction
+                .WithActionType(ModActionType.Kick)
+                .WithTarget(member)
+                .WithReason(reason)
+            );
         }
         catch
         {

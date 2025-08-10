@@ -15,13 +15,10 @@ public partial class ModerationModule
             return BadRequest($"**{user}** is not banned.");
         
         await Context.Guild.RemoveBanAsync(user, new RequestOptions { AuditLogReason = GetReason("Unbanned", Context.User, reason) });
-        return Ok($"Successfully unbanned **{user}** from this guild.",
-            async _ =>
-                await ModerationService.OnModActionCompleteAsync(ModActionEventArgs
-                    .InContext(Context)
-                    .WithActionType(ModActionType.Unban)
-                    .WithTarget(user)
-                    .WithReason(reason))
+        return Ok($"Successfully unbanned **{user}** from this guild.", Context.ModAction
+            .WithActionType(ModActionType.Unban)
+            .WithTarget(user)
+            .WithReason(reason)
         );
     }
 }

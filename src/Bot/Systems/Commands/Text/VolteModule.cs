@@ -7,7 +7,6 @@ namespace Volte.Systems.Commands.Text;
 public abstract class VolteModule : ModuleBase<VolteContext>
 {
     public DatabaseService Db { get; set; }
-    public ModerationService ModerationService { get; set; }
     public CommandService CommandService { get; set; }
         
     protected static ActionResult Ok(
@@ -15,6 +14,16 @@ public abstract class VolteModule : ModuleBase<VolteContext>
         MessageCallback afterCompletion = null,
         bool shouldEmbed = true) 
         => new OkResult(text, shouldEmbed, null, afterCompletion);
+    
+    protected static ActionResult Ok(
+        string text, 
+        ModActionEventArgs modAction,
+        bool shouldEmbed = true) 
+        => new OkResult(text, shouldEmbed, null, _ =>
+        {
+            ModerationService.CallEvent(modAction);
+            return Task.CompletedTask;
+        });
 
     protected static ActionResult Ok(
         AsyncFunction logic, 

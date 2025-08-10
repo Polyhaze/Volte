@@ -17,10 +17,10 @@ public partial class ModerationModule
         if (!member.HasRole(NoSupportRoleId))
             await member.AddRoleAsync(NoSupportRoleId);
 
-        return Ok($"Successfully warned **{member}** for piracy, and gave them <@&1298451667863470120>.",
-            _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
-                .WithActionType(ModActionType.Warn)
-                .WithTarget(member)
-                .WithReason("#rules #4")));
+        return Ok($"Successfully warned **{member}** for piracy, and gave them <@&1298451667863470120>.", Context.ModAction
+            .WithActionType(ModActionType.Warn)
+            .WithTarget(member)
+            .WithReason("#rules #4")
+        );
     }
 }

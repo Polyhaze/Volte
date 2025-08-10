@@ -20,12 +20,12 @@ public sealed partial class ModerationModule
         try
         {
             await member.BanAsync(7, GetReason("Banned", Context.User, reason));
-            return Ok($"Successfully banned **{member}** from this guild.", _ =>
-                ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
+            return Ok($"Successfully banned **{member}** from this guild.", 
+                Context.ModAction
                     .WithActionType(ModActionType.Ban)
                     .WithTarget(member)
-                    .WithReason(reason))
-            );
+                    .WithReason(reason)
+                );
         }
         catch
         {
