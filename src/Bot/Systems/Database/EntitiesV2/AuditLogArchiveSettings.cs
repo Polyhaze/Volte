@@ -2,7 +2,7 @@
 
 public class AuditLogArchiveSettings
 {
-    public ulong Channel { get; set; }
+    public Snowflake Channel { get; set; }
     public Dictionary<ActionType, bool> EnabledLogs { get; set; }
 
     public void Toggle(ActionType type)
@@ -17,7 +17,7 @@ public class AuditLogArchiveSettings
 
     public static AuditLogArchiveSettings Empty => new()
     {
-        Channel = 0,
+        Channel = Snowflake.Zero,
         EnabledLogs = Enum.GetValues<ActionType>().ToDictionary(x => x, _ => true)
     };
 }

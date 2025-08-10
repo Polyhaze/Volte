@@ -15,7 +15,7 @@ public class WelcomeSettings
         {"UserString", "A user's full username#discriminator; i.e. Greem#1337."}
     };
     
-    public ulong Channel { get; set; }
+    public Snowflake Channel { get; set; }
     
     public string JoinMessage { get; set; }
     

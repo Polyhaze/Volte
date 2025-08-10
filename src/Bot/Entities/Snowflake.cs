@@ -46,32 +46,16 @@ public readonly record struct Snowflake(ulong Raw) : IComparable<Snowflake>, ICo
 
         return null;
     }
-    
-    public static Snowflake Parse(string s, IFormatProvider provider) =>
-        TryParse(s, provider, out var result)
-            ? result
-            : throw new ArgumentException($"'{s}' did not contain a valid 64-bit unsigned integer or DateTimeOffset.");
+
+    public static Snowflake Parse(string s, IFormatProvider provider) 
+        => TryParse(s, provider)
+           ?? throw new ArgumentException($"'{s}' did not contain a valid 64-bit unsigned integer or DateTimeOffset.");
 
     public static bool TryParse(string s, IFormatProvider provider, out Snowflake result)
     {
-        result = Zero;
-        if (string.IsNullOrWhiteSpace(s))
-            return false;
+        var res = TryParse(s, provider);
+        result = res ?? Zero;
 
-        // As number
-        if (ulong.TryParse(s, NumberStyles.None, provider, out var number))
-        {
-            result = new Snowflake(number);
-            return true;
-        }
-
-        // As date
-        if (DateTimeOffset.TryParse(s, provider, DateTimeStyles.None, out var dto))
-        {
-            result = FromDate(dto);
-            return true;
-        }
-
-        return false;
+        return res.HasValue;
     }
 }

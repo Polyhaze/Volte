@@ -2,8 +2,8 @@
 
 public class WarnV2
 {
-    public ulong Target { get;  set; }
+    public Snowflake Target { get;  set; }
     public string Reason { get; set; }
-    public ulong Issuer { get; set; }
+    public Snowflake Issuer { get; set; }
     public DateTimeOffset Date { get; set; }
 }

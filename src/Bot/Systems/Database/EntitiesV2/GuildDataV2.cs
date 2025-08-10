@@ -4,9 +4,9 @@ namespace Volte.Systems.Database.EntitiesV2;
 
 public class GuildDataV2
 {
-    public ulong Id { get; set; }
+    public Snowflake Id { get; set; }
 
-    public ulong OwnerId { get; set; }
+    public Snowflake OwnerId { get; set; }
 
     public StarscriptTables StarscriptTables { get; set; } = new();
 
@@ -127,7 +127,7 @@ public class GuildDataV2
             },
             Collections = new GuildSettings.SettingsCollections
             {
-                SelfRoles = v1.Extras.SelfRoles,
+                SelfRoles = v1.Extras.SelfRoles.Select(x => new Snowflake(x)).ToHashSet(),
                 Tags = v1.Extras.Tags.Select(tagV1 => new TagV2
                 {
                     Name = tagV1.Name,

@@ -18,9 +18,13 @@ public sealed class DatabaseService : VolteService, IDisposable
     private readonly ILiteCollection<Reminder.Reminder> _reminderData;
     private readonly ILiteCollection<StarboardDbEntry> _starboardData;
 
-    public DatabaseService(DiscordSocketClient discordShardedClient)
+    public DatabaseService(DiscordSocketClient discordSocketClient)
     {
-        _client = discordShardedClient;
+        BsonMapper.Global.RegisterType(
+            serialize: it => it.Raw,
+            deserialize: bVal => new Snowflake((ulong)bVal.AsInt64));
+        
+        _client = discordSocketClient;
         _guildData = Database.GetCollection<Entities.GuildData>("guilds");
         _guildDataV2 = Database.GetCollection<GuildDataV2>("guildData");
         _reminderData = Database.GetCollection<Reminder.Reminder>("reminders");

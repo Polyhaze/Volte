@@ -2,7 +2,7 @@
 
 public class StarboardSettings
 {
-    public ulong Channel { get; set; }
+    public Snowflake Channel { get; set; }
     
     public bool Enabled { get; set; }
     

@@ -2,7 +2,7 @@
 
 public class GuildSettings
 {
-    public ulong Autorole { get; set; }
+    public Snowflake Autorole { get; set; }
     
     public string CommandPrefix { get; set; }
     
@@ -24,7 +24,7 @@ public class GuildSettings
     
     public class SettingsCollections
     {
-        public HashSet<ulong> SelfRoles { get; set; } = [];
+        public HashSet<Snowflake> SelfRoles { get; set; } = [];
         
         public HashSet<TagV2> Tags { get; set; } = [];
     }

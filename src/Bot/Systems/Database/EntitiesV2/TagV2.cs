@@ -8,9 +8,9 @@ public class TagV2
     
     public string Response { get; set; }
     
-    public ulong CreatorId { get; set; }
+    public Snowflake CreatorId { get; set; }
     
-    public ulong GuildId { get; set; }
+    public Snowflake GuildId { get; set; }
     
     public ulong Uses { get; set; }
 
