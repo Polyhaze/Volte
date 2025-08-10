@@ -5,26 +5,38 @@ namespace Volte.Helpers;
 
 public static class EmbedHelpers
 {
+    /// <summary>
+    ///     Sets the sidebar color of an <see cref="Embed"/> to the success color in the config file.
+    /// </summary>
+    /// <returns>
+    ///     The current builder.
+    /// </returns>
     public static EmbedBuilder WithSuccessColor(this EmbedBuilder e) => e.WithColor(Config.SuccessColor);
 
+    /// <summary>
+    ///     Sets the sidebar color of an <see cref="Embed"/> to the error color in the config file.
+    /// </summary>
+    /// <returns>
+    ///     The current builder.
+    /// </returns>
     public static EmbedBuilder WithErrorColor(this EmbedBuilder e) => e.WithColor(Config.ErrorColor);
 
     public static EmbedBuilder WithRelevantColor(this EmbedBuilder e, SocketGuildUser user) =>
         e.WithColor(user.GetHighestRole()?.Color ?? new Color(Config.SuccessColor));
-    
-    public static EmbedBuilder WithDescription(this EmbedBuilder e, Action<StringBuilder> description) => 
+
+    public static EmbedBuilder WithDescription(this EmbedBuilder e, Action<StringBuilder> description) =>
         e.WithDescription(String(description));
 
     public static EmbedBuilder AppendDescription(this EmbedBuilder e, string toAppend) =>
         e.WithDescription((e.Description ?? string.Empty) + toAppend);
-    
+
     public static EmbedBuilder AppendDescriptionLine(this EmbedBuilder e, string toAppend = "") =>
         e.AppendDescription($"{toAppend}\n");
 
     public static EmbedBuilder AddField(this EmbedBuilder e, object name, Action<StringBuilder> description,
-        bool inline = false) => 
+        bool inline = false) =>
         e.AddField(name.ToString(), String(description), inline);
-    
+
     /// <summary>
     ///     Removes the author and sets the color to the config-provided <see cref="Config"/>.<see cref="Config.SuccessColor"/>,
     /// however it only removes it if <see cref="ModerationOptions.ShowResponsibleModerator"/> on the provided <paramref name="data"/> is <see langword="false"/>
@@ -35,11 +47,11 @@ public static class EmbedHelpers
     public static EmbedBuilder Apply(this EmbedBuilder e, GuildDataV2 data) => e.Apply(eb =>
     {
         if (data.Settings.Moderation.ShowResponsibleModerator) return;
-        
+
         eb.WithAuthor(author: null);
         eb.WithSuccessColor();
     });
-    
+
     public static EmbedBuilder Apply(this EmbedBuilder e, PollInfo pollInfo) => e.Apply(eb =>
     {
         foreach (var (fieldName, fieldValue) in pollInfo.Fields)
@@ -47,6 +59,26 @@ public static class EmbedHelpers
         eb.WithTitle(pollInfo.Prompt);
         eb.WithFooter(PollInfo.Footer);
     });
-    
+
+    public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
+        c.SendMessageAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
+
+    public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
+        c.SendMessageAsync(embed: e, allowedMentions: AllowedMentions.None);
+
+    public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) =>
+        msg.ReplyAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
+
+    public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) =>
+        msg.ReplyAsync(embed: e, allowedMentions: AllowedMentions.None);
+
+
+    // ReSharper disable twice UnusedMethodReturnValue.Global
+    public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
+        await e.SendToAsync(await u.CreateDMChannelAsync());
+
+    public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
+        await e.SendToAsync(await u.CreateDMChannelAsync());
+
     public static Embed Embed(Action<EmbedBuilder> initializer) => new EmbedBuilder().Apply(initializer).Build();
 }

@@ -207,26 +207,6 @@ public static class DiscordHelper
         client.GuildAvailable += g => Task.Run(() => db.CreateGuildDataIfNotExists(g));
     }
 
-    public static Task<IUserMessage> SendToAsync(this EmbedBuilder e, IMessageChannel c) =>
-        c.SendMessageAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
-
-    public static Task<IUserMessage> SendToAsync(this Embed e, IMessageChannel c) =>
-        c.SendMessageAsync(embed: e, allowedMentions: AllowedMentions.None);
-
-    public static Task<IUserMessage> ReplyToAsync(this EmbedBuilder e, IUserMessage msg) =>
-        msg.ReplyAsync(embed: e.Build(), allowedMentions: AllowedMentions.None);
-
-    public static Task<IUserMessage> ReplyToAsync(this Embed e, IUserMessage msg) =>
-        msg.ReplyAsync(embed: e, allowedMentions: AllowedMentions.None);
-
-
-    // ReSharper disable twice UnusedMethodReturnValue.Global
-    public static async Task<IUserMessage> SendToAsync(this EmbedBuilder e, IGuildUser u) =>
-        await e.SendToAsync(await u.CreateDMChannelAsync());
-
-    public static async Task<IUserMessage> SendToAsync(this Embed e, IGuildUser u) =>
-       await e.SendToAsync(await u.CreateDMChannelAsync());
-
     public static Emoji ToEmoji(this string str) => new(str);
 
     public static bool ShouldHandle(this SocketMessage message, out SocketUserMessage userMessage)
