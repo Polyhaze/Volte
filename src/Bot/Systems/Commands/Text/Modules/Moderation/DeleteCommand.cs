@@ -15,7 +15,6 @@ public sealed partial class ModerationModule
 
         await target.TryDeleteAsync($"Message deleted by Moderator {Context.User}.");
 
-
         return None(async () =>
         {
             await Interactive.ReplyAndDeleteAsync(Context, 

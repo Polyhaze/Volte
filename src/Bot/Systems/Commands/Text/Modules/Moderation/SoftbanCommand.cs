@@ -21,23 +21,17 @@ public sealed partial class ModerationModule
         if (!await user.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
             Warn(LogSource.Module, $"encountered a 403 when trying to message {user}!");
 
-        var originalReason = reason;
-
-        reason = reason is null 
-            ? GetDefaultReason("Banned", Context.User) 
-            : GetReason(Context.User, reason, out originalReason);
-
         try
         {
-            await user.BanAsync(daysToDelete, reason);
-            await Context.Guild.RemoveBanAsync(user);
+            await user.BanAsync(daysToDelete, GetReason("Softbanned", Context.User, reason));
+            await Context.Guild.RemoveBanAsync(user, new RequestOptions { AuditLogReason = "Second half of softban action" });
 
             return Ok($"Successfully softbanned **{user}**.", _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                     .InContext(Context)
                     .WithActionType(ModActionType.Softban)
                     .WithTarget(user)
-                    .WithReason(originalReason))
+                    .WithReason(reason))
             );
         }
         catch
