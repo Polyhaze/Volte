@@ -8,7 +8,7 @@ namespace Volte.Entities;
 public class ModActionEventArgs
 {
     public SocketUser Moderator { get; private set; }
-    public ISocketMessageChannel Channel { get; private set; }
+    public ISocketMessageChannel Channel { get; init; }
     public required Func<string, EmbedBuilder> CreateEmbedBuilder { get; init; }
     public required GuildDataV2 GuildData { get; init; }
     
@@ -19,23 +19,6 @@ public class ModActionEventArgs
     public int? Count { get; private set; }
     public DateTimeOffset Time { get; private set; }
     public SocketGuild Guild { get; private set; }
-
-    public static ModActionEventArgs InContext(VolteContext ctx) => new ModActionEventArgs
-    {
-        CreateEmbedBuilder = ctx.CreateEmbedBuilder,
-        GuildData = ctx.GuildData,
-        Channel = ctx.Channel
-    }.WithDefaultsFromContext(ctx);
-    
-#pragma warning disable CS0618 // Type or member is obsolete
-    public static ModActionEventArgs FromModule<TInteraction>(VolteInteractionModule<TInteraction> mdl) 
-#pragma warning restore CS0618 // Type or member is obsolete
-        where TInteraction : SocketInteraction => new ModActionEventArgs
-    {
-        CreateEmbedBuilder = mdl.Context.CreateEmbedBuilder,
-        GuildData = mdl.GetData(),
-        Channel = mdl.Context.Channel
-    }.WithDefaultsFromContext(mdl.Context);
 
     public ModActionEventArgs WithModerator(SocketUser user)
     {
