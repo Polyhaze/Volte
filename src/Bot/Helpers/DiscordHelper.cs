@@ -8,7 +8,7 @@ namespace Volte.Helpers;
 
 public static class DiscordHelper
 {
-    public static ulong DevGuildId = 405806471578648588;
+    public static Snowflake DevGuildId = 405806471578648588;
     
     public static string Zws => "\u200B";
 
@@ -42,7 +42,7 @@ public static class DiscordHelper
            || ctx.IsAdmin(user) 
            || IsGuildOwner(user);
 
-    public static bool HasRole(this IGuildUser user, ulong roleId) => user.RoleIds.Contains(roleId);
+    public static bool HasRole(this IGuildUser user, Snowflake roleId) => user.RoleIds.Contains(roleId);
     
     public static Task WarnAsync(this IGuildUser member, VolteContext ctx, string reason)
         => ctx.Services.GetRequiredService<DatabaseService>().WarnAsync(ctx.User, member, reason);

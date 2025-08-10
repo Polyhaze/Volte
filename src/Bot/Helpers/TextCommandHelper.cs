@@ -190,7 +190,7 @@ public static class TextCommandHelper
                 BindingFlags.Public,
                 args: [
                     parser.GetConstructor(Type.EmptyTypes)?.Invoke([]) ?? throw new InvalidOperationException($"Couldn't find no-args constructor for {parser.AsFullNamePrettyString()}"), 
-                    parser.GetCustomAttribute<InjectTypeParserAttribute>()!.OverridePrimitive 
+                    parser.GetCustomAttribute<InjectTypeParserAttribute>()!.OverridePrimitive
                 ]
             );
                 

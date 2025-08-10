@@ -78,7 +78,7 @@ public sealed class DatabaseService : VolteService, IDisposable
         });
     }
 
-    public GuildDataV2 GetData(ulong id)
+    public GuildDataV2 GetData(Snowflake id)
     {
         return _guildDataV2.ValueLock(() =>
         {
@@ -93,7 +93,7 @@ public sealed class DatabaseService : VolteService, IDisposable
     public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
     public HashSet<GuildDataV2> GetAllData() => _guildDataV2.ValueLock(() => _guildDataV2.FindAll().ToHashSet());
 
-    public ValueTask<GuildDataV2> GetDataAsync(ulong id) => new(GetData(id));
+    public ValueTask<GuildDataV2> GetDataAsync(Snowflake id) => new(GetData(id));
     
     public void CreateGuildDataIfNotExists(IGuild guild) =>
         _guildDataV2.LockedRef(coll =>
@@ -102,15 +102,15 @@ public sealed class DatabaseService : VolteService, IDisposable
                 coll.Insert(GuildDataV2.CreateFrom(guild));
         });
 
-    public void CreateGuildDataIfNotExists(ulong id) => CreateGuildDataIfNotExists(_client.GetGuild(id));
+    public void CreateGuildDataIfNotExists(Snowflake id) => CreateGuildDataIfNotExists(_client.GetGuild(id));
 
-    public GuildDataV2 this[ulong id]
+    public GuildDataV2 this[Snowflake id]
     {
         get => GetData(id);
         set => Save(value);
     }
 
-    public void Modify(ulong guildId, DataEditor modifier)
+    public void Modify(Snowflake guildId, DataEditor modifier)
     {
         var data = this[guildId];
         modifier(data);
@@ -131,8 +131,8 @@ public sealed class DatabaseService : VolteService, IDisposable
     public HashSet<Reminder.Reminder> GetReminders(IUser user, IGuild guild = null) =>
         GetReminders(user.Id, guild?.Id ?? 0).ToHashSet();
 
-    public HashSet<Reminder.Reminder> GetReminders(ulong creator, ulong guild = 0)
-        => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
+    public HashSet<Reminder.Reminder> GetReminders(Snowflake creator, Snowflake? guild = null)
+        => GetAllReminders().Where(r => r.CreatorId == creator && (guild is null || r.GuildId == guild)).ToHashSet();
 
     public bool TryDeleteReminder(Reminder.Reminder reminder) =>
         _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));

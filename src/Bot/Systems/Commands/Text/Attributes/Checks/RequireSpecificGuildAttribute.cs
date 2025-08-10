@@ -2,7 +2,7 @@
 
 public class RequireSpecificGuildAttribute(ulong guildId) : CheckAttribute
 {
-    public ulong GuildId => guildId;
+    public Snowflake GuildId => guildId;
     
     public override ValueTask<CheckResult> CheckAsync(CommandContext context)
     {

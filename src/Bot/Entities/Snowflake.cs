@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace Volte.Entities;
 
@@ -20,6 +21,7 @@ public readonly record struct Snowflake(ulong Raw) : IComparable<Snowflake>, ICo
 
     public DateTimeOffset Date => SnowflakeUtils.FromSnowflake(Raw);
 
+    public string ToString(bool fullInfo) => fullInfo ? ToString() : Raw.ToString();
     public static implicit operator Snowflake(ulong raw) => new(raw);
     public static implicit operator ulong(Snowflake snowflake) => snowflake.Raw;
     public static implicit operator Snowflake(DateTimeOffset dto) => FromDate(dto);
@@ -57,5 +59,32 @@ public readonly record struct Snowflake(ulong Raw) : IComparable<Snowflake>, ICo
         result = res ?? Zero;
 
         return res.HasValue;
+    }
+    
+    public static bool TryParse(string s, out Snowflake result)
+    {
+        var res = TryParse(s);
+        result = res ?? Zero;
+
+        return res.HasValue;
+    }
+
+    public class JsonConverter : JsonConverter<Snowflake>
+    {
+        public override Snowflake Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.String:
+                    return Parse(reader.GetString()!, null);
+                case JsonTokenType.Number:
+                    return new Snowflake(reader.GetUInt64());
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, Snowflake value, JsonSerializerOptions options) 
+            => writer.WriteNumberValue(value.Raw);
     }
 }
