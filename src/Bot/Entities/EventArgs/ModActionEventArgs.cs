@@ -14,7 +14,7 @@ public class ModActionEventArgs
     public ModActionType ActionType { get; private set; }
     public string Reason { get; private set; }
     public ulong? TargetId { get; private set; }
-    public SocketUser TargetUser { get; private set; }
+    public IUser TargetUser { get; private set; }
     public int? Count { get; private set; }
     public DateTimeOffset Time { get; private set; }
     public SocketGuild Guild { get; private set; }
@@ -60,7 +60,7 @@ public class ModActionEventArgs
         return this;
     }
 
-    public ModActionEventArgs WithTarget(SocketUser user)
+    public ModActionEventArgs WithTarget(IUser user)
     {
         TargetUser = user;
         return this;

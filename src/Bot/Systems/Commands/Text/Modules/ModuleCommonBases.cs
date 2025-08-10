@@ -121,6 +121,16 @@ public sealed partial class BotOwnerModule : VolteModule
 [RequireGuildModerator]
 public sealed partial class ModerationModule : VolteModule
 {
+    public static string GetReason(IUser moderator, string reason, out string original)
+    {
+        original = reason;
+
+        return $"{moderator.Username} ({moderator.Id}): {reason}";
+    }
+    
+    public static string GetDefaultReason(string action, IUser moderator) 
+        => $"{action} by {moderator.Username} ({moderator.Id})";
+
     public InteractiveService Interactive { get; set; }
         
     public static readonly Dictionary<string[], string> UnixBanNamedArguments = new()

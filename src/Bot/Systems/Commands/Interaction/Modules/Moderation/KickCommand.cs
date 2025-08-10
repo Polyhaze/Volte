@@ -19,7 +19,7 @@ public partial class InteractionModerationModule
         
         try
         {
-            await member.KickAsync(reason);
+            await member.KickAsync(GetReason(Context.User, reason));
             
             return Ok($"Successfully kicked **{member}** from this guild.", () => 
                 ModService.OnModActionCompleteAsync(ModActionEventArgs

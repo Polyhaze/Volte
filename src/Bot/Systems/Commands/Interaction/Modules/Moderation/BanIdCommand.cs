@@ -29,12 +29,12 @@ public partial class InteractionModerationModule
                 return BadRequest("You cannot target anyone who is higher or equal in the hierarchy to you or the bot.");
         }
 
-        await Context.Guild.AddBanAsync(userIdUL, 0, reason);
+        await Context.Guild.AddBanAsync(userIdUL, 0, GetReason(Context.User, reason));
         return Ok($"Successfully banned **{user}** from this guild.", () =>
                 ModService.OnModActionCompleteAsync(ModActionEventArgs
                     .FromModule(this)
                     .WithActionType(ModActionType.IdBan)
-                    .WithTarget(userIdUL)
+                    .WithTarget(user)
                     .WithReason(reason))
         );
     }

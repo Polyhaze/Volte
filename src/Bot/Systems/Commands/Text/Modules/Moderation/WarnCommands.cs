@@ -53,7 +53,7 @@ public sealed partial class ModerationModule
         if (!await member.TrySendMessageAsync(embed: e.Build()))
             Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
 
-        return Ok($"Cleared **{warnCount}** warnings for **{member}**.", _ =>
+        return Ok($"Cleared **{warnCount}** {"warning".ToQuantity(warnCount, showQuantityAs: ShowQuantityAs.None)} for **{member}**.", _ =>
             ModerationService.OnModActionCompleteAsync(ModActionEventArgs
                 .InContext(Context)
                 .WithActionType(ModActionType.ClearWarns)

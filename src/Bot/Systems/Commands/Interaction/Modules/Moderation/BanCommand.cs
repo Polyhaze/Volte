@@ -19,7 +19,7 @@ public sealed partial class InteractionModerationModule
         
         try
         {
-            await member.BanAsync(7, reason);
+            await member.BanAsync(7, GetReason(Context.User, reason));
             
             return Ok($"Successfully banned **{member}** from this guild.", () => 
                 ModService.OnModActionCompleteAsync(ModActionEventArgs

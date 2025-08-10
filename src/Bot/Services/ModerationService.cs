@@ -167,17 +167,31 @@ public sealed class ModerationService : VolteService
             {
                 IncrementAndSave(args.GuildData);
                 await e.WithDescription(
-                    (
-                        await args.MessageBuilder()
-                            .Action()
-                            .Moderator()
-                            .Case()
-                            .TargetRestUser()
-                    )
-                    .Reason()
-                    .Time()
+                    args.MessageBuilder()
+                        .Action()
+                        .Moderator()
+                        .Case()
+                        .Target(false)
+                        .Reason()
+                        .Time()
                 ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
+                break;
+            }
+            
+            case ModActionType.Unban:
+            {
+                IncrementAndSave(args.GuildData);
+                await e.WithDescription(
+                    args.MessageBuilder()
+                        .Action()
+                        .Moderator()
+                        .Case()
+                        .Target(false)
+                        .Reason()
+                        .Time()
+                ).SendToAsync(c);
+                Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Unban)}");
                 break;
             }
 
@@ -196,9 +210,6 @@ public sealed class ModerationService : VolteService
                 Debug(LogSource.Volte, "What the hell did you pass as a ModActionType?", InvocationInfo.Here());
                 break;
         }
-
-        Debug(LogSource.Volte,
-            "Sent a ModLog message or threw an exception.");
     }
 
     private void IncrementAndSave(GuildDataV2 gd)
@@ -224,18 +235,10 @@ public sealed class ModerationService : VolteService
         public ModLogMessageBuilder Target(bool isOnMessageDelete)
             => isOnMessageDelete
                 ? Append("Message Deleted", args.TargetId)
-                : Append("User", $"{args.TargetUser.Username} ({args.TargetUser.Id})");
+                : Append("User", $"{args.TargetUser} ({args.TargetUser.Id})");
 
         public ModLogMessageBuilder Time()
             => Append(nameof(Time), args.Time.ToDiscordTimestamp(TimestampType.LongDateTime));
-
-        public async Task<ModLogMessageBuilder> TargetRestUser()
-        {
-            var u = await VolteBot.Client.Rest.GetUserAsync(args.TargetId ?? 0);
-            return Append("User", u is null
-                ? args.TargetId
-                : $"{u} ({args.TargetId})");
-        }
 
         private ModLogMessageBuilder Append(string part, object content)
             => this.Apply(it => it._sb.AppendLine($"{Format.Bold($"{part}:")} {content}"));
