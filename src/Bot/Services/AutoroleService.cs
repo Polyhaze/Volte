@@ -22,7 +22,7 @@ public sealed class AutoroleService : VolteService
             return;
         }
 
-        await args.User.AddRoleAsync(targetRole, DiscordHelper.RequestOptions(x => x.AuditLogReason = "Volte Autorole"));
+        await args.User.AddRoleAsync(targetRole, new RequestOptions { AuditLogReason = "Volte Autorole" });
         Debug(LogSource.Volte,
             $"Applied role {targetRole.Name} to user {args.User} in guild {args.Guild.Name}.");
     }

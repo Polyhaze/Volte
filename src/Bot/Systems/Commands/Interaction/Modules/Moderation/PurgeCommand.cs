@@ -34,9 +34,7 @@ public partial class InteractionModerationModule
         try
         {
             await Context.Channel.Cast<SocketTextChannel>()
-                .DeleteMessagesAsync(messages,
-                    DiscordHelper.RequestOptions(opts =>
-                        opts.AuditLogReason = $"Messages purged by {Context.User}."));
+                .DeleteMessagesAsync(messages, new RequestOptions { AuditLogReason = $"Messages purged by {Context.User}." });
         }
         catch (ArgumentOutOfRangeException)
         {

@@ -18,10 +18,6 @@ public static class DiscordHelper
             Emojis.Six, Emojis.Seven, Emojis.Eight, Emojis.Nine
         ];
 
-    public static RequestOptions RequestOptions(Action<RequestOptions> initializer) 
-        => new RequestOptions().Apply(initializer);
-
-
     /// <summary>
     ///     Checks if the current user is the user identified in the bot's config.
     /// </summary>
@@ -236,7 +232,7 @@ public static class DiscordHelper
     }
 
     public static Task<bool> TryDeleteAsync(this IDeletable deletable, string reason)
-        => deletable.TryDeleteAsync(RequestOptions(opts => opts.AuditLogReason = reason));
+        => deletable.TryDeleteAsync(new RequestOptions { AuditLogReason = reason });
 
     public static string GetEffectiveUsername(this IGuildUser user)
     {

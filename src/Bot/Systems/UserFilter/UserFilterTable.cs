@@ -117,8 +117,7 @@ public class UserFilterEntry
             case ActionType.Kick:
                 try
                 {
-                    await user.KickAsync(Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await user.KickAsync(Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
                     return true;
                 }
                 catch (HttpException)
@@ -128,8 +127,7 @@ public class UserFilterEntry
             case ActionType.Ban:
                 try
                 {
-                    await guild.AddBanAsync(user.Id, 7, Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await guild.AddBanAsync(user.Id, 7, Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
                     return true;
                 }
                 catch (HttpException)
@@ -139,8 +137,7 @@ public class UserFilterEntry
             case ActionType.SoftBan:
                 try
                 {
-                    await guild.AddBanAsync(user.Id, 7, Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await guild.AddBanAsync(user.Id, 7, Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
                     await guild.RemoveBanAsync(user.Id);
                     return true;
                 }

@@ -16,9 +16,7 @@ public sealed partial class ModerationModule
         
         try
         {
-            await Context.Channel.DeleteMessagesAsync(messages,
-                DiscordHelper.RequestOptions(opts =>
-                    opts.AuditLogReason = $"Messages purged by {Context.User}."));
+            await Context.Channel.DeleteMessagesAsync(messages, new RequestOptions { AuditLogReason = $"Messages purged by {Context.User}." });
         }
         catch (ArgumentOutOfRangeException)
         {

@@ -92,9 +92,10 @@ public sealed class StarboardService : VolteService
                 }
                 else if (starboard.DeleteInvalidStars)
                     // Invalid star! Either the starboard post or the actual message already has a reaction by this user.
-                    await message.RemoveReactionAsync(Emojis.Star, reaction.UserId,
-                        DiscordHelper.RequestOptions(x =>
-                            x.AuditLogReason = "Star reaction is invalid: User has already starred!"));
+                    await message.RemoveReactionAsync(Emojis.Star, reaction.UserId, new RequestOptions
+                    {
+                        AuditLogReason = "Star reaction is invalid: User has already starred!"
+                    });
             }
         }
         else if (channel != starboardChannel) // Can't make a new starboard message for a post in the starboard channel!
