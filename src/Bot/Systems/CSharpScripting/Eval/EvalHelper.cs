@@ -8,17 +8,6 @@ namespace Volte.Systems.CSharpScripting;
 
 public static partial class EvalHelper
 {
-    public static readonly string[] BaseImports =
-    [
-        "System", "System.IO", "System.Linq", "System.Threading", "System.Threading.Tasks",
-        "System.Collections.Generic", "System.Diagnostics", "System.Globalization", "System.Net.Http",
-        "System.Text", "System.Text.Json", "System.Text.Json.Serialization",
-
-        "Discord", "Discord.WebSocket",
-
-        "Humanizer", "Gommon", "Qmmands"
-    ];
-
     private static string[] _resolvedImports;
 
     public static readonly ScriptOptions Options = ScriptOptions.Default
@@ -29,15 +18,10 @@ public static partial class EvalHelper
         );
 
     public static string[] GetImports() =>
-        _resolvedImports ??= BaseImports
-            .Concat(
-                typeof(EvalHelper).Assembly
-                    .GetTypes()
-                    .Select(static x => x.Namespace)
-                    .Where(static x => x != null)
-                    .Distinct()
-                    .Except(BaseImports)
-            )
+        _resolvedImports ??= AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.ExportedTypes)
+            .Select(x => x.Namespace)
+            .Where(x => x != null)
             .Distinct()
             .ToArray();
 
