@@ -16,8 +16,16 @@ public partial class ModerationModule
         var tag = Context.GuildData.GetTagByNameOrAlias("emulationisnotpiracy");
         if (tag.HasValue)
         {
-            if (!await member.TrySendMessageAsync(text: tag.Value.Response))
-                Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+            if (tag.Value.Response.Length <= 2000)
+            {
+                if (!await member.TrySendMessageAsync(text: tag.Value.Response))
+                    Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+            }
+            else
+            {
+                if (!await member.TrySendMessageAsync(embed: tag.Value.AsContentEmbed(Context).Build()))
+                    Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+            }
         }
 
         try
