@@ -1,4 +1,4 @@
-using Volte.Systems.CSharpScripting;
+using Volte.Systems.Scripting;
 using Volte.Systems.Commands.Text.Modules;
 using Volte.Systems.Database;
 using Volte.Systems.Moderation;
