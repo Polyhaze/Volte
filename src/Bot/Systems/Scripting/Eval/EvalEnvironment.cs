@@ -6,7 +6,7 @@ using Volte.Systems.Database.EntitiesV2;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Volte.Systems.CSharpScripting;
+namespace Volte.Systems.Scripting;
 
 public sealed class EvalEnvironment
 {

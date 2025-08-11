@@ -1,5 +1,5 @@
 using System.Web;
-using Volte.Systems.CSharpScripting;
+using Volte.Systems.Scripting;
 using Volte.Systems.Interactive;
 
 namespace Volte.Systems.Commands.Text.Modules;

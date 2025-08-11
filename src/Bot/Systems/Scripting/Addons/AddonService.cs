@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
 
-namespace Volte.Systems.CSharpScripting;
+namespace Volte.Systems.Scripting;
 
 public sealed class AddonService : VolteService
 {
