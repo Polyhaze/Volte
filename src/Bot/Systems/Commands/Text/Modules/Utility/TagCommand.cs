@@ -6,14 +6,16 @@ public sealed partial class UtilityModule
 {
     [Command("Tag")]
     [Description("Gets a tag's contents if it exists.")]
-    public Task<ActionResult> TagAsync([Remainder, Description("The tag to show.")]
-        TagV2 tag)
+    public Task<ActionResult> TagAsync([Remainder, Description("The tag to show.")] TagV2 tag)
     {
         tag.Uses++;
         Db.Save(Context.GuildData);
 
         return Context.GuildData.Settings.EmbedTags
             ? Ok(tag.AsEmbed(Context))
-            : Ok(tag.FormatContent(Context), shouldEmbed: false);
+            : tag.FormatContent(Context)
+                .Into(cont =>
+                    Ok(cont, shouldEmbed: cont.Length > 2000)
+                );
     }
 }

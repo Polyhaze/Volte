@@ -28,9 +28,11 @@ public class TagV2
             .Replace("{OwnerMention}", ctx.Guild.Owner.Mention)
             .Replace("{UserTag}", ctx.User.Discriminator);
 
-    public EmbedBuilder AsEmbed(VolteContext ctx) => ctx.CreateEmbedBuilder(FormatContent(ctx))
+    public EmbedBuilder AsEmbed(VolteContext ctx) => AsContentEmbed(ctx)
         .WithAuthor(author: null)
         .WithFooter($"Requested by {ctx.User}.", ctx.User.GetEffectiveAvatarUrl());
+
+    public EmbedBuilder AsContentEmbed(VolteContext ctx) => ctx.CreateEmbedBuilder(FormatContent(ctx));
 
 
     public override string ToString()
