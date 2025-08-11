@@ -26,10 +26,10 @@ public sealed partial class ModerationModule
             await user.BanAsync(daysToDelete, GetReason("Softbanned", Context.User, reason));
             await Context.Guild.RemoveBanAsync(user, new RequestOptions { AuditLogReason = "Second half of softban action" });
 
-            return Ok($"Successfully softbanned **{user}**.", Context.ModAction
-                .WithActionType(ModActionType.Softban)
-                .WithTarget(user)
-                .WithReason(reason)
+            return Ok($"Successfully softbanned **{user}**.", 
+                Context.ModAction(ModActionType.Softban)
+                    .WithTarget(user)
+                    .WithReason(reason)
             );
         }
         catch

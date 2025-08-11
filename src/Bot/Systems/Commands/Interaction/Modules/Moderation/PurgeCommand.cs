@@ -42,9 +42,8 @@ public partial class InteractionModerationModule
                 $"Messages bulk deleted must be younger than 14 days. {Format.Code("This is a Discord restriction, not a Volte one.")}");
         }
 
-        return Ok($"Successfully deleted {Format.Bold("message".ToQuantity(messages.Count))}.", ModAction
-                .WithActionType(ModActionType.Purge)
-                .WithCount(messages.Count), 
-            true);
+        return Ok($"Successfully deleted {Format.Bold("message".ToQuantity(messages.Count))}.",
+            ModAction(ModActionType.Purge).WithCount(messages.Count),
+            ephemeral: true);
     }
 }

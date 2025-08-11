@@ -7,10 +7,11 @@ public sealed partial class InteractionModerationModule : VolteSlashCommandModul
     public static string GetReason(IUser moderator, string reason) 
         => $"{moderator.Username} ({moderator.Id}): {reason}";
     
-    public ModActionEventArgs ModAction => new ModActionEventArgs
+    public ModActionEventArgs ModAction(ModActionType actionType) => new ModActionEventArgs
     {
         CreateEmbedBuilder = Context.CreateEmbedBuilder,
         GuildData = GetData(),
         Channel = Context.Channel
-    }.WithDefaultsFromContext(Context);
+    }.WithDefaultsFromContext(Context)
+        .WithActionType(actionType);
 }

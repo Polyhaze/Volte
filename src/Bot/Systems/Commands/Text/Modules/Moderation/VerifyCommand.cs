@@ -30,9 +30,8 @@ public partial class ModerationModule
         await member.RemoveRoleAsync(uRole);
         await member.AddRoleAsync(vRole);
 
-        return Ok($"Successfully verified {member.Mention}.", Context.ModAction
-            .WithActionType(ModActionType.Verify)
-            .WithTarget(member)
+        return Ok($"Successfully verified {member.Mention}.", 
+            Context.ModAction(ModActionType.Verify).WithTarget(member)
         );
     }
 }

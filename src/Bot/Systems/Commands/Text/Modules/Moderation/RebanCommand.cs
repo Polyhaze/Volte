@@ -23,8 +23,7 @@ public partial class ModerationModule
         }
 
         await Context.Guild.AddBanAsync(user, 7, reason);
-        return Ok(message, Context.ModAction
-            .WithActionType(ModActionType.Ban)
+        return Ok(message, Context.ModAction(ModActionType.Ban)
             .WithTarget(user)
             .WithReason(reason)
         );

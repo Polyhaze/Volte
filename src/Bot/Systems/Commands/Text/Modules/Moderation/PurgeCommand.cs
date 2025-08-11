@@ -30,9 +30,9 @@ public sealed partial class ModerationModule
             await Interactive.ReplyAndDeleteAsync(Context, string.Empty,
                 embed: Context.CreateEmbed($"Successfully deleted {Format.Bold("message".ToQuantity(messages.Count - 1))}."),
                 timeout: 3.Seconds());
-            Moderation.ModerationService.CallEvent(Context.ModAction
-                .WithActionType(ModActionType.Purge)
-                .WithCount(messages.Count - 1)
+            Moderation.ModerationService.CallEvent(
+                Context.ModAction(ModActionType.Purge)
+                    .WithCount(messages.Count - 1)
             );
         }, false);
     }

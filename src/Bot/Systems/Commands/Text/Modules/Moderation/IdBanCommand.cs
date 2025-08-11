@@ -11,8 +11,7 @@ public sealed partial class ModerationModule
         string reason = null)
     {
         await Context.Guild.AddBanAsync(user, 0, GetReason("Banned", Context.User, reason));
-        return Ok($"Successfully banned **{user}** from this guild.", Context.ModAction
-            .WithActionType(ModActionType.IdBan)
+        return Ok($"Successfully banned **{user}** from this guild.", Context.ModAction(ModActionType.IdBan)
             .WithTarget(user)
             .WithReason(reason)
         );

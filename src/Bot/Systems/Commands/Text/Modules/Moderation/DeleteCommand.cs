@@ -24,10 +24,7 @@ public sealed partial class ModerationModule
                 timeout: 3.Seconds());
             await Context.Message.TryDeleteAsync();
             
-            ModerationService.CallEvent(Context.ModAction
-                .WithActionType(ModActionType.Delete)
-                .WithTarget(messageId)
-            );
+            ModerationService.CallEvent(Context.ModAction(ModActionType.Delete).WithTarget(messageId));
         });
     }
 }

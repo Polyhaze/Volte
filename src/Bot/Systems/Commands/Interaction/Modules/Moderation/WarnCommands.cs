@@ -13,10 +13,10 @@ public partial class InteractionModerationModule
     {
         await Db.WarnAsync(Context.User, member, reason);
         
-        return Ok($"Successfully warned **{member}** for **{reason}**.", ModAction
-            .WithActionType(ModActionType.Warn)
-            .WithTarget(member)
-            .WithReason(reason)
+        return Ok($"Successfully warned **{member}** for **{reason}**.", 
+            ModAction(ModActionType.Warn)
+                .WithTarget(member)
+                .WithReason(reason)
         );
     }
     
@@ -37,9 +37,8 @@ public partial class InteractionModerationModule
         if (!await member.TrySendMessageAsync(embed: e.Build()))
             Warn(LogSource.Volte, $"encountered a 403 when trying to message {member}!");
 
-        return Ok($"Cleared **{warnCount}** warnings for **{member}**.", ModAction
-            .WithActionType(ModActionType.ClearWarns)
-            .WithTarget(member)
+        return Ok($"Cleared **{warnCount}** warnings for **{member}**.", 
+            ModAction(ModActionType.ClearWarns).WithTarget(member)
         );
     }
 }
