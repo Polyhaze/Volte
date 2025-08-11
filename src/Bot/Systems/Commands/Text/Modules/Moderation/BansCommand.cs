@@ -8,13 +8,14 @@ public sealed partial class ModerationModule
     [Description("Shows all bans in this guild.")]
     public async Task<ActionResult> BansAsync()
     {
-        var banList = (await Context.Guild.GetBansAsync().FlattenAsync()).ToList();
+        var banPages = await Context.Guild.GetBansAsync().ToListAsync();
+        var allBans = banPages.SelectMany(x => x).ToList();
 
-        if (banList.Count > 0)
+        if (allBans.Count > 0)
             return Ok(
                 new PaginatedMessage.Builder()
                     .WithTitle($"Bans in {Context.Guild.Name}")
-                    .WithPages(banList.Select(static b => $"**{b.User}**: {Format.Code(b.Reason ?? "No reason provided.")}"))
+                    .WithPages(allBans.Select(static b => $"**{b.User}**: {Format.Code(b.Reason ?? "No reason provided.")}"))
                     .SplitPages(25)
             );
         
