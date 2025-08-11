@@ -8,7 +8,7 @@ public partial class ModerationModule
     [Command("Pirate", "NoSupport")]
     [Description("Warns the target user for Rule 4, gives them the No Support role, and, if they have it, takes away Verified Switch Owner.")]
     [RequireSpecificGuild(1294443224030511104)]
-    public async Task<ActionResult> PirateAsync([Description("The target user.")] SocketGuildUser member)
+    public async Task<ActionResult> PirateAsync([CheckHierarchy, EnsureNotSelf, Description("The target user.")] SocketGuildUser member)
     {
         await member.WarnAsync(Context, "Rule #4");
         if (member.HasRole(VerifiedSwitchOwnerRoleId))
