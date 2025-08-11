@@ -4,7 +4,8 @@ public sealed partial class ModerationModule
 {
     [Command("IdBan")]
     [Description("Bans a user based on their ID.")]
-    public async Task<ActionResult> IdBanAsync([Description("The ID of the user to ban.")]
+    public async Task<ActionResult> IdBanAsync(
+        [CheckHierarchy, EnsureNotSelf, Description("The ID of the user to ban.")]
         RestUser user,
         [Remainder, Description("The reason for the ban.")]
         string reason = null)
