@@ -23,11 +23,10 @@ public partial class ModerationModule
         }
 
         await Context.Guild.AddBanAsync(user, 7, reason);
-        return Ok(message, _ =>
-            ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
-                .WithActionType(ModActionType.Ban)
-                .WithTarget(user)
-                .WithReason(reason))
+        return Ok(message, Context.ModAction
+            .WithActionType(ModActionType.Ban)
+            .WithTarget(user)
+            .WithReason(reason)
         );
     }
 }
