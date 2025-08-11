@@ -5,7 +5,7 @@ public class EnsureNotSelfAttribute : ParameterCheckAttribute
 {
     public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
     {
-        var u = argument.Cast<SocketGuildUser>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(SocketGuildUser)}.");
+        var u = argument.Cast<IUser>() ?? throw new ArgumentException($"Cannot use the CheckHierarchy attribute on a type that isn't {typeof(IUser)}.");
         var ctx = context.Cast<VolteContext>();
 
         return ctx.User.Id != u.Id
