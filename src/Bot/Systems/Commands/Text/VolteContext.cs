@@ -135,9 +135,12 @@ public sealed class VolteContext : CommandContext, IStarscriptObject
             db.Save(GuildData);
     }
 
-    public StringSegment RunStarscript(string source) => VolteStarscript.Run(source, this);
+    public StringSegment RunStarscript(string source) => Guild.Run(source, this);
     public StringSegment RunStarscriptExpression(string expression) 
         => RunStarscript($"{{{expression.Replace("{", string.Empty).Replace("}", string.Empty)}}}");
+    
+    public StringSegment RunStarscriptMath(string expression) 
+        => VolteStarscript.CompileExpression(expression, Guild).Execute(VolteStarscript.MathHypervisor);
 
     public ValueMap ToStarscript() => new ValueMap()
         .Set("message", StarscriptHelper.Wrap(Message))

@@ -56,7 +56,7 @@ public class UserFilterEntry
 
         try
         {
-            using (var script = Starscript.Compile())
+            using (var script = Starscript.Compile(guild))
             {
                 returnVal = VolteStarscript.Hypervisor.Run(script, StarscriptHelper.Wrap(user));
             }

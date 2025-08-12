@@ -1,5 +1,4 @@
 ﻿using Starscript;
-using Volte.Systems.Starscript;
 
 namespace Volte.Systems.Commands.Text.Modules;
 
@@ -11,12 +10,12 @@ public sealed partial class UtilityModule
     {
         try
         {
-            var expr = expression.Replace("{", string.Empty).Replace("}", string.Empty);
-            
-            var result = VolteStarscript.RunExpression(expr);
+            expression = expression.Replace("{", string.Empty).Replace("}", string.Empty);
+
+            var result = Context.RunStarscriptMath(expression);
 
             return Ok(Context.CreateEmbedBuilder()
-                .AddField("Input", Format.Code(expr))
+                .AddField("Input", Format.Code(expression))
                 .AddField("Output", Format.Code(result.ToString())));
         }
         catch (ParseException pe)
