@@ -26,6 +26,12 @@ public abstract class VolteModule : ModuleBase<VolteContext>
         });
 
     protected static ActionResult Ok(
+        Action<StringBuilder> textBuilder,
+        ModActionEventArgs modAction,
+        bool shouldEmbed = true)
+        => Ok(String(textBuilder), modAction, shouldEmbed);
+
+    protected static ActionResult Ok(
         AsyncFunction logic, 
         bool awaitLogic = true) 
         => new OkResult(logic, awaitLogic);

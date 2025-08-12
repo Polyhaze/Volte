@@ -35,12 +35,16 @@ public partial class ModerationModule
 
         try
         {
-            await member.BanAsync(7, GetReason("Banned", Context.User, "Piracy"));
-            return Ok($"Successfully banned **{member}** from this guild.", _ =>
-                ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
-                    .WithActionType(ModActionType.Ban)
-                    .WithTarget(member)
-                    .WithReason("Piracy"))
+            await Context.Guild.AddBanAsync(user, 7, GetReason("Banned", Context.User, "Piracy"));
+            return Ok(sb =>
+                {
+                    sb.Append($"Successfully banned **{user}** from this guild.");
+
+                    if (sentReasonDm)
+                        sb.AppendLine().Append("They were also DMed a verbose explainer.");
+                }, Context.ModAction(ModActionType.Ban)
+                .WithTarget(user)
+                .WithReason("Piracy")
             );
         }
         catch
