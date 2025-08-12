@@ -226,11 +226,10 @@ public class UserFilterModule : VolteModule
             {
                 if (VolteStarscript.Hypervisor.Run(script, StarscriptHelper.Wrap(user)).GetBooleanValue())
                 {
+                    Debug(LogSource.Service, $"{user} matched filter {entry.Id} in guild {Context.Guild.Id}");
+
                     if (await entry.ExecuteAsync(Context.Guild, user))
-                    {
-                        Debug(LogSource.Service, $"{user} matched filter {entry.Id} in guild {Context.Guild.Id}");
                         return true;
-                    }
                 }
             }
             catch (FormatException)
