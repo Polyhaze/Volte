@@ -30,6 +30,12 @@ public partial class ModerationModule
                     if (!(sentReasonDm = await member.TrySendMessageAsync(embed: tag.Value.AsContentEmbed(Context).Build())))
                         Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
                 }
+
+                if (sentReasonDm)
+                {
+                    tag.Value.Uses++;
+                    Db.Save(Context.GuildData);
+                }
             }
         }
 
