@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Volte.Entities;
+namespace Volte.Systems.Configuration;
 
 /// <summary>
 ///     Model that represents enabled/disabled features as defined in your config.

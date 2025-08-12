@@ -17,9 +17,16 @@ public static partial class Logger
 
     public static void Log(VolteLogEventArgs eventArgs)
     {
-        if (eventArgs.Severity is LogSeverity.Debug && !IsDebugLoggingEnabled)
-            return;
-        
+        switch (eventArgs.Severity)
+        {
+            case LogSeverity.Debug when !IsDebugLoggingEnabled:
+            case LogSeverity.Debug
+                when Config.IgnoredDebugLines.Length > 0 
+                     && eventArgs.Message is not null
+                     && eventArgs.Message.ContainsAnyIgnoreCase(Config.IgnoredDebugLines):
+                return;
+        }
+
         try
         {
             LogEventHandler.Call(eventArgs);

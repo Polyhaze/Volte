@@ -18,6 +18,7 @@ global using Discord.Rest;
 global using Discord;
 global using Humanizer;
 global using Volte.Systems.Commands.Text;
+global using Volte.Systems.Configuration;
 global using Volte.Entities;
 global using Volte.Services;
 global using System.Net.Http;
