@@ -51,19 +51,19 @@ public class UserFilterEntry
     public async Task<bool> HandleAsync(IGuild guild, IGuildUser user)
     {
         StringSegment returnVal = null;
-        
+
         try
         {
-            var script = Starscript.Compile();
-
-            returnVal = VolteStarscript.Hypervisor.Run(script, StarscriptHelper.Wrap(user));
+            using (var script = Starscript.Compile())
+            {
+                returnVal = VolteStarscript.Hypervisor.Run(script, StarscriptHelper.Wrap(user));
+            }
 
             if (returnVal.GetBooleanValue())
             {
-                if (await ExecuteAsync(guild, user))
-                {
-                    Debug(LogSource.Service, $"{user} matched filter {Id} in guild {user.Guild.Id}");
-                }
+                Debug(LogSource.Service, $"{user} matched filter {Id} in guild {user.Guild.Id}");
+
+                _ = await ExecuteAsync(guild, user);
             }
 
             return true;
@@ -118,8 +118,8 @@ public class UserFilterEntry
             case ActionType.Kick:
                 try
                 {
-                    await user.KickAsync(Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await user.KickAsync(Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
+                    Debug(LogSource.Service, $"Kicked {user} in guild {user.Guild.Id} because they matched filter {Id}");
                     return true;
                 }
                 catch (HttpException)
@@ -129,8 +129,8 @@ public class UserFilterEntry
             case ActionType.Ban:
                 try
                 {
-                    await guild.AddBanAsync(user.Id, 7, Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
+                    await guild.AddBanAsync(user.Id, 7, Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
+                    Debug(LogSource.Service, $"Banned {user} in guild {user.Guild.Id} because they matched filter {Id}");
                     return true;
                 }
                 catch (HttpException)
@@ -140,9 +140,8 @@ public class UserFilterEntry
             case ActionType.SoftBan:
                 try
                 {
-                    await guild.AddBanAsync(user.Id, 7, Reason,
-                        DiscordHelper.RequestOptions(x => x.AuditLogReason = $"Triggered user filter {Id}"));
-                    await guild.RemoveBanAsync(user.Id);
+                    await guild.AddBanAsync(user.Id, 7, Reason, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
+                    await guild.RemoveBanAsync(user.Id, new RequestOptions { AuditLogReason = $"Triggered user filter {Id}" });
                     Debug(LogSource.Service, $"Softbanned {user} in guild {user.Guild.Id} because they matched filter {Id}");
                     return true;
                 }
