@@ -24,8 +24,8 @@ public static partial class Logger
     }
 
     private static readonly string[] VolteAscii =
-        new Figlet().ToAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries);
-        
+        Figlet.GetAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+
     static Logger() => FilePath.Logs.Create();
         
     private static readonly Lock LogSync = new();
