@@ -24,6 +24,8 @@ public class UserFilterTable
     
     public async IAsyncEnumerable<uint> HandleAsync(IGuild guild, IGuildUser user)
     {
+        Debug(LogSource.Service, $"Running user filters on {user} in guild {user.Guild.Id}");
+        
         foreach (var entry in Entries)
         {
             if (!await entry.HandleAsync(guild, user))
@@ -64,6 +66,10 @@ public class UserFilterEntry
                 Debug(LogSource.Service, $"{user} matched filter {Id} in guild {user.Guild.Id}");
 
                 _ = await ExecuteAsync(guild, user);
+            }
+            else
+            {
+                Debug(LogSource.Service, $"{user} did not match filter {Id} in guild {user.Guild.Id}");
             }
 
             return true;
