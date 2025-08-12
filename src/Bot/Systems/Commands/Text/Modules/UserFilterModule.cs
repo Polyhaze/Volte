@@ -160,7 +160,7 @@ public class UserFilterModule : VolteModule
             {
                 try
                 {
-                    compiledEntries.Add((entry, entry.Starscript.Compile()));
+                    compiledEntries.Add((entry, entry.Starscript.Compile(Context.Guild)));
                 }
                 catch (ParseException)
                 {

@@ -16,12 +16,12 @@ public partial class InteractionUtilityModule
     {
         try
         {
-            var expr = expression.Replace("{", string.Empty).Replace("}", string.Empty);
+            expression = expression.Replace("{", string.Empty).Replace("}", string.Empty);
 
-            var result = VolteStarscript.RunExpression(expr);
+            var result = VolteStarscript.RunExpression(expression, Context.Guild);
 
             return Ok(Context.CreateEmbedBuilder()
-                    .AddField("Input", Format.Code(expr))
+                    .AddField("Input", Format.Code(expression))
                     .AddField("Output", Format.Code(result.ToString())),
                 ephemeral: !publicResult
             );

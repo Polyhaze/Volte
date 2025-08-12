@@ -38,7 +38,7 @@ public class WelcomeSettings
 
         try
         {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+            return user.Guild.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
         }
         catch
         {
@@ -59,7 +59,7 @@ public class WelcomeSettings
         
         try
         {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(guild, user)).ToString();
+            return guild.Run(msg, await StarscriptHelper.WrapAsync(guild, user)).ToString();
         }
         catch
         {
@@ -80,7 +80,7 @@ public class WelcomeSettings
         
         try
         {
-            return VolteStarscript.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
+            return user.Guild.Run(msg, await StarscriptHelper.WrapAsync(user.Guild, user)).ToString();
         }
         catch
         {

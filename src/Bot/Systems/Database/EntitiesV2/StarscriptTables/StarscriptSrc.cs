@@ -9,10 +9,10 @@ public class StarscriptSrc
 
     public string CodeInput { get; set; }
 
-    public Script Compile() =>
+    public Script Compile(IGuild guild) =>
         Type is StarscriptType.SingleExpression
-            ? VolteStarscript.CompileExpression(CodeInput)
-            : VolteStarscript.Compile(CodeInput);
+            ? VolteStarscript.CompileExpression(CodeInput, guild)
+            : VolteStarscript.Compile(CodeInput, guild);
 
     public override string ToString()
         => $"{{ Type: {Type}, Source: {CodeInput} }}";
