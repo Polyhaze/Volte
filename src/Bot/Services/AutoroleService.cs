@@ -13,6 +13,9 @@ public sealed class AutoroleService : VolteService
 
     public async Task ApplyRoleAsync(UserJoinedEventArgs args)
     {
+        if (!Config.EnabledFeatures.Autorole)
+            return;
+        
         var data = _db.GetData(args.Guild);
         var targetRole = args.Guild.GetRole(data.Settings.Autorole);
         if (targetRole is null)
