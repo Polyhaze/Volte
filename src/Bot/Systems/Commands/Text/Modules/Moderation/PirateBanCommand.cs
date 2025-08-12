@@ -6,35 +6,47 @@ public partial class ModerationModule
     [Description("Bans the user with a very long-winded message as to why piracy is not supported. Content is retrieved from the 'emulationisnotpiracy' tag.")]
     [RequireSpecificGuild(1294443224030511104)]
     public async Task<ActionResult> PirateBanAsync(
-        [CheckHierarchy, EnsureNotSelf, Description("The target user.")] SocketGuildUser member)
+        [CheckHierarchy, EnsureNotSelf, Description("The target user.")] RestUser user)
     {
-        var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **piracy**.");
+        bool sentReasonDm = false;
         
-        if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
-            Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
-
-        var tag = Context.GuildData.GetTagByNameOrAlias("emulationisnotpiracy");
-        if (tag.HasValue)
+        if (Context.Guild.GetUser(user.Id) is { } member)
         {
-            if (tag.Value.Response.Length <= 2000)
+            var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **piracy**.");
+        
+            if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
+                Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+
+            var tag = Context.GuildData.GetTagByNameOrAlias("emulationisnotpiracy");
+            if (tag.HasValue)
             {
-                if (!await member.TrySendMessageAsync(text: tag.Value.Response))
-                    Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
-            }
-            else
-            {
-                if (!await member.TrySendMessageAsync(embed: tag.Value.AsContentEmbed(Context).Build()))
-                    Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+                if (tag.Value.Response.Length <= 2000)
+                {
+                    if (!(sentReasonDm = await member.TrySendMessageAsync(text: tag.Value.Response)))
+                        Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+                }
+                else
+                {
+                    if (!(sentReasonDm = await member.TrySendMessageAsync(embed: tag.Value.AsContentEmbed(Context).Build())))
+                        Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
+                }
             }
         }
 
         try
         {
-            await member.BanAsync(7, GetReason("Banned", Context.User, "Piracy"));
-            return Ok($"Successfully banned **{member}** from this guild.", _ =>
+            await Context.Guild.AddBanAsync(user, 7, GetReason("Banned", Context.User, "Piracy"));
+            return Ok(sb =>
+                {
+                    sb.Append($"Successfully banned **{user}** from this guild.");
+
+                    if (sentReasonDm)
+                        sb.AppendLine()
+                            .Append("They were also DMed a verbose explainer.");
+                }, _ =>
                 ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
                     .WithActionType(ModActionType.Ban)
-                    .WithTarget(member)
+                    .WithTarget(user)
                     .WithReason("Piracy"))
             );
         }
