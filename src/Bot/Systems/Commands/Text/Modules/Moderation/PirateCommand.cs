@@ -31,10 +31,10 @@ public partial class ModerationModule
         if (!member.HasRole(pirateRole))
             await member.AddRoleAsync(pirateRole);
 
-        return Ok($"Successfully warned **{member}** for piracy, and gave them <@&{pirateRole.Raw}>.",
-            _ => ModerationService.OnModActionCompleteAsync(ModActionEventArgs.InContext(Context)
-                .WithActionType(ModActionType.Warn)
+        return Ok($"Successfully warned **{member}** for piracy, and gave them <@&{pirateRole.Raw}>.", 
+            Context.ModAction(ModActionType.Warn)
                 .WithTarget(member)
-                .WithReason(Context.Guild.Id is 1294443224030511104 ? "#rules #4" : "Piracy")));
+                .WithReason(Context.Guild.Id is 1294443224030511104 ? "#rules #4" : "Piracy")
+            );
     }
 }
