@@ -4,7 +4,7 @@ public partial class ModerationModule
 {
     [Command("PirateBan", "PBan")]
     [Description("Bans the user with a very long-winded message as to why piracy is not supported. Content is retrieved from the 'emulationisnotpiracy' tag.")]
-    [RequireSpecificGuild(1294443224030511104)]
+    [RequireSpecificGuild([1294443224030511104, 1325735818714943498])]
     public async Task<ActionResult> PirateBanAsync(
         [CheckHierarchy, EnsureNotSelf, Description("The target user.")] RestUser user)
     {

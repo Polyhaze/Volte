@@ -47,7 +47,7 @@ public static class TextCommandHelper
         return command.Checks
                    .TryGetFirst(x => x is RequireSpecificGuildAttribute, out var attr)
                && attr is RequireSpecificGuildAttribute rsga
-               && rsga.GuildId == id;
+               && rsga.GuildIds.Contains(id);
     }
 
     public static async ValueTask<EmbedBuilder> CreateCommandEmbedAsync(Command command, VolteContext ctx)
