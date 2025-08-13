@@ -80,7 +80,7 @@ public readonly record struct Snowflake(ulong Raw) : IComparable<Snowflake>, ICo
                 case JsonTokenType.Number:
                     return new Snowflake(reader.GetUInt64());
                 default:
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Snowflake JSON value is expected to be a datetime/integer string or a raw integer. Prefer raw integers.");
             }
         }
 
