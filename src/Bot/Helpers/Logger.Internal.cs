@@ -60,32 +60,32 @@ public static partial class Logger
             Error = e,
             Invocation = caller
         });
+    
+    private static StringBuilder _logFileBuilder = new();
 
     private static void Execute(LogSeverity s, LogSource src, string message, Exception e, InvocationInfo caller)
     {
-        var content = new StringBuilder();
-
         if (IsDebugLoggingEnabled && caller.IsInitialized)
         {
             caller.ToString().IfPresent(debugInfoContent =>
             {
                 // ReSharper disable once AccessToModifiedClosure
-                Append(debugInfoContent, Color.Aquamarine, ref content);
-                Append(" |>  ", Color.Goldenrod, ref content);
+                Append(debugInfoContent, Color.Aquamarine, ref _logFileBuilder);
+                Append(" |>  ", Color.Goldenrod, ref _logFileBuilder);
             });
         }
         
         var (color, value) = VerifySeverity(s);
         Append($"{value}:".P(), color);
         var dt = DateTime.Now.ToLocalTime();
-        content.Append($"[{dt.FormatDate()} | {dt.FormatFullTime()}] {value} -> ");
+        _logFileBuilder.Append($"[{dt.FormatDate()} | {dt.FormatFullTime()}] {value} - ");
 
         (color, value) = VerifySource(src);
         Append($"[{value}]".P(), color);
-        content.Append(string.Intern($"{value} -> "));
+        _logFileBuilder.Append(string.Intern($"{value} -> "));
 
         if (!message.IsNullOrWhitespace())
-            Append(message, Color.White, ref content);
+            Append(message, Color.White, ref _logFileBuilder);
 
         if (e != null)
         {
@@ -93,21 +93,23 @@ public static partial class Logger
                 scope.AddBreadcrumb("This exception might not have been thrown, and may not be important; it is merely being logged.")
             );
             
-            Append(errorString(), Color.IndianRed, ref content);
+            Append(errorString(), Color.IndianRed, ref _logFileBuilder);
 
             string errorString()
                 => Environment.NewLine + (e.Message.IsNullOrEmpty() ? "No message provided" : e.Message) +
                    Environment.NewLine + e.StackTrace;
         }
 
-        if (Environment.NewLine != content[^1].ToString())
+        if (Environment.NewLine != _logFileBuilder[^1].ToString())
         {
             Console.Write(Environment.NewLine);
-            content.AppendLine();
+            _logFileBuilder.AppendLine();
         }
-            
+
         if (Config.EnabledFeatures?.LogToFile ?? false)
-            GetLogFilePath(DateTime.Now).AppendAllText(content.ToString());
+            GetLogFilePath(dt).AppendAllText(_logFileBuilder.ToString());
+
+        _logFileBuilder.Length = 0;
     }
 
     public static FilePath GetLogFilePath(DateTime date) 
@@ -129,8 +131,7 @@ public static partial class Logger
     private static (Color Color, string Source) VerifySource(LogSource source) =>
         source switch
         {
-            LogSource.Discord => (Color.RoyalBlue, "DISCORD"),
-            LogSource.Gateway => (Color.RoyalBlue, "DISCORD"),
+            LogSource.Discord or LogSource.Gateway => (Color.RoyalBlue, "DISCORD"),
             LogSource.Volte => (Color.LawnGreen, "CORE"),
             LogSource.Service => (Color.Gold, "SERVICE"),
             LogSource.Module => (Color.LimeGreen, "MODULE"),
