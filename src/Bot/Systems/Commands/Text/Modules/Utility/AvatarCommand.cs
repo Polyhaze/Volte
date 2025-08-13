@@ -15,7 +15,7 @@ public sealed partial class UtilityModule
             .WithImageUrl(user.GetEffectiveAvatarUrl()));
         
         string formatAvatarSizesToUrls(params ushort[] sizes) => 
-            sizes.Select(x => $"{Format.Url(x.ToString(), user.GetEffectiveAvatarUrl(size: x))} ")
+            sizes.Select(x => $" {Format.Url(x.ToString(), user.GetEffectiveAvatarUrl(size: x))} ")
                 .JoinToString('|').Trim();
     }
 }
