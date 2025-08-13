@@ -32,7 +32,10 @@ public struct AppStatusEventArgs
         TimeSpan? statusExpiresAfter = null,
         LogSeverity? severity = null
     )
-        => ChangeRequestedHandler.Call(new AppStatusEventArgs
+    {
+        if (VolteBot.IsHeadless) return;
+
+        ChangeRequestedHandler.Call(new AppStatusEventArgs
         {
             Status = status,
             Icon = icon,
@@ -40,4 +43,5 @@ public struct AppStatusEventArgs
             StatusExpiresAfter = statusExpiresAfter,
             Severity = severity
         });
+    }
 }
