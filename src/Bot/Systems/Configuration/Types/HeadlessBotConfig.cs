@@ -14,7 +14,7 @@ public struct HeadlessBotConfig : IVolteConfig
     public string CommandPrefix { get; set; }
 
     [JsonPropertyName("bot_owner")]
-    public ulong Owner { get; set; }
+    public Snowflake Owner { get; set; }
 
     [JsonPropertyName("status_game")]
     public string Game { get; set; }
@@ -38,7 +38,7 @@ public struct HeadlessBotConfig : IVolteConfig
     public bool LogAllCommands { get; set; }
 
     [JsonPropertyName("blacklisted_guild_owners")]
-    public HashSet<ulong> BlacklistedGuildOwners { get; set; }
+    public HashSet<Snowflake> BlacklistedGuildOwners { get; set; }
 
     [JsonPropertyName("enabled_features")]
     public EnabledFeatures EnabledFeatures { get; set; }

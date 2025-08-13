@@ -12,14 +12,17 @@ public static class Config
     public static readonly FilePath Path = FilePath.Data / "volte.json";
 
     private static JsonSerializerOptions CreateSerializerOptions(bool writeIndented)
-        => new()
+        => new JsonSerializerOptions
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = writeIndented,
             PropertyNameCaseInsensitive = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             AllowTrailingCommas = true
-        };
+        }.Apply(opt =>
+        {
+            opt.Converters.Add(new Snowflake.JsonConverter());
+        });
     
 
     private static bool IsValidConfig() 
@@ -135,7 +138,7 @@ public static class Config
 
     public static string SentryDsn => _configuration.SentryDsn;
 
-    public static ulong Owner => _configuration.Owner;
+    public static Snowflake Owner => _configuration.Owner;
 
     public static string Game => _configuration.Game;
 
@@ -153,7 +156,7 @@ public static class Config
 
     public static bool LogAllCommands => _configuration.LogAllCommands;
 
-    public static HashSet<ulong> BlacklistedOwners => _configuration.BlacklistedGuildOwners;
+    public static HashSet<Snowflake> BlacklistedOwners => _configuration.BlacklistedGuildOwners;
 
     public static EnabledFeatures EnabledFeatures => _configuration?.EnabledFeatures;
 }

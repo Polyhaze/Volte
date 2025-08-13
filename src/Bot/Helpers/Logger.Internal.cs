@@ -45,12 +45,12 @@ public static partial class Logger
     internal static void LogFileRestartNotice()
     {
         if (!VolteBot.IsHeadless || _logFileNoticePrinted || Config.EnabledFeatures?.LogToFile is not true) return;
-            
+
         GetLogFilePath(DateTime.Now).AppendAllText($"{Side}RESTARTING{Side}\n");
-            
+
         _logFileNoticePrinted = true;
     }
-    
+
     public static void Log(LogSeverity s, LogSource from, string message, Exception e = null, InvocationInfo caller = default) =>
         Log(new VolteLogEventArgs
         {
@@ -60,7 +60,7 @@ public static partial class Logger
             Error = e,
             Invocation = caller
         });
-    
+
     private static StringBuilder _logFileBuilder = new();
 
     private static void Execute(LogSeverity s, LogSource src, string message, Exception e, InvocationInfo caller)
