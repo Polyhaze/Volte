@@ -1,13 +1,13 @@
 ﻿namespace Volte.Systems.Commands.Text;
 
-public class RequireSpecificGuildAttribute(ulong guildId) : CheckAttribute
+public class RequireSpecificGuildAttribute(ulong[] guildIds) : CheckAttribute
 {
-    public Snowflake GuildId => guildId;
+    public ulong[] GuildIds => guildIds;
     
     public override ValueTask<CheckResult> CheckAsync(CommandContext context)
     {
         var ctx = context.Cast<VolteContext>();
-        if (ctx.Guild.Id == guildId) 
+        if (GuildIds.Contains(ctx.Guild.Id))
             return CheckResult.Successful;
             
         return CheckResult.Failed("Insufficient permission.");
