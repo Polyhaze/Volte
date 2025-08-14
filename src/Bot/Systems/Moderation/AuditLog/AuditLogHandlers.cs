@@ -45,32 +45,17 @@ public static partial class AuditLogHandlers
 
         // must take a single argument; 
         if (handlerParams.Length is not 1)
-        {
-            throw new InvalidOperationException(
-                $"Invalid argument count for found handler {arg.Method.Name}; " +
-                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
-                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
-        }
+            throw err("Invalid argument count");
 
         var contextParam = handlerParams[0];
 
         // that argument must be an implementor of IAuditLogContext (aka, AuditLogContext<TAuditLogData>)
         if (!contextParam.ParameterType.IsAssignableTo(typeof(IAuditLogContext)))
-        {
-            throw new InvalidOperationException(
-                $"Invalid argument type for found handler {arg.Method.Name}; " +
-                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
-                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
-        }
+            throw err("Invalid argument type");
 
         // the type argument to the AuditLogContext must be the same as passed to the attribute.
         if (contextParam.ParameterType.GenericTypeArguments[0] != arg.Attr.DataType)
-        {
-            throw new InvalidOperationException(
-                $"Invalid argument type generic type argument for found handler {arg.Method.Name}; " +
-                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
-                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
-        }
+            throw err("Invalid argument type generic type argument");
 
         Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
 
@@ -108,6 +93,12 @@ public static partial class AuditLogHandlers
 
             return sb.ToString();
         }
+        
+        InvalidOperationException err(string message) => new(
+            $"{message} for found handler {arg.Method.Name}; " +
+            $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
+            $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'"
+        );
     }
     
     private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => 
