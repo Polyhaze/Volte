@@ -148,5 +148,6 @@ public partial class SettingsModule : VolteModule
     public WelcomeService WelcomeService { get; set; }
 
     [Command, DummyCommand, Description("The set of commands used to modify how Volte functions in your guild.")]
-    public Task<ActionResult> BaseAsync() => None();
+    public async Task<ActionResult> BaseAsync() 
+        => Ok(await TextCommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 }
