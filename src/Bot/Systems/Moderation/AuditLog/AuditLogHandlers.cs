@@ -40,8 +40,74 @@ public static partial class AuditLogHandlers
     private static void Map((MethodInfo Method, AuditLogHandlerAttribute Attr) arg)
     {
         if (arg.Attr is null) return;
-        
+
+        var handlerParams = arg.Method.GetParameters();
+
+        // must take a single argument; 
+        if (handlerParams.Length is not 1)
+        {
+            throw new InvalidOperationException(
+                $"Invalid argument count for found handler {arg.Method.Name}; " +
+                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
+                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
+        }
+
+        var contextParam = handlerParams[0];
+
+        // that argument must be an implementor of IAuditLogContext (aka, AuditLogContext<TAuditLogData>)
+        if (!contextParam.ParameterType.IsAssignableTo(typeof(IAuditLogContext)))
+        {
+            throw new InvalidOperationException(
+                $"Invalid argument type for found handler {arg.Method.Name}; " +
+                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
+                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
+        }
+
+        // the type argument to the AuditLogContext must be the same as passed to the attribute.
+        if (contextParam.ParameterType.GenericTypeArguments[0] != arg.Attr.DataType)
+        {
+            throw new InvalidOperationException(
+                $"Invalid argument type generic type argument for found handler {arg.Method.Name}; " +
+                $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
+                $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'");
+        }
+
         Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
+
+        return;
+
+        static string formatExpectedSignature(MethodInfo method, Type argType)
+        {
+            var sb = new StringBuilder();
+            sb.Append(method.ReturnType.AsPrettyString());
+            sb.Append(' ');
+            sb.Append(method.Name);
+            sb.Append('(');
+            sb.Append(argType.AsPrettyString());
+            sb.Append(')');
+
+            return sb.ToString();
+        }
+
+        static string formatEncounteredSignature(MethodInfo method, params ParameterInfo[] infos)
+        {
+            var sb = new StringBuilder();
+            sb.Append(method.ReturnType.AsPrettyString());
+            sb.Append(' ');
+            sb.Append(method.Name);
+            sb.Append('(');
+
+            sb.Append(infos
+                .Select(x => x.Name is null 
+                    ? x.ParameterType.AsPrettyString() 
+                    : $"{x.ParameterType.AsPrettyString()} {x.Name}")
+                .JoinToString(", ")
+            );
+            
+            sb.Append(')');
+
+            return sb.ToString();
+        }
     }
     
     private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => 
