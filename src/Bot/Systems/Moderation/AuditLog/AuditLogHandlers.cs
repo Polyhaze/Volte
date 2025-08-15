@@ -1,6 +1,4 @@
-﻿using Volte.Systems.Database;
-
-namespace Volte.Systems.Moderation;
+﻿namespace Volte.Systems.Moderation;
 
 public static partial class AuditLogHandlers
 {
@@ -129,44 +127,4 @@ public static partial class AuditLogHandlers
                     return Task.FromException(e);
                 }
             });
-}
-
-[AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public sealed class AuditLogHandlerAttribute<TAuditLogData> : AuditLogHandlerAttribute where TAuditLogData : class, ISocketAuditLogData
-{
-    public AuditLogHandlerAttribute(ActionType actionType) : base(actionType, typeof(TAuditLogData))
-    {
-    }
-}
-
-[AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class AuditLogHandlerAttribute : Attribute
-{
-    private static readonly SafeDictionary<ActionType, ConstructorInfo> ActionsToContextCtor = new();
-
-    public ActionType Action { get; }
-    public Type DataType { get; }
-
-    public AuditLogHandlerAttribute(ActionType action, Type dataType)
-    {
-        Action = action;
-        DataType = dataType;
-    }
-
-    public ConstructorInfo FindConstructor()
-    {
-        if (ActionsToContextCtor[Action] is not { } contextCtor)
-        {
-            var contextType = AuditLogHandlers.AuditLogContextType.MakeGenericType(DataType);
-
-            contextCtor = ActionsToContextCtor[Action]
-                = contextType.GetConstructor([typeof(AuditLogCreatedEventArgs), typeof(DatabaseService)]) 
-                  ?? throw new InvalidOperationException($"AuditLogContext constructor taking ({nameof(AuditLogCreatedEventArgs)}, {nameof(DatabaseService)}) not found");
-        }
-
-        return contextCtor;
-    }
-    
-    public IAuditLogContext CreateContext(AuditLogCreatedEventArgs args) 
-        => IAuditLogContext.Create(FindConstructor(), args);
 }
