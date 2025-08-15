@@ -74,7 +74,6 @@ public class VolteBot
 
         ExecuteBackgroundAsync(static async () => await Services.Get<AddonService>().InitAsync());
         Services.Get<ReminderService>().Initialize();
-        Services.Get<DatabaseService>().Initialize();
         AuditLogHandlers.Initialize();
         
         ExecuteBackground(() => EvalHelper.GetImports()); // takes a few seconds the first time it's called, let's do this on startup on a separate thread instead of on first eval invocation.
