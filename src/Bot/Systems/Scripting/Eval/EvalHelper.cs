@@ -22,6 +22,7 @@ public static partial class EvalHelper
             .SelectMany(x => x.ExportedTypes)
             .Select(x => x.Namespace)
             .Where(x => x != null)
+            .Where(x => !x.ContainsIgnoreCase("Newtonsoft"))
             .Distinct()
             .ToArray();
 
