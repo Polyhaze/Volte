@@ -10,15 +10,14 @@ public sealed class AuditLogHandlerAttribute<TAuditLogData> : AuditLogHandlerAtt
     }
 }
 
-[AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class AuditLogHandlerAttribute : Attribute
+public abstract class AuditLogHandlerAttribute : Attribute
 {
     private static readonly SafeDictionary<ActionType, ConstructorInfo> ActionsToContextCtor = new();
 
     public ActionType Action { get; }
     public Type DataType { get; }
 
-    public AuditLogHandlerAttribute(ActionType action, Type dataType)
+    protected AuditLogHandlerAttribute(ActionType action, Type dataType)
     {
         Action = action;
         DataType = dataType;
