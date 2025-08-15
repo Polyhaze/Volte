@@ -61,13 +61,6 @@ public class AuditLogArchiveMessageBuilder : CustomEmbedBuilder<AuditLogArchiveM
         return base.WithTimestamp(dateTimeOffset);
     }
 
-    public override AuditLogArchiveMessageBuilder WithAuthor(EmbedAuthorBuilder author)
-    {
-        IsModified = true;
-        
-        return base.WithAuthor(author);
-    }
-
     public override AuditLogArchiveMessageBuilder WithFooter(EmbedFooterBuilder footer)
     {
         IsModified = true;
