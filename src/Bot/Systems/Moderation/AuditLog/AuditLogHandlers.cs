@@ -102,19 +102,19 @@ public static partial class AuditLogHandlers
     }
     
     private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => args => 
-        IAuditLogContext.Create(AuditLogHandlerAttribute.FindConstructorForDataType(attribute), args)
+        attribute.CreateContext(args)
             .Process(mi, (method, ctx) =>
             {
                 try
                 {
+                    Debug(LogSource.Service, $"Invoking {method.ReturnType.AsPrettyString()}-returning registered delegate for {ctx.Entry.Action}");
+
                     if (method.ReturnType == typeof(void))
                     {
-                        Debug(LogSource.Service, $"Invoking void-returning registered delegate for {ctx.Entry.Action}");
                         method.Invoke(null, [ctx]);
                         return Task.CompletedTask;
                     }
 
-                    Debug(LogSource.Service, $"Invoking object-returning registered delegate for {ctx.Entry.Action}");
                     var returned = method.Invoke(null, [ctx]);
 
                     return returned switch
@@ -143,7 +143,7 @@ public sealed class AuditLogHandlerAttribute<TAuditLogData> : AuditLogHandlerAtt
 public class AuditLogHandlerAttribute : Attribute
 {
     private static readonly SafeDictionary<ActionType, ConstructorInfo> ActionsToContextCtor = new();
-    
+
     public ActionType Action { get; }
     public Type DataType { get; }
 
@@ -153,17 +153,20 @@ public class AuditLogHandlerAttribute : Attribute
         DataType = dataType;
     }
 
-    public static ConstructorInfo FindConstructorForDataType(AuditLogHandlerAttribute attr)
+    public ConstructorInfo FindConstructor()
     {
-        if (ActionsToContextCtor[attr.Action] is not { } contextCtor)
+        if (ActionsToContextCtor[Action] is not { } contextCtor)
         {
-            var contextType = AuditLogHandlers.AuditLogContextType.MakeGenericType(attr.DataType);
+            var contextType = AuditLogHandlers.AuditLogContextType.MakeGenericType(DataType);
 
-            contextCtor = ActionsToContextCtor[attr.Action] 
+            contextCtor = ActionsToContextCtor[Action]
                 = contextType.GetConstructor([typeof(AuditLogCreatedEventArgs), typeof(DatabaseService)]) 
                   ?? throw new InvalidOperationException($"AuditLogContext constructor taking ({nameof(AuditLogCreatedEventArgs)}, {nameof(DatabaseService)}) not found");
         }
 
         return contextCtor;
     }
+    
+    public IAuditLogContext CreateContext(AuditLogCreatedEventArgs args) 
+        => IAuditLogContext.Create(FindConstructor(), args);
 }
