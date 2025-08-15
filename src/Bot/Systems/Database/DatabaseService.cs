@@ -21,8 +21,8 @@ public sealed class DatabaseService : VolteService, IDisposable
     public DatabaseService(DiscordSocketClient discordSocketClient)
     {
         BsonMapper.Global.RegisterType(
-            serialize: it => it.Raw,
-            deserialize: bVal => new Snowflake((ulong)bVal.AsInt64));
+            serialize: it => it.Raw.ToString(),
+            deserialize: bVal => new Snowflake(ulong.Parse(bVal.AsString)));
         
         _client = discordSocketClient;
         _guildDataV2 = Database.GetCollection<GuildDataV2>("guildData");
