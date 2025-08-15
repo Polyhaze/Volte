@@ -16,12 +16,12 @@ public interface IAuditLogContext
     public AuditLogArchiveMessageBuilder Message { get; }
 
     [ItemCanBeNull]
-    public async Task<IUserMessage> Process(Func<Task> handler)
+    public async Task<IUserMessage> Process(MethodInfo methodInfo, Func<MethodInfo, IAuditLogContext, Task> handler)
     {
         if (Channel is null || !GuildSettings.IsEnabled(Entry.Action))
             return null;
 
-        var handlerTask = handler();
+        var handlerTask = handler(methodInfo, this);
         await handlerTask
             .ContinueWith(task =>
             {

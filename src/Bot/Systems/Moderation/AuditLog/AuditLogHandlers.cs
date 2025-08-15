@@ -101,22 +101,19 @@ public static partial class AuditLogHandlers
         );
     }
     
-    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => 
-        args =>
-        {
-            var context = IAuditLogContext.Create(AuditLogHandlerAttribute.FindConstructorForDataType(attribute), args);
-
-            return context.Process(() =>
+    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => args => 
+        IAuditLogContext.Create(AuditLogHandlerAttribute.FindConstructorForDataType(attribute), args)
+            .Process(mi, (method, ctx) =>
             {
                 try
                 {
-                    if (mi.ReturnType == typeof(void))
+                    if (method.ReturnType == typeof(void))
                     {
-                        mi.Invoke(null, [context]);
+                        method.Invoke(null, [ctx]);
                         return Task.CompletedTask;
                     }
 
-                    var returned = mi.Invoke(null, [context]);
+                    var returned = method.Invoke(null, [ctx]);
 
                     return returned switch
                     {
@@ -129,7 +126,6 @@ public static partial class AuditLogHandlers
                     return Task.FromException(e);
                 }
             });
-        };
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
