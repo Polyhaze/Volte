@@ -7,12 +7,12 @@ namespace Volte.Systems.Moderation;
 public interface IAuditLogContext
 {
     public SocketTextChannel Channel { get; }
-    
+
     public AuditLogArchiveSettings GuildSettings { get; }
-    
+
     public SocketAuditLogEntry Entry { get; }
     public SocketGuild Guild { get; }
-    
+
     public AuditLogArchiveMessageBuilder Message { get; }
 
     [ItemCanBeNull]
@@ -20,23 +20,29 @@ public interface IAuditLogContext
     {
         if (Channel is null || !GuildSettings.IsEnabled(Entry.Action))
         {
-            Debug(LogSource.Service, "Audit log handler does not have a channel to post to or is of a disabled action type; aborting.");
+            Debug(LogSource.Service, $"Audit log handler does not have a channel to post to or is of a disabled action type ({Entry.Action}); aborting.");
             return null;
         }
 
+        var sw = Stopwatch.StartNew();
+
         var handlerTask = handler(methodInfo, this);
-        await handlerTask
-            .ContinueWith(task =>
-            {
-                if (task.Exception != null)
-                    throw task.Exception.GetBaseException();
-            });
+        await handlerTask.ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+                throw task.Exception.GetBaseException();
+        });
+
+        sw.Stop();
 
         if (!Message.IsModified)
         {
-            Debug(LogSource.Service, $"Audit log handler for {Entry.Action} did not configure the archive embed.");
+            Debug(LogSource.Service, 
+                $"Audit log handler for type {Entry.Action} (method name: {methodInfo.Name}, in type: {methodInfo.DeclaringType?.AsPrettyString() ?? "null"}) did not configure the archive embed.");
             return null;
         }
+
+        Debug(LogSource.Service, $"Audit log handler for type {Entry.Action} executed in {sw.ElapsedMilliseconds}ms.");
 
         return await Message.SendAsync();
     }
@@ -46,7 +52,7 @@ public interface IAuditLogContext
         if (ctor.DeclaringType?.IsAssignableFrom(typeof(IAuditLogContext)) ?? false)
             throw new InvalidOperationException($"provided constructor was not for an object implementing {nameof(IAuditLogContext)}");
 
-        return  ctor.Invoke([args, VolteBot.Services.Get<DatabaseService>()]).HardCast<IAuditLogContext>();
+        return ctor.Invoke([args, VolteBot.Services.Get<DatabaseService>()]).HardCast<IAuditLogContext>();
     }
 }
 
@@ -54,7 +60,7 @@ public class AuditLogContext<TAuditLogData> : IAuditLogContext where TAuditLogDa
 {
     public TAuditLogData Data { get; }
     public SocketTextChannel Channel { get; }
-    
+
     public AuditLogArchiveSettings GuildSettings { get; }
 
     private readonly AuditLogCreatedEventArgs _eventArgs;
@@ -64,9 +70,9 @@ public class AuditLogContext<TAuditLogData> : IAuditLogContext where TAuditLogDa
     private readonly Action<AuditLogContext<TAuditLogData>> _save;
 
     public void SaveGuildSettings() => _save(this);
-    
+
     public AuditLogArchiveMessageBuilder Message { get; }
-        
+
     public AuditLogContext(AuditLogCreatedEventArgs args, DatabaseService db)
     {
         _eventArgs = args;

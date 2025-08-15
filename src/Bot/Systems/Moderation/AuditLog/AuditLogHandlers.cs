@@ -28,11 +28,15 @@ public static partial class AuditLogHandlers
     {
         Delegates.Clear();
 
+        var sw = Stopwatch.StartNew();
+
         typeof(AuditLogHandlers).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
             .Select(x => (Method: x, Attr: x.GetCustomAttribute<AuditLogHandlerAttribute>()))
             .ForEach(Map);
-        
-        Info(LogSource.Service, $"Loaded {Delegates.Count} audit log handlers.");
+
+        sw.Stop();
+
+        Info(LogSource.Service, $"Loaded {Delegates.Count} audit log handlers in {sw.ElapsedMilliseconds}ms.");
     }
 
     private static void Map((MethodInfo Method, AuditLogHandlerAttribute Attr) arg)
