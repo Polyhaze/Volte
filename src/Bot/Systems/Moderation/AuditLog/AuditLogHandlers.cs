@@ -109,10 +109,12 @@ public static partial class AuditLogHandlers
                 {
                     if (method.ReturnType == typeof(void))
                     {
+                        Debug(LogSource.Service, $"Invoking void-returning registered delegate for {ctx.Entry.Action}");
                         method.Invoke(null, [ctx]);
                         return Task.CompletedTask;
                     }
 
+                    Debug(LogSource.Service, $"Invoking object-returning registered delegate for {ctx.Entry.Action}");
                     var returned = method.Invoke(null, [ctx]);
 
                     return returned switch
@@ -123,6 +125,7 @@ public static partial class AuditLogHandlers
                 }
                 catch (Exception e)
                 {
+                    Debug(LogSource.Service, $"Error of type {e.GetType().FullName} occurred in registered delegate for {ctx.Entry.Action}; returning faulted task to the caller");
                     return Task.FromException(e);
                 }
             });

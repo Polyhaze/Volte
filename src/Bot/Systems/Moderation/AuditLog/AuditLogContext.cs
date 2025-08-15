@@ -19,7 +19,10 @@ public interface IAuditLogContext
     public async Task<IUserMessage> Process(MethodInfo methodInfo, Func<MethodInfo, IAuditLogContext, Task> handler)
     {
         if (Channel is null || !GuildSettings.IsEnabled(Entry.Action))
+        {
+            Debug(LogSource.Service, "Audit log handler does not have a channel to post to or is of a disabled action type; aborting.");
             return null;
+        }
 
         var handlerTask = handler(methodInfo, this);
         await handlerTask
