@@ -32,6 +32,11 @@ public interface IAuditLogContext
                     throw task.Exception.GetBaseException();
             });
 
+        if (!Message.IsModified)
+        {
+            Debug(LogSource.Service, $"Audit log handler for {Entry.Action} did not configure the archive embed.");
+            return null;
+        }
 
         return await Message.SendAsync();
     }

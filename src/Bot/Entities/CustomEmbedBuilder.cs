@@ -24,7 +24,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithTitle(string title)
+    public new virtual TSelf WithTitle(string title)
     {
         Title = title;
         return (TSelf)this;
@@ -37,7 +37,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithDescription(string description)
+    public new virtual TSelf WithDescription(string description)
     {
         Description = description;
         return (TSelf)this;
@@ -63,8 +63,11 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public TSelf AppendDescription(string description)
+    public virtual TSelf AppendDescription(string description)
     {
+        if (string.IsNullOrEmpty(Description))
+            return WithDescription(description);
+
         Description += description;
         return (TSelf)this;
     }
@@ -76,8 +79,11 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public TSelf AppendDescriptionLine(string description)
+    public virtual TSelf AppendDescriptionLine(string description)
     {
+        if (string.IsNullOrEmpty(Description))
+            return WithDescription(description);
+        
         Description += description;
         Description += '\n';
         return (TSelf)this;
@@ -90,7 +96,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithUrl(string url)
+    public new virtual TSelf WithUrl(string url)
     {
         Url = url;
         return (TSelf)this;
@@ -103,7 +109,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithThumbnailUrl(string thumbnailUrl)
+    public new virtual TSelf WithThumbnailUrl(string thumbnailUrl)
     {
         ThumbnailUrl = thumbnailUrl;
         return (TSelf)this;
@@ -116,7 +122,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithImageUrl(string imageUrl)
+    public new virtual TSelf WithImageUrl(string imageUrl)
     {
         ImageUrl = imageUrl;
         return (TSelf)this;
@@ -137,7 +143,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithTimestamp(DateTimeOffset dateTimeOffset)
+    public new virtual TSelf WithTimestamp(DateTimeOffset dateTimeOffset)
     {
         Timestamp = dateTimeOffset;
         return (TSelf)this;
@@ -150,7 +156,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithColor(Color color)
+    public new virtual TSelf WithColor(Color color)
     {
         Color = color;
         return (TSelf)this;
@@ -190,7 +196,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithAuthor(EmbedAuthorBuilder author)
+    public new virtual TSelf WithAuthor(EmbedAuthorBuilder author)
     {
         Author = author;
         return (TSelf)this;
@@ -204,10 +210,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     ///     The current builder.
     /// </returns>
     public new TSelf WithAuthor(Action<EmbedAuthorBuilder> action)
-    {
-        Author = new EmbedAuthorBuilder().Apply(action);
-        return (TSelf)this;
-    }
+        => WithAuthor(new EmbedAuthorBuilder().Apply(action));
 
     /// <summary>
     ///     Sets the author field of an <see cref="Embed" /> with the provided name, icon URL, and URL.
@@ -218,16 +221,13 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithAuthor(string name, string iconUrl = null, string url = null)
-    {
-        Author = new EmbedAuthorBuilder
+    public new TSelf WithAuthor(string name, string iconUrl = null, string url = null) 
+        => WithAuthor(new EmbedAuthorBuilder
         {
             Name = name,
             IconUrl = iconUrl,
             Url = url
-        };
-        return (TSelf)this;
-    }
+        });
 
     /// <summary>
     ///     Sets the <see cref="EmbedFooterBuilder" /> of an <see cref="Embed"/>.
@@ -236,7 +236,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithFooter(EmbedFooterBuilder footer)
+    public new virtual TSelf WithFooter(EmbedFooterBuilder footer)
     {
         Footer = footer;
         return (TSelf)this;
@@ -250,10 +250,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     ///     The current builder.
     /// </returns>
     public new TSelf WithFooter(Action<EmbedFooterBuilder> action)
-    {
-        Footer = new EmbedFooterBuilder().Apply(action);
-        return (TSelf)this;
-    }
+        => WithFooter(new EmbedFooterBuilder().Apply(action));
 
     /// <summary>
     ///     Sets the footer field of an <see cref="Embed" /> with the provided name, icon URL.
@@ -263,15 +260,12 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf WithFooter(string text, string iconUrl = null)
-    {
-        Footer = new EmbedFooterBuilder
+    public new TSelf WithFooter(string text, string iconUrl = null) =>
+        WithFooter(new EmbedFooterBuilder
         {
             Text = text,
             IconUrl = iconUrl
-        };
-        return (TSelf)this;
-    }
+        });
 
     /// <summary>
     ///     Adds an <see cref="Embed" /> field with the provided name and value.
@@ -311,7 +305,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// <returns>
     ///     The current builder.
     /// </returns>
-    public new TSelf AddField(EmbedFieldBuilder field)
+    public new virtual TSelf AddField(EmbedFieldBuilder field)
     {
         if (Fields.Count >= MaxFieldCount)
         {
