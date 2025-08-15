@@ -3,7 +3,7 @@
 public class AuditLogArchiveMessageBuilder : CustomEmbedBuilder<AuditLogArchiveMessageBuilder>
 {
     private readonly SocketTextChannel _channel;
-    
+
     public bool IsModified { get; private set; }
 
     public AuditLogArchiveMessageBuilder(SocketUser causer, SocketTextChannel socketTextChannel)
@@ -18,7 +18,12 @@ public class AuditLogArchiveMessageBuilder : CustomEmbedBuilder<AuditLogArchiveM
     }
 
     public Task<IUserMessage> SendAsync() => SendToAsync(_channel);
-    
+
+    public override Embed Build() =>
+        !IsModified
+            ? throw new InvalidOperationException($"Cannot build an unmodified {nameof(AuditLogArchiveMessageBuilder)}") 
+            : base.Build();
+
     public override AuditLogArchiveMessageBuilder WithTitle(string title)
     {
         IsModified = true;
@@ -29,56 +34,56 @@ public class AuditLogArchiveMessageBuilder : CustomEmbedBuilder<AuditLogArchiveM
     public override AuditLogArchiveMessageBuilder WithDescription(string description)
     {
         IsModified = true;
-        
+
         return base.WithDescription(description);
     }
 
     public override AuditLogArchiveMessageBuilder WithUrl(string url)
     {
         IsModified = true;
-        
+
         return base.WithUrl(url);
     }
 
     public override AuditLogArchiveMessageBuilder WithThumbnailUrl(string thumbnailUrl)
     {
         IsModified = true;
-        
+
         return base.WithThumbnailUrl(thumbnailUrl);
     }
 
     public override AuditLogArchiveMessageBuilder WithImageUrl(string imageUrl)
     {
         IsModified = true;
-        
+
         return base.WithImageUrl(imageUrl);
     }
 
     public override AuditLogArchiveMessageBuilder WithTimestamp(DateTimeOffset dateTimeOffset)
     {
         IsModified = true;
-        
+
         return base.WithTimestamp(dateTimeOffset);
     }
 
     public override AuditLogArchiveMessageBuilder WithFooter(EmbedFooterBuilder footer)
     {
         IsModified = true;
-        
+
         return base.WithFooter(footer);
     }
 
     public override AuditLogArchiveMessageBuilder AddField(EmbedFieldBuilder field)
     {
         IsModified = true;
-        
+
         return base.AddField(field);
     }
 
     public override AuditLogArchiveMessageBuilder AppendDescription(string description)
     {
         IsModified = true;
-        
+
         return base.AppendDescription(description);
     }
 

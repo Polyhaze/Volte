@@ -17,6 +17,9 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
 
     private bool _isInInlineBlock;
 
+    public new virtual Embed Build() => base.Build();
+
+
     /// <summary>
     ///     Sets the title of an <see cref="Embed"/>.
     /// </summary>
