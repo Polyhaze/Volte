@@ -25,57 +25,11 @@ public sealed class DatabaseService : VolteService, IDisposable
             deserialize: bVal => new Snowflake((ulong)bVal.AsInt64));
         
         _client = discordSocketClient;
-        _guildData = Database.GetCollection<Entities.GuildData>("guilds");
         _guildDataV2 = Database.GetCollection<GuildDataV2>("guildData");
         _reminderData = Database.GetCollection<Reminder.Reminder>("reminders");
         _starboardData = Database.GetCollection<StarboardDbEntry>("starboard");
         _starboardData.EnsureIndex("composite_id",
             $"$.{nameof(StarboardDbEntry.GuildId)} + '_' + $.{nameof(StarboardDbEntry.Key)}");
-    }
-
-    public void Initialize()
-    {
-        if (Program.CommandLineArguments.ContainsKey("migrate"))
-            _ = Migrate();
-        else if (Program.CommandLineArguments.ContainsKey("hard-migrate"))
-            _ = Migrate(destroyV1: true);
-    }
-
-    public int Migrate(bool destroyV1 = false)
-    {
-        var v1 = _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
-
-        if (v1.None())
-        {
-            Info(LogSource.Service, "Guild data has already been migrated to V2.");
-            return 0;
-        }
-        
-        Info(LogSource.Service, $"Migrating {v1.Count} guild data entries...");
-
-        if (destroyV1)
-        {
-            var cleared = _guildData.ValueLock(() => _guildData.DeleteAll());
-            if (cleared > 0)
-                Info(LogSource.Service, $"Cleared {"existing guild data V1 entry".ToQuantity(cleared)}.");
-
-            Info(LogSource.Service, "Dropping 'guilds' database collection.");
-            Database.DropCollection("guilds");
-        }
-        
-        return _guildDataV2.ValueLock(() =>
-        {
-            var cleared = _guildDataV2.DeleteAll();
-            
-            if (cleared > 0)
-                Info(LogSource.Service, $"Cleared {"existing guild data V2 entry".ToQuantity(cleared)}.");
-            
-            var inserted = _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
-            
-            Info(LogSource.Service, $"Migrated {"guild data entry".ToQuantity(inserted)} to V2.");
-
-            return inserted;
-        });
     }
 
     public GuildDataV2 GetData(Snowflake id)
