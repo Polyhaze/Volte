@@ -33,6 +33,44 @@ public static partial class Extensions
         string rgb() => $"{color.R:X2}{color.G:X2}{color.B:X2}";
     }
     
+    public static string FormatSignatureString(this MethodInfo method)
+    {
+        var sb = new StringBuilder();
+        sb.Append(method.ReturnType.AsPrettyString());
+        sb.Append(' ');
+        sb.Append(method.Name);
+        sb.Append('(');
+
+        sb.Append(method.GetParameters()
+            .Select(x => x.Name is null 
+                ? x.ParameterType.AsPrettyString() 
+                : $"{x.ParameterType.AsPrettyString()} {x.Name}")
+            .JoinToString(", ")
+        );
+            
+        sb.Append(')');
+
+        return sb.ToString();
+    }
+    
+    public static string FormatSignatureString(this MethodInfo method, params Type[] argTypes)
+    {
+        var sb = new StringBuilder();
+        sb.Append(method.ReturnType.AsPrettyString());
+        sb.Append(' ');
+        sb.Append(method.Name);
+        sb.Append('(');
+
+        sb.Append(argTypes
+            .Select(x => x.AsPrettyString())
+            .JoinToString(", ")
+        );
+            
+        sb.Append(')');
+
+        return sb.ToString();
+    }
+    
     public static bool ExistsInAny<T>(this T @this, params IEnumerable<T>[] collections) 
         => collections.Any(x => x.Contains(@this));
 
