@@ -59,7 +59,7 @@ public static partial class AuditLogHandlers
         if (contextParam.ParameterType.GenericTypeArguments[0] != arg.Attr.DataType)
             throw err("Invalid context argument generic type argument");
 
-        Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
+        Delegates[arg.Attr.Action] = args => arg.Attr.CreateContext(args).Process(arg.Method, ExecuteHandler);
 
         return;
 
@@ -70,11 +70,6 @@ public static partial class AuditLogHandlers
         );
     }
 
-    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) 
-        => args 
-            => attribute.CreateContext(args)
-                .Process(mi, ExecuteHandler);
-    
     private static Task ExecuteHandler(MethodInfo method, IAuditLogContext ctx)
     {
         try
