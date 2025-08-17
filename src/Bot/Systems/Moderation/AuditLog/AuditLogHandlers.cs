@@ -22,7 +22,7 @@ public static partial class AuditLogHandlers
         var sw = Stopwatch.StartNew();
 
         typeof(AuditLogHandlers)
-            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
             .ForEach(Map);
 
         sw.Stop();
