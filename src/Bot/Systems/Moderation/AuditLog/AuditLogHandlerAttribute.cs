@@ -27,7 +27,7 @@ public abstract class AuditLogHandlerAttribute : Attribute
     {
         if (ActionsToContextCtor[Action] is not { } contextCtor)
         {
-            var contextType = AuditLogHandlers.ContextType.MakeGenericType(DataType);
+            var contextType = IAuditLogContext.ImplementationType.MakeGenericType(DataType);
 
             contextCtor = ActionsToContextCtor[Action]
                 = contextType.GetConstructor([typeof(AuditLogCreatedEventArgs), typeof(DatabaseService)]) 

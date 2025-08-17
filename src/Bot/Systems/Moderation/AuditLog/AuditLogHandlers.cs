@@ -2,16 +2,7 @@
 
 public static partial class AuditLogHandlers
 {
-    public static readonly Type ContextType;
-
-    public static readonly Dictionary<ActionType, Func<AuditLogCreatedEventArgs, Task>> Delegates = new();
-
-    static AuditLogHandlers()
-    {
-        ContextType = typeof(AuditLogHandlers).Assembly.GetExportedTypes()
-            .FindFirst(t => t.Inherits<IAuditLogContext>() && !t.IsAbstract)
-            .OrThrow(() => new InvalidOperationException("context type not found"));
-    }
+    private static readonly Dictionary<ActionType, Func<AuditLogCreatedEventArgs, Task>> Delegates = new();
 
     public static Task HandleAsync(AuditLogCreatedEventArgs args)
     {
@@ -30,8 +21,8 @@ public static partial class AuditLogHandlers
 
         var sw = Stopwatch.StartNew();
 
-        typeof(AuditLogHandlers).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-            .Select(x => (Method: x, Attr: x.GetCustomAttribute<AuditLogHandlerAttribute>()))
+        typeof(AuditLogHandlers)
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
             .ForEach(Map);
 
         sw.Stop();
@@ -39,11 +30,12 @@ public static partial class AuditLogHandlers
         Info(LogSource.Service, $"Loaded {Delegates.Count} audit log handlers in {sw.ElapsedMilliseconds}ms.");
     }
 
-    private static void Map((MethodInfo Method, AuditLogHandlerAttribute Attr) arg)
+    private static void Map(MethodInfo method)
     {
-        if (arg.Attr is null) return;
+        if (method.GetCustomAttribute<AuditLogHandlerAttribute>() is not { } attr)
+            return;
 
-        var handlerParams = arg.Method.GetParameters();
+        var handlerParams = method.GetParameters();
 
         // must take a single argument; 
         if (handlerParams.Length is not 1)
@@ -60,17 +52,17 @@ public static partial class AuditLogHandlers
             throw err("Invalid argument type");
 
         // the type argument to the AuditLogContext must be the same as passed to the attribute.
-        if (contextParam.ParameterType.GenericTypeArguments[0] != arg.Attr.DataType)
+        if (contextParam.ParameterType.GenericTypeArguments[0] != attr.DataType)
             throw err("Invalid context argument generic type argument");
 
-        Delegates[arg.Attr.Action] = args => arg.Attr.CreateContext(args).Process(arg.Method, ExecuteHandler);
+        Delegates[attr.Action] = args => attr.CreateContext(args).Process(method, ExecuteHandler);
 
         return;
 
         InvalidOperationException err(string message) => new(
-            $"{message} for found handler {arg.Method.Name}; " +
-            $"Expected signature of '{arg.Method.FormatSignatureString(ContextType.MakeGenericType(arg.Attr.DataType))}'; " +
-            $"got '{arg.Method.FormatSignatureString()}'"
+            $"{message} for found handler {method.Name}; " +
+            $"Expected signature of '{method.FormatSignatureString(IAuditLogContext.ImplementationType.MakeGenericType(attr.DataType))}'; " +
+            $"got '{method.FormatSignatureString()}'"
         );
     }
 

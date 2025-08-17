@@ -6,6 +6,16 @@ namespace Volte.Systems.Moderation;
 
 public interface IAuditLogContext
 {
+    
+    public static readonly Type ImplementationType;
+
+    static IAuditLogContext()
+    {
+        ImplementationType = typeof(AuditLogHandlers).Assembly.GetExportedTypes()
+            .FindFirst(t => t.Inherits<IAuditLogContext>() && !t.IsAbstract)
+            .OrThrow(() => new InvalidOperationException("context type not found"));
+    }
+    
     public SocketTextChannel Channel { get; }
 
     public AuditLogArchiveSettings GuildSettings { get; }
