@@ -62,40 +62,43 @@ public static partial class AuditLogHandlers
         Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
 
         return;
-        
+
         InvalidOperationException err(string message) => new(
             $"{message} for found handler {arg.Method.Name}; " +
             $"Expected signature of '{arg.Method.FormatSignatureString(ContextType.MakeGenericType(arg.Attr.DataType))}'; " +
             $"got '{arg.Method.FormatSignatureString()}'"
         );
     }
+
+    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) 
+        => args 
+            => attribute.CreateContext(args)
+                .Process(mi, ExecuteHandler);
     
-    private static Func<AuditLogCreatedEventArgs, Task> Wrap(AuditLogHandlerAttribute attribute, MethodInfo mi) => args => 
-        attribute.CreateContext(args)
-            .Process(mi, (method, ctx) =>
+    private static Task ExecuteHandler(MethodInfo method, IAuditLogContext ctx)
+    {
+        try
+        {
+            Debug(LogSource.Service, $"Invoking {method.ReturnType.AsPrettyString()}-returning registered delegate for {ctx.Entry.Action}");
+
+            if (method.ReturnType == typeof(void))
             {
-                try
-                {
-                    Debug(LogSource.Service, $"Invoking {method.ReturnType.AsPrettyString()}-returning registered delegate for {ctx.Entry.Action}");
+                method.Invoke(null, [ctx]);
+                return Task.CompletedTask;
+            }
 
-                    if (method.ReturnType == typeof(void))
-                    {
-                        method.Invoke(null, [ctx]);
-                        return Task.CompletedTask;
-                    }
+            var returned = method.Invoke(null, [ctx]);
 
-                    var returned = method.Invoke(null, [ctx]);
-
-                    return returned switch
-                    {
-                        Task task => task,
-                        _ => Task.FromResult(returned)
-                    };
-                }
-                catch (Exception e)
-                {
-                    Debug(LogSource.Service, $"Error of type {e.GetType().FullName} occurred in registered delegate for {ctx.Entry.Action}; returning faulted task to the caller");
-                    return Task.FromException(e);
-                }
-            });
+            return returned switch
+            {
+                Task task => task,
+                _ => Task.FromResult(returned)
+            };
+        }
+        catch (Exception e)
+        {
+            Debug(LogSource.Service, $"Error of type {e.GetType().FullName} occurred in registered delegate for {ctx.Entry.Action}; returning faulted task to the caller");
+            return Task.FromException(e);
+        }
+    }
 }
