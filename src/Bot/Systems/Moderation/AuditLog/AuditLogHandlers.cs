@@ -51,7 +51,11 @@ public static partial class AuditLogHandlers
 
         var contextParam = handlerParams[0];
 
-        // that argument must be an implementor of IAuditLogContext (aka, AuditLogContext<TAuditLogData>)
+        // that argument must not be the base IAuditLogContext interface;
+        if (contextParam.ParameterType == typeof(IAuditLogContext))
+            throw err($"Argument type cannot be the {nameof(IAuditLogContext)} interface");
+
+        // that argument must be an implementor of IAuditLogContext (aka, AuditLogContext<TAuditLogData>);
         if (!contextParam.ParameterType.IsAssignableTo(typeof(IAuditLogContext)))
             throw err("Invalid argument type");
 
