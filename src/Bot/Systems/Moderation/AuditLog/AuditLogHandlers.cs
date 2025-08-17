@@ -2,13 +2,13 @@
 
 public static partial class AuditLogHandlers
 {
-    public static Type AuditLogContextType { get; }
+    public static readonly Type ContextType;
 
     public static readonly Dictionary<ActionType, Func<AuditLogCreatedEventArgs, Task>> Delegates = new();
 
     static AuditLogHandlers()
     {
-        AuditLogContextType = typeof(AuditLogHandlers).Assembly.GetExportedTypes()
+        ContextType = typeof(AuditLogHandlers).Assembly.GetExportedTypes()
             .FindFirst(t => t.Inherits<IAuditLogContext>() && !t.IsAbstract)
             .OrThrow(() => new InvalidOperationException("context type not found"));
     }
@@ -57,49 +57,16 @@ public static partial class AuditLogHandlers
 
         // the type argument to the AuditLogContext must be the same as passed to the attribute.
         if (contextParam.ParameterType.GenericTypeArguments[0] != arg.Attr.DataType)
-            throw err("Invalid argument type generic type argument");
+            throw err("Invalid context argument generic type argument");
 
         Delegates[arg.Attr.Action] = Wrap(arg.Attr, arg.Method);
 
         return;
-
-        static string formatExpectedSignature(MethodInfo method, Type argType)
-        {
-            var sb = new StringBuilder();
-            sb.Append(method.ReturnType.AsPrettyString());
-            sb.Append(' ');
-            sb.Append(method.Name);
-            sb.Append('(');
-            sb.Append(argType.AsPrettyString());
-            sb.Append(')');
-
-            return sb.ToString();
-        }
-
-        static string formatEncounteredSignature(MethodInfo method, params ParameterInfo[] infos)
-        {
-            var sb = new StringBuilder();
-            sb.Append(method.ReturnType.AsPrettyString());
-            sb.Append(' ');
-            sb.Append(method.Name);
-            sb.Append('(');
-
-            sb.Append(infos
-                .Select(x => x.Name is null 
-                    ? x.ParameterType.AsPrettyString() 
-                    : $"{x.ParameterType.AsPrettyString()} {x.Name}")
-                .JoinToString(", ")
-            );
-            
-            sb.Append(')');
-
-            return sb.ToString();
-        }
         
         InvalidOperationException err(string message) => new(
             $"{message} for found handler {arg.Method.Name}; " +
-            $"Expected signature of '{formatExpectedSignature(arg.Method, AuditLogContextType.MakeGenericType(arg.Attr.DataType))}'; " +
-            $"got '{formatEncounteredSignature(arg.Method, handlerParams)}'"
+            $"Expected signature of '{arg.Method.FormatSignatureString(ContextType.MakeGenericType(arg.Attr.DataType))}'; " +
+            $"got '{arg.Method.FormatSignatureString()}'"
         );
     }
     
