@@ -33,27 +33,10 @@ public static partial class Extensions
         string rgb() => $"{color.R:X2}{color.G:X2}{color.B:X2}";
     }
     
-    public static string FormatSignatureString(this MethodInfo method)
-    {
-        var sb = new StringBuilder();
-        sb.Append(method.ReturnType.AsPrettyString());
-        sb.Append(' ');
-        sb.Append(method.Name);
-        sb.Append('(');
+    public static string FormatSignatureString(this MethodInfo method) 
+        => method.FormatSignatureString(method.GetParameters().Select(x => x.ParameterType));
 
-        sb.Append(method.GetParameters()
-            .Select(x => x.Name is null 
-                ? x.ParameterType.AsPrettyString() 
-                : $"{x.ParameterType.AsPrettyString()} {x.Name}")
-            .JoinToString(", ")
-        );
-            
-        sb.Append(')');
-
-        return sb.ToString();
-    }
-    
-    public static string FormatSignatureString(this MethodInfo method, params Type[] argTypes)
+    public static string FormatSignatureString(this MethodInfo method, params IEnumerable<Type> argTypes)
     {
         var sb = new StringBuilder();
         sb.Append(method.ReturnType.AsPrettyString());
