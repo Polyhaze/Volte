@@ -29,6 +29,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Qmmands;
 global using Volte.Helpers;
 global using Gommon;
+global using SlashCommandGroupAttribute = Discord.Interactions.GroupAttribute;
 global using static Gommon.Lambda;
 global using static Gommon.Executor;
 global using static Volte.Helpers.Logger;

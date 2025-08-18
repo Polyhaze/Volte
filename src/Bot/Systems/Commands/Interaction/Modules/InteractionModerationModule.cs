@@ -1,6 +1,6 @@
 ﻿namespace Volte.Systems.Commands.Interaction.Modules;
 
-[Discord.Interactions.Group("mod", "Moderator-only commands.")]
+[SlashCommandGroup("mod", "Moderator-only commands.")]
 [RequireGuildModeratorPrecondition]
 public sealed partial class InteractionModerationModule : VolteSlashCommandModule
 {

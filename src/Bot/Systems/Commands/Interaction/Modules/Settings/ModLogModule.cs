@@ -4,7 +4,7 @@ namespace Volte.Systems.Commands.Interaction.Modules;
 
 public partial class InteractionSettingsModule
 {
-    [Discord.Interactions.Group("mod-log", "Set the mod log channel or disable it.")]
+    [SlashCommandGroup("mod-log", "Set the mod log channel or disable it.")]
     public class ModLogModule : VolteSlashCommandModule
     {
         [SlashCommand("channel", "Sets the channel used for the mod log.")]
