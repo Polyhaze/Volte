@@ -5,7 +5,7 @@ public static partial class AuditLogHandlers
     [AuditLogHandler<SocketBanAuditLogData>(ActionType.Ban)]
     private static async Task Ban(AuditLogContext<SocketBanAuditLogData> ctx)
     {
-        var reason = string.IsNullOrEmpty(ctx.Entry.Reason) ? "None provided" : ctx.Entry.Reason;
+        var reason = ctx.Entry.Reason.IsNullOrEmpty() ? "None provided" : ctx.Entry.Reason;
 
         var target = await ctx.Data.Target.GetOrDownloadAsync();
 
@@ -19,7 +19,7 @@ public static partial class AuditLogHandlers
     [AuditLogHandler<SocketKickAuditLogData>(ActionType.Kick)]
     private static async Task Kick(AuditLogContext<SocketKickAuditLogData> ctx)
     {
-        var reason = string.IsNullOrEmpty(ctx.Entry.Reason) ? "None provided" : ctx.Entry.Reason;
+        var reason = ctx.Entry.Reason.IsNullOrEmpty() ? "None provided" : ctx.Entry.Reason;
 
         var target = await ctx.Data.Target.GetOrDownloadAsync();
 
@@ -33,7 +33,7 @@ public static partial class AuditLogHandlers
     [AuditLogHandler<SocketUnbanAuditLogData>(ActionType.Unban)]
     private static async Task Unban(AuditLogContext<SocketUnbanAuditLogData> ctx)
     {
-        var reason = string.IsNullOrEmpty(ctx.Entry.Reason) ? "None provided" : ctx.Entry.Reason;
+        var reason = ctx.Entry.Reason.IsNullOrEmpty() ? "None provided" : ctx.Entry.Reason;
 
         var target = await ctx.Data.Target.GetOrDownloadAsync();
 

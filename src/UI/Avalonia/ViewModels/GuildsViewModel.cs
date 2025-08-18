@@ -93,7 +93,7 @@ public partial class GuildsViewModel : BaseModel
         
         if (result is UserResult.Ok)
         {
-            if (string.IsNullOrEmpty(message))
+            if (message.IsNullOrEmpty())
                 VolteApp.Notify("Can't send an empty message!", $"Could not message '{SelectedGuild.Entity.Owner.Username}'", type: NotificationType.Warning);
             else if (await SelectedGuild.Entity.Owner.TrySendMessageAsync(message))
                 VolteApp.Notify($"Recipient: {SelectedGuild.Entity.Owner.Username}", "Message Sent");

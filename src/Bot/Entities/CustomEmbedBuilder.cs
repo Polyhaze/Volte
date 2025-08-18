@@ -68,7 +68,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public virtual TSelf AppendDescription(string description)
     {
-        if (string.IsNullOrEmpty(Description))
+        if (Description.IsNullOrEmpty())
             return WithDescription(description);
 
         Description += description;
@@ -84,7 +84,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
     /// </returns>
     public virtual TSelf AppendDescriptionLine(string description)
     {
-        if (string.IsNullOrEmpty(Description))
+        if (Description.IsNullOrEmpty())
             return WithDescription(description);
         
         Description += description;
@@ -375,7 +375,7 @@ public abstract class CustomEmbedBuilder<TSelf> : EmbedBuilder where TSelf : Cus
         bool? inline = null
     )
     {
-        return !string.IsNullOrEmpty(value)
+        return !value.IsNullOrEmpty()
             ? AddField(name, transform is not null ? transform(value) : value, inline)
             : (TSelf)this;
     }
