@@ -1,12 +1,11 @@
 using Volte.Systems.Scripting;
 using Volte.Systems.Commands.Text.Modules;
-using Volte.Systems.Database;
 using Volte.Systems.Moderation;
 using Volte.Systems.Reminder;
 
 namespace Volte;
 
-public class VolteBot
+public partial class VolteBot
 {
     public const bool IsProduction =
 #if PROD
@@ -42,8 +41,19 @@ public class VolteBot
 
         LogFileRestartNotice();
 
-        Services = new ServiceCollection().AddAllServices()
+        Services = CreateServiceCollection()
+            .Apply(VolteService.AddOneInstanceOfEachSubtype)
             .AddSingleton(cts.OrElse(new CancellationTokenSource()))
+            .Apply(coll =>
+            {
+                if (!Config.SentryDsn.IsNullOrEmpty())
+                    coll.AddSingleton(SentrySdk.Init(opts =>
+                    {
+                        opts.Dsn = Config.SentryDsn;
+                        opts.Debug = IsDebugLoggingEnabled;
+                        opts.DiagnosticLogger = new SentryTranslator();
+                    }));
+            })
             .BuildServiceProvider();
 
         Client = Services.Get<DiscordSocketClient>();
