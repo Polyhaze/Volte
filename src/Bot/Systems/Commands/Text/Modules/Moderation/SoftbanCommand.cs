@@ -10,7 +10,7 @@ public sealed partial class ModerationModule
         SocketGuildUser user, [Description("The amount of days of messages to delete.")]
         int daysToDelete = 7,
         [Remainder, Description("The reason for the softban.")]
-        string reason = "Softbanned by a Moderator.")
+        string reason = null)
     {
         
         var e = Context.CreateEmbedBuilder(reason is not null
