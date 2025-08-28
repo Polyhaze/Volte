@@ -30,7 +30,7 @@ public readonly record struct Snowflake(ulong Raw) : IComparable<Snowflake>, ICo
     public static implicit operator Snowflake(DateTime dto) => FromDate(dto);
     public static implicit operator DateTime(Snowflake snowflake) => snowflake.Date.DateTime;
 
-    public static Snowflake Zero { get; set; } = default;
+    public static Snowflake Zero { get; } = default;
 
     public static Snowflake FromDate(DateTimeOffset dto) => new(SnowflakeUtils.ToSnowflake(dto));
 
