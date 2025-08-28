@@ -17,9 +17,12 @@ public class RequireGuildModeratorPreconditionAttribute : PreconditionAttribute
         var db = services.Get<DatabaseService>();
         var data = await db.GetDataAsync(context.Guild.Id);
 
-        var u = await context.Guild.GetUserAsync(context.User.Id);
+        var u = 
+            context.Guild.Cast<SocketGuild>()?.GetUser(context.User.Id) 
+            ?? await context.Guild.GetUserAsync(context.User.Id);
 
         return u.RoleIds.Contains(data.Settings.Moderation.ModRole) 
+               || u.RoleIds.Contains(data.Settings.Moderation.SecondaryModRole)
                || u.RoleIds.Contains(data.Settings.Moderation.AdminRole) 
                || u.Guild.OwnerId == u.Id
                || u.IsBotOwner()
