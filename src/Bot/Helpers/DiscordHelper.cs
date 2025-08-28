@@ -38,6 +38,7 @@ public static class DiscordHelper
 
     public static bool IsModerator(this VolteContext ctx, IGuildUser user)
         => user.HasRole(ctx.GuildData.Settings.Moderation.ModRole) 
+           || user.HasRole(ctx.GuildData.Settings.Moderation.SecondaryModRole)
            || ctx.IsAdmin(user) 
            || IsGuildOwner(user);
 
