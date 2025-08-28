@@ -30,22 +30,25 @@ public static class DiscordHelper
         => Config.Owner == user.Id;
 
     private static bool IsGuildOwner(this IGuildUser user)
-        => user.Guild.OwnerId == user.Id || IsBotOwner(user);
+        => user.Guild.OwnerId == user.Id || user.IsBotOwner();
     
     public static bool IsAdmin(this VolteContext ctx, IGuildUser user)
         => HasRole(user, ctx.GuildData.Settings.Moderation.AdminRole) 
-           || IsGuildOwner(user);
+           || user.IsGuildOwner();
+    
+    public static bool IsSecondaryModerator(this VolteContext ctx, IGuildUser user)
+        => user.HasRole(ctx.GuildData.Settings.Moderation.SecondaryModRole)
+           || ctx.IsAdmin(user) 
+           || user.IsGuildOwner();
 
     public static bool IsModerator(this VolteContext ctx, IGuildUser user)
-        => user.HasRole(ctx.GuildData.Settings.Moderation.ModRole) 
-           || user.HasRole(ctx.GuildData.Settings.Moderation.SecondaryModRole)
-           || ctx.IsAdmin(user) 
-           || IsGuildOwner(user);
+        => user.HasRole(ctx.GuildData.Settings.Moderation.ModRole)
+           || ctx.IsSecondaryModerator(user);
 
     public static bool HasRole(this IGuildUser user, ulong roleId) => user.RoleIds.Contains(roleId);
-    
+
     public static Task WarnAsync(this IGuildUser member, VolteContext ctx, string reason)
-        => ctx.Services.GetRequiredService<DatabaseService>().WarnAsync(ctx.User, member, reason);
+        => member.WarnAsync(ctx.User, ctx.Services, reason);
 
     public static Task WarnAsync(this IGuildUser member, IUser issuer, IServiceProvider provider, string reason)
     {
