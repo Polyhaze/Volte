@@ -30,7 +30,7 @@ public sealed partial class SettingsModule
             return Ok("Reset the secondary Moderator role.");
         }
 
-        Context.Modify(data => data.Settings.Moderation.ModRole = role.Id);
+        Context.Modify(data => data.Settings.Moderation.SecondaryModRole = role.Id);
         return Ok($"Set {role.Mention} as the secondary Moderator role for this guild.");
     }
 }
