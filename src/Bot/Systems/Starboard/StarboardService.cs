@@ -174,7 +174,7 @@ public sealed class StarboardService : VolteService
         var guildId = channel.Guild.Id;
         var messageId = cachedMessage.Id;
             
-        var starboard = (await _db.GetDataAsync(guildId)).Settings.Starboard;
+        var starboard = _db.GetData(guildId).Settings.Starboard;
 
         if (!starboard.Enabled) return;
 
@@ -292,7 +292,7 @@ public sealed class StarboardService : VolteService
 
     private async Task<IMessage> PostToStarboardAsync(IMessage message, int starCount)
     {
-        var data = await _db.GetDataAsync(message.Channel.Cast<IGuildChannel>().GuildId);
+        var data = _db.GetData(message.Channel.Cast<IGuildChannel>().GuildId);
             
         var starboardChannel = _client.GetChannel(data.Settings.Starboard.Channel);
         if (starboardChannel is not ITextChannel starboardTextChannel)

@@ -88,8 +88,6 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
     public HashSet<GuildDataV2> GetAllData() => _guildDataV2.ValueLock(() => _guildDataV2.FindAll().ToHashSet());
-
-    public ValueTask<GuildDataV2> GetDataAsync(ulong id) => new(GetData(id));
     
     public void CreateGuildDataIfNotExists(IGuild guild) =>
         _guildDataV2.LockedRef(coll =>
@@ -139,16 +137,16 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     public async Task WarnAsync(IUser issuer, IGuildUser member, string reason)
     {
-        var data = await GetDataAsync(member.GuildId);
-        
-        data.Moderation.AddWarn(warn =>
+        var data = GetData(member.GuildId);
+
+        data.Moderation.Warns.Add(new WarnV2
         {
-            warn.Issuer = issuer.Id;
-            warn.Target = member.Id;
-            warn.Reason = reason;
-            warn.Date = DateTimeOffset.Now;
+            Issuer = issuer.Id,
+            Target = member.Id,
+            Reason = reason,
+            Date = DateTimeOffset.Now
         });
-        
+
         Save(data);
 
         var e = new EmbedBuilder().WithSuccessColor().WithAuthor(issuer)

@@ -15,7 +15,7 @@ public class UserFilterService : VolteService
     {
         ExecuteBackgroundAsync(async () =>
         {
-            var data = await _db.GetDataAsync(args.Guild.Id);
+            var data = _db.GetData(args.Guild.Id);
             var idsToClear = await data.StarscriptTables.UserFilter
                 .HandleAsync(args.Guild, args.User)
                 .ToArrayAsync();

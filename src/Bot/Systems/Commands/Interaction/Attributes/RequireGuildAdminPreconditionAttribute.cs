@@ -15,7 +15,7 @@ public class RequireGuildAdminPreconditionAttribute : PreconditionAttribute
             return PreconditionResult.FromError("This command can only be executed in a guild.");
 
         var db = services.Get<DatabaseService>();
-        var data = await db.GetDataAsync(context.Guild.Id);
+        var data = db.GetData(context.Guild.Id);
         
         var u = await context.Guild.GetUserAsync(context.User.Id);
 
