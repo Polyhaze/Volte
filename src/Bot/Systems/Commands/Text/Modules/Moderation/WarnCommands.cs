@@ -42,7 +42,7 @@ public sealed partial class ModerationModule
         [Remainder, EnsureNotSelf, Description("The member who you want to clear warns for.")]
         SocketGuildUser member)
     {
-        var warnCount = Context.GuildData.Moderation.Warns.RemoveWhere(x => x.Target == member.Id);
+        var warnCount = Context.GuildData.Moderation.Warns.RemoveAll(x => x.Target == member.Id);
         Db.Save(Context.GuildData);
 
         var e = Context

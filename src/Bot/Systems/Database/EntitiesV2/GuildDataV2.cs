@@ -149,7 +149,7 @@ public class GuildDataV2
                 Target = warnV1.User,
                 Reason = warnV1.Reason,
                 Date = warnV1.Date
-            }).ToHashSet()
+            }).ToList()
         },
         StarscriptTables = new StarscriptTables
         {
