@@ -2,9 +2,9 @@
 
 public sealed class CommandCalledEventArgs : CommandEventArgs
 {
-    public IResult Result { get; }
+    public Qmmands.IResult Result { get; }
 
-    public CommandCalledEventArgs(IResult res, CommandContext context, Stopwatch sw)
+    public CommandCalledEventArgs(Qmmands.IResult res, CommandContext context, Stopwatch sw)
     {
         Result = res;
         Context = context.Cast<VolteContext>();
