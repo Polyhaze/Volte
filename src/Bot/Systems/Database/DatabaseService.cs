@@ -39,7 +39,7 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     public int Migrate(bool destroyV1 = false)
     {
-        var v1 = _guildData.ValueLock(() => _guildData.FindAll().ToHashSet());
+        var v1 = _guildData.FindAll().ToHashSet();
 
         if (v1.None())
         {
@@ -51,50 +51,43 @@ public sealed class DatabaseService : VolteService, IDisposable
 
         if (destroyV1)
         {
-            var cleared = _guildData.ValueLock(() => _guildData.DeleteAll());
-            if (cleared > 0)
-                Info(LogSource.Service, $"Cleared {"existing guild data V1 entry".ToQuantity(cleared)}.");
+            var clearedV1 = _guildData.DeleteAll();
+            if (clearedV1 > 0)
+                Info(LogSource.Service, $"Cleared {"existing guild data V1 entry".ToQuantity(clearedV1)}.");
 
             Info(LogSource.Service, "Dropping 'guilds' database collection.");
             Database.DropCollection("guilds");
         }
         
-        return _guildDataV2.ValueLock(() =>
-        {
-            var cleared = _guildDataV2.DeleteAll();
+        var cleared = _guildDataV2.DeleteAll();
             
-            if (cleared > 0)
-                Info(LogSource.Service, $"Cleared {"existing guild data V2 entry".ToQuantity(cleared)}.");
+        if (cleared > 0)
+            Info(LogSource.Service, $"Cleared {"existing guild data V2 entry".ToQuantity(cleared)}.");
             
-            var inserted = _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
+        var inserted = _guildDataV2.InsertBulk(v1.Select(GuildDataV2.MigrateFromV1));
             
-            Info(LogSource.Service, $"Migrated {"guild data entry".ToQuantity(inserted)} to V2.");
+        Info(LogSource.Service, $"Migrated {"guild data entry".ToQuantity(inserted)} to V2.");
 
-            return inserted;
-        });
+        return inserted;
     }
 
     public GuildDataV2 GetData(ulong id)
     {
-        return _guildDataV2.ValueLock(() =>
-        {
-            var conf = _guildDataV2.FindOne(g => g.Id == id);
-            if (conf != null) return conf;
-            var newConf = GuildDataV2.CreateFrom(_client.GetGuild(id));
-            _guildDataV2.Insert(newConf);
-            return newConf;
-        });
+        var conf = _guildDataV2.FindOne(g => g.Id == id);
+        if (conf != null) return conf;
+        var newConf = GuildDataV2.CreateFrom(_client.GetGuild(id));
+        _guildDataV2.Insert(newConf);
+        return newConf;
     }
 
     public GuildDataV2 GetData(IGuild guild) => GetData(guild.Id);
-    public HashSet<GuildDataV2> GetAllData() => _guildDataV2.ValueLock(() => _guildDataV2.FindAll().ToHashSet());
-    
-    public void CreateGuildDataIfNotExists(IGuild guild) =>
-        _guildDataV2.LockedRef(coll =>
-        {
-            if (!coll.Exists(g => g.Id == guild.Id))
-                coll.Insert(GuildDataV2.CreateFrom(guild));
-        });
+    public HashSet<GuildDataV2> GetAllData() => _guildDataV2.FindAll().ToHashSet();
+
+    public void CreateGuildDataIfNotExists(IGuild guild)
+    {
+        if (!_guildDataV2.Exists(g => g.Id == guild.Id))
+            _guildDataV2.Insert(GuildDataV2.CreateFrom(guild));
+    }
 
     public void CreateGuildDataIfNotExists(ulong id) => CreateGuildDataIfNotExists(_client.GetGuild(id));
 
@@ -113,11 +106,8 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     public void Save(GuildDataV2 newConfig)
     {
-        _guildDataV2.LockedRef(coll =>
-        {
-            coll.EnsureIndex(s => s.Id, true);
-            coll.Update(newConfig);
-        });
+        _guildDataV2.EnsureIndex(s => s.Id, true);
+        _guildDataV2.Update(newConfig);
     }
     
     public HashSet<Reminder.Reminder> this[IUser user] => GetReminders(user);
@@ -129,11 +119,11 @@ public sealed class DatabaseService : VolteService, IDisposable
         => GetAllReminders().Where(r => r.CreatorId == creator && (guild is 0 || r.GuildId == guild)).ToHashSet();
 
     public bool TryDeleteReminder(Reminder.Reminder reminder) =>
-        _reminderData.ValueLock(() => _reminderData.Delete(reminder.Id));
+        _reminderData.Delete(reminder.Id);
 
-    public HashSet<Reminder.Reminder> GetAllReminders() => _reminderData.ValueLock(() => _reminderData.FindAll().ToHashSet());
+    public HashSet<Reminder.Reminder> GetAllReminders() => _reminderData.FindAll().ToHashSet();
 
-    public void CreateReminder(Reminder.Reminder reminder) => _reminderData.ValueLock(() => _reminderData.Insert(reminder));
+    public void CreateReminder(Reminder.Reminder reminder) => _reminderData.Insert(reminder);
 
     public async Task WarnAsync(IUser issuer, IGuildUser member, string reason)
     {
@@ -158,7 +148,7 @@ public sealed class DatabaseService : VolteService, IDisposable
     }
 
     private StarboardDbEntry GetStargazersInternal(ulong guildId, ulong messageId)
-        => _reminderData.ValueLock(() => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId));
+        => _starboardData.FindOne(g => g.GuildId == guildId && g.Key == messageId);
 
     public StarboardEntry GetStargazers(ulong guildId, ulong messageId)
         => GetStargazersInternal(guildId, messageId)?.Value;
@@ -172,31 +162,25 @@ public sealed class DatabaseService : VolteService, IDisposable
 
     public void UpdateStargazers(StarboardEntry entry)
     {
-        _starboardData.LockedRef(coll =>
+        _starboardData.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardDbEntry
         {
-            coll.Upsert($"{entry.GuildId}_{entry.StarboardMessageId}", new StarboardDbEntry
-            {
-                GuildId = entry.GuildId,
-                Key = entry.StarboardMessageId,
-                Value = entry
-            });
+            GuildId = entry.GuildId,
+            Key = entry.StarboardMessageId,
+            Value = entry
+        });
 
-            coll.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardDbEntry
-            {
-                GuildId = entry.GuildId,
-                Key = entry.StarredMessageId,
-                Value = entry
-            });
+        _starboardData.Upsert($"{entry.GuildId}_{entry.StarredMessageId}", new StarboardDbEntry
+        {
+            GuildId = entry.GuildId,
+            Key = entry.StarredMessageId,
+            Value = entry
         });
     }
 
     public void RemoveStargazers(StarboardEntry entry)
     {
-        _starboardData.LockedRef(coll =>
-        {
-            coll.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
-            coll.Delete($"{entry.GuildId}_{entry.StarredMessageId}");
-        });
+        _starboardData.Delete($"{entry.GuildId}_{entry.StarboardMessageId}");
+        _starboardData.Delete($"{entry.GuildId}_{entry.StarredMessageId}");
     }
 
     public void Dispose()

@@ -56,9 +56,9 @@ public static class UnixHelper
         var inQuote = false;
         var argName = string.Empty;
         var argVal = string.Empty;
-        var lastChar = new char();
+        var lastChar = '\0';
 
-        foreach (var (token, index) in input.WithIndex())
+        foreach (var (index, token) in input.Index())
         {
             switch (token)
             {

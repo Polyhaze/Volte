@@ -27,7 +27,7 @@ public sealed partial class ReminderService : VolteService, IDisposable
             {
                 Debug(LogSource.Service, "Checking all reminders.");
                 var currentTicks = DateTime.Now.Ticks;
-                foreach (var (reminder, index) in _db.GetAllReminders().WithIndex()) 
+                foreach (var (index, reminder) in _db.GetAllReminders().Index()) 
                 {
                     Debug(LogSource.Service,
                         $"Reminder '{reminder.ReminderText}', set for {reminder.TargetTime} at index {index}");

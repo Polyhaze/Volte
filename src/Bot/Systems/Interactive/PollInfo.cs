@@ -32,7 +32,7 @@ public sealed class PollInfo
             return FromInvalid("No options specified.");
         var fields = new List<(object Name, object Value)>();
 
-        foreach (var (_, index) in collection.WithIndex().Skip(1))
+        foreach (var (index, _) in collection.Index().Skip(1))
         {
             fields.Add((emojis[index - 1], collection[index]));
         }

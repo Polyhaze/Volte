@@ -1,5 +1,4 @@
 ﻿using Colorful;
-using JetBrains.Annotations;
 using Sentry.Extensibility;
 
 using Color = System.Drawing.Color;
@@ -13,12 +12,12 @@ public static partial class Logger
         public bool IsEnabled(SentryLevel logLevel) 
             => Version.IsDevelopment || logLevel is not SentryLevel.Debug;
             
-        public void Log(SentryLevel logLevel, [CanBeNull] string message, Exception exception = null, params object[] args)
+        public void Log(SentryLevel logLevel, string message, Exception exception = null, params object[] args)
             => LogEventHandler.Call(new VolteLogEventArgs
             {
                 Source = LogSource.Sentry,
                 Severity = logLevel.ToSeverity(),
-                Message = message?.Format(args),
+                Message = message.Format(args),
                 Error = exception
             });
     }

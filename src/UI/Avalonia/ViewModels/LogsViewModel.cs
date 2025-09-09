@@ -64,8 +64,8 @@ public partial class LogsViewModel : BaseModel
     {
         if (Logs.Count < MaxLogsInMemory) return;
 
-        Logs.WithIndex()
-            .OrderByDescending(static x => x.Value.Date)
+        Logs.Index()
+            .OrderByDescending(static x => x.Item.Date)
             .TakeLast(amount)
             .ForEach(toRemove => Logs.RemoveAt(toRemove.Index));
     }
