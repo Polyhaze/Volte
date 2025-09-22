@@ -76,6 +76,28 @@ public static class StarscriptHelper
                         ? sGuild.Owner 
                         : await guild.GetOwnerAsync()));
 
+    private static string Fmt(IReadOnlyCollection<IActivity> activities)
+    {
+        if (activities.Count is 0)
+            return "Nothing";
+
+        var sb = new StringBuilder();
+
+
+        foreach (var activity in activities)
+        {
+            sb.AppendLine(activity switch
+            {
+                //we are ignoring custom emojis because there is no guarantee that volte is in the guild where the emoji is from; which could lead to a massive (and ugly) embed field value
+                CustomStatusGame { Emote: Emoji } csg => $"{csg.Emote} {csg.State}",
+                CustomStatusGame csg => $"{csg.State}",
+                SpotifyGame sg => $"Listening to {Format.Url(sg.TrackTitle, sg.TrackUrl)} on Spotify",
+                _ => activity.Name
+            });
+        }
+
+        return sb.ToString();
+    }
 
     public static ValueMap Wrap(IUser user)
     {
@@ -91,7 +113,7 @@ public static class StarscriptHelper
         uMap.Set("avatarUrl", user.GetDisplayAvatarUrl(size: 256));
         uMap.Set("hasPrimaryGuild", user.PrimaryGuild.HasValue);
         uMap.TryAddNullable("primaryGuild", user.PrimaryGuild, Wrap);
-
+        uMap.Set("statusString", () => Fmt(user.Activities));
         uMap.Set("id", user.Id.ToString());
         return uMap;
     }
