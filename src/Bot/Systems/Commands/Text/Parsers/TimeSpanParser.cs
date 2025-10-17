@@ -33,6 +33,9 @@ public partial class TimeSpanParser : VolteTypeParser<TimeSpan>
         if (match.Groups["Seconds"].Success && match.Groups["Seconds"].Value[r].TryParse<int>(out var seconds))
             result += seconds.Seconds();
 
+        if (match.Groups["0"].Success && result == TimeSpan.Zero)
+            return Failure($"\"{value}\" could not be interpreted as a valid time span.");
+
         return Success(result);
     }
         
