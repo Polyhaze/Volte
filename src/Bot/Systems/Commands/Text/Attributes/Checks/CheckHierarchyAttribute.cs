@@ -16,7 +16,7 @@ public sealed class CheckHierarchyAttribute : ParameterCheckAttribute
         }
 
         return ctx.IsAdmin(u)
-            ? CheckResult.Failed("Cannot ban someone with the configured Admin role.")
+            ? CheckResult.Failed("Cannot act on someone with the configured Admin role.")
             : ctx.User.Hierarchy > u.Hierarchy
                 ? CheckResult.Successful
                 : CheckResult.Failed("Cannot act on someone in a higher, or equal, hierarchy position than yourself.");
