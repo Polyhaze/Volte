@@ -29,10 +29,12 @@ public sealed partial class UtilityModule
     {
         user ??= Context.User;
 
+        var activity = getRelevantActivity();
+
         return Ok(Context.CreateEmbedBuilder()
             .WithTitle(user.ToString())
             .AddField("ID", user.Id, true)
-            .AddField("Activity", getRelevantActivity(), true)
+            .AddField("Activity", activity.IsNullOrEmpty() ? "Nothing" : activity, true)
             .AddField("Status", user.Status, true)
             .AddField("Is Bot", user.IsBot ? "Yes" : "No", true)
             .AddField("Role Hierarchy", user.Hierarchy, true)
