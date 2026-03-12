@@ -59,7 +59,7 @@ public static class TextCommandHelper
 
         if (command.Attributes.Any(x => x is DummyCommandAttribute))
         {
-            await addSubcommandsFieldAsync();
+            addSubcommandsField();
             return checks.Count > 0
                 ? embed.AddField("Checks",
                     (await Task.WhenAll(checks.Select(check => FormatCheckAsync(check, ctx)))).JoinToString("\n"))
@@ -89,12 +89,11 @@ public static class TextCommandHelper
                 $"{Format.Code("4d3h2m1s")}: {Format.Italics("4 days, 3 hours, 2 minutes and one second.")}");
 
         if (command.Attributes.Any(x => x is ShowSubcommandsInHelpOverrideAttribute))
-            await addSubcommandsFieldAsync();
+            addSubcommandsField();
 
         if (command.Attributes.TryGetFirst(x => x is ShowUnixArgumentsInHelpAttribute, out var unixAttr) 
             && unixAttr is ShowUnixArgumentsInHelpAttribute attr)
             embed.AddField("Unix Arguments", getArgs(attr.VolteUnixCommand));
-            
 
         return checks.Count > 0
             ? embed.AddField("Checks",
@@ -104,17 +103,17 @@ public static class TextCommandHelper
                     )
                 ).JoinToString("\n"))
             : embed;
-            
-            
-            
-        async Task addSubcommandsFieldAsync()
+
+        void addSubcommandsField()
         {
-            embed.AddField("Subcommands", (await command.Module.Commands.WhereAccessibleAsync(ctx)
-                    .Where(static x => !x.Attributes.Any(a => a is DummyCommandAttribute)).ToListAsync())
-                .Select(static x => FormatCommandShort(x, false))
-                .JoinToString(", "));
+            embed.AddField("Subcommands", 
+                command.Module.Commands
+                    .Where(static x => !x.Attributes.Any(a => a is DummyCommandAttribute))
+                    .Select(static x => FormatCommandShort(x, false))
+                    .FormatCollection(x => x, ", ")
+                );
         }
-            
+
         static string formatUnixArgs(KeyValuePair<string[], string> kvp) =>
             $"{Format.Bold(kvp.Key.Select(static name => $"-{name}").JoinToString(" or "))}: {kvp.Value}";
 
