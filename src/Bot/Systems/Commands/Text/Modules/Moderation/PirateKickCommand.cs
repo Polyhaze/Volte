@@ -5,7 +5,7 @@ public partial class ModerationModule
     [Command("PirateKick", "PKick")]
     [Description(
         "Kicks the user with a very long-winded message as to why piracy is not supported. Content is retrieved from the 'emulationisnotpiracy' tag.")]
-    [RequireSpecificGuild([1294443224030511104])]
+    [RequireSpecificGuild(1294443224030511104)]
     public async Task<ActionResult> PirateKickAsync(
         [CheckHierarchy, EnsureNotSelf, Description("The target member.")]
         SocketGuildUser user)

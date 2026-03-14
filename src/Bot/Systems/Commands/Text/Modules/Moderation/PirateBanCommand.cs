@@ -4,16 +4,16 @@ public partial class ModerationModule
 {
     [Command("PirateBan", "PBan")]
     [Description("Bans the user with a very long-winded message as to why piracy is not supported. Content is retrieved from the 'emulationisnotpiracy' tag.")]
-    [RequireSpecificGuild([1294443224030511104, 1325735818714943498])]
+    [RequireSpecificGuild(1294443224030511104)]
     public async Task<ActionResult> PirateBanAsync(
         [CheckHierarchy, EnsureNotSelf, Description("The target user.")] RestUser user)
     {
         bool sentReasonDm = false;
-        
+
         if (Context.Guild.GetUser(user.Id) is { } member)
         {
             var e = Context.CreateEmbedBuilder($"You've been banned from **{Context.Guild.Name}** for **piracy**.");
-        
+
             if (!await member.TrySendMessageAsync(embed: e.Apply(Context.GuildData).Build()))
                 Warn(LogSource.Module, $"encountered a 403 when trying to message {member}!");
 
