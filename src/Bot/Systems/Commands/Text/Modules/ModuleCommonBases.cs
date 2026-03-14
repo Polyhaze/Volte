@@ -14,10 +14,10 @@ public sealed partial class UtilityModule : VolteModule
         { ["up"], "Include upwards characters. This option takes no value." },
         { ["mid", "middle"], "Include middle characters. This option takes no value." },
         { ["down"], "Include downward characters. This option takes no value." },
-        { ["intensity"], "`high`, `med`, or `low`"}
+        { ["intensity"], "`high`, `med`, or `low`" }
     };
 
-    private readonly Dictionary<char, string> _nato = new() 
+    private readonly Dictionary<char, string> _nato = new()
     {
         {'a', "Alfa"}, {'b', "Bravo"}, 
         {'c', "Charlie"}, {'d', "Delta"},
@@ -44,7 +44,7 @@ public sealed partial class UtilityModule : VolteModule
         _nato.TryGetValue(i, out var nato) ? nato : throw new ArgumentOutOfRangeException(i.ToString());
 
     private (
-        IOrderedEnumerable<(string Name, bool Value)> Allowed, 
+        IOrderedEnumerable<(string Name, bool Value)> Allowed,
         IOrderedEnumerable<(string Name, bool Value)> Disallowed
         ) GetPermissions(
             IGuildUser user)
@@ -85,14 +85,16 @@ public sealed partial class AdminUtilityModule : VolteModule
         },
         {
             ["desc", "description"],
-            "Set the embed's description content."/* If this is a URL to a raw paste on any known website; the embed's description will be that paste's content. {Format.Url("Supported sites.", "https://paste.greemdev.net/volteAllowedPasteSites")}"*/
+            "Set the embed's description content."
+            /* If this is a URL to a raw paste on any known website; the embed's description will be that paste's content.
+             {Format.Url("Supported sites.", "https://paste.greemdev.net/volteAllowedPasteSites")}"*/
         },
         {
             ["author"],
             "Set the author of the embed. `self` or `me` will make you the author; `bot`, `you`, or `volte` will make volte the author, or you can use a server member's ID."
         }
     };
-    
+
     /// <summary>
     ///     Sends an HTTP <see cref="HttpMethod.Get"/> request to Urban Dictionary's public API requesting the definitions of <paramref name="word"/>.
     /// </summary>
@@ -123,20 +125,31 @@ public sealed partial class ModerationModule : VolteModule
 {
     public static string GetReason(string action, IUser moderator, string reason) =>
         reason is null
-            ? GetDefaultReason(action, moderator) 
+            ? GetDefaultReason(action, moderator)
             : $"{moderator.Username} ({moderator.Id}): {reason}";
 
-    public static string GetDefaultReason(string action, IUser moderator) 
+    public static string GetDefaultReason(string action, IUser moderator)
         => $"{action} by {moderator.Username} ({moderator.Id})";
 
     public InteractiveService Interactive { get; set; }
-        
+
     public static readonly Dictionary<string[], string> UnixBanNamedArguments = new()
     {
-        { ["deleteDays", "days"], "The amount of days of messages to delete. Note that Discord is strict with this value, and it can only be 0-7."},
-        { ["reason"], "The reason for the ban. If this is not provided, the reason will be \"Banned by a Moderator.\""},
-        { ["shadow"], "If this option is present, the banned member will not be made aware of who actually banned them via the embed author. This option takes no value."},
-        { ["soft", "softly"], "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."}
+        {
+            ["deleteDays", "days"],
+            "The amount of days of messages to delete. Note that Discord is strict with this value, and it can only be 0-7."
+        },
+        {
+            ["reason"], "The reason for the ban. If this is not provided, the reason will be \"Banned by a Moderator.\""
+        },
+        {
+            ["shadow"],
+            "If this option is present, the banned member will not be made aware of who actually banned them via the embed author. This option takes no value."
+        },
+        {
+            ["soft", "softly"],
+            "Immediately unbans the member after a ban, AKA \"softban.\" This option takes no value."
+        }
     };
 }
 
@@ -146,6 +159,6 @@ public sealed partial class ModerationModule : VolteModule
 public partial class SettingsModule : VolteModule
 {
     [Command, DummyCommand, Description("The set of commands used to modify how Volte functions in your guild.")]
-    public async Task<ActionResult> BaseAsync() 
+    public async Task<ActionResult> BaseAsync()
         => Ok(await TextCommandHelper.CreateCommandEmbedAsync(Context.Command, Context));
 }
