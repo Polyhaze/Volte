@@ -25,14 +25,14 @@ public static partial class Logger
     private static readonly string[] VolteAscii =
         Figlet.GetAscii("Volte").ConcreteValue.Split("\n", StringSplitOptions.RemoveEmptyEntries);
 
-    static Logger() => FilePath.Logs.Create();
-        
+    static Logger() => FilePath.Logs.CreateAsDirectory();
+
     private static readonly Lock LogSync = new();
-    
+
     internal static void PrintHeader()
     {
         if (!VolteBot.IsHeadless) return;
-        
+
         Info(LogSource.Volte, CommandEventArgs.Separator.Trim());
         VolteAscii.ForEach(static ln => Info(LogSource.Volte, ln));
         Info(LogSource.Volte, CommandEventArgs.Separator.Trim());

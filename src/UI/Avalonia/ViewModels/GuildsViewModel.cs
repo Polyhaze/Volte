@@ -43,7 +43,7 @@ public partial class GuildsViewModel : BaseModel
         VolteBot.Client.GuildAvailable += HandleGuildUpdate;
         VolteBot.Client.GuildUnavailable += HandleGuildUpdate;
     }
-    
+
     ~GuildsViewModel()
     {
         VolteBot.Client.JoinedGuild -= HandleGuildUpdate;

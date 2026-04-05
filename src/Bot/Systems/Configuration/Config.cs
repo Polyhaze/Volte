@@ -34,7 +34,7 @@ public static class Config
         {
             Error(LogSource.Volte,
                 $"The \"{FilePath.Data}\" directory didn't exist, so I created it for you. Please fill in the configuration!");
-            FilePath.Data.Create();
+            FilePath.Data.CreateAsDirectory();
             //99.9999999999% of the time the config also won't exist if this block is reached
             //if the config does exist when this block is reached, feel free to become the lead developer of this project
         }

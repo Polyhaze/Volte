@@ -59,7 +59,7 @@ public class CalledCommandsInfo
     {
         if (!CalledCommandsFile.ExistsAsFile)
         {
-            CalledCommandsFile.Create();
+            CalledCommandsFile.CreateAsFile();
             Save();
         }
         else
