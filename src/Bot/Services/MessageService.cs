@@ -1,4 +1,5 @@
-﻿using Volte.Systems.Database;
+﻿using Volte.Systems.AttachmentSpam;
+using Volte.Systems.Database;
 
 namespace Volte.Services;
 
@@ -7,14 +8,17 @@ public sealed class MessageService : VolteService
     private readonly DatabaseService _db;
     private readonly CommandService _commandService;
     private readonly QuoteService _quoteService;
+    private readonly AttachmentSpamService _attachmentSpamService;
 
     public MessageService(DatabaseService databaseService,
         CommandService commandService,
-        QuoteService quoteService)
+        QuoteService quoteService,
+        AttachmentSpamService attachmentSpamService)
     {
         _db = databaseService;
         _commandService = commandService;
         _quoteService = quoteService;
+        _attachmentSpamService = attachmentSpamService;
     }
 
     public ulong AllTimeCommandCalls => CalledCommandsInfo.Sum +
@@ -35,6 +39,9 @@ public sealed class MessageService : VolteService
 
     public async Task HandleMessageAsync(MessageReceivedEventArgs args)
     {
+        if (await _attachmentSpamService.MessageReceivedAsync(args))
+            return; //this service returning true means the sender was punished (kick/ban/softban), skip handling this message
+
         List<string> prefixes =
         [
             args.Data.Settings.CommandPrefix,

@@ -1,3 +1,4 @@
+using Volte.Systems.AttachmentSpam;
 using Volte.Systems.Database;
 using Volte.Systems.Database.EntitiesV2;
 
@@ -178,7 +179,7 @@ public sealed class ModerationService : VolteService
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.IdBan)}");
                 break;
             }
-            
+
             case ModActionType.Unban:
             {
                 IncrementAndSave(args.GuildData);
@@ -192,6 +193,22 @@ public sealed class ModerationService : VolteService
                         .Time()
                 ).SendToAsync(c);
                 Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.Unban)}");
+                break;
+            }
+            case ModActionType.AttachmentSpam:
+            {
+                IncrementAndSave(args.GuildData);
+                await e.WithDescription(
+                    args.MessageBuilder()
+                        .Action()
+                        .Moderator()
+                        .Case()
+                        .Target(false)
+                        .Reason()
+                        .MessageEvidence()
+                        .Time()
+                ).SendToAsync(c);
+                Debug(LogSource.Volte, $"Posted a modlog message for {nameof(ModActionType.AttachmentSpam)}");
                 break;
             }
 
@@ -222,8 +239,9 @@ public sealed class ModerationService : VolteService
     {
         private readonly StringBuilder _sb = new();
 
-        public ModLogMessageBuilder Reason() 
+        public ModLogMessageBuilder Reason()
             => Append(nameof(Reason), Format.Code(string.IsNullOrEmpty(args.Reason) ? "None provided" : args.Reason));
+
         public ModLogMessageBuilder Action() => Append(nameof(Action), args.ActionType);
 
         public ModLogMessageBuilder Moderator() =>
@@ -232,6 +250,31 @@ public sealed class ModerationService : VolteService
         public ModLogMessageBuilder Channel() => Append(nameof(Channel), $"<#{args.Channel.Id}>");
         public ModLogMessageBuilder Case() => Append(nameof(Case), args.GuildData.Moderation.CurrentModActionCase);
         public ModLogMessageBuilder MessagesCleared() => Append("Messages Cleared", args.Count);
+
+        public ModLogMessageBuilder MessageEvidence()
+        {
+            _sb.AppendLine($"{Format.Bold("Evidence 1")}:");
+            appendEvidence(_sb, args.AttachmentEvidences.First);
+            _sb.AppendLine();
+            _sb.AppendLine($"{Format.Bold("Evidence 2")}:");
+            appendEvidence(_sb, args.AttachmentEvidences.Second);
+
+            return this;
+
+            static void appendEvidence(StringBuilder builder, AttachmentEvidence evidence)
+            {
+                if (evidence is null)
+                    return;
+
+                builder.AppendLine($"Channel: <#{evidence.ChannelId}> (`#{evidence.ChannelName}`)");
+                builder.AppendLine($"Message: {evidence.JumpUrl}");
+                builder.AppendLine($"Content: {(string.IsNullOrWhiteSpace(evidence.Content) ? "*No text content*" : evidence.Content)}");
+                builder.AppendLine("Attachments:");
+                foreach (var attachmentUrl in evidence.AttachmentUrls) {
+                    builder.AppendLine($"- {attachmentUrl}");
+                }
+            }
+        }
 
         public ModLogMessageBuilder Target(bool isOnMessageDelete)
             => isOnMessageDelete
@@ -242,7 +285,20 @@ public sealed class ModerationService : VolteService
             => Append(nameof(Time), args.Time.ToDiscordTimestamp(TimestampType.LongDateTime));
 
         private ModLogMessageBuilder Append(string part, object content)
-            => this.Apply(it => it._sb.AppendLine($"{Format.Bold($"{part}:")} {content}"));
+            => AppendDirect($"{Format.Bold($"{part}:")} {content}");
+
+        private ModLogMessageBuilder AppendDirect(string value, bool lineEnding = true)
+            => this.Apply(it =>
+            {
+                if (lineEnding)
+                {
+                    it._sb.AppendLine(value);
+                }
+                else
+                {
+                    it._sb.Append(value);
+                }
+            });
 
         public static implicit operator string(ModLogMessageBuilder messageBuilder) => messageBuilder._sb.ToString();
     }

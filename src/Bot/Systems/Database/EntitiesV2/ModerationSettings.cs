@@ -1,4 +1,6 @@
-﻿namespace Volte.Systems.Database.EntitiesV2;
+﻿using ActionType = Volte.Systems.UserFilter.ActionType;
+
+namespace Volte.Systems.Database.EntitiesV2;
 
 public class ModerationSettings
 {
@@ -11,6 +13,12 @@ public class ModerationSettings
     public ulong AdminRole { get; set; }
 
     public bool CheckAccountAge { get; set; }
+    
+    public bool AttachmentSpamDetection { get; set; }
+
+    public ActionType AttachmentSpamAction { get; set; } = ActionType.Kick;
+    
+    public string AttachmentSpamReason { get; set; }
 
     public ulong UnverifiedRole { get; set; }
 

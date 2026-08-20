@@ -1,4 +1,5 @@
 using Discord.Interactions;
+using Volte.Systems.AttachmentSpam;
 using Volte.Systems.Commands.Interaction;
 using Volte.Systems.Database.EntitiesV2;
 
@@ -10,7 +11,8 @@ public class ModActionEventArgs
     public ISocketMessageChannel Channel { get; private set; }
     public required Func<string, EmbedBuilder> CreateEmbedBuilder { get; init; }
     public required GuildDataV2 GuildData { get; init; }
-    
+
+    public (AttachmentEvidence First, AttachmentEvidence Second) AttachmentEvidences;
     public ModActionType ActionType { get; private set; }
     public string Reason { get; private set; }
     public ulong? TargetId { get; private set; }
@@ -81,6 +83,12 @@ public class ModActionEventArgs
     public ModActionEventArgs WithGuild(SocketGuild guild)
     {
         Guild = guild;
+        return this;
+    }
+    
+    public ModActionEventArgs WithAttachmentEvidences(AttachmentEvidence first, AttachmentEvidence second)
+    {
+        AttachmentEvidences = (first, second);
         return this;
     }
 

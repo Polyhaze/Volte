@@ -14,7 +14,6 @@ public enum ModActionType : uint
     ///     Indicates that the moderator action in question is from a successful ClearWarns command invocation.
     /// </summary>
     ClearWarns = 3,
-        
     /// <summary>
     ///     Indicates that the moderator action in question is from a successful Verify command invocation.
     /// </summary>
@@ -42,5 +41,9 @@ public enum ModActionType : uint
     /// <summary>
     ///     Indicates that the moderator action in question is from a successful Unban command invocation.
     /// </summary>
-    Unban = 10
+    Unban = 10,
+    /// <summary>
+    ///     Indicates that the moderator action in question is from a trigger of the Attachment Spam detection system (automatic).
+    /// </summary>
+    AttachmentSpam = 11
 }
