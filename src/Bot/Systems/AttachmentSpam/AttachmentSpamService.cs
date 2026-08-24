@@ -82,6 +82,7 @@ public class AttachmentSpamService : VolteService
                     .WithActionType(ModActionType.AttachmentSpam)
                     .WithModerator(_client.CurrentUser)
                     .WithTarget(guildUser)
+                    .WithGuild(triggeringEvent.Context.Guild)
                     .WithReason(triggeringEvent.Context.GuildData.Settings.Moderation.AttachmentSpamReason)
                     .WithTime(secondEvidence.CreatedAt)
                     .WithAttachmentEvidences(firstEvidence, secondEvidence)
